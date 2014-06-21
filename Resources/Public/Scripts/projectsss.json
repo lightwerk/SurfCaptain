@@ -1,0 +1,220 @@
+{
+    "projects": [
+        {
+            "web_url": "https://git.lightwerk.com/project/gvsweb",
+            "name": "gvsweb",
+            "ssh_url_to_repo": "git@git.lightwerk.com:project/gvsweb.git",
+            "id": 21
+        },
+        {
+            "web_url": "https://git.lightwerk.com/project/drxmeisterwerk",
+            "name": "drxMeisterwerk",
+            "ssh_url_to_repo": "git@git.lightwerk.com:project/drxmeisterwerk.git",
+            "id": 14
+        },
+        {
+            "web_url": "https://git.lightwerk.com/project/labweb",
+            "name": "labweb",
+            "ssh_url_to_repo": "git@git.lightwerk.com:project/labweb.git",
+            "id": 27
+        },
+        {
+            "web_url": "https://git.lightwerk.com/project/cred",
+            "name": "cred",
+            "ssh_url_to_repo": "git@git.lightwerk.com:project/cred.git",
+            "id": 10
+        },
+        {
+            "web_url": "https://git.lightwerk.com/project/aditoweb",
+            "name": "aditoweb",
+            "ssh_url_to_repo": "git@git.lightwerk.com:project/aditoweb.git",
+            "id": 9
+        },
+        {
+            "web_url": "https://git.lightwerk.com/project/smagweb",
+            "name": "smagweb",
+            "ssh_url_to_repo": "git@git.lightwerk.com:project/smagweb.git",
+            "id": 35
+        },
+        {
+            "web_url": "https://git.lightwerk.com/project/gtweb",
+            "name": "gtweb",
+            "ssh_url_to_repo": "git@git.lightwerk.com:project/gtweb.git",
+            "id": 19
+        },
+        {
+            "web_url": "https://git.lightwerk.com/project/fleetboard",
+            "name": "fleetboard",
+            "ssh_url_to_repo": "git@git.lightwerk.com:project/fleetboard.git",
+            "id": 16
+        },
+        {
+            "web_url": "https://git.lightwerk.com/project/gtintra",
+            "name": "gtintra",
+            "ssh_url_to_repo": "git@git.lightwerk.com:project/gtintra.git",
+            "id": 18
+        },
+        {
+            "web_url": "https://git.lightwerk.com/project/gvsflow",
+            "name": "gvsflow",
+            "ssh_url_to_repo": "git@git.lightwerk.com:project/gvsflow.git",
+            "id": 20
+        },
+        {
+            "web_url": "https://git.lightwerk.com/project/bma",
+            "name": "bma",
+            "ssh_url_to_repo": "git@git.lightwerk.com:project/bma.git",
+            "id": 8
+        },
+        {
+            "web_url": "https://git.lightwerk.com/project/gvs_import_scripts",
+            "name": "gvs_import_scripts",
+            "ssh_url_to_repo": "git@git.lightwerk.com:project/gvs_import_scripts.git",
+            "id": 23
+        },
+        {
+            "web_url": "https://git.lightwerk.com/project/lawo_web",
+            "name": "lawo_web",
+            "ssh_url_to_repo": "git@git.lightwerk.com:project/lawo_web.git",
+            "id": 28
+        },
+        {
+            "web_url": "https://git.lightwerk.com/project/drxweb",
+            "name": "drxweb",
+            "ssh_url_to_repo": "git@git.lightwerk.com:project/drxweb.git",
+            "id": 13
+        },
+        {
+            "web_url": "https://git.lightwerk.com/project/labimport",
+            "name": "labimport",
+            "ssh_url_to_repo": "git@git.lightwerk.com:project/labimport.git",
+            "id": 26
+        },
+        {
+            "web_url": "https://git.lightwerk.com/project/suzuki_web",
+            "name": "suzuki_web",
+            "ssh_url_to_repo": "git@git.lightwerk.com:project/suzuki_web.git",
+            "id": 38
+        },
+        {
+            "web_url": "https://git.lightwerk.com/project/fasweb",
+            "name": "fasweb",
+            "ssh_url_to_repo": "git@git.lightwerk.com:project/fasweb.git",
+            "id": 15
+        },
+        {
+            "web_url": "https://git.lightwerk.com/project/lwweb",
+            "name": "lwweb",
+            "ssh_url_to_repo": "git@git.lightwerk.com:project/lwweb.git",
+            "id": 29
+        },
+        {
+            "web_url": "https://git.lightwerk.com/project/knl",
+            "name": "knl",
+            "ssh_url_to_repo": "git@git.lightwerk.com:project/knl.git",
+            "id": 25
+        },
+        {
+            "web_url": "https://git.lightwerk.com/project/marabuweb",
+            "name": "marabuweb",
+            "ssh_url_to_repo": "git@git.lightwerk.com:project/marabuweb.git",
+            "id": 32
+        },
+        {
+            "web_url": "https://git.lightwerk.com/project/parcon",
+            "name": "parcon",
+            "ssh_url_to_repo": "git@git.lightwerk.com:project/parcon.git",
+            "id": 33
+        },
+        {
+            "web_url": "https://git.lightwerk.com/project/rkhweb",
+            "name": "rkhweb",
+            "ssh_url_to_repo": "git@git.lightwerk.com:project/rkhweb.git",
+            "id": 34
+        },
+        {
+            "web_url": "https://git.lightwerk.com/project/sonovtsweb",
+            "name": "sonovtsweb",
+            "ssh_url_to_repo": "git@git.lightwerk.com:project/sonovtsweb.git",
+            "id": 36
+        },
+        {
+            "web_url": "https://git.lightwerk.com/project/induux",
+            "name": "induux",
+            "ssh_url_to_repo": "git@git.lightwerk.com:project/induux.git",
+            "id": 24
+        },
+        {
+            "web_url": "https://git.lightwerk.com/project/gvs_bkm_import",
+            "name": "gvs_bkm_import",
+            "ssh_url_to_repo": "git@git.lightwerk.com:project/gvs_bkm_import.git",
+            "id": 22
+        },
+        {
+            "web_url": "https://git.lightwerk.com/project/knvweb",
+            "name": "knvweb",
+            "ssh_url_to_repo": "git@git.lightwerk.com:project/knvweb.git",
+            "id": 260
+        },
+        {
+            "web_url": "https://git.lightwerk.com/project/drxintra",
+            "name": "drxintra",
+            "ssh_url_to_repo": "git@git.lightwerk.com:project/drxintra.git",
+            "id": 11
+        },
+        {
+            "web_url": "https://git.lightwerk.com/project/swkthermeweb",
+            "name": "swkthermeweb",
+            "ssh_url_to_repo": "git@git.lightwerk.com:project/swkthermeweb.git",
+            "id": 249
+        },
+        {
+            "web_url": "https://git.lightwerk.com/project/knologistikweb",
+            "name": "knologistikweb",
+            "ssh_url_to_repo": "git@git.lightwerk.com:project/knologistikweb.git",
+            "id": 262
+        },
+        {
+            "web_url": "https://git.lightwerk.com/project/tyrolitweb",
+            "name": "tyrolitweb",
+            "ssh_url_to_repo": "git@git.lightwerk.com:project/tyrolitweb.git",
+            "id": 39
+        },
+        {
+            "web_url": "https://git.lightwerk.com/project/gtinter",
+            "name": "gtinter",
+            "ssh_url_to_repo": "git@git.lightwerk.com:project/gtinter.git",
+            "id": 17
+        },
+        {
+            "web_url": "https://git.lightwerk.com/project/suzuki_solr",
+            "name": "suzuki_solr",
+            "ssh_url_to_repo": "git@git.lightwerk.com:project/suzuki_solr.git",
+            "id": 37
+        },
+        {
+            "web_url": "https://git.lightwerk.com/project/swkweb",
+            "name": "swkweb",
+            "ssh_url_to_repo": "git@git.lightwerk.com:project/swkweb.git",
+            "id": 248
+        },
+        {
+            "web_url": "https://git.lightwerk.com/project/knovaweb",
+            "name": "knovaweb",
+            "ssh_url_to_repo": "git@git.lightwerk.com:project/knovaweb.git",
+            "id": 261
+        },
+        {
+            "web_url": "https://git.lightwerk.com/project/woerwagintra",
+            "name": "woerwagintra",
+            "ssh_url_to_repo": "git@git.lightwerk.com:project/woerwagintra.git",
+            "id": 283
+        },
+        {
+            "web_url": "https://git.lightwerk.com/project/wntweb",
+            "name": "wntweb",
+            "ssh_url_to_repo": "git@git.lightwerk.com:project/wntweb.git",
+            "id": 255
+        }
+    ]
+}

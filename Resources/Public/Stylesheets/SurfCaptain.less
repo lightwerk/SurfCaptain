@@ -1,0 +1,123 @@
+.ui-match {
+	background: yellow;
+}
+div.surfcaptain,
+div.project-history {
+	min-height: 230px;
+	background-color: @brand-primary;
+	width: 100%;
+	.glyphicon {
+		font-size: 100px;
+		display: inline-block;
+		width: 100%;
+	}
+	.project-name {
+		display: inline-block;
+		margin-top: 15px;
+	}
+}
+
+div.surfcaptain.deploy {
+	background-color: @brand-danger;
+}
+
+div.surfcaptain.sync {
+	background-color: @brand-warning;
+}
+
+div.project-selection {
+	position: relative;
+	top: -29px;
+
+	table {
+		width: 90%;
+		margin: auto;
+		thead {
+			h4 {
+				margin: 0px;
+			}
+		}
+
+		tbody {
+			color: @brand-primary;
+			tr {
+				border-bottom: 1px solid @brand-primary;
+
+				.btn {
+					display: none;
+					float: right;
+					margin-left: 20px;
+				}
+				&:hover {
+					background-color: #333333;
+					td .btn {
+						display: inline-block;
+					}
+				}
+				td {
+					height: 60px;
+				}
+				.project-link {
+					width: 100%;
+					height: 100%;
+					display: inline-block;
+					padding-top: 8px;
+					&:hover {
+						text-decoration: none;
+					}
+				}
+			}
+		}
+		th,td {
+			padding: 10px 4px;
+			text-align: left;
+
+			&:first-child {
+				font-weight: 600;
+			}
+			&:last-child {
+				width: 250px;
+			}
+		}
+	}
+}
+
+div.project-buttons {
+	padding: 20px 0;
+	background-color: #333333 !important;
+	width: 100%;
+
+	.btn {
+		color: #000;
+	}
+}
+
+div.project-history {
+	margin-top: 15px;
+	background-color: #000 !important;
+	color:  @brand-primary;
+
+	table {
+		text-align: left;
+		width: 80%;
+		margin: 15px auto;
+
+		thead tr {
+			border-bottom: 2px solid @brand-primary;
+		}
+
+		tr {
+			&.odd {
+				background-color: #333333;
+			}
+			td {
+				padding: 3px 2px;
+			}
+		}
+	}
+}
+
+.dark {
+	margin-top: 15px;
+	color: #666;
+}

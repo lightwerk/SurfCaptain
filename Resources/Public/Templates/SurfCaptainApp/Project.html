@@ -1,0 +1,79 @@
+<div class="surfcaptain project">
+	<div class="container">
+		<div class="row">
+			<div class="col-xs-12 text-center">
+				<h1><span class="glyphicon glyphicon-flag"></span>
+				<span class="project-name">{{name | uppercase}}</span></h1>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="container project-buttons">
+	<div class="row">
+		<div class="col-xs-6 col-md-3 col-md-offset-2 text-right">
+			<a href="#/project/{{name}}/deploy" class="btn btn-lg btn-danger">
+				Deploy
+				<span class="glyphicon glyphicon-road"></span>
+			</a>
+		</div>
+		<div class="col-xs-6 col-md-3 col-md-offset-2 text-left">
+			<a href="#/project/{{name}}/sync" class="btn btn-lg btn-warning">
+				Sync
+				<span class="glyphicon glyphicon-refresh"></span>
+			</a>
+		</div>
+	</div>
+</div>
+
+<div class="project-history container">
+	<div class="row">
+		<div class="col-xs-12 text-center">
+			<h2><span class="glyphicon glyphicon-time"></span>
+				<span class="project-name">History</span></h2>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-xs-12 col-md-8 col-md-push-2 text-center project-selector">
+			<div class="checkboxes">
+				<input type = "checkbox"
+					id = "constraint"
+					value = ""
+					ng-true-value=""
+					ng-false-value="Sync"
+					ng-model="constraint"/>
+				<label for="constraint">Include Sync</label>
+			</div>
+
+			<table>
+				<thead>
+					<tr>
+						<th>Application</th>
+						<th>Date</th>
+						<th>Server</th>
+						<th>Branch/Tag</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr ng-class-odd="'odd'" ng-repeat="item in history | orderBy:ordering:1" ng-show="item.application !== constraint">
+						<td>
+							{{item.application | uppercase }}
+						</td>
+						<td>
+							{{item.date | date:'dd.M.yyyy' }}
+						</td>
+						<td>
+							{{item.server}}
+						</td>
+						<td>
+							<span ng-show="item.commit">
+								<a href="{{project.web_url}}/commit/{{item.commit}}">
+									{{item.gitcheckout}}
+								</a>
+							</span>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	</div>
+</div>
