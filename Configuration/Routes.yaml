@@ -1,5 +1,4 @@
 - name: 'API'
-  uriPattern: 'api/{@action}'
+  uriPattern: 'api/{@controller}'
   defaults:
     '@package': 'Lightwerk.SurfCaptain'
-    '@controller': 'Api'
