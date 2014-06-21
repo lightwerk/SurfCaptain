@@ -1,0 +1,37 @@
+<div class="surfcaptain">
+	<div class="container">
+		<div class="row">
+			<div class="col-xs-12 text-center">
+				<h1><span class="glyphicon glyphicon-screenshot"></span></h1>
+				<h4 class="text-center">Projects</h4>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="project-selection" ng-init="getProjects()">
+	<div class="container">
+		<div class="row">
+			<div class="col-xs-12 col-md-8 col-md-push-2 text-center project-selector">
+				<table>
+					<thead>
+						<tr>
+							<td colspan="2">
+								<input type="text" ng-model="search.name" class="form-control" placeholder="Filter" />
+							</td>
+						</tr>
+					</thead>
+					<tbody>
+						<tr ng-class-odd="'odd'" ng-repeat="(id,project) in projects | orderBy:ordering:reverse | filter:search:0">
+							<td class="project">
+								<a href="#/project/{{project.name}}" class="project-link">
+									{{project.name | uppercase }}
+								</a>
+							</td>
+							<td class="link"><a href="#/project/{{project.name}}" class="btn-primary btn">Proceed</a></td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+</div>
