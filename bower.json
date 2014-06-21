@@ -1,0 +1,6 @@
+{
+    "name": "lightwerk.SurfCaptain",
+    "dependencies": {
+        "bootstrap": "3.*"
+    }
+}
