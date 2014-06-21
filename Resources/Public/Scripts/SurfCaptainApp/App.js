@@ -11,6 +11,14 @@ app.config(['$routeProvider', function ($routeProvider) {
             templateUrl: 'Templates/SurfCaptainApp/Project.html',
             controller: 'ProjectController'
         }).
+        when('/project/:itemName/deploy', {
+            templateUrl: 'Templates/SurfCaptainApp/Deploy.html',
+            controller: 'DeployController'
+        }).
+        when('/project/:itemName/sync', {
+            templateUrl: 'Templates/SurfCaptainApp/Sync.html',
+            controller: 'SyncController'
+        }).
         otherwise({
             redirectTo: '/'
         });
@@ -19,10 +27,9 @@ app.config(['$routeProvider', function ($routeProvider) {
 app.factory('projectsService', function ($http) {
     var projectsService = {
         getProjects: function () {
-            var promise = $http.get('Scripts/projects.json', {cache: true}).then(function (response) {
+            var promise = $http.get('Scripts/projectsss.json', {cache: true}).then(function (response) {
                 return response.data;
             });
-            // Return the promise to the controller
             return promise;
         }
     };

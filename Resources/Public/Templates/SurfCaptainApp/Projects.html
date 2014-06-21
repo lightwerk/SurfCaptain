@@ -2,8 +2,8 @@
 	<div class="container">
 		<div class="row">
 			<div class="col-xs-12 text-center">
-				<h1><span class="glyphicon glyphicon-screenshot"></span></h1>
-				<h4 class="text-center">Projects</h4>
+				<h1><span class="glyphicon glyphicon-screenshot"></span>
+				Projects</h1>
 			</div>
 		</div>
 	</div>
@@ -27,7 +27,16 @@
 									{{project.name | uppercase }}
 								</a>
 							</td>
-							<td class="link"><a href="#/project/{{project.name}}" class="btn-primary btn">Proceed</a></td>
+							<td>
+								<a href="#/project/{{project.name}}/deploy" class="btn btn-danger">
+									Deploy
+									<span class="glyphicon glyphicon-road"></span>
+								</a>
+								<a href="#/project/{{project.name}}/sync" class="btn btn-warning">
+									Sync
+									<span class="glyphicon glyphicon-refresh"></span>
+								</a>
+							</td>
 						</tr>
 					</tbody>
 				</table>

@@ -1,4 +1,4 @@
-<div class="surfcaptain">
+<div class="surfcaptain project">
 	<div class="container">
 		<div class="row">
 			<div class="col-xs-12 text-center">
@@ -11,16 +11,16 @@
 <div class="container project-buttons">
 	<div class="row">
 		<div class="col-xs-6 col-md-3 col-md-offset-2 text-right">
-			<button class="btn btn-lg btn-danger">
+			<a href="#/project/{{name}}/deploy" class="btn btn-lg btn-danger">
 				Deploy
 				<span class="glyphicon glyphicon-road"></span>
-			</button>
+			</a>
 		</div>
 		<div class="col-xs-6 col-md-3 col-md-offset-2 text-left">
-			<button class="btn btn-lg btn-warning">
+			<a href="#/project/{{name}}/sync" class="btn btn-lg btn-warning">
 				Sync
 				<span class="glyphicon glyphicon-refresh"></span>
-			</button>
+			</a>
 		</div>
 	</div>
 </div>
@@ -66,8 +66,9 @@
 						</td>
 						<td>
 							<span ng-show="item.commit">
-								<a href="https://git.lightwerk.com"
-								{{item.gitcheckout}}
+								<a href="{{project.web_url}}/commit/{{item.commit}}">
+									{{item.gitcheckout}}
+								</a>
 							</span>
 						</td>
 					</tr>
