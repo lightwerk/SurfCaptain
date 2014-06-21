@@ -1,0 +1,13 @@
+{
+    "devDependencies": {
+        "grunt": "*",
+        "grunt-jslint": "*",
+        "grunt-contrib-less": "*",
+        "grunt-contrib-concat": "*",
+        "grunt-contrib-uglify": "*",
+        "grunt-contrib-watch": "*",
+        "load-grunt-tasks": "*",
+        "load-grunt-config": "*",
+        "grunt-newer": "*"
+    }
+}
