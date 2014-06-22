@@ -31,6 +31,11 @@ class GitService {
 	protected $browserRequestEngine;
 
 	/**
+	 * @var \TYPO3\Flow\Http\Response
+	 */
+	protected $lastResponse;
+
+	/**
 	 * Inject the settings
 	 *
 	 * @param array $settings
@@ -53,16 +58,15 @@ class GitService {
 	 * @return \TYPO3\Flow\Http\Response
 	 * @throws \TYPO3\Flow\Http\Client\InfiniteRedirectionException
 	 */
-	protected function getGitLabApiResponse($command, $method = 'GET', array $arguments = array(), array $files = array(), array $server = array(), $content = NULL) {
+	protected function getGitLabApiResponse($command, $method = 'GET', array $parameters = array()) {
+		$parameters['private_token'] = $this->settings['git']['privateToken'];
+		$response = $this->browser->request(
+			$this->settings['git']['url'] . $command . '?' . http_build_query($parameters),
+			$method
+		);
+		$this->lastResponse = $response;
 		return json_decode(
-			$this->browser->request(
-				$this->settings['git']['url'] . $command . (strpos($command, '?') ? '&' : '?') . 'private_token=' . $this->settings['git']['privateToken'],
-				$method,
-				$arguments,
-				$files,
-				$server,
-				$content
-			)->getContent(),
+			$response->getContent(),
 			TRUE
 		);
 	}
@@ -83,7 +87,35 @@ class GitService {
 	 */
 	public function getFileContent($projectId, $filePath, $ref = 'master') {
 		return base64_decode(
-			$this->getGitLabApiResponse('projects/' . $projectId . '/repository/files?file_path=' . $filePath . '&ref=' . $ref)['content']
+			$this->getGitLabApiResponse(
+				'projects/' . $projectId . '/repository/files',
+				'GET',
+				array(
+					'file_path' => $filePath,
+					'ref' => $ref,
+				)
+			)['content']
+		);
+	}
+
+	/**
+	 * @param integer $projectId
+	 * @param string $filePath
+	 * @param string $content
+	 * @param string $commitMessage
+	 * @param string $branchName
+	 * @return void
+	 */
+	public function setFileContent($projectId, $filePath, $content, $commitMessage, $branchName = 'master') {
+		$this->getGitLabApiResponse(
+			'projects/' . $projectId . '/repository/files',
+			'PUT',
+			array(
+				'file_path' => $filePath,
+				'branch_name' => $branchName,
+				'commit_message' => $commitMessage,
+				'content' => $content
+			)
 		);
 	}
 

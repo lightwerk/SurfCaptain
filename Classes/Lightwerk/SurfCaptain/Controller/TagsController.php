@@ -12,6 +12,10 @@ use TYPO3\Flow\Mvc\Controller\RestController;
 
 class TagsController extends RestController {
 
+	/**
+	 * @var string
+	 * @see \TYPO3\Flow\Mvc\Controller\ActionController
+	 */
 	protected $defaultViewObjectName = 'TYPO3\\Flow\\Mvc\\View\\JsonView';
 
 	/**

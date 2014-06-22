@@ -8,11 +8,8 @@ namespace Lightwerk\SurfCaptain\Controller;
 
 use Lightwerk\SurfCaptain\Service\GitService;
 use TYPO3\Flow\Annotations as Flow;
-use TYPO3\Flow\Mvc\Controller\RestController;
 
-class BranchesController extends RestController {
-
-	protected $defaultViewObjectName = 'TYPO3\\Flow\\Mvc\\View\\JsonView';
+class BranchesController extends AbstractRestController {
 
 	/**
 	 * @Flow\Inject

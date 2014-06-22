@@ -1,8 +1,21 @@
 # JSON API Calls
 
+    # List projects
     curl http://surf.flow.lp.lw.loc/api/projects | jq '.'
+
+    # List servers
     curl http://surf.flow.lp.lw.loc/api/servers | jq '.'
+    # Add server
+    curl -v -X POST http://surf.flow.lp.lw.loc/api/servers\?collectionKey\=sma\&serverKey\=fe1\&configuration\=%7B%22host%22%3A%22www.sma.de%22%2C%22username%22%3A%22user1%22%2C%22password%22%3A%22abcde%22%7D
+    # Update server
+    curl -v -X PUT http://surf.flow.lp.lw.loc/api/servers\?collectionKey\=sma\&serverKey\=fe1\&configuration\=%7B%22host%22%3A%22www.sma.de%22%2C%22username%22%3A%22user1%22%2C%22password%22%3A%22abcde%22%7D
+    # Remove server
+    curl -v -X DELETE http://surf.flow.lp.lw.loc/api/servers\?collectionKey\=sma\&serverKey\=fe1
+
+    # List branches of a repository
     curl http://surf.flow.lp.lw.loc/api/branches?projectId=17 | jq '.'
+
+    # List tags of a repository
     curl http://surf.flow.lp.lw.loc/api/tags?projectId=17 | jq '.'
 
 # GitLab API Reponses
