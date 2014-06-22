@@ -17,6 +17,4 @@ surfCaptain.controller('ProjectController', ['$scope', '$routeParams', 'ProjectR
         });
     };
    this.init();
-
-    $scope.history = {};
 }]);
