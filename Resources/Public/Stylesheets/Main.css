@@ -3555,10 +3555,17 @@ div.project-history table tr td {
   position: absolute;
   bottom: 0px;
   width: 100%;
-  padding-top: 15px;
+  padding-top: 10px;
   margin-top: 15px;
   font-style: italic;
   font-size: 80%;
+}
+.footer .angular-logo {
+  background: url("../Images/AngularJS-Shield-small.png") no-repeat scroll center top / 100% auto transparent;
+  display: inline-block;
+  height: 28px;
+  margin-bottom: -9px;
+  width: 28px;
 }
 .project-deploy .configure-deployment {
   color: #d9534f;

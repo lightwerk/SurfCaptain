@@ -9,7 +9,7 @@ surfCaptain.factory('ServerRepository', function ($http) {
     /**
      * Gets all servers from the collection
      *
-     * @returns promise {object}
+     * @returns {Promise} – promise object
      */
     serverRepository.getServers = function () {
 
@@ -19,7 +19,7 @@ surfCaptain.factory('ServerRepository', function ($http) {
      * Gets all servers that belong to a given project
      *
      * @param {object} project
-     * @returns promise {object}
+     * @returns {Promise} – promise object
      */
     serverRepository.getServersByProject = function (project) {
 
@@ -29,7 +29,7 @@ surfCaptain.factory('ServerRepository', function ($http) {
      * Adds a single server to the server collection
      *
      * @param server {object}
-     * @returns promise {object}
+     * @returns {Promise} – promise object
      */
     serverRepository.putServer = function (server) {
 
@@ -39,7 +39,7 @@ surfCaptain.factory('ServerRepository', function ($http) {
      * Removes a single server from the server collection
      *
      * @param server {object}
-     * @returns promise {object}
+     * @returns {Promise} – promise object
      */
     serverRepository.deleteServer = function (server) {
 

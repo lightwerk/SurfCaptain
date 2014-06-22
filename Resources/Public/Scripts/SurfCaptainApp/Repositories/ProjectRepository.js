@@ -21,7 +21,7 @@ surfCaptain.factory('ProjectRepository', [ '$http', '$q', function ($http, $q) {
      *
      * @param projects {object}
      * @param name {string}
-     * @returns {object}
+     * @returns {object} a single project
      */
     projectRepository.getProjectByName = function (projects, name) {
         var length,
