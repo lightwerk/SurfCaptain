@@ -1,7 +1,7 @@
+/*jslint browser: true*/
 'use strict';
-var app = angular.module('surfCaptain', ['ngRoute']);
-
-app.config(['$routeProvider', function ($routeProvider) {
+var surfCaptain = angular.module('surfCaptain', ['ngRoute'])
+    .config(['$routeProvider', function ($routeProvider) {
     $routeProvider.
         when('/', {
             templateUrl: 'Templates/SurfCaptainApp/Projects.html',
@@ -22,16 +22,5 @@ app.config(['$routeProvider', function ($routeProvider) {
         otherwise({
             redirectTo: '/'
         });
-}]);
-
-app.factory('projectsService', function ($http) {
-    var projectsService = {
-        getProjects: function () {
-            var promise = $http.get('Scripts/projectsss.json', {cache: true}).then(function (response) {
-                return response.data;
-            });
-            return promise;
-        }
-    };
-    return projectsService;
-});
+    }])
+    .value('version', '0.3.0');

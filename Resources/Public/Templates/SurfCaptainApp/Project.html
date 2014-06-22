@@ -38,9 +38,9 @@
 				<input type = "checkbox"
 					id = "constraint"
 					value = ""
-					ng-true-value=""
-					ng-false-value="Sync"
-					ng-model="constraint"/>
+					data-ng-true-value=""
+					data-ng-false-value="Sync"
+					data-ng-model="constraint"/>
 				<label for="constraint">Include Sync</label>
 			</div>
 
@@ -54,7 +54,7 @@
 					</tr>
 				</thead>
 				<tbody>
-					<tr ng-class-odd="'odd'" ng-repeat="item in history | orderBy:ordering:1" ng-show="item.application !== constraint">
+					<tr data-ng-class-odd="'odd'" data-ng-repeat="item in history | orderBy:ordering:1" data-ng-show="item.application !== constraint">
 						<td>
 							{{item.application | uppercase }}
 						</td>
@@ -65,7 +65,7 @@
 							{{item.server}}
 						</td>
 						<td>
-							<span ng-show="item.commit">
+							<span data-ng-show="item.commit">
 								<a href="{{project.web_url}}/commit/{{item.commit}}">
 									{{item.gitcheckout}}
 								</a>

@@ -1,0 +1,114 @@
+{
+  "branches": [
+    {
+      "commit": {
+        "committer": {
+          "name": "dlg"
+        },
+        "committed_date": "2013-10-29T15:21:14+01:00",
+        "message": "[TASK] new logo and text for europtec clients, configuration and css files for new clients",
+        "id": "14b8eec6d0393003dd1cb8b7a39b514b4d21e0e6"
+      },
+      "name": "GTWEB-154"
+    },
+    {
+      "commit": {
+        "committer": {
+          "name": "Glas Troesch"
+        },
+        "committed_date": "2014-04-03T16:20:01+02:00",
+        "message": "[TASK] GTWEB-252: CH: Styling Newslettersubscription",
+        "id": "8d4d4ac4e29d3be91087c6de2b2d7f9f0dc59be0"
+      },
+      "name": "GTWEB-252"
+    },
+    {
+      "commit": {
+        "committer": {
+          "name": "Glas Troesch"
+        },
+        "committed_date": "2014-01-20T17:26:37+01:00",
+        "message": "[TASK] GTWEB-207: Styling Searchresult-Page",
+        "id": "ceaf5753a0bcd9f06326d32200e7bbeb6519013d"
+      },
+      "name": "feature/GTWEB-207"
+    },
+    {
+      "commit": {
+        "committer": {
+          "name": "Glas Troesch"
+        },
+        "committed_date": "2014-06-16T10:58:35+02:00",
+        "message": "[ADMIN] gt_glace: git ignore smarty templates_c; remove old templates_c from versioning",
+        "id": "8d97a6adbdf834ce50ae90167b9df2707496ebd1"
+      },
+      "name": "master"
+    },
+    {
+      "commit": {
+        "committer": {
+          "name": "Daniel Goerz"
+        },
+        "committed_date": "2014-03-13T13:40:35+01:00",
+        "message": "[TASK] uninstalled extension pdf_generator2",
+        "id": "2d9f7223c591d3064fae06be0c89ac17442e814c"
+      },
+      "name": "pre-upgrade"
+    },
+    {
+      "commit": {
+        "committer": {
+          "name": "Benjamin Bretz"
+        },
+        "committed_date": "2013-05-08T11:07:17+02:00",
+        "message": "Merge branch 'release-1.1.x' of git.lightwerk.com:projects/gtinter into release-1.1.x",
+        "id": "ddf2c398b202ddeac6c993a43ea3b82bfa781898"
+      },
+      "name": "release-1.1.x"
+    },
+    {
+      "commit": {
+        "committer": {
+          "name": "Benjamin Bretz"
+        },
+        "committed_date": "2013-05-28T11:48:25+02:00",
+        "message": "[ADMIN] changed origin for typo3_src to lw",
+        "id": "7e9789672805f562d460cb97c9a941ed7c8765df"
+      },
+      "name": "release-1.2.x"
+    },
+    {
+      "commit": {
+        "committer": {
+          "name": "Glas Troesch"
+        },
+        "committed_date": "2013-06-07T13:05:49+02:00",
+        "message": "[TASK] #GT-541 removed wrong placed gt_glace",
+        "id": "c5cb83d53d4f27fd975407278c705e505ae3cc5d"
+      },
+      "name": "release-1.3.x"
+    },
+    {
+      "commit": {
+        "committer": {
+          "name": "Stefanie Braun"
+        },
+        "committed_date": "2013-06-20T09:29:33+02:00",
+        "message": "[~TASK] #GT-550 change FE view for feuserlogin and feuserregistration",
+        "id": "8472e89ff580bfa0622c9c377a4be9d02594009c"
+      },
+      "name": "release-1.4.x"
+    },
+    {
+      "commit": {
+        "committer": {
+          "name": "Daniel Goerz"
+        },
+        "committed_date": "2014-06-08T22:39:15+02:00",
+        "message": "[CONFIGURATION] lw_gtweb_basis - set right sys_language_uids",
+        "id": "119bd7f125356c38207d2e4c6f518d868b005a35"
+      },
+      "name": "upgrade"
+    }
+  ]
+}
