@@ -24,9 +24,12 @@ abstract class AbstractRestController extends RestController {
 	 * @return void
 	 * @throws \TYPO3\Flow\Mvc\Exception\StopActionException
 	 */
-	protected function redirectToResource($statusCode = 303) {
+	protected function redirectToResource($parameter = array(), $statusCode = 303) {
 		$httpRequest = $this->request->getHttpRequest();
 		$uri = $httpRequest->getBaseUri() . 'api/' . strtolower($this->request->getControllerName());
+		if (count($parameter)) {
+			$uri .= '?' . http_build_query($parameter);
+		}
 		$this->response->setHeader('Location', $uri);
 		$this->response->setStatus($statusCode);
 		$this->response->setHeader('Accept', $this->request->getHttpRequest()->getHeaders()->get('HTTP_ACCEPT'));

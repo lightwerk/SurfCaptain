@@ -11,6 +11,13 @@
     curl -v -X PUT http://surf.flow.lp.lw.loc/api/servers\?collectionKey\=sma\&serverKey\=fe1\&configuration\=%7B%22host%22%3A%22www.sma.de%22%2C%22username%22%3A%22user1%22%2C%22password%22%3A%22abcde%22%7D
     # Remove server
     curl -v -X DELETE http://surf.flow.lp.lw.loc/api/servers\?collectionKey\=sma\&serverKey\=fe1
+    
+    # List servers of a project
+    curl http://surf.flow.lp.lw.loc/api/projectServers\?projectId\=17 | jq '.'
+    # Add project to server
+    curl -v -X POST http://surf.flow.lp.lw.loc/api/projectServers\?projectId\=17\&collectionKey\=sma | jq '.'
+    # Remove project from server
+    curl -v -X DELETE http://surf.flow.lp.lw.loc/api/projectServers\?projectId\=17\&collectionKey\=sma | jq '.'
 
     # List branches of a repository
     curl http://surf.flow.lp.lw.loc/api/branches?projectId=17 | jq '.'
