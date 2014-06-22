@@ -1,3 +1,8 @@
+# How To Install
+
+1. Copy route from Packages/Application/Lightwerk.SurfCaptain/Configuration/Routes.yaml to Configuration/Routes.yaml
+1. Set Lightwerk/SurfCaptain/git/privateToken in Configuration/Settings.yaml (see Packages/Application/Lightwerk.SurfCaptain/Configuration/Settings.yaml)
+
 # JSON API Calls
 
     # List projects
