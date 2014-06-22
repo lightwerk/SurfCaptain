@@ -31,4 +31,60 @@
 			<em>If you don't have a tag, go back and ask your favored developer to tag the master.</em>
 		</div>
 	</div>
+	<div class="row configure-deployment">
+		<div class="col-md-3 col-xs-12 col-md-offset-1 text-center">
+			<h2>Step 1</h2>
+			<em>Choose a tag.</em>
+		</div>
+		<div class="col-md-4 col-xs-12">
+			<select ng-options="deployableCommits" class="form-control select-git-commit" ng-model="deployment.gitCheckout">
+				<option value="">-- Please choose --</option>
+			</select>
+		</div>
+		<div class="col-md-4 col-xs-12 text-center">
+			<h2>Recent Deployments</h2>
+			<table>
+				<thead>
+				<tr>
+					<th>Date</th>
+					<th>Server</th>
+					<th>Branch/Tag</th>
+				</tr>
+				</thead>
+				<tbody>
+				<tr data-ng-class-odd="'odd'" data-ng-repeat="item in history | orderBy:ordering:1" data-ng-show="item.application !== constraint">
+					<td>
+						{{item.date | date:'dd.M.yyyy' }}
+					</td>
+					<td>
+						{{item.server}}
+					</td>
+					<td>
+						<span data-ng-show="item.commit">
+							<a href="{{project.web_url}}/commit/{{item.commit}}">
+								{{item.gitcheckout}}
+							</a>
+						</span>
+					</td>
+				</tr>
+				</tbody>
+			</table>
+		</div>
+
+
+		<div class="col-md-3 col-xs-12 col-md-offset-1 text-center">
+			<h2>Step 2</h2>
+			<em>Choose a server.</em>
+		</div>
+		<div class="col-md-4 col-xs-12">
+			<select ng-options="deployableCommits" class="form-control select-git-commit" ng-model="deployment.server">
+				<option value="">-- Please choose --</option>
+			</select>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-xs-12 text-center">
+			<button class="btn btn-lg btn-danger" ng-click="deploy">Deploy!</button>
+		</div>
+	</div>
 </div>

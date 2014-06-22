@@ -1,9 +1,20 @@
 /*jslint browser: true*/
 
 'use strict';
-app.controller('ProjectsController', ['$scope', '$http', 'projectsService', function ($scope, $http, projectsService) {
+surfCaptain.controller('ProjectsController', ['$scope', 'ProjectRepository', function ($scope, ProjectRepository) {
     $scope.ordering = 'name';
-    projectsService.getProjects().then(function (response) {
-        $scope.projects = response.projects;
-    });
+    $scope.projects = [];
+
+    this.init = function () {
+        // Retrieve Projects from Factory
+        ProjectRepository.getProjects().then(
+            function (response) {
+                $scope.projects = response.projects;
+            },
+            function () {
+                //an error occured
+            }
+        );
+    };
+    this.init();
 }]);

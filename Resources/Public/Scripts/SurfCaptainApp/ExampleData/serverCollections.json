@@ -1,0 +1,14 @@
+{
+  "serverCollections": {
+    "sma": [
+      {
+        "username": "blub",
+        "host": "www.sma.de"
+      },
+      {
+        "username": "blub2",
+        "host": "www2.sma.de"
+      }
+    ]
+  }
+}

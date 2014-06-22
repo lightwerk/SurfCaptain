@@ -1,20 +1,16 @@
 /*jslint browser: true*/
 
 'use strict';
-app.controller('DeployController', ['$scope', '$routeParams', 'projectsService', function ($scope, $routeParams, projectsService) {
+surfCaptain.controller('DeployController', ['$scope', '$routeParams', 'ProjectRepository', function ($scope, $routeParams, ProjectRepository) {
     $scope.name = $routeParams.itemName;
     $scope.project = {};
+    $scope.projects = {};
 
-    projectsService.getProjects().then(function (response) {
-        var length,
-            i = 0;
-        $scope.projects = response.projects;
-        length = $scope.projects.length;
-        for (i; i < length; i++) {
-            if ($scope.projects[i]['name'] === $scope.name) {
-                $scope.project = $scope.projects[i];
-                break;
-            }
-        }
-    });
+    this.init = function () {
+        ProjectRepository.getProjects().then(function (response) {
+            $scope.projects = response.projects;
+            $scope.project = ProjectRepository.getProjectByName($scope.name);
+        });
+    };
+    this.init();
 }]);
