@@ -14,12 +14,6 @@ use TYPO3\Flow\Annotations as Flow;
 class DeploymentsController extends AbstractRestController {
 
 	/**
-	 * @Flow\Inject
-	 * @var GitService
-	 */
-	protected $gitService;
-
-	/**
 	 * @FLow\Inject
 	 * @var DeploymentRepository
 	 */

@@ -15,6 +15,13 @@ use Doctrine\ORM\Mapping as ORM;
 class Deployment {
 
 	/**
+	 * @var \Doctrine\Common\Collections\Collection<\Lightwerk\SurfCaptain\Domain\Model\Log>
+	 * @ORM\OneToMany(mappedBy="deployment")
+	 * @ORM\OrderBy({"date" = "DESC"})
+	 */
+	protected $logs;
+
+	/**
 	 * @var integer
 	 * @Flow\Validate(type="NotEmpty")
 	 */
@@ -71,6 +78,32 @@ class Deployment {
 	 */
 	protected $configuration;
 
+	/**
+	 * Constructs a new Deployment
+	 */
+	public function __construct() {
+		$this->logs = new \Doctrine\Common\Collections\ArrayCollection();
+	}
+
+	/**
+	 * Returns Logs
+	 *
+	 * @return \Doctrine\Common\Collections\Collection<\Lightwerk\SurfCaptain\Domain\Model\Log>
+	 */
+	public function getLogs() {
+		return $this->logs;
+	}
+
+	/**
+	 * Adds a log to this deployment
+	 *
+	 * @param Log $log
+	 * @return void
+	 */
+	public function addLog(Log $log) {
+		$log->setDeployment($this);
+		$this->logs->add($log);
+	}
 
 	/**
 	 * @return integer
