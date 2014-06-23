@@ -1,4 +1,5 @@
 /node_modules
 /Resources/Public/Components
 
-/.idea
+.idea
+.DS_Store

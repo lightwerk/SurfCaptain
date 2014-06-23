@@ -20,13 +20,16 @@ abstract class AbstractRestController extends RestController {
 	/**
 	 * A custom redirect, that does not set action, controller, package and format arguments
 	 *
+	 * @param array $parameter
+	 * @param string $controllerName
 	 * @param integer $statusCode
 	 * @return void
 	 * @throws \TYPO3\Flow\Mvc\Exception\StopActionException
 	 */
-	protected function redirectToResource($parameter = array(), $statusCode = 303) {
+	protected function redirectToResource($parameter = array(), $controllerName = NULL, $statusCode = 303) {
 		$httpRequest = $this->request->getHttpRequest();
-		$uri = $httpRequest->getBaseUri() . 'api/' . strtolower($this->request->getControllerName());
+		$uri = $httpRequest->getBaseUri() . 'api/';
+		$uri .= !empty($controllerName) ? $controllerName : strtolower($this->request->getControllerName());
 		if (count($parameter)) {
 			$uri .= '?' . http_build_query($parameter);
 		}

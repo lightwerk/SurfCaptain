@@ -25,14 +25,19 @@
     curl -v -X DELETE http://surf.flow.lp.lw.loc/api/projectServers\?projectId\=17\&collectionKey\=sma | jq '.'
 
     # List branches of a repository
-    curl http://surf.flow.lp.lw.loc/api/branches?projectId=17 | jq '.'
+    curl http://surf.flow.lp.lw.loc/api/branches\?projectId\=17 | jq '.'
 
     # List tags of a repository
-    curl http://surf.flow.lp.lw.loc/api/tags?projectId=17 | jq '.'
+    curl http://surf.flow.lp.lw.loc/api/tags\?projectId\=17 | jq '.'
+
+    # List deployments of a project
+    curl http://surf.flow.lp.lw.loc/api/deployments\?projectId\=17 | jq '.'
+    # Create new deployments
+    curl -v -X POST http://surf.flow.lp.lw.loc/api/deployments\?projectId\=17\&reference\=d428944a85a9a1cb2c1ff3b91f69f4ced559f296\&referenceName\=1.2.3\&application\=deploy\&configuration\=%7B%22server%22%3A%22sma%22%2C%22directory%22%3A%22%5C%2Fvar%5C%2Fwww%5C%2Fsma%5C%2Flive%5C%2F%22%7D
 
 # GitLab API Reponses
 
-    curl --insecure --header "PRIVATE-TOKEN: ..." https://localhost:1443/api/v3/groups/10 | jq '.'
+    curl --insecure --header "PRIVATE-TOKEN: ..." https://git.lightwerk.com/api/v3/groups/10 | jq '.'
     {
       "projects": [
         {
@@ -76,7 +81,7 @@
       "id": 10
     }
 
-    curl --insecure --header "PRIVATE-TOKEN: ..." https://localhost:1443/api/v3/projects/17/repository/tags | jq '.'
+    curl --insecure --header "PRIVATE-TOKEN: ..." https://git.lightwerk.com/api/v3/projects/17/repository/tags | jq '.'
     [
       {
         "protected": false,
@@ -105,7 +110,7 @@
       ...
     ]
     
-    curl --insecure --header "PRIVATE-TOKEN: ..." https://localhost:1443/api/v3/projects/17/repository/branches | jq '.'
+    curl --insecure --header "PRIVATE-TOKEN: ..." https://git.lightwerk.com/api/v3/projects/17/repository/branches | jq '.'
     [
       {
         "protected": false,

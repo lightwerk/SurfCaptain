@@ -2,6 +2,6 @@ Lightwerk:
   SurfCaptain:
     git:
       privateToken: 'Please define this value in root/Configuration/Settings.yaml'
-      url: https://localhost:1443/api/v3/
+      url: https://git.lightwerk.com/api/v3/
       projects:
         groupId: 10
