@@ -38,11 +38,13 @@
     curl http://surf.flow.lp.lw.loc/api/deployments\?projectId\=17 | jq '.'
     # Create new deployments
     curl -v -X POST http://surf.flow.lp.lw.loc/api/deployments\?projectId\=17\&reference\=d428944a85a9a1cb2c1ff3b91f69f4ced559f296\&referenceName\=1.2.3\&application\=deploy\&configuration\=%7B%22server%22%3A%22sma%22%2C%22directory%22%3A%22%5C%2Fvar%5C%2Fwww%5C%2Fsma%5C%2Flive%5C%2F%22%7D
+    # Cancel a deployment (if it has still "waiting" as status)
+    curl -v -X DELETE http://surf.flow.lp.lw.loc/api/deployments\?projectId\=17\&deployment\=ac964cbf-9f85-c9d3-63b8-85b40414f53c
     
     # List logs of a deployment
-    curl http://surf.flow.lp.lw.loc/api/logs\?deployment\=ac964cbf-9f85-c9d3-63b8-85b40414f53c | jq '.
+    curl http://surf.flow.lp.lw.loc/api/logs\?deployment\=ac964cbf-9f85-c9d3-63b8-85b40414f53c | jq '.'
     # List logs of a deployment with a offset (offset = sum of already loaded log entries)
-    curl http://surf.flow.lp.lw.loc/api/logs\?deployment\=ac964cbf-9f85-c9d3-63b8-85b40414f53c\&offset=23 | jq '.
+    curl http://surf.flow.lp.lw.loc/api/logs\?deployment\=ac964cbf-9f85-c9d3-63b8-85b40414f53c\&offset=23 | jq '.'
 
 # GitLab API Reponses
 

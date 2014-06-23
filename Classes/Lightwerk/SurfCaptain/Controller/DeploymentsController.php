@@ -8,7 +8,6 @@ namespace Lightwerk\SurfCaptain\Controller;
 
 use Lightwerk\SurfCaptain\Domain\Model\Deployment;
 use Lightwerk\SurfCaptain\Domain\Repository\DeploymentRepository;
-use Lightwerk\SurfCaptain\Service\GitService;
 use TYPO3\Flow\Annotations as Flow;
 
 class DeploymentsController extends AbstractRestController {
@@ -75,6 +74,26 @@ class DeploymentsController extends AbstractRestController {
 			),
 			NULL,
 			201
+		);
+	}
+
+	/**
+	 * @param integer $projectId
+	 * @param Deployment $deployment
+	 * @return void
+	 * @throws \TYPO3\Flow\Mvc\Exception\StopActionException
+	 * @throws \TYPO3\Flow\Persistence\Exception\IllegalObjectTypeException
+	 */
+	public function deleteAction($projectId, Deployment $deployment) {
+		if ($deployment->getStatus() === 'waiting') {
+			$deployment->setStatus('canceled');
+			$this->deploymentRepository->update($deployment);
+		}
+		$this->redirectToResource(
+			array(
+				'deploymentId' => $this->persistenceManager->getIdentifierByObject($deployment),
+				'projectId' => $projectId
+			)
 		);
 	}
 }
