@@ -33,6 +33,10 @@ div.surfcaptain.sync {
 	background-color: @brand-warning;
 }
 
+div.surfcaptain.server {
+	background-color: @brand-success;
+}
+
 div.project-selection {
 	position: relative;
 	top: -29px;
@@ -79,12 +83,11 @@ div.project-selection {
 		th,td {
 			padding: 8px 4px;
 			text-align: left;
-
 			&:first-child {
 				font-weight: 600;
 			}
 			&:last-child {
-				width: 250px;
+				width: 350px;
 			}
 		}
 	}
@@ -97,6 +100,7 @@ div.project-buttons {
 
 	.btn {
 		color: #000;
+		margin-right: 15px;
 	}
 }
 
@@ -169,5 +173,62 @@ div.project-history {
 	}
 	.deploy-history {
 		height: 200px;
+	}
+}
+
+.project-server {
+	.server {
+		width: 700px;
+		height: 120px;
+		border: 2px solid @brand-success;
+		border-radius: 50px 0 0 50px;
+		margin: 10px auto;
+		padding: 10px 20px 10px 10px;
+		.single-server {
+			.server-icon {
+				font-size: 50px;
+				float: left;
+				line-height: 100px;
+				padding: 0 10px 0 30px;
+			}
+			.server-data {
+				float: left;
+				padding: 0 25px;
+				text-align: left;
+				h3 {
+					margin: 0px 0px 10px;
+					span {
+						font-size: 20px;
+					}
+				}
+			}
+			.server-edit {
+				float: right;
+				height: 100%;
+				.edit {
+					position: relative;
+					top: 5px;
+					right: -44px;
+					display: none;
+				}
+				.remove {
+					position: relative;
+					top: 55px;
+					right: 0;
+					display: none;
+				}
+			}
+		}
+		&:hover {
+			.server-edit {
+				.edit {
+					display: inline-block;
+				}
+				.remove {
+					display: inline-block;
+				}
+			}
+		}
+
 	}
 }

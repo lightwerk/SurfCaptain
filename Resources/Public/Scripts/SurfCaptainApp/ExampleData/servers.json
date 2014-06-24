@@ -1,0 +1,41 @@
+{
+    "collections": {
+        "sma": {
+            "servers": {
+                "fe1": {
+                    "password": "abcde",
+                    "username": "user1",
+                    "host": "www.sma.de"
+                },
+                "fe2": {
+                    "username": "blub2",
+                    "host": "www2.sma.de"
+                }
+            }
+        },
+        "bma-live": {
+            "project": "bma",
+            "servers": [
+                {
+                    "key": "bma-live",
+                    "password": "abcde",
+                    "username": "user1",
+                    "host": "www.bma-wordlwide.de",
+                    "context": "Production"
+                }
+            ]
+        },
+        "bma-qa": {
+            "project": "bma",
+            "servers": [
+                {
+                    "key": "bma-qa",
+                    "password": "abcde",
+                    "username": "user1",
+                    "host": "qa.www.bma-wordlwide.de",
+                    "context": "Development"
+                }
+            ]
+        }
+    }
+}

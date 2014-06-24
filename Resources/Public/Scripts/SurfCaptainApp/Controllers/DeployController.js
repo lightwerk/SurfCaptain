@@ -55,6 +55,9 @@ surfCaptain.controller('DeployController', ['$scope', '$routeParams', 'ProjectRe
                 $scope.unsetLoadingKeyForGroup('Tags');
                 $scope.tags = response.tags;
                 $scope.deployableCommits = jQuery.merge($scope.tags, $scope.deployableCommits);
+            },
+            function (reason) {
+                $scope.unsetLoadingKeyForGroup('Tags');
             }
         );
         GitRepository.getBranchesByProjectId(id.toString()).then(
@@ -62,6 +65,9 @@ surfCaptain.controller('DeployController', ['$scope', '$routeParams', 'ProjectRe
                 $scope.unsetLoadingKeyForGroup('Branches');
                 $scope.branches = response.branches;
                 $scope.deployableCommits = jQuery.merge($scope.branches, $scope.deployableCommits);
+            },
+            function (reason) {
+                $scope.unsetLoadingKeyForGroup('Branches');
             }
         );
     });

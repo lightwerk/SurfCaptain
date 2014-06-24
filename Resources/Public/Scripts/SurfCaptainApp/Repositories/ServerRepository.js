@@ -1,10 +1,9 @@
 /*jslint browser: true*/
 'use strict'
 
-surfCaptain.factory('ServerRepository', function ($http) {
+surfCaptain.factory('ServerRepository', ['$http', '$q', function ($http, $q) {
     var serverRepository = {},
-        projects = {},
-        url = 'Scripts/SurfCaptainApp/ExampleData/serverCollections.json';
+        url = 'Scripts/SurfCaptainApp/ExampleData/servers.json';
 
     /**
      * Gets all servers from the collection
@@ -12,17 +11,9 @@ surfCaptain.factory('ServerRepository', function ($http) {
      * @returns {Promise} – promise object
      */
     serverRepository.getServers = function () {
-
-    };
-
-    /**
-     * Gets all servers that belong to a given project
-     *
-     * @param {object} project
-     * @returns {Promise} – promise object
-     */
-    serverRepository.getServersByProject = function (project) {
-
+        var deferred = $q.defer();
+        $http.get(url).success(deferred.resolve).error(deferred.reject);
+        return deferred.promise;
     };
 
     /**
@@ -46,4 +37,4 @@ surfCaptain.factory('ServerRepository', function ($http) {
     };
 
     return serverRepository;
-});
+}]);

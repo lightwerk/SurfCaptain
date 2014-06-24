@@ -3460,6 +3460,9 @@ div.surfcaptain.deploy {
 div.surfcaptain.sync {
   background-color: #f0ad4e;
 }
+div.surfcaptain.server {
+  background-color: #5cb85c;
+}
 div.project-selection {
   position: relative;
   top: -29px;
@@ -3511,7 +3514,7 @@ div.project-selection table td:first-child {
 }
 div.project-selection table th:last-child,
 div.project-selection table td:last-child {
-  width: 250px;
+  width: 350px;
 }
 div.project-buttons {
   padding: 20px 0;
@@ -3520,6 +3523,7 @@ div.project-buttons {
 }
 div.project-buttons .btn {
   color: #000;
+  margin-right: 15px;
 }
 div.project-history {
   margin-top: 15px;
@@ -3583,4 +3587,51 @@ div.project-history table tr td {
 }
 .project-deploy .deploy-history {
   height: 200px;
+}
+.project-server .server {
+  width: 700px;
+  height: 120px;
+  border: 2px solid #5cb85c;
+  border-radius: 50px 0 0 50px;
+  margin: 10px auto;
+  padding: 10px 20px 10px 10px;
+}
+.project-server .server .single-server .server-icon {
+  font-size: 50px;
+  float: left;
+  line-height: 100px;
+  padding: 0 10px 0 30px;
+}
+.project-server .server .single-server .server-data {
+  float: left;
+  padding: 0 25px;
+  text-align: left;
+}
+.project-server .server .single-server .server-data h3 {
+  margin: 0px 0px 10px;
+}
+.project-server .server .single-server .server-data h3 span {
+  font-size: 20px;
+}
+.project-server .server .single-server .server-edit {
+  float: right;
+  height: 100%;
+}
+.project-server .server .single-server .server-edit .edit {
+  position: relative;
+  top: 5px;
+  right: -44px;
+  display: none;
+}
+.project-server .server .single-server .server-edit .remove {
+  position: relative;
+  top: 55px;
+  right: 0;
+  display: none;
+}
+.project-server .server:hover .server-edit .edit {
+  display: inline-block;
+}
+.project-server .server:hover .server-edit .remove {
+  display: inline-block;
 }

@@ -19,6 +19,10 @@ var surfCaptain = angular.module('surfCaptain', ['ngRoute'])
             templateUrl: 'Templates/SurfCaptainApp/Sync.html',
             controller: 'SyncController'
         }).
+        when('/project/:itemName/server', {
+            templateUrl: 'Templates/SurfCaptainApp/Server.html',
+            controller: 'ServerController'
+        }).
         otherwise({
             redirectTo: '/'
         });
