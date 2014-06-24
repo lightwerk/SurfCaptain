@@ -156,9 +156,18 @@ div.project-history {
 .project-deploy {
 	.configure-deployment {
 		color: @brand-danger;
-		select {
+		select, .chosen-container {
 			margin-top: 35px;
 			width: 80%;
 		}
+	}
+	.deploy-git-checkout {
+		display: inline-block;
+		font-size: 90%;
+		font-style: italic;
+		margin-top: 20px;
+	}
+	.deploy-history {
+		height: 200px;
 	}
 }

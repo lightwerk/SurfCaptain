@@ -27,21 +27,30 @@
 <div class="container project-deploy dark">
 	<div class="row">
 		<div class="col-xs-12 text-center">
-			<h2>Deploy a Tag from Git</h2>
+			<h2>Deploy a tag (or branch) from Git</h2>
 			<em>If you don't have a tag, go back and ask your favored developer to tag the master.</em>
 		</div>
 	</div>
 	<div class="row configure-deployment">
 		<div class="col-md-3 col-xs-12 col-md-offset-1 text-center">
 			<h2>Step 1</h2>
-			<em>Choose a tag.</em>
+			<em>Choose a tag (or branch).</em>
 		</div>
 		<div class="col-md-4 col-xs-12">
-			<select ng-options="deployableCommits" class="form-control select-git-commit" ng-model="deployment.gitCheckout">
-				<option value="">-- Please choose --</option>
-			</select>
+			<select
+					class="form-control select-git-commit"
+					ng-model="deployment.gitCheckout"
+					chosen="deployableCommits"
+					ng-options="item as item.name group by item.group for item in deployableCommits"
+			/>
+			<br />
+			<span ng-show="deployment.gitCheckout" class="deploy-git-checkout">
+				<strong>{{deployment.gitCheckout.type}} {{deployment.gitCheckout.name}}</strong> --
+				{{deployment.gitCheckout.commit.id | limitTo:8}} by {{deployment.gitCheckout.commit.committer.name}}<br />
+				{{deployment.gitCheckout.commit.message}}
+			</span>
 		</div>
-		<div class="col-md-4 col-xs-12 text-center">
+		<div class="col-md-4 col-xs-12 text-center deploy-history">
 			<h2>Recent Deployments</h2>
 			<table>
 				<thead>
@@ -77,7 +86,7 @@
 			<em>Choose a server.</em>
 		</div>
 		<div class="col-md-4 col-xs-12">
-			<select ng-options="deployableCommits" class="form-control select-git-commit" ng-model="deployment.server">
+			<select class="form-control select-git-commit" ng-model="deployment.server">
 				<option value="">-- Please choose --</option>
 			</select>
 		</div>

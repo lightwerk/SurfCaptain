@@ -23,4 +23,5 @@ var surfCaptain = angular.module('surfCaptain', ['ngRoute'])
             redirectTo: '/'
         });
     }])
-    .value('version', '0.3.0');
+    .value('version', '0.4.0')
+    .value('domain', 'http://api.surfcaptain.local.loc/');

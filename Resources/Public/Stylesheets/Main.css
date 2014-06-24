@@ -3570,7 +3570,17 @@ div.project-history table tr td {
 .project-deploy .configure-deployment {
   color: #d9534f;
 }
-.project-deploy .configure-deployment select {
+.project-deploy .configure-deployment select,
+.project-deploy .configure-deployment .chosen-container {
   margin-top: 35px;
   width: 80%;
+}
+.project-deploy .deploy-git-checkout {
+  display: inline-block;
+  font-size: 90%;
+  font-style: italic;
+  margin-top: 20px;
+}
+.project-deploy .deploy-history {
+  height: 200px;
 }
