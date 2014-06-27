@@ -23,7 +23,7 @@ surfCaptain.factory('ServerRepository', ['$http', '$q', function ($http, $q) {
      * @returns {Promise} – promise object
      */
     serverRepository.putServer = function (server) {
-
+        console.log(server);
     };
 
     /**
@@ -33,7 +33,7 @@ surfCaptain.factory('ServerRepository', ['$http', '$q', function ($http, $q) {
      * @returns {Promise} – promise object
      */
     serverRepository.deleteServer = function (server) {
-
+        console.log(server);
     };
 
     return serverRepository;

@@ -3439,7 +3439,7 @@ body {
 }
 div.surfcaptain,
 div.project-history {
-  min-height: 230px;
+  min-height: 200px;
   background-color: #99cccc;
   width: 100%;
 }
@@ -3452,7 +3452,11 @@ div.project-history .glyphicon {
 div.surfcaptain .project-name,
 div.project-history .project-name {
   display: inline-block;
-  margin-top: 15px;
+  margin-top: 10px;
+}
+div.surfcaptain .sub-header,
+div.project-history .sub-header {
+  font-size: 75%;
 }
 div.surfcaptain.deploy {
   background-color: #d9534f;
@@ -3589,48 +3593,76 @@ div.project-history table tr td {
   height: 200px;
 }
 .project-server .server {
-  width: 700px;
+  width: 790px;
   height: 120px;
-  border: 2px solid #5cb85c;
+  border: 1px solid #999999;
+  color: #eee;
   border-radius: 50px 0 0 50px;
-  margin: 10px auto;
-  padding: 10px 20px 10px 10px;
+  margin: 35px auto;
+  padding: 10px 10px 10px 10px;
 }
 .project-server .server .single-server .server-icon {
   font-size: 50px;
   float: left;
   line-height: 100px;
-  padding: 0 10px 0 30px;
+  padding: 0 10px 0 10px;
 }
 .project-server .server .single-server .server-data {
   float: left;
-  padding: 0 25px;
+  width: 650px;
+  padding: 0 0 0 10px;
   text-align: left;
 }
 .project-server .server .single-server .server-data h3 {
-  margin: 0px 0px 10px;
+  margin: -40px;
+  text-align: center;
+  letter-spacing: 0.3em;
 }
-.project-server .server .single-server .server-data h3 span {
+.project-server .server .single-server .server-data .editable-click {
+  border-bottom: none;
+  color: #999999;
+  padding: 2px;
+}
+.project-server .server .single-server .server-data .editable-click:hover {
+  border: 1px solid #eee;
+}
+.project-server .server .single-server .server-data table {
+  width: 100%;
+  margin-top: 42px;
+}
+.project-server .server .single-server .server-data table td {
+  width: 55%;
+  padding: 0px;
+  line-height: 35px;
+  height: 55px;
   font-size: 20px;
+  vertical-align: top;
 }
-.project-server .server .single-server .server-edit {
-  float: right;
-  height: 100%;
+.project-server .server .single-server .server-data table td .editable-input {
+  padding: 2px;
+  height: 28px;
 }
-.project-server .server .single-server .server-edit .edit {
-  position: relative;
-  top: 5px;
-  right: -44px;
-  display: none;
+.project-server .server .single-server .server-data table td .btn {
+  padding: 2px;
+}
+.project-server .server .single-server .server-data table td:last-child {
+  width: 45%;
+}
+.project-server .server .single-server .server-data table td .tooltip-inner {
+  background-color: #EEEEEE;
+  color: #000000;
+}
+.project-server .server .single-server .server-data table td .help-block {
+  padding: 0px;
+  margin: 0px;
+  line-height: 20px;
 }
 .project-server .server .single-server .server-edit .remove {
+  float: right;
   position: relative;
-  top: 55px;
-  right: 0;
+  top: 5px;
+  right: -100px;
   display: none;
-}
-.project-server .server:hover .server-edit .edit {
-  display: inline-block;
 }
 .project-server .server:hover .server-edit .remove {
   display: inline-block;

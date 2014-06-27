@@ -1,6 +1,6 @@
 /*jslint browser: true*/
 'use strict';
-var surfCaptain = angular.module('surfCaptain', ['ngRoute'])
+var surfCaptain = angular.module('surfCaptain', ['ngRoute', 'xeditable'])
     .config(['$routeProvider', function ($routeProvider) {
     $routeProvider.
         when('/', {
@@ -29,3 +29,7 @@ var surfCaptain = angular.module('surfCaptain', ['ngRoute'])
     }])
     .value('version', '0.4.0')
     .value('domain', 'http://api.surfcaptain.local.loc/');
+
+surfCaptain.run(function (editableOptions) {
+    editableOptions.theme = 'bs3';
+});

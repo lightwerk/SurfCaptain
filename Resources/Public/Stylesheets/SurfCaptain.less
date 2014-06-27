@@ -11,7 +11,7 @@ html,body {
 }
 div.surfcaptain,
 div.project-history {
-	min-height: 230px;
+	min-height: 200px;
 	background-color: @brand-primary;
 	width: 100%;
 	.glyphicon {
@@ -21,7 +21,10 @@ div.project-history {
 	}
 	.project-name {
 		display: inline-block;
-		margin-top: 15px;
+		margin-top: 10px;
+	}
+	.sub-header {
+		font-size: 75%;
 	}
 }
 
@@ -178,52 +181,82 @@ div.project-history {
 
 .project-server {
 	.server {
-		width: 700px;
+		width: 790px;
 		height: 120px;
-		border: 2px solid @brand-success;
+		border:1px solid #999999;
+		color: #eee;
 		border-radius: 50px 0 0 50px;
-		margin: 10px auto;
-		padding: 10px 20px 10px 10px;
+		margin: 35px auto;
+		padding: 10px 10px 10px 10px;
 		.single-server {
 			.server-icon {
 				font-size: 50px;
 				float: left;
 				line-height: 100px;
-				padding: 0 10px 0 30px;
+				padding: 0 10px 0 10px;
 			}
 			.server-data {
 				float: left;
-				padding: 0 25px;
+				width: 650px;
+				padding: 0 0 0 10px;
 				text-align: left;
 				h3 {
-					margin: 0px 0px 10px;
-					span {
+					margin: -40px;
+					text-align: center;
+					letter-spacing: 0.3em;
+				}
+				.editable-click {
+					border-bottom: none;
+					color: #999999;
+					padding: 2px;
+				}
+				.editable-click:hover {
+					border: 1px solid #eee;
+				}
+				table {
+					width: 100%;
+					margin-top: 42px;
+					td {
+						width: 55%;
+						padding: 0px;
+						line-height: 35px;
+						height: 55px;
 						font-size: 20px;
+						vertical-align: top;
+						.editable-input {
+							padding: 2px;
+							height: 28px;
+						}
+						.btn {
+							padding: 2px;
+						}
+						&:last-child {
+							width: 45%;
+						}
+						.tooltip-inner {
+							background-color: #EEEEEE;
+							color: #000000;
+						}
+						.help-block {
+							padding: 0px;
+							margin: 0px;
+							line-height: 20px;
+						}
 					}
 				}
 			}
 			.server-edit {
-				float: right;
-				height: 100%;
-				.edit {
+				.remove {
+					float: right;
 					position: relative;
 					top: 5px;
-					right: -44px;
-					display: none;
-				}
-				.remove {
-					position: relative;
-					top: 55px;
-					right: 0;
+					right: -100px;
 					display: none;
 				}
 			}
 		}
 		&:hover {
 			.server-edit {
-				.edit {
-					display: inline-block;
-				}
 				.remove {
 					display: inline-block;
 				}

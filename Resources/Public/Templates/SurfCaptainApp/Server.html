@@ -35,24 +35,63 @@
 <div class="container project-server dark">
 	<div class="row">
 		<div class="col-xs-12 text-center">
-			<h2>Manage server for project {{name | uppercase}}</h2>
-
 			<div class="row text-center" ng-repeat="collection in servers">
 				<div class="server">
-					<div class="single-server">
+					<div class="single-server" ng-repeat="server in collection.servers | limitTo:1">
 						<div class="server-icon">
 							<span class="glyphicon glyphicon-hdd"></span>
 						</div>
-						<div class="server-data" ng-repeat="server in collection.servers | limitTo:1">
-							<h3><strong>{{server.key}}</strong> <span class="context">({{server.context}})</span></h3>
-							User: {{server.username}}<br />
-							Host: {{server.host}}
+						<div class="server-data">
+							<h3>
+								<span editable-text="server.key">{{server.key}}</span>
+							</h3>
+							<table>
+								<tr>
+									<td><span tooltip data-placement="top" title="Host" class="wrapper">H:
+											<span
+												editable-text="server.host"
+												onbeforesave="updateHost($data)"
+												onaftersave="updateServer(server)"
+											>
+												{{server.host || 'please add'}}
+											</span>
+										</span></td>
+									<td><span tooltip data-placement="right" title="Context" class="wrapper">C:
+											<span
+												class="context"
+												editable-select="server.context"
+												e-ng-options="context for context in contexts"
+												onbeforesave="updateContext($data)"
+												onaftersave="updateServer(server)"
+											>
+												{{server.context || 'please add'}}
+											</span>
+									</span></td>
+								</tr>
+								<tr>
+									<td><span tooltip data-placement="bottom" title="DocumentRoot" class="wrapper">D:
+											<span
+												editable-text="server.documentRoot"
+												onbeforesave="updateDocumentRoot($data)"
+												onaftersave="updateServer(server)"
+											>
+												{{server.documentRoot || 'please add'}}
+											</span>
+									</span></td>
+									<td><span tooltip data-placement="right" title="User" class="wrapper">U:
+											<span
+												editable-text="server.username"
+												onbeforesave="updateUsername($data)"
+												onaftersave="updateServer(server)"
+											>
+												{{server.username || 'please add'}}
+											</span>
+									</span></td>
+								</tr>
+							</table>
 						</div>
 						<div class="server-edit">
-							<button class="btn btn-primary edit" tooltip data-placement="left" title="Edit">
-								<span class="glyphicon glyphicon-edit"></span>
-							</button>
-							<button class="btn btn-danger remove" tooltip data-placement="left" title="Delete">
+							<button class="btn btn-danger remove" tooltip data-placement="bottom" title="Delete" data-ng-click="deleteServer(server)">
 								<span class="glyphicon glyphicon-trash"></span>
 							</button>
 						</div>
