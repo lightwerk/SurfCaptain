@@ -1,7 +1,15 @@
 /*jslint browser: true*/
 
 'use strict';
-surfCaptain.controller('DeployController', ['$scope', '$routeParams', 'ProjectRepository', 'GitRepository', 'ServerRepository', function ($scope, $routeParams, ProjectRepository, GitRepository, ServerRepository) {
+surfCaptain.controller('DeployController', [
+    '$scope',
+    '$routeParams',
+    'ProjectRepository',
+    'GitRepository',
+    'ServerRepository',
+    'HistoryRepository',
+    function ($scope, $routeParams, ProjectRepository, GitRepository, ServerRepository, HistoryRepository) {
+
     var loadingString = 'loading ...';
     $scope.name = $routeParams.itemName;
     $scope.project = {};
@@ -69,6 +77,12 @@ surfCaptain.controller('DeployController', ['$scope', '$routeParams', 'ProjectRe
         ServerRepository.getServers().then(function (response) {
             $scope.servers = response.filter(function (entry) {
                 return entry.project === newValue.id;
+            });
+        });
+
+        HistoryRepository.getHistoryByProject($scope.project).then(function (response) {
+            $scope.history = response.filter(function(entry){
+                return entry.application === 'Deploy';
             });
         });
     });
