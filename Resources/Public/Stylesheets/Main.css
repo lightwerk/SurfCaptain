@@ -3606,6 +3606,7 @@ div.project-history table tr td {
   float: left;
   line-height: 100px;
   padding: 0 10px 0 10px;
+  color: #FFFFFF !important;
 }
 .project-server .server .single-server .server-data {
   float: left;
@@ -3614,9 +3615,12 @@ div.project-history table tr td {
   text-align: left;
 }
 .project-server .server .single-server .server-data h3 {
-  margin: -40px;
-  text-align: center;
-  letter-spacing: 0.3em;
+  margin: -55px;
+  text-align: right;
+  font-size: 40px;
+}
+.project-server .server .single-server .server-data h3 .editable-click {
+  color: #FFFFFF !important;
 }
 .project-server .server .single-server .server-data .editable-click {
   border-bottom: none;
@@ -3628,7 +3632,7 @@ div.project-history table tr td {
 }
 .project-server .server .single-server .server-data table {
   width: 100%;
-  margin-top: 42px;
+  margin-top: 62px;
 }
 .project-server .server .single-server .server-data table td {
   width: 55%;
@@ -3661,7 +3665,6 @@ div.project-history table tr td {
   float: right;
   position: relative;
   top: 5px;
-  right: -100px;
   display: none;
 }
 .project-server .server:hover .server-edit .remove {

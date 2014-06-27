@@ -6,9 +6,8 @@ surfCaptain.controller('SyncController', ['$scope', '$routeParams', 'ProjectRepo
     $scope.project = {};
 
     this.init = function () {
-        ProjectRepository.getProjects().then(function (response) {
-            $scope.projects = response.projects;
-            $scope.project = ProjectRepository.getProjectByName($scope.name);
+        ProjectRepository.getProjectByName($scope.name, function (project) {
+            $scope.project = project;
         });
     };
     this.init();

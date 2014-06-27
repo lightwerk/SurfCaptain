@@ -87,19 +87,23 @@
 				</tbody>
 			</table>
 		</div>
+	</div>
 
 
+	<div class="row configure-deployment" data-ng-show="deployment.gitCheckout">
 		<div class="col-md-3 col-xs-12 col-md-offset-1 text-center">
 			<h2>Step 2</h2>
 			<em>Choose a server.</em>
 		</div>
 		<div class="col-md-4 col-xs-12">
-			<select class="form-control select-git-commit" ng-model="deployment.server">
-				<option value="">-- Please choose --</option>
-			</select>
+			<select
+				chosen="servers"
+				ng-options="item as item.key for item in servers"
+				class="form-control select-server"
+				ng-model="deployment.server" />
 		</div>
 	</div>
-	<div class="row">
+	<div class="row" data-ng-show="deployment.server">
 		<div class="col-xs-12 text-center">
 			<button class="btn btn-lg btn-danger" ng-click="deploy">Deploy!</button>
 		</div>

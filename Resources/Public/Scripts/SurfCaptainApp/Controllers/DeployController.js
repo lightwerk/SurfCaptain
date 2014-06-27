@@ -1,11 +1,10 @@
 /*jslint browser: true*/
 
 'use strict';
-surfCaptain.controller('DeployController', ['$scope', '$routeParams', 'ProjectRepository', 'GitRepository', function ($scope, $routeParams, ProjectRepository, GitRepository) {
+surfCaptain.controller('DeployController', ['$scope', '$routeParams', 'ProjectRepository', 'GitRepository', 'ServerRepository', function ($scope, $routeParams, ProjectRepository, GitRepository, ServerRepository) {
     var loadingString = 'loading ...';
     $scope.name = $routeParams.itemName;
     $scope.project = {};
-    $scope.projects = [];
     $scope.deployableCommits = [
         {
             name: loadingString,
@@ -35,12 +34,9 @@ surfCaptain.controller('DeployController', ['$scope', '$routeParams', 'ProjectRe
     };
 
     this.init = function () {
-        ProjectRepository.getProjects().then(
-            function (response) {
-                $scope.projects = response.projects;
-                $scope.project = ProjectRepository.getProjectByName(response.projects, $scope.name);
-             }
-        );
+        ProjectRepository.getProjectByName($scope.name, function (project) {
+            $scope.project = project;
+        });
     };
     this.init();
 
@@ -70,5 +66,11 @@ surfCaptain.controller('DeployController', ['$scope', '$routeParams', 'ProjectRe
                 $scope.unsetLoadingKeyForGroup('Branches');
             }
         );
+        ServerRepository.getServers().then(function (response) {
+            $scope.servers = response.filter(function (entry) {
+                return entry.project === newValue.id;
+            });
+        });
     });
+
 }]);

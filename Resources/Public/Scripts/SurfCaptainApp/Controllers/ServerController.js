@@ -9,9 +9,9 @@ surfCaptain.controller('ServerController', ['$scope', '$routeParams', 'ProjectRe
     ];
 
     this.init = function () {
-        ProjectRepository.getProjects().then(function (response) {
-            $scope.project = ProjectRepository.getProjectByName(response.projects, $scope.name);
-        });
+         ProjectRepository.getProjectByName($scope.name, function (project) {
+             $scope.project = project;
+         });
     };
     this.init();
 
@@ -62,7 +62,7 @@ surfCaptain.controller('ServerController', ['$scope', '$routeParams', 'ProjectRe
         if (data.length > 0) {
             return true;
         }
-        return 'Host must not be empty!';
+        return 'User must not be empty!';
     };
 
     /**
@@ -83,16 +83,9 @@ surfCaptain.controller('ServerController', ['$scope', '$routeParams', 'ProjectRe
             return;
         }
         ServerRepository.getServers().then(function (response) {
-            var key;
-            $scope.servers = [];
-            for (key in response.collections) {
-                if (response.collections.hasOwnProperty(key)) {
-                    if (response.collections[key]['project'] !== undefined
-                        && response.collections[key]['project'] === newValue.name) {
-                        $scope.servers.push(response.collections[key]);
-                    }
-                }
-            }
+            $scope.servers = response.filter(function (entry) {
+                return entry.project === newValue.id;
+            });
         });
     });
 

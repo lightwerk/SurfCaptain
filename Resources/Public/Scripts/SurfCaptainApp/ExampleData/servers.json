@@ -1,41 +1,50 @@
-{
-    "collections": {
-        "sma": {
-            "servers": {
-                "fe1": {
-                    "password": "abcde",
-                    "username": "user1",
-                    "host": "www.sma.de"
-                },
-                "fe2": {
-                    "username": "blub2",
-                    "host": "www2.sma.de"
-                }
+[
+    {
+        "key": "sma",
+        "project": 12,
+        "servers": [
+            {
+                "key": "fe2",
+                "host": "www2.sma.de",
+                "username": "blub2",
+                "documentRoot": "/var/www/{projectName}/{context}/",
+                "context": "Development"
+            },
+            {
+                "key": "fe1",
+                "host": "www.sma.de",
+                "username": "user1",
+                "password": "abcde",
+                "documentRoot": "/var/www/{projectName}/{context}/",
+                "context": "Development"
             }
-        },
-        "bma-live": {
-            "project": "bma",
-            "servers": [
-                {
-                    "key": "bma-live",
-                    "password": "abcde",
-                    "username": "user1",
-                    "host": "www.bma-wordlwide.de",
-                    "context": "Production"
-                }
-            ]
-        },
-        "bma-qa": {
-            "project": "bma",
-            "servers": [
-                {
-                    "key": "bma-qa",
-                    "password": "abcde",
-                    "username": "user1",
-                    "host": "qa.www.bma-wordlwide.de",
-                    "context": "Development"
-                }
-            ]
-        }
+        ]
+    },
+    {
+        "key": "bma-live",
+        "project": 8,
+        "servers": [
+            {
+                "key": "bma-live",
+                "host": "www.bma-worldwide.com",
+                "username": "blub2",
+                "documentRoot": "/var/www/bma/live/htdocs/",
+                "context": "Production"
+            }
+        ]
+    },
+    {
+        "key": "bma-qa",
+        "project": 8,
+        "servers": [
+            {
+                "key": "bma-qa",
+                "host": "www.qa.bma-worldwide.com",
+                "username": "user1",
+                "password": "abcde",
+                "documentRoot": "/var/www/bma/qa/htdocs/",
+                "context": "Development"
+            }
+        ]
     }
-}
+]

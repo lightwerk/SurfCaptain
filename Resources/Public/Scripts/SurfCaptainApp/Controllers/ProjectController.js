@@ -8,13 +8,19 @@ surfCaptain.controller('ProjectController', ['$scope', '$routeParams', 'ProjectR
     $scope.project = {};
 
     this.init = function () {
-        ProjectRepository.getProjects().then(function (response) {
-            $scope.projects = response.projects;
-            $scope.project = ProjectRepository.getProjectByName(response.projects, $scope.name);
-            HistoryRepository.getHistoryByProject($scope.project).then(function (response) {
-                $scope.history = response;
-            });
+        ProjectRepository.getProjectByName($scope.name, function (project) {
+            $scope.project = project;
         });
     };
-   this.init();
+    this.init();
+
+    $scope.$watch('project', function (newValue, oldValue) {
+        if (newValue.name === undefined) {
+            return;
+        }
+
+        HistoryRepository.getHistoryByProject($scope.project).then(function (response) {
+            $scope.history = response;
+        });
+    });
 }]);
