@@ -1,4 +1,4 @@
-/*jslint browser: true*/
+/*global surfCaptain, angular*/
 
 'use strict';
 surfCaptain.controller('ServerController', ['$scope', '$controller', 'ServerRepository', function ($scope, $controller, ServerRepository) {

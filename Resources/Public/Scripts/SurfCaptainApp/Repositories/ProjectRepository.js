@@ -1,12 +1,14 @@
-/*jslint browser: true*/
-'use strict'
+/*jslint plusplus: true */
+/*global surfCaptain*/
+
+'use strict';
 
 surfCaptain.factory('ProjectRepository', [ '$http', '$q', function ($http, $q) {
     var projectRepository = {},
         projects = {},
         url = 'Scripts/SurfCaptainApp/ExampleData/projects.json';
 
-    function getProjects () {
+    function getProjects() {
         var deferred = $q.defer();
         $http.get(url, {cache: true}).success(deferred.resolve).error(deferred.reject);
         return deferred.promise;
@@ -34,7 +36,7 @@ surfCaptain.factory('ProjectRepository', [ '$http', '$q', function ($http, $q) {
             length = projects.length;
             if (length) {
                 for (i; i < length; i++) {
-                    if (projects[i]['name'] === name) {
+                    if (projects[i].name === name) {
                         callback(projects[i]);
                     }
                 }

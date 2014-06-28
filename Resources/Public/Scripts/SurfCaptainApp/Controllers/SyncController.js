@@ -1,4 +1,4 @@
-/*jslint browser: true*/
+/*global surfCaptain, angular*/
 
 'use strict';
 surfCaptain.controller('SyncController', ['$scope', '$controller', function ($scope, $controller) {

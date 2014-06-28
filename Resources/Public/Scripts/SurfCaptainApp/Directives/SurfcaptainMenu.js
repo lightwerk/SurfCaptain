@@ -1,8 +1,9 @@
-/*jslint browser: true*/
+/*global surfCaptain*/
+
 'use strict';
 surfCaptain.directive('surfcaptainMenu', ['$routeParams', '$location', function ($routeParams, $location) {
     return {
-        restrict:'E',
+        restrict: 'E',
         templateUrl: 'Scripts/SurfCaptainApp/Partials/Menu.html',
         scope: true,
         link: function (scope, element, attributes) {
@@ -10,5 +11,5 @@ surfCaptain.directive('surfcaptainMenu', ['$routeParams', '$location', function 
             scope.project = $routeParams.itemName;
             scope.context = lastUrlPart === scope.project ? 'history' : lastUrlPart;
         }
-    }
+    };
 }]);

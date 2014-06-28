@@ -1,4 +1,5 @@
-/*jslint browser: true*/
+/*global surfCaptain*/
+
 'use strict';
 surfCaptain.directive('serverNameValidate', function () {
     return {
@@ -10,7 +11,7 @@ surfCaptain.directive('serverNameValidate', function () {
         link: function (scope, elem, attr, ctrl) {
 
             ctrl.$parsers.unshift(function (value) {
-                var valid = scope.serverNames == undefined || scope.serverNames.indexOf(value) === -1;
+                var valid = scope.serverNames === undefined || scope.serverNames.indexOf(value) === -1;
                 ctrl.$setValidity('serverNameValidate', valid);
 
                 // if it's valid, return the value to the model,
@@ -18,8 +19,8 @@ surfCaptain.directive('serverNameValidate', function () {
                 return valid ? value : undefined;
             });
 
-            ctrl.$formatters.unshift(function(value) {
-                var valid = scope.serverNames == undefined || scope.serverNames.indexOf(value) === -1;
+            ctrl.$formatters.unshift(function (value) {
+                var valid = scope.serverNames === undefined || scope.serverNames.indexOf(value) === -1;
                 ctrl.$setValidity('serverNameValidate', valid);
 
                 // return the value or nothing will be written to the DOM.

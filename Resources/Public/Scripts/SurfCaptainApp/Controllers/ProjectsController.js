@@ -1,4 +1,4 @@
-/*jslint browser: true*/
+/*global surfCaptain*/
 
 'use strict';
 surfCaptain.controller('ProjectsController', ['$scope', 'ProjectRepository', function ($scope, ProjectRepository) {

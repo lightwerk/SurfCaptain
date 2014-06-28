@@ -1,8 +1,9 @@
-/*jslint browser: true*/
+/*global surfCaptain*/
+
 'use strict';
 surfCaptain.directive('surfcaptainHeader', ['$routeParams', '$location', function ($routeParams, $location) {
     return {
-        restrict:'E',
+        restrict: 'E',
         templateUrl: 'Scripts/SurfCaptainApp/Partials/Header.html',
         scope: {
             icon: '@icon'
@@ -12,5 +13,5 @@ surfCaptain.directive('surfcaptainHeader', ['$routeParams', '$location', functio
             scope.project = $routeParams.itemName;
             scope.context = lastUrlPart === scope.project ? '' : lastUrlPart;
         }
-    }
+    };
 }]);

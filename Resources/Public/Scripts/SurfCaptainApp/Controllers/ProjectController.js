@@ -1,4 +1,4 @@
-/*jslint browser: true*/
+/*global surfCaptain, angular*/
 
 'use strict';
 surfCaptain.controller('ProjectController', ['$scope', '$controller', 'HistoryRepository', function ($scope, $controller, HistoryRepository) {

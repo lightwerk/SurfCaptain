@@ -1,8 +1,8 @@
-/*jslint browser: true*/
+/*global surfCaptain*/
 'use strict';
 surfCaptain.directive('chosen', function () {
-    var linker = function (scope,element,attrs) {
-        var list = attrs['chosen'];
+    var linker = function (scope, element, attrs) {
+        var list = attrs.chosen;
 
         scope.$watch(list, function () {
             element.trigger('liszt:updated');
@@ -15,7 +15,7 @@ surfCaptain.directive('chosen', function () {
     };
 
     return {
-        restrict:'A',
+        restrict: 'A',
         link: linker
-    }
+    };
 });
