@@ -5,9 +5,68 @@
 <div class="container project-server dark">
 	<div class="row">
 		<div class="col-xs-12 text-center">
-			<div class="row text-center" ng-repeat="collection in servers">
+
+			<div class="new-server-button text-center" data-ng-init="addAServer=false">
+				<button
+					class="btn btn-lg btn-success"
+					data-ng-click="addAServer = !addAServer"
+				>
+					<span class="glyphicon glyphicon-plus-sign"></span>
+					Add a Server
+				</button>
+			</div>
+
+			<div class="new-server animate row text-left" data-ng-show="addAServer">
+				<form data-ng-submit="updateServer(newServer)" name="newServerForm">
+					<div class="col-xs-4 col-xs-offset-2">
+						Name:
+						<input type="text" data-ng-model="newServer.name" placeholder="Name" class="form-control" name="name" required data-ng-trim server-name-validate server-names="serverNames" />
+						<p>&nbsp;
+							<span class="error" ng-show="newServerForm.name.$error.required && newServerForm.name.$dirty">Name is required!</span>
+							<span class="error" ng-show="newServerForm.name.$error.serverNameValidate && newServerForm.name.$dirty">Not unique!</span>
+						</p>
+
+						Host:
+						<input type="text" data-ng-model="newServer.host" placeholder="Host" class="form-control" name="host" required data-ng-trim />
+						<p>&nbsp;<span class="error" ng-show="newServerForm.host.$error.required && newServerForm.host.$dirty">Host is required!</span></p>
+
+						DocumentRoot:
+						<input type="text" data-ng-model="newServer.documentRoot" placeholder="DocumentRoot" class="form-control" name="documentRoot" required data-ng-trim />
+						<p>&nbsp;<span class="error" ng-show="newServerForm.documentRoot.$error.required && newServerForm.documentRoot.$dirty">DocumentRoot is required!</span></p>
+					</div>
+
+					<div class="col-xs-4">
+						User:
+						<input type="text" data-ng-model="newServer.username" placeholder="User" class="form-control" name="username" required data-ng-trim />
+						<p>&nbsp;<span class="error" ng-show="newServerForm.username.$error.required && newServerForm.username.$dirty">User is required!</span></p>
+
+						Context:
+						<select data-ng-model="newServer.context"  class="form-control" data-ng-options="context for context in contexts" name="context" required >
+							<option value="">Choose context</option>
+						</select>
+						<p>&nbsp;<span class="error" ng-show="newServerForm.context.$error.required && newServerForm.context.$dirty">Context is required!</span></p>
+
+						TYPO3_SYSTEM (optional)
+						<input type="text" data-ng-model="newServer.system" placeholder="TYPO3_SYSTEM" class="form-control" name="system" data-ng-trim />
+						<p>&nbsp;</p>
+					</div>
+
+					<div class="col-xs-12 text-center submit-new-server">
+						<button
+							class="btn btn-sm btn-primary"
+							ng-disabled="newServerForm.$invalid"
+							ng-click="addAServer = false"
+							>
+							<span class="glyphicon glyphicon-floppy-disk"></span>
+							Save
+						</button>
+					</div>
+				</form>
+			</div>
+
+			<div class="row text-center" data-ng-repeat="collection in servers">
 				<div class="server">
-					<div class="single-server" ng-repeat="server in collection.servers | limitTo:1">
+					<div class="single-server" data-ng-repeat="server in collection.servers | limitTo:1">
 						<div class="server-icon">
 							<span class="glyphicon glyphicon-hdd"></span>
 						</div>

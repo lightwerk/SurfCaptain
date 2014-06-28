@@ -1,6 +1,6 @@
 /*jslint browser: true*/
 'use strict';
-surfCaptain.directive('chosen',function () {
+surfCaptain.directive('chosen', function () {
     var linker = function (scope,element,attrs) {
         var list = attrs['chosen'];
 

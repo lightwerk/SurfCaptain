@@ -1,6 +1,6 @@
 /*jslint browser: true*/
 'use strict';
-var surfCaptain = angular.module('surfCaptain', ['ngRoute', 'xeditable'])
+var surfCaptain = angular.module('surfCaptain', ['ngRoute', 'xeditable', 'ngAnimate'])
     .config(['$routeProvider', function ($routeProvider) {
     $routeProvider.
         when('/', {

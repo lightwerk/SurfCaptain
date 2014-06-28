@@ -29,7 +29,8 @@
                 "host": "www.bma-worldwide.com",
                 "username": "blub2",
                 "documentRoot": "/var/www/bma/live/htdocs/",
-                "context": "Production"
+                "context": "Production",
+                "system": "BMA_PRODUCTIVE"
             }
         ]
     },
@@ -43,7 +44,8 @@
                 "username": "user1",
                 "password": "abcde",
                 "documentRoot": "/var/www/bma/qa/htdocs/",
-                "context": "Development"
+                "context": "Development",
+                "system": "BMA_QA"
             }
         ]
     }

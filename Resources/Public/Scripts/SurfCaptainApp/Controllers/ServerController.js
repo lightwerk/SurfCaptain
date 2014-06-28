@@ -81,6 +81,7 @@ surfCaptain.controller('ServerController', ['$scope', '$controller', 'ServerRepo
             $scope.servers = response.filter(function (entry) {
                 return entry.project === newValue.id;
             });
+            $scope.serverNames = ['bma-live', 'bma-qa'];
         });
     });
 

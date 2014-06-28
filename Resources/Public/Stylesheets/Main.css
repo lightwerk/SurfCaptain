@@ -3670,3 +3670,39 @@ div.project-history table tr td {
 .project-server .server:hover .server-edit .remove {
   display: inline-block;
 }
+.project-server .new-server-button {
+  margin: 20px auto;
+}
+.project-server .new-server.animate {
+  margin: 15px auto 30px;
+  padding: 10px;
+}
+.project-server .new-server.animate .form-control.ng-dirty.ng-invalid {
+  border-color: red;
+}
+.project-server .new-server.animate .submit-new-server {
+  margin-top: 20px;
+}
+.project-server .new-server.animate p {
+  height: 23px;
+  margin-bottom: 0px;
+}
+.project-server .new-server.animate p .error {
+  color: red;
+}
+.project-server .animate.ng-hide-add,
+.project-server .animate.ng-hide-remove {
+  -webkit-transition: all linear 1s;
+  -moz-transition: all linear 1s;
+  -o-transition: all linear 1s;
+  transition: all linear 1s;
+  display: block!important;
+}
+.project-server .animate.ng-hide-add.ng-hide-add-active,
+.project-server .animate.ng-hide-remove {
+  opacity: 0;
+}
+.project-server .animate.ng-hide-add,
+.project-server .animate.ng-hide-remove.ng-hide-remove-active {
+  opacity: 1;
+}
