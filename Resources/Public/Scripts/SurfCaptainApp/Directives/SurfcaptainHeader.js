@@ -1,4 +1,5 @@
 /*global surfCaptain*/
+/*jslint node: true */
 
 'use strict';
 surfCaptain.directive('surfcaptainHeader', ['$routeParams', '$location', function ($routeParams, $location) {

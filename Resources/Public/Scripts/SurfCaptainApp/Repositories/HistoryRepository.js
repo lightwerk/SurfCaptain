@@ -1,4 +1,6 @@
 /*global surfCaptain*/
+/*jslint node: true */
+
 'use strict';
 
 surfCaptain.factory('HistoryRepository', [ '$http', '$q', function ($http, $q) {

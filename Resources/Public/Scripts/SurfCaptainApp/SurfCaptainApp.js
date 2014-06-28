@@ -1,4 +1,5 @@
 /*global angular*/
+/*jslint node: true */
 
 'use strict';
 var surfCaptain = angular.module('surfCaptain', ['ngRoute', 'xeditable', 'ngAnimate'])

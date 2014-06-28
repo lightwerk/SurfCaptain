@@ -1,4 +1,6 @@
 /*global surfCaptain*/
+/*jslint node: true */
+
 'use strict';
 surfCaptain.directive('chosen', function () {
     var linker = function (scope, element, attrs) {

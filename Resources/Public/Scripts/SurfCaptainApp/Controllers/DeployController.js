@@ -1,4 +1,5 @@
 /*global surfCaptain, angular, jQuery*/
+/*jslint node: true */
 
 'use strict';
 surfCaptain.controller('DeployController', [

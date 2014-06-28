@@ -1,4 +1,6 @@
 /*jslint browser: true*/
+/*jslint node: true */
+
 'use strict'
 
 surfCaptain.factory('ServerRepository', ['$http', '$q', function ($http, $q) {

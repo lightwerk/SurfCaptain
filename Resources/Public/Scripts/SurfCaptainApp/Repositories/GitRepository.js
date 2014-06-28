@@ -1,4 +1,6 @@
+/*jslint node: true */
 /*global surfCaptain*/
+
 'use strict';
 
 surfCaptain.factory('GitRepository', [ '$http', '$q', function ($http, $q) {
