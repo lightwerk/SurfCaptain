@@ -1,14 +1,8 @@
 /*jslint browser: true*/
 
 'use strict';
-surfCaptain.controller('SyncController', ['$scope', '$routeParams', 'ProjectRepository', function ($scope, $routeParams, ProjectRepository) {
-    $scope.name = $routeParams.itemName;
-    $scope.project = {};
+surfCaptain.controller('SyncController', ['$scope', '$controller', function ($scope, $controller) {
 
-    this.init = function () {
-        ProjectRepository.getProjectByName($scope.name, function (project) {
-            $scope.project = project;
-        });
-    };
-    this.init();
+    // Inherit from AbstractSingleProjectController
+    angular.extend(this, $controller('AbstractSingleProjectController', {$scope: $scope}));
 }]);

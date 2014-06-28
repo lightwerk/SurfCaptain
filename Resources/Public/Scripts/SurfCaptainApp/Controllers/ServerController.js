@@ -1,19 +1,14 @@
 /*jslint browser: true*/
 
 'use strict';
-surfCaptain.controller('ServerController', ['$scope', '$routeParams', 'ProjectRepository', 'ServerRepository', function ($scope, $routeParams, ProjectRepository, ServerRepository) {
-    $scope.name = $routeParams.itemName;
-    $scope.project = {};
+surfCaptain.controller('ServerController', ['$scope', '$controller', 'ServerRepository', function ($scope, $controller, ServerRepository) {
+
+    // Inherit from AbstractSingleProjectController
+    angular.extend(this, $controller('AbstractSingleProjectController', {$scope: $scope}));
+
     $scope.contexts = [
         'Production', 'Development', 'Staging'
     ];
-
-    this.init = function () {
-         ProjectRepository.getProjectByName($scope.name, function (project) {
-             $scope.project = project;
-         });
-    };
-    this.init();
 
     $scope.deleteServer = function (server) {
         ServerRepository.deleteServer(server);

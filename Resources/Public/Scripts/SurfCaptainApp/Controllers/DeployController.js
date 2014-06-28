@@ -3,16 +3,17 @@
 'use strict';
 surfCaptain.controller('DeployController', [
     '$scope',
-    '$routeParams',
-    'ProjectRepository',
+    '$controller',
     'GitRepository',
     'ServerRepository',
     'HistoryRepository',
-    function ($scope, $routeParams, ProjectRepository, GitRepository, ServerRepository, HistoryRepository) {
+    function ($scope, $controller, GitRepository, ServerRepository, HistoryRepository) {
 
     var loadingString = 'loading ...';
-    $scope.name = $routeParams.itemName;
-    $scope.project = {};
+
+    // Inherit from AbstractSingleProjectController
+    angular.extend(this, $controller('AbstractSingleProjectController', {$scope: $scope}));
+
     $scope.deployableCommits = [
         {
             name: loadingString,
@@ -40,13 +41,6 @@ surfCaptain.controller('DeployController', [
             }
         }
     };
-
-    this.init = function () {
-        ProjectRepository.getProjectByName($scope.name, function (project) {
-            $scope.project = project;
-        });
-    };
-    this.init();
 
     $scope.$watch('project', function (newValue, oldValue) {
         var id;
