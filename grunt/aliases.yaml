@@ -1,0 +1,5 @@
+default:
+  - 'less'
+  - 'concat'
+  - 'uglify'
+  - 'watch'
