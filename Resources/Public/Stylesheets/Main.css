@@ -3575,37 +3575,56 @@ div.project-history table tr td {
   margin-bottom: -9px;
   width: 28px;
 }
-.project-deploy .configure-deployment {
-  color: #d9534f;
+.project-deploy .configure-deployment-row {
   margin-top: 30px;
 }
-.project-deploy .configure-deployment select,
-.project-deploy .configure-deployment .chosen-container {
-  margin-top: 35px;
+.project-deploy .configure-deployment-row .configure-deployment {
+  color: #d9534f;
+  margin-bottom: 20px;
+  padding-top: 15px;
+  border-top: 1px dashed #d9534f;
+}
+.project-deploy .configure-deployment-row .configure-deployment:first-child {
+  border-top: none;
+}
+.project-deploy .configure-deployment-row .configure-deployment select,
+.project-deploy .configure-deployment-row .configure-deployment .chosen-container {
+  margin-bottom: 15px;
   width: 80%;
 }
-.project-deploy .configure-deployment .deploy-history {
+.project-deploy .configure-deployment-row .configure-deployment label {
+  width: 100%;
+  margin-top: 5px;
+}
+.project-deploy .configure-deployment-row .configure-deployment h2 {
+  margin-top: 10px;
+}
+.project-deploy .configure-deployment-row .deploy-git-checkout {
+  display: inline-block;
+  font-size: 90%;
+  font-style: italic;
+  margin-top: 5px;
   color: #666666;
-  border: 1px solid #666666;
+}
+.project-deploy .configure-deployment-row .deploy-history {
+  color: #666666;
+  border: 1px dashed #d9534f;
   border-radius: 5px;
   height: auto;
 }
-.project-deploy .configure-deployment .deploy-history .form-control {
+.project-deploy .configure-deployment-row .deploy-history .form-control {
   padding: 1px 6px;
   width: 60px;
   margin: auto;
   height: 25px;
 }
-.project-deploy .configure-deployment .deploy-history table td,
-.project-deploy .configure-deployment .deploy-history table th {
+.project-deploy .configure-deployment-row .deploy-history table td,
+.project-deploy .configure-deployment-row .deploy-history table th {
   padding: 6px;
   text-align: left;
 }
-.project-deploy .deploy-git-checkout {
-  display: inline-block;
-  font-size: 90%;
-  font-style: italic;
-  margin-top: 20px;
+.project-deploy .configure-deployment-row .submit-deployment {
+  margin-top: 30px;
 }
 .project-server .server {
   width: 790px;

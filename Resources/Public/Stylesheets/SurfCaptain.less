@@ -161,17 +161,38 @@ div.project-history {
 }
 
 .project-deploy {
-	.configure-deployment {
-		color: @brand-danger;
+	.configure-deployment-row {
 		margin-top: 30px;
-		select, .chosen-container {
-			margin-top: 35px;
-			width: 80%;
+		.configure-deployment {
+			color: @brand-danger;
+			margin-bottom: 20px;
+			padding-top: 15px;
+			border-top: 1px dashed @brand-danger;
+			&:first-child {
+				border-top: none;
+			}
+			select, .chosen-container {
+				margin-bottom: 15px;
+				width: 80%;
+			}
+			label {
+				width: 100%;
+				margin-top: 5px;
+			}
+			h2 {
+				margin-top: 10px;
+			}
 		}
-
+		.deploy-git-checkout {
+			display: inline-block;
+			font-size: 90%;
+			font-style: italic;
+			margin-top: 5px;
+			color: #666666;
+		}
 		.deploy-history {
 			color: #666666;
-			border: 1px solid #666666;
+			border: 1px dashed @brand-danger;
 			border-radius: 5px;
 			height: auto;
 			.form-control {
@@ -187,12 +208,9 @@ div.project-history {
 				}
 			}
 		}
-	}
-	.deploy-git-checkout {
-		display: inline-block;
-		font-size: 90%;
-		font-style: italic;
-		margin-top: 20px;
+		.submit-deployment {
+			margin-top: 30px;
+		}
 	}
 }
 
