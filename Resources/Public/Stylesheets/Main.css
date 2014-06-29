@@ -3439,7 +3439,7 @@ body {
 }
 div.surfcaptain,
 div.project-history {
-  min-height: 230px;
+  min-height: 200px;
   background-color: #99cccc;
   width: 100%;
 }
@@ -3452,13 +3452,20 @@ div.project-history .glyphicon {
 div.surfcaptain .project-name,
 div.project-history .project-name {
   display: inline-block;
-  margin-top: 15px;
+  margin-top: 10px;
+}
+div.surfcaptain .sub-header,
+div.project-history .sub-header {
+  font-size: 75%;
 }
 div.surfcaptain.deploy {
   background-color: #d9534f;
 }
 div.surfcaptain.sync {
   background-color: #f0ad4e;
+}
+div.surfcaptain.server {
+  background-color: #5cb85c;
 }
 div.project-selection {
   position: relative;
@@ -3511,7 +3518,7 @@ div.project-selection table td:first-child {
 }
 div.project-selection table th:last-child,
 div.project-selection table td:last-child {
-  width: 250px;
+  width: 350px;
 }
 div.project-buttons {
   padding: 20px 0;
@@ -3520,6 +3527,7 @@ div.project-buttons {
 }
 div.project-buttons .btn {
   color: #000;
+  margin-right: 15px;
 }
 div.project-history {
   margin-top: 15px;
@@ -3569,8 +3577,147 @@ div.project-history table tr td {
 }
 .project-deploy .configure-deployment {
   color: #d9534f;
+  margin-top: 30px;
 }
-.project-deploy .configure-deployment select {
+.project-deploy .configure-deployment select,
+.project-deploy .configure-deployment .chosen-container {
   margin-top: 35px;
   width: 80%;
+}
+.project-deploy .configure-deployment .deploy-history {
+  color: #666666;
+  border: 1px solid #666666;
+  border-radius: 5px;
+  height: auto;
+}
+.project-deploy .configure-deployment .deploy-history .form-control {
+  padding: 1px 6px;
+  width: 60px;
+  margin: auto;
+  height: 25px;
+}
+.project-deploy .configure-deployment .deploy-history table td,
+.project-deploy .configure-deployment .deploy-history table th {
+  padding: 6px;
+  text-align: left;
+}
+.project-deploy .deploy-git-checkout {
+  display: inline-block;
+  font-size: 90%;
+  font-style: italic;
+  margin-top: 20px;
+}
+.project-server .server {
+  width: 790px;
+  height: 120px;
+  border: 1px solid #999999;
+  color: #eee;
+  border-radius: 50px 0 0 50px;
+  margin: 35px auto;
+  padding: 10px 10px 10px 10px;
+}
+.project-server .server .single-server .server-icon {
+  font-size: 50px;
+  float: left;
+  line-height: 100px;
+  padding: 0 10px 0 10px;
+  color: #FFFFFF !important;
+}
+.project-server .server .single-server .server-data {
+  float: left;
+  width: 650px;
+  padding: 0 0 0 10px;
+  text-align: left;
+}
+.project-server .server .single-server .server-data h3 {
+  margin: -55px;
+  text-align: right;
+  font-size: 40px;
+}
+.project-server .server .single-server .server-data h3 .editable-click {
+  color: #FFFFFF !important;
+}
+.project-server .server .single-server .server-data .editable-click {
+  border-bottom: none;
+  color: #999999;
+  padding: 2px;
+}
+.project-server .server .single-server .server-data .editable-click:hover {
+  border: 1px solid #eee;
+}
+.project-server .server .single-server .server-data table {
+  width: 100%;
+  margin-top: 62px;
+}
+.project-server .server .single-server .server-data table td {
+  width: 55%;
+  padding: 0px;
+  line-height: 35px;
+  height: 55px;
+  font-size: 20px;
+  vertical-align: top;
+}
+.project-server .server .single-server .server-data table td .editable-input {
+  padding: 2px;
+  height: 28px;
+}
+.project-server .server .single-server .server-data table td .btn {
+  padding: 2px;
+}
+.project-server .server .single-server .server-data table td:last-child {
+  width: 45%;
+}
+.project-server .server .single-server .server-data table td .tooltip-inner {
+  background-color: #EEEEEE;
+  color: #000000;
+}
+.project-server .server .single-server .server-data table td .help-block {
+  padding: 0px;
+  margin: 0px;
+  line-height: 20px;
+}
+.project-server .server .single-server .server-edit .remove {
+  float: right;
+  position: relative;
+  top: 5px;
+  display: none;
+}
+.project-server .server:hover .server-edit .remove {
+  display: inline-block;
+}
+.project-server .new-server-button {
+  margin: 20px auto;
+}
+.project-server .new-server.animate {
+  margin: 15px auto 30px;
+  padding: 10px;
+}
+.project-server .new-server.animate .form-control.ng-dirty.ng-invalid {
+  border-color: red;
+}
+.project-server .new-server.animate .submit-new-server {
+  margin-top: 20px;
+}
+.project-server .new-server.animate p {
+  height: 23px;
+  margin-bottom: 0px;
+}
+.project-server .new-server.animate p .error {
+  color: red;
+}
+.project-server .animate.ng-hide-add,
+.project-server .animate.ng-hide-remove {
+  -webkit-transition: all linear 1s;
+  -moz-transition: all linear 1s;
+  -o-transition: all linear 1s;
+  transition: all linear 1s;
+  display: block!important;
+}
+.project-server .animate.ng-hide-add.ng-hide-add-active,
+.project-server .animate.ng-hide-remove {
+  opacity: 0;
+}
+.project-server .animate.ng-hide-add,
+.project-server .animate.ng-hide-remove.ng-hide-remove-active {
+  opacity: 1;
 }

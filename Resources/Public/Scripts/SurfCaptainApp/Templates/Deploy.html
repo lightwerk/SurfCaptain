@@ -1,0 +1,82 @@
+<surfcaptain-header icon="road"></surfcaptain-header>
+
+<surfcaptain-menu></surfcaptain-menu>
+
+<div class="container project-deploy dark">
+	<div class="row">
+		<div class="col-xs-12 text-center">
+			<h2>Deploy a tag (or branch) from Git</h2>
+			<em>If you don't have a tag, go back and ask your favored developer to tag the master.</em>
+		</div>
+	</div>
+	<div class="row configure-deployment">
+		<div class="col-md-3 col-xs-12 col-md-offset-1 text-center">
+			<h2>Step 1</h2>
+			<em>Choose a tag (or branch).</em>
+		</div>
+		<div class="col-md-4 col-xs-12">
+			<select
+				class="form-control select-git-commit"
+				ng-model="deployment.gitCheckout"
+				chosen="deployableCommits"
+				ng-options="item as item.name group by item.group for item in deployableCommits"
+			/>
+			<br />
+			<span ng-show="deployment.gitCheckout" class="deploy-git-checkout">
+				<strong>{{deployment.gitCheckout.type}} {{deployment.gitCheckout.name}}</strong> --
+				{{deployment.gitCheckout.commit.id | limitTo:8}} by {{deployment.gitCheckout.commit.committer.name}}<br />
+				{{deployment.gitCheckout.commit.message}}
+			</span>
+		</div>
+		<div class="col-md-4 col-xs-12 text-center deploy-history">
+			<h4>Recent {{name | uppercase}} Deployments</h4>
+			<input type="number" data-ng-model="amountOfRecentDeloyments" data-ng-init="amountOfRecentDeloyments=2" class="form-control">
+			<table>
+				<thead>
+				<tr>
+					<th>Date</th>
+					<th>Server</th>
+					<th>Branch/Tag</th>
+				</tr>
+				</thead>
+				<tbody>
+				<tr data-ng-class-odd="'odd'" data-ng-repeat="item in history | orderBy:'date':1 | limitTo:amountOfRecentDeloyments">
+					<td>
+						{{item.date | date:'dd.M.yyyy' }}
+					</td>
+					<td>
+						{{item.server}}
+					</td>
+					<td>
+						<span data-ng-show="item.commit">
+							<a href="{{project.web_url}}/commit/{{item.commit}}">
+								{{item.gitcheckout}}
+							</a>
+						</span>
+					</td>
+				</tr>
+				</tbody>
+			</table>
+		</div>
+	</div>
+
+
+	<div class="row configure-deployment" data-ng-show="deployment.gitCheckout">
+		<div class="col-md-3 col-xs-12 col-md-offset-1 text-center">
+			<h2>Step 2</h2>
+			<em>Choose a server.</em>
+		</div>
+		<div class="col-md-4 col-xs-12">
+			<select
+				chosen="servers"
+				ng-options="item as item.key for item in servers"
+				class="form-control select-server"
+				ng-model="deployment.server" />
+		</div>
+	</div>
+	<div class="row" data-ng-show="deployment.server">
+		<div class="col-xs-12 text-center">
+			<button class="btn btn-lg btn-danger" ng-click="deploy">Deploy!</button>
+		</div>
+	</div>
+</div>

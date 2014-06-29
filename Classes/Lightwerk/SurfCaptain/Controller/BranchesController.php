@@ -22,6 +22,7 @@ class BranchesController extends AbstractRestController {
 	 * @return void
 	 */
 	public function listAction($projectId) {
+		header('Access-Control-Allow-Origin: *');
 		$glBranches = $this->gitService->getBranches($projectId);
 		$branches = array();
 		foreach ($glBranches as $branch) {
@@ -34,7 +35,9 @@ class BranchesController extends AbstractRestController {
 					'committer' => array(
 						'name' => $branch['commit']['committer']['name'],
 					)
-				)
+				),
+				'type' => 'Branch',
+				'group' => 'Branches'
 			);
 		}
 

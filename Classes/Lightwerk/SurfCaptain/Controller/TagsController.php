@@ -29,6 +29,7 @@ class TagsController extends RestController {
 	 * @return void
 	 */
 	public function listAction($projectId) {
+		header('Access-Control-Allow-Origin: *');
 		$glTags = $this->gitService->getTags($projectId);
 		$tags = array();
 		foreach ($glTags as $tag) {
@@ -41,7 +42,9 @@ class TagsController extends RestController {
 					'committer' => array(
 						'name' => $tag['commit']['committer']['name'],
 					)
-				)
+				),
+				'type' => 'Tag',
+				'group' => 'Tags'
 			);
 		}
 

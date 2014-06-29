@@ -2,8 +2,8 @@
 /*jslint node: true */
 
 'use strict';
-surfCaptain.directive('appVersion', ['version', function (version) {
+surfCaptain.directive('tooltip', function () {
     return function (scope, element, attributes) {
-        element.text(version);
+        element.tooltip();
     };
-}]);
+});

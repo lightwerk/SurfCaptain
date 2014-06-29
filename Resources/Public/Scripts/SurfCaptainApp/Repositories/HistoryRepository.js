@@ -1,5 +1,7 @@
-/*jslint browser: true*/
-'use strict'
+/*global surfCaptain*/
+/*jslint node: true */
+
+'use strict';
 
 surfCaptain.factory('HistoryRepository', [ '$http', '$q', function ($http, $q) {
     var historyRepository = {},
