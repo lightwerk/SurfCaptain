@@ -163,9 +163,29 @@ div.project-history {
 .project-deploy {
 	.configure-deployment {
 		color: @brand-danger;
+		margin-top: 30px;
 		select, .chosen-container {
 			margin-top: 35px;
 			width: 80%;
+		}
+
+		.deploy-history {
+			color: #666666;
+			border: 1px solid #666666;
+			border-radius: 5px;
+			height: auto;
+			.form-control {
+				padding: 1px 6px;
+				width: 60px;
+				margin: auto;
+				height: 25px;
+			}
+			table {
+				td,th {
+					padding: 6px;
+					text-align: left;
+				}
+			}
 		}
 	}
 	.deploy-git-checkout {
@@ -173,9 +193,6 @@ div.project-history {
 		font-size: 90%;
 		font-style: italic;
 		margin-top: 20px;
-	}
-	.deploy-history {
-		height: 200px;
 	}
 }
 

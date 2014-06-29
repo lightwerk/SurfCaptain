@@ -3577,20 +3577,35 @@ div.project-history table tr td {
 }
 .project-deploy .configure-deployment {
   color: #d9534f;
+  margin-top: 30px;
 }
 .project-deploy .configure-deployment select,
 .project-deploy .configure-deployment .chosen-container {
   margin-top: 35px;
   width: 80%;
 }
+.project-deploy .configure-deployment .deploy-history {
+  color: #666666;
+  border: 1px solid #666666;
+  border-radius: 5px;
+  height: auto;
+}
+.project-deploy .configure-deployment .deploy-history .form-control {
+  padding: 1px 6px;
+  width: 60px;
+  margin: auto;
+  height: 25px;
+}
+.project-deploy .configure-deployment .deploy-history table td,
+.project-deploy .configure-deployment .deploy-history table th {
+  padding: 6px;
+  text-align: left;
+}
 .project-deploy .deploy-git-checkout {
   display: inline-block;
   font-size: 90%;
   font-style: italic;
   margin-top: 20px;
-}
-.project-deploy .deploy-history {
-  height: 200px;
 }
 .project-server .server {
   width: 790px;

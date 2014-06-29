@@ -16,10 +16,10 @@
 		</div>
 		<div class="col-md-4 col-xs-12">
 			<select
-					class="form-control select-git-commit"
-					ng-model="deployment.gitCheckout"
-					chosen="deployableCommits"
-					ng-options="item as item.name group by item.group for item in deployableCommits"
+				class="form-control select-git-commit"
+				ng-model="deployment.gitCheckout"
+				chosen="deployableCommits"
+				ng-options="item as item.name group by item.group for item in deployableCommits"
 			/>
 			<br />
 			<span ng-show="deployment.gitCheckout" class="deploy-git-checkout">
@@ -29,7 +29,8 @@
 			</span>
 		</div>
 		<div class="col-md-4 col-xs-12 text-center deploy-history">
-			<h2>Recent Deployments</h2>
+			<h4>Recent {{name | uppercase}} Deployments</h4>
+			<input type="number" data-ng-model="amountOfRecentDeloyments" data-ng-init="amountOfRecentDeloyments=2" class="form-control">
 			<table>
 				<thead>
 				<tr>
@@ -39,7 +40,7 @@
 				</tr>
 				</thead>
 				<tbody>
-				<tr data-ng-class-odd="'odd'" data-ng-repeat="item in history | orderBy:'date':1 | limitTo:2">
+				<tr data-ng-class-odd="'odd'" data-ng-repeat="item in history | orderBy:'date':1 | limitTo:amountOfRecentDeloyments">
 					<td>
 						{{item.date | date:'dd.M.yyyy' }}
 					</td>

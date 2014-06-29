@@ -37,30 +37,19 @@ surfCaptain.run(function (editableOptions) {
 });
 /*global surfCaptain*/
 /*jslint node: true */
+
 'use strict';
-surfCaptain.controller('AbstractSingleProjectController', function ($scope, $routeParams, ProjectRepository) {
-  $scope.name = $routeParams.itemName;
-  $scope.project = {};
-  this.init = function () {
-    ProjectRepository.getProjectByName($scope.name, function (project) {
-      $scope.project = project;
-    });
-  };
-  this.init();
-});
-/*global surfCaptain*/
-/*jslint node: true */
-'use strict';
-surfCaptain.controller('AbstractSingleProjectController', function ($scope, $routeParams, ProjectRepository) {
-  $scope.name = $routeParams.itemName;
-  $scope.project = {};
-  this.init = function () {
-    ProjectRepository.getProjectByName($scope.name, function (project) {
-      $scope.project = project;
-    });
-  };
-  this.init();
-});
+surfCaptain.controller('AbstractSingleProjectController', ['$scope', '$routeParams', 'ProjectRepository', function ($scope, $routeParams, ProjectRepository) {
+    $scope.name = $routeParams.itemName;
+    $scope.project = {};
+
+    this.init = function () {
+        ProjectRepository.getProjectByName($scope.name, function (project) {
+            $scope.project = project;
+        });
+    };
+    this.init();
+}]);
 /*global surfCaptain, angular, jQuery*/
 /*jslint node: true */
 
