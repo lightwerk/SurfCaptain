@@ -20,7 +20,7 @@ module.exports = {
         files: [
             'Resources/Public/Scripts/SurfCaptainApp/**/*.js'
         ],
-        tasks: ['concat', 'ngmin', 'uglify'],
+        tasks: ['concat', 'uglify'],
         options: {
             nospawn: true
         }
