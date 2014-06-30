@@ -3945,7 +3945,7 @@ body {
 }
 div.surfcaptain,
 div.project-history {
-  min-height: 200px;
+  min-height: 150px;
   background-color: #99cccc;
   width: 100%;
 }
@@ -4034,6 +4034,13 @@ div.project-buttons {
 div.project-buttons .btn {
   color: #000;
   margin-right: 15px;
+}
+div.project-buttons .project-brand {
+  color: #999999;
+  font-size: 30px;
+  font-weight: 600;
+  line-height: 50px;
+  height: 50px;
 }
 div.project-history {
   margin-top: 15px;

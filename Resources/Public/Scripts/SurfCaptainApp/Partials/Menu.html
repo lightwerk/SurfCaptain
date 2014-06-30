@@ -1,12 +1,12 @@
 <div class="container project-buttons">
 	<div class="row">
-		<div class="col-md-4 text-right">
-			<a href="#/" class="btn btn-lg btn-primary">
-				All Projects
-				<span class="glyphicon glyphicon-screenshot"></span>
-			</a>
+		<div class="col-md-3 text-right project-brand">
+			{{project | uppercase}}
 		</div>
-		<div class="col-md-5 text-right">
+		<div class="col-md-6 text-center">
+			<a href="#/" class="btn btn-lg btn-primary">
+				<span class="glyphicon glyphicon-home"></span>
+			</a>
 			<a href="#/project/{{project}}" class="btn btn-lg btn-primary" ng-disabled="context === 'history'">
 				History
 				<span class="glyphicon glyphicon-time"></span>
