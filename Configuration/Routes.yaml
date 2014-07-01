@@ -1,3 +1,10 @@
+- name: 'Frontend'
+  uriPattern: ''
+  defaults:
+    '@package': 'Lightwerk.SurfCaptain'
+    '@controller': 'Frontend'
+    '@action': 'index'
+
 - name: 'API'
   uriPattern: 'api/{@controller}'
   defaults:
