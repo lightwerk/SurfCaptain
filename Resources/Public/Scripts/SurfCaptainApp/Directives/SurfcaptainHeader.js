@@ -5,7 +5,7 @@
 surfCaptain.directive('surfcaptainHeader', ['$routeParams', '$location', function ($routeParams, $location) {
     return {
         restrict: 'E',
-        templateUrl: 'Scripts/SurfCaptainApp/Partials/Header.html',
+        templateUrl: '/_Resources/Static/Packages/Lightwerk.SurfCaptain/Scripts/SurfCaptainApp/Partials/Header.html',
         scope: {
             icon: '@icon'
         },

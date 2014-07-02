@@ -5,8 +5,8 @@
 
 surfCaptain.factory('GitRepository', [ '$http', '$q', function ($http, $q) {
     var gitRepository = {},
-        tagUrl = 'http://api.surfcaptain.local.loc/api/tags?projectId=',
-        branchUrl = 'http://api.surfcaptain.local.loc/api/branches?projectId=';
+        tagUrl = '/api/tags?projectId=',
+        branchUrl = '/api/branches?projectId=';
 
     /**
      *

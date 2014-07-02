@@ -1,11 +1,11 @@
 /*jslint browser: true*/
 /*jslint node: true */
 
-'use strict'
+'use strict';
 
 surfCaptain.factory('ServerRepository', ['$http', '$q', function ($http, $q) {
     var serverRepository = {},
-        url = 'Scripts/SurfCaptainApp/ExampleData/servers.json';
+        url = '/_Resources/Static/Packages/Lightwerk.SurfCaptain/Scripts/SurfCaptainApp/ExampleData/servers.json';
 
     /**
      * Gets all servers from the collection

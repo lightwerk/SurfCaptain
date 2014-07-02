@@ -5,7 +5,7 @@
 
 surfCaptain.factory('HistoryRepository', [ '$http', '$q', function ($http, $q) {
     var historyRepository = {},
-        url = 'Scripts/SurfCaptainApp/ExampleData/history.json';
+        url = '/_Resources/Static/Packages/Lightwerk.SurfCaptain/Scripts/SurfCaptainApp/ExampleData/history.json';
 
     /**
      *

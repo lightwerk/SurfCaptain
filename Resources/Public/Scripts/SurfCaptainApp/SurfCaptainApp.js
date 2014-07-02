@@ -6,23 +6,23 @@ var surfCaptain = angular.module('surfCaptain', ['ngRoute', 'xeditable', 'ngAnim
     .config(['$routeProvider', function ($routeProvider) {
         $routeProvider.
             when('/', {
-                templateUrl: 'Scripts/SurfCaptainApp/Templates/Projects.html',
+                templateUrl: '/_Resources/Static/Packages/Lightwerk.SurfCaptain/Scripts/SurfCaptainApp/Templates/Projects.html',
                 controller: 'ProjectsController'
             }).
             when('/project/:itemName', {
-                templateUrl: 'Scripts/SurfCaptainApp/Templates/Project.html',
+                templateUrl: '/_Resources/Static/Packages/Lightwerk.SurfCaptain/Scripts/SurfCaptainApp/Templates/Project.html',
                 controller: 'ProjectController'
             }).
             when('/project/:itemName/deploy', {
-                templateUrl: 'Scripts/SurfCaptainApp/Templates/Deploy.html',
+                templateUrl: '/_Resources/Static/Packages/Lightwerk.SurfCaptain/Scripts/SurfCaptainApp/Templates/Deploy.html',
                 controller: 'DeployController'
             }).
             when('/project/:itemName/sync', {
-                templateUrl: 'Scripts/SurfCaptainApp/Templates/Sync.html',
+                templateUrl: '/_Resources/Static/Packages/Lightwerk.SurfCaptain/Scripts/SurfCaptainApp/Templates/Sync.html',
                 controller: 'SyncController'
             }).
             when('/project/:itemName/server', {
-                templateUrl: 'Scripts/SurfCaptainApp/Templates/Server.html',
+                templateUrl: '/_Resources/Static/Packages/Lightwerk.SurfCaptain/Scripts/SurfCaptainApp/Templates/Server.html',
                 controller: 'ServerController'
             }).
             otherwise({

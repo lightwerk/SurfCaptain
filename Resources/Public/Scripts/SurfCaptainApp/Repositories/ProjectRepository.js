@@ -7,7 +7,7 @@
 surfCaptain.factory('ProjectRepository', [ '$http', '$q', function ($http, $q) {
     var projectRepository = {},
         projects = {},
-        url = 'Scripts/SurfCaptainApp/ExampleData/projects.json';
+        url = '/api/projects';
 
     function getProjects() {
         var deferred = $q.defer();

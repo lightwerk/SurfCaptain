@@ -6,23 +6,23 @@ var surfCaptain = angular.module('surfCaptain', ['ngRoute', 'xeditable', 'ngAnim
     .config(['$routeProvider', function ($routeProvider) {
         $routeProvider.
             when('/', {
-                templateUrl: 'Scripts/SurfCaptainApp/Templates/Projects.html',
+                templateUrl: '/_Resources/Static/Packages/Lightwerk.SurfCaptain/Scripts/SurfCaptainApp/Templates/Projects.html',
                 controller: 'ProjectsController'
             }).
             when('/project/:itemName', {
-                templateUrl: 'Scripts/SurfCaptainApp/Templates/Project.html',
+                templateUrl: '/_Resources/Static/Packages/Lightwerk.SurfCaptain/Scripts/SurfCaptainApp/Templates/Project.html',
                 controller: 'ProjectController'
             }).
             when('/project/:itemName/deploy', {
-                templateUrl: 'Scripts/SurfCaptainApp/Templates/Deploy.html',
+                templateUrl: '/_Resources/Static/Packages/Lightwerk.SurfCaptain/Scripts/SurfCaptainApp/Templates/Deploy.html',
                 controller: 'DeployController'
             }).
             when('/project/:itemName/sync', {
-                templateUrl: 'Scripts/SurfCaptainApp/Templates/Sync.html',
+                templateUrl: '/_Resources/Static/Packages/Lightwerk.SurfCaptain/Scripts/SurfCaptainApp/Templates/Sync.html',
                 controller: 'SyncController'
             }).
             when('/project/:itemName/server', {
-                templateUrl: 'Scripts/SurfCaptainApp/Templates/Server.html',
+                templateUrl: '/_Resources/Static/Packages/Lightwerk.SurfCaptain/Scripts/SurfCaptainApp/Templates/Server.html',
                 controller: 'ServerController'
             }).
             otherwise({
@@ -338,7 +338,7 @@ surfCaptain.directive('serverNameValidate', function () {
 surfCaptain.directive('surfcaptainHeader', ['$routeParams', '$location', function ($routeParams, $location) {
     return {
         restrict: 'E',
-        templateUrl: 'Scripts/SurfCaptainApp/Partials/Header.html',
+        templateUrl: '/_Resources/Static/Packages/Lightwerk.SurfCaptain/Scripts/SurfCaptainApp/Partials/Header.html',
         scope: {
             icon: '@icon'
         },
@@ -356,7 +356,7 @@ surfCaptain.directive('surfcaptainHeader', ['$routeParams', '$location', functio
 surfCaptain.directive('surfcaptainMenu', ['$routeParams', '$location', function ($routeParams, $location) {
     return {
         restrict: 'E',
-        templateUrl: 'Scripts/SurfCaptainApp/Partials/Menu.html',
+        templateUrl: '/_Resources/Static/Packages/Lightwerk.SurfCaptain/Scripts/SurfCaptainApp/Partials/Menu.html',
         scope: true,
         link: function (scope, element, attributes) {
             var lastUrlPart = $location.path().split('/').pop();
@@ -390,8 +390,8 @@ surfCaptain.directive('appVersion', ['version', function (version) {
 
 surfCaptain.factory('GitRepository', [ '$http', '$q', function ($http, $q) {
     var gitRepository = {},
-        tagUrl = 'http://api.surfcaptain.local.loc/api/tags?projectId=',
-        branchUrl = 'http://api.surfcaptain.local.loc/api/branches?projectId=';
+        tagUrl = '/api/tags?projectId=',
+        branchUrl = '/api/branches?projectId=';
 
     /**
      *
@@ -424,7 +424,7 @@ surfCaptain.factory('GitRepository', [ '$http', '$q', function ($http, $q) {
 
 surfCaptain.factory('HistoryRepository', [ '$http', '$q', function ($http, $q) {
     var historyRepository = {},
-        url = 'Scripts/SurfCaptainApp/ExampleData/history.json';
+        url = '/_Resources/Static/Packages/Lightwerk.SurfCaptain/Scripts/SurfCaptainApp/ExampleData/history.json';
 
     /**
      *
@@ -448,7 +448,7 @@ surfCaptain.factory('HistoryRepository', [ '$http', '$q', function ($http, $q) {
 surfCaptain.factory('ProjectRepository', [ '$http', '$q', function ($http, $q) {
     var projectRepository = {},
         projects = {},
-        url = 'Scripts/SurfCaptainApp/ExampleData/projects.json';
+        url = '/api/projects';
 
     function getProjects() {
         var deferred = $q.defer();
@@ -491,11 +491,11 @@ surfCaptain.factory('ProjectRepository', [ '$http', '$q', function ($http, $q) {
 /*jslint browser: true*/
 /*jslint node: true */
 
-'use strict'
+'use strict';
 
 surfCaptain.factory('ServerRepository', ['$http', '$q', function ($http, $q) {
     var serverRepository = {},
-        url = 'Scripts/SurfCaptainApp/ExampleData/servers.json';
+        url = '/_Resources/Static/Packages/Lightwerk.SurfCaptain/Scripts/SurfCaptainApp/ExampleData/servers.json';
 
     /**
      * Gets all servers from the collection
