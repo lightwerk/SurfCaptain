@@ -3,3 +3,6 @@ default:
   - 'concat'
   - 'uglify'
   - 'watch'
+
+test:
+  - 'karma:unit:run'

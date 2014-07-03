@@ -20,7 +20,7 @@ module.exports = {
         files: [
             'Resources/Public/Scripts/SurfCaptainApp/**/*.js'
         ],
-        tasks: ['concat', 'uglify'],
+        tasks: ['concat', 'uglify', 'karma:unit:run'],
         options: {
             nospawn: true
         }
