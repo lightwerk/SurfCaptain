@@ -1,7 +1,7 @@
 /*global describe,beforeEach,module,it,xit,expect,inject,spyOn*/
 
 describe('DeployController', function () {
-    var ctrl, scope, serverRepository, gitRepository, historyRepository, q, project, deployableCommits, projects,
+    var ctrl, scope, serverRepository, gitRepository, historyRepository, q, deployableCommits, projects,
         tags = {"tags": [
             {"name": "1.0.1", "commit": {"id": "123", "message": "[TASK] my Task", "committed_date": "2013-10-25T14:02:04+02:00", "committer": {"name": "John Doe"}}, "type": "Tag", "group": "Tags"},
             {"name": "1.0.2", "commit": {"id": "124", "message": "[BUGFIX] my Bugfix", "committed_date": "2013-09-30T11:43:00+02:00", "committer": {"name": "John Doe"}}, "type": "Tag", "group": "Tags"}
@@ -12,8 +12,8 @@ describe('DeployController', function () {
         ]},
         server = [
             {"key": "foo-production", "project": 1, "servers": [{"key": "foo-production", "host": "127.0.0.1", "username": "blub2", "password": "abcde", "documentRoot": "/var/www/foo/production/htdocs/", "context": "Production", "system": "FOO_PRODUCTIVE"}]},
-            {"key": "foo-qa", "project": 1, "servers": [{"key": "foo-qa", "host": "127.0.0.2", "username": "user1", "password": "abcde", "documentRoot": "/var/www/foo/qa/htdocs/",  "context": "Development", "system": "FOO_QA"},
-                {"key": "foo-qa", "project": 2, "servers": [{"key": "bar-qa", "host": "127.0.0.2", "username": "user1", "password": "abcde", "documentRoot": "/var/www/bar/qa/htdocs/",  "context": "Development", "system": "BAR_QA"}]}]}
+            {"key": "foo-qa", "project": 1, "servers": [{"key": "foo-qa", "host": "127.0.0.2", "username": "user1", "password": "abcde", "documentRoot": "/var/www/foo/qa/htdocs/",  "context": "Development", "system": "FOO_QA"}]},
+            {"key": "foo-qa", "project": 2, "servers": [{"key": "bar-qa", "host": "127.0.0.2", "username": "user1", "password": "abcde", "documentRoot": "/var/www/bar/qa/htdocs/",  "context": "Development", "system": "BAR_QA"}]}
         ],
         history = [
             {"application": "Deploy", "date": "2012-12-07T10:35:17+00:00", "server": "foo-qa", "gitcheckout": "dev-master", "commit": "1234567890"},
@@ -29,29 +29,17 @@ describe('DeployController', function () {
     // Load the module
     beforeEach(module('surfCaptain'));
 
-    // inject the $controller and $rootScope services
-    // in the beforeEach block
     beforeEach(inject(function ($controller, $rootScope, $q, ServerRepository, GitRepository, HistoryRepository, ProjectRepository) {
         scope = $rootScope.$new();
         deployableCommits = [
-            {
-                name: 'loading ...',
-                group: 'Tags'
-            },
-            {
-                name: 'loading ...',
-                group: 'Branches'
-            }
+            {name: 'loading ...', group: 'Tags'},
+            {name: 'loading ...', group: 'Branches'}
         ];
         serverRepository = ServerRepository;
         gitRepository = GitRepository;
         historyRepository = HistoryRepository;
         projects = {projects: [
-            {
-                "name": "foo",
-                "ssh_url_to_repo": "git@git.example.com:project/foo.git",
-                "id": 1
-            }
+            {"name": "foo", "ssh_url_to_repo": "git@git.example.com:project/foo.git", "id": 1}
         ]};
         q = $q;
 

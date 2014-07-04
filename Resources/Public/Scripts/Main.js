@@ -147,7 +147,7 @@ surfCaptain.controller('ProjectController', ['$scope', '$controller', 'HistoryRe
     $scope.constraint = '';
 
     $scope.$watch('project', function (newValue, oldValue) {
-        if (newValue.name === undefined) {
+        if (newValue === undefined || newValue.name === undefined) {
             return;
         }
 
