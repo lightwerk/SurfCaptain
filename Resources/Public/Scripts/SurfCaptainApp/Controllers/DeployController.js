@@ -45,7 +45,7 @@ surfCaptain.controller('DeployController', [
 
         $scope.$watch('project', function (newValue, oldValue) {
             var id;
-            if (newValue.id === undefined) {
+            if (newValue === undefined || newValue.id === undefined) {
                 return;
             }
             id = newValue.id;

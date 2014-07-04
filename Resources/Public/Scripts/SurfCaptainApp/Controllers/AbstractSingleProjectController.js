@@ -7,8 +7,8 @@ surfCaptain.controller('AbstractSingleProjectController', ['$scope', '$routePara
     $scope.project = {};
 
     this.init = function () {
-        ProjectRepository.getProjectByName($scope.name, function (project) {
-            $scope.project = project;
+        ProjectRepository.getProjects().then(function (projects) {
+            $scope.project = ProjectRepository.getProjectByName(projects.projects, $scope.name);
         });
     };
     this.init();

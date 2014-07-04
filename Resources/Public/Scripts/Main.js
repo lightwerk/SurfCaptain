@@ -44,8 +44,8 @@ surfCaptain.controller('AbstractSingleProjectController', ['$scope', '$routePara
     $scope.project = {};
 
     this.init = function () {
-        ProjectRepository.getProjectByName($scope.name, function (project) {
-            $scope.project = project;
+        ProjectRepository.getProjects().then(function (projects) {
+            $scope.project = ProjectRepository.getProjectByName(projects.projects, $scope.name);
         });
     };
     this.init();
@@ -97,7 +97,7 @@ surfCaptain.controller('DeployController', [
 
         $scope.$watch('project', function (newValue, oldValue) {
             var id;
-            if (newValue.id === undefined) {
+            if (newValue === undefined || newValue.id === undefined) {
                 return;
             }
             id = newValue.id;
@@ -450,17 +450,15 @@ surfCaptain.factory('ProjectRepository', [ '$http', '$q', function ($http, $q) {
         projects = {},
         url = '/api/projects';
 
-    function getProjects() {
-        var deferred = $q.defer();
-        $http.get(url, {cache: true}).success(deferred.resolve).error(deferred.reject);
-        return deferred.promise;
-    }
-
     /**
      *
      * @returns {Promise} – promise object
      */
-    projectRepository.getProjects = getProjects;
+    projectRepository.getProjects = function () {
+        var deferred = $q.defer();
+        $http.get(url, {cache: true}).success(deferred.resolve).error(deferred.reject);
+        return deferred.promise;
+    };
 
     /**
      * Returns a single project from a collection ob projects
@@ -469,21 +467,16 @@ surfCaptain.factory('ProjectRepository', [ '$http', '$q', function ($http, $q) {
      * @param name {string}
      * @returns {object} a single project
      */
-    projectRepository.getProjectByName = function (name, callback) {
-        var length,
-            i = 0,
-            projects;
-        getProjects().then(function (response) {
-            projects = response.projects;
-            length = projects.length;
-            if (length) {
-                for (i; i < length; i++) {
-                    if (projects[i].name === name) {
-                        callback(projects[i]);
-                    }
+    projectRepository.getProjectByName = function (projects, name) {
+        var length = projects.length,
+            i = 0;
+        if (length) {
+            for (i; i < length; i++) {
+                if (projects[i].name === name) {
+                    return projects[i];
                 }
             }
-        });
+        }
     };
 
     return projectRepository;
