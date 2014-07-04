@@ -1,17 +1,13 @@
-<div class="surfcaptain">
-	<div class="container">
-		<div class="row">
-			<div class="col-xs-12 text-center">
-				<h1><span class="glyphicon glyphicon-screenshot"></span>
-				Projects <span class="sub-header">({{(projects | filter:search).length}} / {{projects.length}})</span></h1>
-			</div>
-		</div>
-	</div>
-</div>
+<surfcaptain-header icon="flag"></surfcaptain-header>
+
 <div class="project-selection">
 	<div class="container">
 		<div class="row">
 			<div class="col-xs-12 col-md-8 col-md-push-2 text-center project-selector">
+
+				<h2>Choose a project!</h2>
+				<span>({{(projects | filter:search).length}} / {{projects.length}})</span>
+
 				<table>
 					<thead>
 						<tr>

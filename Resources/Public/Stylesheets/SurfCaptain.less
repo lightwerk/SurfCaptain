@@ -26,6 +26,46 @@ div.project-history {
 	.sub-header {
 		font-size: 75%;
 	}
+	.btn {
+		position: absolute;
+		color: @main-color;
+		background-color: transparent;
+		border-color: @main-color;
+		width: 56px;
+		overflow: hidden;
+		display: inline-block;
+		text-align: left;
+		-webkit-transition: width 0.2s ease-in-out;
+		-moz-transition: width 0.2s ease-in-out;
+		-o-transition: width 0.2s ease-in-out;
+		transition: width 0.2s ease-in-out;
+		&:hover {
+			width: 200px;
+		}
+		&.home-button {
+			top: 15px;
+			left: 30px;
+		}
+		&.server-button {
+			top: 80px;
+			left: 30px;
+		}
+		&.extensions-button, &.about-button {
+			right: 30px;
+			top: 15px;
+			&:hover {
+				width: 250px;
+			}
+		}
+		&.about-button {
+			top: 80px;
+		}
+		.glyphicon {
+			font-size: 22px;
+			width: 30px;
+			padding-right: 34px;
+		}
+	}
 }
 
 div.surfcaptain.deploy {
@@ -42,7 +82,8 @@ div.surfcaptain.server {
 
 div.project-selection {
 	position: relative;
-
+	margin-top: 15px;
+	color: @main-color-bright;
 	table {
 		width: 90%;
 		margin: auto;
@@ -63,7 +104,7 @@ div.project-selection {
 					margin-left: 20px;
 				}
 				&:hover {
-					background-color: #333333;
+					background-color: @main-color;
 					td .btn {
 						display: inline-block;
 					}
@@ -97,7 +138,7 @@ div.project-selection {
 
 div.project-buttons {
 	padding: 20px 0;
-	background-color: #333333 !important;
+	background-color: @main-color !important;
 	width: 100%;
 
 	.btn {
@@ -129,7 +170,7 @@ div.project-history {
 
 		tr {
 			&.odd {
-				background-color: #333333;
+				background-color: @main-color;
 			}
 			td {
 				padding: 3px 2px;
@@ -140,13 +181,13 @@ div.project-history {
 
 .dark {
 	margin-top: 15px;
-	color: #666;
+	color: @main-color-bright;
 }
 .ngview {
 	padding-bottom: 60px;
 }
 .footer {
-	background-color: #333333;
+	background-color: @main-color;
 	color: @brand-primary;
 	height: 50px;
 	text-align: center;
@@ -194,10 +235,10 @@ div.project-history {
 			font-size: 90%;
 			font-style: italic;
 			margin-top: 5px;
-			color: #666666;
+			color: @main-color-bright;
 		}
 		.deploy-history {
-			color: #666666;
+			color: @main-color-bright;
 			border: 1px dashed @brand-danger;
 			border-radius: 5px;
 			height: auto;
@@ -225,7 +266,7 @@ div.project-history {
 		width: 790px;
 		height: 120px;
 		border:1px solid #999999;
-		color: #eee;
+		color: @main-color;
 		border-radius: 50px 0 0 50px;
 		margin: 35px auto;
 		padding: 10px 10px 10px 10px;
@@ -256,7 +297,7 @@ div.project-history {
 					padding: 2px;
 				}
 				.editable-click:hover {
-					border: 1px solid #eee;
+					border: 1px solid @main-color;
 				}
 				table {
 					width: 100%;
@@ -279,7 +320,7 @@ div.project-history {
 							width: 45%;
 						}
 						.tooltip-inner {
-							background-color: #EEEEEE;
+							background-color: @main-color;
 							color: #000000;
 						}
 						.help-block {

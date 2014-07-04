@@ -3964,6 +3964,58 @@ div.surfcaptain .sub-header,
 div.project-history .sub-header {
   font-size: 75%;
 }
+div.surfcaptain .btn,
+div.project-history .btn {
+  position: absolute;
+  color: #333333;
+  background-color: transparent;
+  border-color: #333333;
+  width: 56px;
+  overflow: hidden;
+  display: inline-block;
+  text-align: left;
+  -webkit-transition: width 0.2s ease-in-out;
+  -moz-transition: width 0.2s ease-in-out;
+  -o-transition: width 0.2s ease-in-out;
+  transition: width 0.2s ease-in-out;
+}
+div.surfcaptain .btn:hover,
+div.project-history .btn:hover {
+  width: 200px;
+}
+div.surfcaptain .btn.home-button,
+div.project-history .btn.home-button {
+  top: 15px;
+  left: 30px;
+}
+div.surfcaptain .btn.server-button,
+div.project-history .btn.server-button {
+  top: 80px;
+  left: 30px;
+}
+div.surfcaptain .btn.extensions-button,
+div.project-history .btn.extensions-button,
+div.surfcaptain .btn.about-button,
+div.project-history .btn.about-button {
+  right: 30px;
+  top: 15px;
+}
+div.surfcaptain .btn.extensions-button:hover,
+div.project-history .btn.extensions-button:hover,
+div.surfcaptain .btn.about-button:hover,
+div.project-history .btn.about-button:hover {
+  width: 250px;
+}
+div.surfcaptain .btn.about-button,
+div.project-history .btn.about-button {
+  top: 80px;
+}
+div.surfcaptain .btn .glyphicon,
+div.project-history .btn .glyphicon {
+  font-size: 22px;
+  width: 30px;
+  padding-right: 34px;
+}
 div.surfcaptain.deploy {
   background-color: #d9534f;
 }
@@ -3975,6 +4027,8 @@ div.surfcaptain.server {
 }
 div.project-selection {
   position: relative;
+  margin-top: 15px;
+  color: #888888;
 }
 div.project-selection table {
   width: 90%;
@@ -4062,7 +4116,7 @@ div.project-history table tr td {
 }
 .dark {
   margin-top: 15px;
-  color: #666;
+  color: #888888;
 }
 .ngview {
   padding-bottom: 60px;
@@ -4116,10 +4170,10 @@ div.project-history table tr td {
   font-size: 90%;
   font-style: italic;
   margin-top: 5px;
-  color: #666666;
+  color: #888888;
 }
 .project-deploy .configure-deployment-row .deploy-history {
-  color: #666666;
+  color: #888888;
   border: 1px dashed #d9534f;
   border-radius: 5px;
   height: auto;
@@ -4142,7 +4196,7 @@ div.project-history table tr td {
   width: 790px;
   height: 120px;
   border: 1px solid #999999;
-  color: #eee;
+  color: #333333;
   border-radius: 50px 0 0 50px;
   margin: 35px auto;
   padding: 10px 10px 10px 10px;
@@ -4174,7 +4228,7 @@ div.project-history table tr td {
   padding: 2px;
 }
 .project-server .server .single-server .server-data .editable-click:hover {
-  border: 1px solid #eee;
+  border: 1px solid #333333;
 }
 .project-server .server .single-server .server-data table {
   width: 100%;
@@ -4199,7 +4253,7 @@ div.project-history table tr td {
   width: 45%;
 }
 .project-server .server .single-server .server-data table td .tooltip-inner {
-  background-color: #EEEEEE;
+  background-color: #333333;
   color: #000000;
 }
 .project-server .server .single-server .server-data table td .help-block {
