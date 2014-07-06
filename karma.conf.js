@@ -16,6 +16,8 @@ module.exports = function (config) {
         // list of files / patterns to load in the browser
         files: [
             'Resources/Public/Components/jquery/dist/jquery.js',
+            'Resources/Public/Components/bootstrap/js/tooltip.js',
+            'Resources/Public/Components/chosen_v1.1.0/chosen.jquery.js',
             'Resources/Public/Components/angular/angular.js',
             'Resources/Public/Components/angular-mocks/angular-mocks.js',
             'Resources/Public/Components/angular-route/angular-route.js',

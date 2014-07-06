@@ -29,7 +29,7 @@ var surfCaptain = angular.module('surfCaptain', ['ngRoute', 'xeditable', 'ngAnim
                 redirectTo: '/'
             });
     }])
-    .value('version', '0.5.5')
+    .value('version', '0.5.7')
     .value('domain', 'http://api.surfcaptain.local.loc/');
 
 surfCaptain.run(function (editableOptions) {

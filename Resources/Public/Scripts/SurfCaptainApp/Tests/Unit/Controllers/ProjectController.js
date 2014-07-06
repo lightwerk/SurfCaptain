@@ -9,8 +9,9 @@ describe('ProjectController', function () {
         ],
         simulateRecievementOfProjectData = function () {
             scope.$digest();
-            scope.project = projects.projects[0];
-            scope.$digest();
+            scope.$apply(function () {
+                scope.project = projects.projects[0];
+            });
         };
 
     beforeEach(module('surfCaptain'));

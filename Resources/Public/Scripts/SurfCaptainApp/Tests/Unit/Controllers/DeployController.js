@@ -22,8 +22,9 @@ describe('DeployController', function () {
         ],
         simulateRecievementOfProjectData = function () {
             scope.$digest();
-            scope.project = projects.projects[0];
-            scope.$digest();
+            scope.$apply(function () {
+                scope.project = projects.projects[0];
+            });
         };
 
     // Load the module

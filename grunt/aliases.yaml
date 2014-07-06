@@ -1,6 +1,7 @@
 default:
   - 'less'
   - 'concat'
+  - 'karma:unit:run'
   - 'uglify'
   - 'watch'
 

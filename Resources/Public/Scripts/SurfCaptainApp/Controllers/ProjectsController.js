@@ -13,7 +13,7 @@ surfCaptain.controller('ProjectsController', ['$scope', 'ProjectRepository', fun
                 $scope.projects = response.projects;
             },
             function () {
-                //an error occured
+                //an error occurred
             }
         );
     };
