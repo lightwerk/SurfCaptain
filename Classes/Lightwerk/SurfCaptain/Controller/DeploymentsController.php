@@ -6,8 +6,8 @@ namespace Lightwerk\SurfCaptain\Controller;
  *                                                                        *
  *                                                                        */
 
-use Lightwerk\SurfCaptain\Domain\Model\Deployment;
-use Lightwerk\SurfCaptain\Domain\Repository\DeploymentRepository;
+use Lightwerk\SurfClasses\Domain\Model\Deployment;
+use Lightwerk\SurfClasses\Domain\Repository\DeploymentRepository;
 use TYPO3\Flow\Annotations as Flow;
 
 class DeploymentsController extends AbstractRestController {
@@ -61,7 +61,6 @@ class DeploymentsController extends AbstractRestController {
 			->setReference($reference)
 			->setReferenceName($referenceName)
 			->setClientIp($this->request->getHttpRequest()->getClientIpAddress())
-			->setApplication($application)
 			->setConfiguration($configuration)
 			->setDate(new \DateTime())
 			->setStatus('waiting');

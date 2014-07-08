@@ -6,8 +6,8 @@ namespace Lightwerk\SurfCaptain\Controller;
  *                                                                        *
  *                                                                        */
 
-use Lightwerk\SurfCaptain\Domain\Model\Deployment;
-use Lightwerk\SurfCaptain\Domain\Repository\LogRepository;
+use Lightwerk\SurfClasses\Domain\Model\Deployment;
+use Lightwerk\SurfClasses\Domain\Repository\LogRepository;
 use TYPO3\Flow\Annotations as Flow;
 
 class LogsController extends AbstractRestController {

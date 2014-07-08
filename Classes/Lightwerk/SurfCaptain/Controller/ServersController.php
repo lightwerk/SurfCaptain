@@ -10,6 +10,11 @@ use Lightwerk\SurfCaptain\Service\GitService;
 use Lightwerk\SurfCaptain\Utility\GeneralUtility;
 use TYPO3\Flow\Annotations as Flow;
 
+/**
+ * Class ServersController
+ *
+ * @package Lightwerk\SurfCaptain\Controller
+ */
 class ServersController extends AbstractRestController {
 
 	/**
@@ -25,11 +30,23 @@ class ServersController extends AbstractRestController {
 	protected $resourceArgumentName = 'serverKey';
 
 	/**
+	 * @param integer|NULL $projectId
 	 * @return void
 	 */
-	public function listAction() {
-		$collections = $this->getCollections();
-		GeneralUtility::array_unset_recursive($collections, 'password');
+	public function listAction($projectId = NULL) {
+		$allCollections = $this->getCollections();
+		GeneralUtility::array_unset_recursive($allCollections, 'password');
+
+		if (!empty($projectId) && $projectId > 0) {
+			$collections = array();
+			foreach ($allCollections as $collection) {
+				if ($collection['project'] === $projectId) {
+					$collections[] = $collection;
+				}
+			}
+		} else {
+			$collections = $allCollections;
+		}
 
 		$this->view->assign('value', array(
 			'collections' => $collections,
@@ -39,26 +56,39 @@ class ServersController extends AbstractRestController {
 	/**
 	 * @param string $collectionKey
 	 * @param string $serverKey
+	 * @param integer $projectId
 	 * @param string $configuration
 	 * @return void
 	 */
-	public function createAction($collectionKey, $serverKey, $configuration) {
-		$this->updateAction($collectionKey, $serverKey, $configuration);
+	public function createAction($collectionKey, $serverKey, $projectId, $configuration) {
 	}
 
 	/**
 	 * @param string $collectionKey
 	 * @param string $serverKey
 	 * @param string $configuration
+	 * @param string|NULL $project
 	 * @return void
 	 */
-	public function updateAction($collectionKey, $serverKey, $configuration) {
+	public function updateAction($collectionKey, $serverKey, $configuration, $project = NULL) {
 		$configuration = json_decode($configuration, TRUE);
-		if (!empty($configuration)) {
-			$collections = $this->getCollections();
-			$collections[$collectionKey]['servers'][$serverKey] = $configuration;
-			$this->setCollections($collections, 'ServerCollections.json: Adds Server "' . $serverKey . '" to Collection "' . $collectionKey . '"');
+		if (empty($configuration)) {
+			throw new \Exception('Configuration is missing or it has not a valid json format.');
 		}
+
+		$collections = $this->getCollections();
+
+		if ($project !== NULL && preg_match('/^[0-9]+$/', $project)) {
+			$project = (int) $project;
+		} elseif ($project !== '*') {
+			$project = NULL;
+		}
+		if (!empty($project)) {
+			$collections[$collectionKey]['project'] = $project;
+		}
+
+		$collections[$collectionKey]['servers'][$serverKey] = $configuration;
+		$this->setCollections($collections, 'ServerCollections.json: Updates Server "' . $serverKey . '" in Collection "' . $collectionKey . '"');
 		$this->redirectToResource();
 	}
 
