@@ -25,6 +25,10 @@ var surfCaptain = angular.module('surfCaptain', ['ngRoute', 'xeditable', 'ngAnim
                 templateUrl: '/_Resources/Static/Packages/Lightwerk.SurfCaptain/Scripts/SurfCaptainApp/Templates/Server.html',
                 controller: 'ServerController'
             }).
+            when('/about', {
+                templateUrl: '/_Resources/Static/Packages/Lightwerk.SurfCaptain/Scripts/SurfCaptainApp/Templates/About.html',
+                controller: 'AboutController'
+            }).
             otherwise({
                 redirectTo: '/'
             });
@@ -35,6 +39,13 @@ var surfCaptain = angular.module('surfCaptain', ['ngRoute', 'xeditable', 'ngAnim
 surfCaptain.run(function (editableOptions) {
     editableOptions.theme = 'bs3';
 });
+/*global surfCaptain*/
+/*jslint node: true */
+
+'use strict';
+surfCaptain.controller('AboutController', ['$scope', function ($scope) {
+
+}]);
 /*global surfCaptain*/
 /*jslint node: true */
 

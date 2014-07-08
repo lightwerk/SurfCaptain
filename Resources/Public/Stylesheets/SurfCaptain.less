@@ -39,6 +39,7 @@ div.project-history {
 		-moz-transition: width 0.2s ease-in-out;
 		-o-transition: width 0.2s ease-in-out;
 		transition: width 0.2s ease-in-out;
+		z-index: 999;
 		&:hover {
 			width: 200px;
 		}
@@ -78,6 +79,10 @@ div.surfcaptain.sync {
 
 div.surfcaptain.server {
 	background-color: @brand-success;
+}
+
+div.surfcaptain.about {
+	background-color: @brand-primary;
 }
 
 div.project-selection {
@@ -382,5 +387,23 @@ div.project-history {
 	.animate.ng-hide-add,
 	.animate.ng-hide-remove.ng-hide-remove-active {
 		opacity:1;
+	}
+}
+
+.about-view {
+	.logo {
+		width: 200px;
+		height: 150px;
+		margin: auto;
+		padding: 10px;
+		&.angular {
+			background: url("../Images/AngularJS-Shield-medium.png") no-repeat scroll center center / 60% auto transparent;
+		}
+		&.flow {
+			background: url("../Images/TYPO3_FLOW_Logo.png") no-repeat scroll center center / 100% auto transparent;
+		}
+		&.bootstrap {
+			background: url("../Images/Boostrap_logo.png") no-repeat scroll center center / 60% auto transparent;
+		}
 	}
 }
