@@ -391,19 +391,101 @@ div.project-history {
 }
 
 .about-view {
-	.logo {
-		width: 200px;
-		height: 150px;
-		margin: auto;
-		padding: 10px;
-		&.angular {
-			background: url("../Images/AngularJS-Shield-medium.png") no-repeat scroll center center / 60% auto transparent;
+	.techs {
+		margin-top: 15px;
+		a {
+			text-decoration: none;
+			.logo {
+				width: 200px;
+				height: 150px;
+				margin: auto;
+				border-radius: 10px;
+				&.angular {
+					background: url("../Images/AngularJS-Shield.svg") no-repeat scroll center center / 130% auto transparent;
+				}
+				&.flow {
+					background: url("../Images/TYPO3_FLOW_Logo.png") no-repeat scroll center center / 100% auto transparent;
+				}
+				&.bootstrap {
+					background: url("../Images/Bootstrap-logo.svg") no-repeat scroll center center / 60% auto transparent;
+				}
+				&:hover {
+					.description {
+						text-decoration: none;
+						opacity: 0.85;
+					}
+				}
+				h3 {
+					padding-top: 15px;
+				}
+			}
 		}
-		&.flow {
-			background: url("../Images/TYPO3_FLOW_Logo.png") no-repeat scroll center center / 100% auto transparent;
+		.sub-tech {
+			height: 100px;
+			width: 120px;
+			border-radius: 5px;
+			margin: 15px auto;
+			&.grunt {
+				background: url("../Images/Grunt-logo.svg") no-repeat scroll center center / 85% auto transparent;
+			}
+			&.bower {
+				background: url("../Images/Bower-logo.svg") no-repeat scroll center center / 85% auto transparent;
+			}
+			&.composer {
+				background: url("../Images/Logo-composer.png") no-repeat scroll center center / 65% auto transparent;
+			}
+			&.karma {
+				background: url("../Images/Karma-Logo.png") no-repeat scroll center center / 85% auto transparent;
+			}
+			&.jasmine {
+				background: url("../Images/Jasmin-logo.svg") no-repeat scroll center center / 100% auto transparent;
+			}
+			&.jquery {
+				background: url("../Images/Logo_jQuery.svg") no-repeat scroll center center / 100% auto transparent;
+			}
+			&.css3 {
+				background: url("../Images/Css3-logo.svg") no-repeat scroll center center / 70% auto transparent;
+			}
+			&.git {
+				background: url("../Images/Git-logo.svg") no-repeat scroll center center / 85% auto transparent;
+			}
+			&.mysql {
+				background: url("../Images/includes-mysql-167x86-wob.png") no-repeat scroll center center / 100% auto transparent;
+			}
+			&.html5 {
+				background: url("../Images/Html5-logo.svg") no-repeat scroll center center / 85% auto transparent;
+			}
+			&:hover {
+				.description {
+					text-decoration: none;
+					opacity: 0.75;
+				}
+			}
+			h4 {
+				padding-top: 35px;
+			}
 		}
-		&.bootstrap {
-			background: url("../Images/Boostrap_logo.png") no-repeat scroll center center / 60% auto transparent;
+		.description {
+			width: 100%;
+			height: 100%;
+			opacity: 0;
+			background-color: #000;
+			border-radius: 5px;
+			color: #FFF;
+			text-align: center;
+			-webkit-transition: all linear 0.5s;
+			-moz-transition: all linear 0.5s;
+			-o-transition: all linear 0.5s;
+			transition: all linear 0.5s;
+			h3,h4 {
+				margin: 0;
+				opacity: 1;
+			}
+			span {
+				display: inline-block;
+				font-weight: 600;
+				opacity: 1;
+			}
 		}
 	}
 }

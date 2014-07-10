@@ -3,22 +3,41 @@
 <div class="container about-view dark">
 	<div class="row">
 		<div class="col-xs-12 text-center">
-			<h2>About the SurfCaptain</h2>
+			<h1>About the SurfCaptain</h1>
 			(v<span app-version></span>)
 		</div>
+
+		<div class="col-xs-12 text-center">
+			<h2>Developer</h2>
+			Lars Peipmann && Daniel Goerz
+		</div>
+
 	</div>
 
-	<div class="row">
-		<div class="col-xs-4">
-			<div class="logo angular"></div>
+	<div class="row techs">
+		<div class="col-xs-4" data-ng-repeat="tech in techs">
+			<a href="{{tech.url}}" target="_blank">
+				<div class="logo {{tech.name}}">
+					<div class="description">
+						<h3>{{tech.description.headline}}</h3>
+						<br /><br />
+						<span>{{tech.description.span1}} <br />{{tech.description.span2}}</span>
+					</div>
+				</div>
+			</a>
 		</div>
-
-		<div class="col-xs-4 ">
-			<div class="logo flow"></div>
-		</div>
-
-		<div class="col-xs-4">
-			<div class="logo bootstrap"></div>
+	</div>
+	<div class="row techs">
+		<div class="col-md-offset-2 col-md-8">
+			<div class="col-md-3 text-center" data-ng-repeat="tech in subtechs">
+				<a href="{{tech.url}}" target="_blank">
+					<div class="sub-tech {{tech.name}}">
+						<div class="description">
+							<h4>{{tech.description.headline}}</h4>
+						</div>
+					</div>
+				</a>
+			</div>
 		</div>
 	</div>
 </div>

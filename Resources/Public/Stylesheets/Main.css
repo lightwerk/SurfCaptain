@@ -4310,18 +4310,97 @@ div.project-history table tr td {
 .project-server .animate.ng-hide-remove.ng-hide-remove-active {
   opacity: 1;
 }
-.about-view .logo {
+.about-view .techs {
+  margin-top: 15px;
+}
+.about-view .techs a {
+  text-decoration: none;
+}
+.about-view .techs a .logo {
   width: 200px;
   height: 150px;
   margin: auto;
-  padding: 10px;
+  border-radius: 10px;
 }
-.about-view .logo.angular {
-  background: url("../Images/AngularJS-Shield-medium.png") no-repeat scroll center center / 60% auto transparent;
+.about-view .techs a .logo.angular {
+  background: url("../Images/AngularJS-Shield.svg") no-repeat scroll center center / 130% auto transparent;
 }
-.about-view .logo.flow {
+.about-view .techs a .logo.flow {
   background: url("../Images/TYPO3_FLOW_Logo.png") no-repeat scroll center center / 100% auto transparent;
 }
-.about-view .logo.bootstrap {
-  background: url("../Images/Boostrap_logo.png") no-repeat scroll center center / 60% auto transparent;
+.about-view .techs a .logo.bootstrap {
+  background: url("../Images/Bootstrap-logo.svg") no-repeat scroll center center / 60% auto transparent;
+}
+.about-view .techs a .logo:hover .description {
+  text-decoration: none;
+  opacity: 0.85;
+}
+.about-view .techs a .logo h3 {
+  padding-top: 15px;
+}
+.about-view .techs .sub-tech {
+  height: 100px;
+  width: 120px;
+  border-radius: 5px;
+  margin: 15px auto;
+}
+.about-view .techs .sub-tech.grunt {
+  background: url("../Images/Grunt-logo.svg") no-repeat scroll center center / 85% auto transparent;
+}
+.about-view .techs .sub-tech.bower {
+  background: url("../Images/Bower-logo.svg") no-repeat scroll center center / 85% auto transparent;
+}
+.about-view .techs .sub-tech.composer {
+  background: url("../Images/Logo-composer.png") no-repeat scroll center center / 65% auto transparent;
+}
+.about-view .techs .sub-tech.karma {
+  background: url("../Images/Karma-Logo.png") no-repeat scroll center center / 85% auto transparent;
+}
+.about-view .techs .sub-tech.jasmine {
+  background: url("../Images/Jasmin-logo.svg") no-repeat scroll center center / 100% auto transparent;
+}
+.about-view .techs .sub-tech.jquery {
+  background: url("../Images/Logo_jQuery.svg") no-repeat scroll center center / 100% auto transparent;
+}
+.about-view .techs .sub-tech.css3 {
+  background: url("../Images/Css3-logo.svg") no-repeat scroll center center / 70% auto transparent;
+}
+.about-view .techs .sub-tech.git {
+  background: url("../Images/Git-logo.svg") no-repeat scroll center center / 85% auto transparent;
+}
+.about-view .techs .sub-tech.mysql {
+  background: url("../Images/includes-mysql-167x86-wob.png") no-repeat scroll center center / 100% auto transparent;
+}
+.about-view .techs .sub-tech.html5 {
+  background: url("../Images/Html5-logo.svg") no-repeat scroll center center / 85% auto transparent;
+}
+.about-view .techs .sub-tech:hover .description {
+  text-decoration: none;
+  opacity: 0.75;
+}
+.about-view .techs .sub-tech h4 {
+  padding-top: 35px;
+}
+.about-view .techs .description {
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  background-color: #000;
+  border-radius: 5px;
+  color: #FFF;
+  text-align: center;
+  -webkit-transition: all linear 0.5s;
+  -moz-transition: all linear 0.5s;
+  -o-transition: all linear 0.5s;
+  transition: all linear 0.5s;
+}
+.about-view .techs .description h3,
+.about-view .techs .description h4 {
+  margin: 0;
+  opacity: 1;
+}
+.about-view .techs .description span {
+  display: inline-block;
+  font-weight: 600;
+  opacity: 1;
 }
