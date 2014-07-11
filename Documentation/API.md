@@ -53,7 +53,7 @@ Example of a decoded configuration parameter:
 - Path: /api/nodes
 - Required Parameters:
 	- nodeKey: string
-	- configuration: json (["Add Node"](#add-node))
+	- configuration: json (["Add Node"](#markdown-header-add-node))
 
 Example call:
 
