@@ -25,7 +25,7 @@ Example call:
     curl http://surf.flow.lp.lw.loc/api/nodes | jq '.'
     curl http://surf.flow.lp.lw.loc/api/nodes\?projectId\=17 | jq '.'
 
-### Add Node
+### Add Node<a name="addNode"></a>
 
 - Methode: POST
 - Path: /api/nodes
@@ -53,7 +53,7 @@ Example of a decoded configuration parameter:
 - Path: /api/nodes
 - Required Parameters:
 	- nodeKey: string
-	- configuration: json (@see "Add Node")
+	- configuration: json (["Add Node"](#addNode))
 
 Example call:
 
