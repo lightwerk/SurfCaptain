@@ -53,18 +53,23 @@ Example of a decoded configuration parameter:
 - Path: /api/nodes
 - Required Parameters:
 	- nodeKey: string
+- Optional Parameters:
+	- projectId: integer or string ('*') (Adds node to a project)
+	- newNodeKey: string
 	- configuration: json (["Add Node"](#markdown-header-add-node))
 
 Example call:
 
     curl -v -X PUT http://surf.flow.lp.lw.loc/api/nodes\?nodeKey\=fe1\&configuration\=%7B%22host%22%3A%22www.sma.de%22%2C%22username%22%3A%22user1%22%2C%22password%22%3A%22abcde%22%7D
+    curl -v -X PUT http://surf.flow.lp.lw.loc/api/nodes\?nodeKey\=fe1\&newNodeKey\=fe1b\&projectId\=17
 
-### Remove node
+### Remove node from project
 
 - Methode: DELETE
 - Path: /api/nodes
 - Required Parameters:
 	- nodeKey: string
+	- projectId: integer or string ('*') (Removes node from a project. Full Node gets deleted when no projectIds are given)
 
 Example call:
 
