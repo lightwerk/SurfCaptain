@@ -1,13 +1,19 @@
 test:
   - karma:unit:run
-default:
+standard:
   - less
   - concat
+default:
+  - standard
   - uglify
+  - test
+standard-dev:
+  - standard
+  - uglify:angular
 dev:
-  - default
+  - standard-dev
   - watch
 jsdev:
-  - default
+  - standard-dev
   - test
   - watch
