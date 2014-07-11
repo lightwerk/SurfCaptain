@@ -19,36 +19,96 @@
 			<div class="new-server animate row text-left" data-ng-show="addAServer">
 				<form data-ng-submit="updateServer(newServer)" name="newServerForm">
 					<div class="col-xs-4 col-xs-offset-2">
-						Name:
-						<input type="text" data-ng-model="newServer.name" placeholder="Name" class="form-control" name="name" required data-ng-trim server-name-validate server-names="serverNames" />
-						<p>&nbsp;
-							<span class="error" ng-show="newServerForm.name.$error.required && newServerForm.name.$dirty">Name is required!</span>
-							<span class="error" ng-show="newServerForm.name.$error.serverNameValidate && newServerForm.name.$dirty">Not unique!</span>
-						</p>
+						<label>Name:</label> *
+						<input
+							type="text"
+							data-ng-model="newServer.name"
+							placeholder="Name"
+							class="form-control"
+							name="name"
+							required
+							data-ng-trim
+							server-name-validate
+							server-names="serverNames"
+						/>
+						<div class="messages">
+							<div data-ng-messages="newServerForm.name.$error" data-ng-if="newServerForm.name.$dirty">
+								<span class="error" data-ng-message="required">Name is required!</span>
+								<span class="error" data-ng-message="server-name-validate">Not unique!</span>
+							</div>
+						</div>
 
-						Host:
-						<input type="text" data-ng-model="newServer.host" placeholder="Host" class="form-control" name="host" required data-ng-trim />
-						<p>&nbsp;<span class="error" ng-show="newServerForm.host.$error.required && newServerForm.host.$dirty">Host is required!</span></p>
+						<label>Host:</label> *
+						<input
+							type="text"
+							data-ng-model="newServer.host"
+							placeholder="Host"
+							class="form-control"
+							name="host"
+							required data-ng-trim
+						/>
+						<div class="messages">
+							<div data-ng-messages="newServerForm.host.$error" data-ng-if="newServerForm.host.$dirty">
+								<span class="error" data-ng-message="required">Host is required!</span>
+							</div>
+						</div>
 
-						DocumentRoot:
-						<input type="text" data-ng-model="newServer.documentRoot" placeholder="DocumentRoot" class="form-control" name="documentRoot" required data-ng-trim />
-						<p>&nbsp;<span class="error" ng-show="newServerForm.documentRoot.$error.required && newServerForm.documentRoot.$dirty">DocumentRoot is required!</span></p>
+						<label>DocumentRoot:</label> *
+						<input
+							type="text"
+							data-ng-model="newServer.documentRoot"
+							placeholder="DocumentRoot"
+							class="form-control"
+							name="documentRoot"
+							required data-ng-trim
+						/>
+						<div class="messages">
+							<div data-ng-messages="newServerForm.documentRoot.$error" data-ng-if="newServerForm.documentRoot.$dirty">
+								<span class="error" data-ng-message="required">DocumentRoot is required!</span>
+							</div>
+						</div>
 					</div>
 
 					<div class="col-xs-4">
-						User:
-						<input type="text" data-ng-model="newServer.username" placeholder="User" class="form-control" name="username" required data-ng-trim />
-						<p>&nbsp;<span class="error" ng-show="newServerForm.username.$error.required && newServerForm.username.$dirty">User is required!</span></p>
+						<label>User:</label> *
+						<input
+							type="text"
+							data-ng-model="newServer.username"
+							placeholder="User"
+							class="form-control"
+							name="username"
+							required data-ng-trim
+						/>
+						<div class="messages">
+							<div data-ng-messages="newServerForm.username.$error" data-ng-if="newServerForm.username.$dirty">
+								<span class="error" data-ng-message="required">User is required!</span>
+							</div>
+						</div>
 
-						Context:
-						<select data-ng-model="newServer.context"  class="form-control" data-ng-options="context for context in contexts" name="context" required >
+						<label>Context:</label> *
+						<select
+							data-ng-model="newServer.context"
+							class="form-control"
+							data-ng-options="context for context in contexts"
+							name="context"
+							required
+						>
 							<option value="">Choose context</option>
 						</select>
-						<p>&nbsp;<span class="error" ng-show="newServerForm.context.$error.required && newServerForm.context.$dirty">Context is required!</span></p>
+						<div class="messages">
+							<div data-ng-messages="newServerForm.context.$error" data-ng-if="newServerForm.context.$dirty">
+								<span class="error" data-ng-message="required">Context is required!</span>
+							</div>
+						</div>
 
-						TYPO3_SYSTEM (optional)
-						<input type="text" data-ng-model="newServer.system" placeholder="TYPO3_SYSTEM" class="form-control" name="system" data-ng-trim />
-						<p>&nbsp;</p>
+						<label>TYPO3_SYSTEM (optional)</label>
+						<input
+							type="text"
+							data-ng-model="newServer.system"
+							placeholder="TYPO3_SYSTEM"
+							class="form-control"
+							name="system" data-ng-trim
+						/>
 					</div>
 
 					<div class="col-xs-12 text-center submit-new-server">

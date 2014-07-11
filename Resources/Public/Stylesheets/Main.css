@@ -4083,6 +4083,17 @@ div.project-selection table th:last-child,
 div.project-selection table td:last-child {
   width: 350px;
 }
+div.project-selection .error {
+  margin: 50px auto;
+  width: 400px;
+  padding: 10px;
+  border: solid red 2px;
+  border-radius: 10px;
+}
+div.project-selection .error p {
+  margin: 0;
+  color: red;
+}
 div.project-buttons {
   padding: 20px 0;
   background-color: #333333 !important;
@@ -4287,11 +4298,11 @@ div.project-history table tr td {
 .project-server .new-server.animate .submit-new-server {
   margin-top: 20px;
 }
-.project-server .new-server.animate p {
-  height: 23px;
+.project-server .new-server.animate .messages {
+  height: 25px;
   margin-bottom: 0px;
 }
-.project-server .new-server.animate p .error {
+.project-server .new-server.animate .messages .error {
   color: red;
 }
 .project-server .animate.ng-hide-add,
