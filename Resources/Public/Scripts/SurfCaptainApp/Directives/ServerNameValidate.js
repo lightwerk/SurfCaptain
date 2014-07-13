@@ -11,6 +11,7 @@ surfCaptain.directive('serverNameValidate', function () {
         },
         link: function (scope, elem, attr, ctrl) {
 
+            // add a parser
             ctrl.$parsers.unshift(function (value) {
                 var valid = scope.serverNames === undefined || scope.serverNames.indexOf(value) === -1;
                 ctrl.$setValidity('serverNameValidate', valid);
@@ -20,6 +21,7 @@ surfCaptain.directive('serverNameValidate', function () {
                 return valid ? value : undefined;
             });
 
+            // add a formatter
             ctrl.$formatters.unshift(function (value) {
                 var valid = scope.serverNames === undefined || scope.serverNames.indexOf(value) === -1;
                 ctrl.$setValidity('serverNameValidate', valid);

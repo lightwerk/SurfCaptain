@@ -1,7 +1,14 @@
 /*global describe,beforeEach,module,it,xit,expect,inject,spyOn*/
 
 describe('ProjectsController', function () {
-    var ctrl, scope, historyRepository, q, projects;
+    var ctrl, scope, projectRepository, q, projects, succeedPromise, controller;
+
+    function createController() {
+        ctrl = controller('ProjectsController', {
+            $scope: scope,
+            ProjectRepository: projectRepository
+        });
+    }
 
     beforeEach(module('surfCaptain'));
 
@@ -10,31 +17,41 @@ describe('ProjectsController', function () {
         projects = {projects: [
             {"name": "foo", "ssh_url_to_repo": "git@git.example.com:project/foo.git", "id": 1}
         ]};
-        q = $q;
+        controller = $controller;
+        projectRepository = ProjectRepository;
 
-        var projectsDefer = q.defer();
-
-        projectsDefer.resolve(projects);
-        spyOn(ProjectRepository, 'getProjects').andReturn(projectsDefer.promise);
-
-        // Create the controller
-        ctrl = $controller('ProjectsController', {
-            $scope: scope,
-            ProjectRepository: ProjectRepository
+        // simulate success or failure of request based on succeedPromise
+        spyOn(ProjectRepository, 'getProjects').andCallFake(function () {
+            if (succeedPromise) {
+                return $q.when(projects);
+            }
+            return $q.reject('Something went wrong');
         });
+
     }));
 
     it('should initialize scope.ordering with name', function () {
+        createController();
         expect(scope.ordering).toEqual('name');
     });
 
     it('should initialize scope.projects with empty array', function () {
+        createController();
         expect(scope.projects).toEqual([]);
     });
 
     it('should store recieved projects records in scope.projects', function () {
+        succeedPromise = true;
+        createController();
         scope.$digest();
         expect(scope.projects).toEqual(projects.projects);
+    });
+
+    it('should store message in scope.message if request fails', function () {
+        succeedPromise = false;
+        createController();
+        scope.$digest();
+        expect(scope.message).toEqual('API call failed. GitLab is currently not available.');
     });
 
 });

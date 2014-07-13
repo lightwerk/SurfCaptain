@@ -14,6 +14,7 @@ surfCaptain.controller('ProjectsController', ['$scope', 'ProjectRepository', fun
             },
             function () {
                 //an error occurred
+                $scope.message = 'API call failed. GitLab is currently not available.';
             }
         );
     };

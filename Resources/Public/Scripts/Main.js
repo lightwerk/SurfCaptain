@@ -2,7 +2,7 @@
 /*jslint node: true */
 
 'use strict';
-var surfCaptain = angular.module('surfCaptain', ['ngRoute', 'xeditable', 'ngAnimate'])
+var surfCaptain = angular.module('surfCaptain', ['ngRoute', 'xeditable', 'ngAnimate', 'ngMessages'])
     .config(['$routeProvider', function ($routeProvider) {
         $routeProvider.
             when('/', {
@@ -283,6 +283,7 @@ surfCaptain.controller('ProjectsController', ['$scope', 'ProjectRepository', fun
             },
             function () {
                 //an error occurred
+                $scope.message = 'API call failed. GitLab is currently not available.';
             }
         );
     };
@@ -292,7 +293,7 @@ surfCaptain.controller('ProjectsController', ['$scope', 'ProjectRepository', fun
 /*jslint node: true */
 
 'use strict';
-surfCaptain.controller('ServerController', ['$scope', '$controller', 'ServerRepository', function ($scope, $controller, ServerRepository) {
+surfCaptain.controller('ServerController', ['$scope', '$controller', 'ServerRepository', 'ValidationService', function ($scope, $controller, ServerRepository, ValidationService) {
 
     // Inherit from AbstractSingleProjectController
     angular.extend(this, $controller('AbstractSingleProjectController', {$scope: $scope}));
@@ -310,49 +311,41 @@ surfCaptain.controller('ServerController', ['$scope', '$controller', 'ServerRepo
     };
 
     /**
-     * Validates the updated Host string befor submitting to Server
+     * Validates the updated Host string before submitting to Server
      *
      * @param data
      * @return {string | boolean} ErrorMessage or True if valid
      */
     $scope.updateHost = function (data) {
-        if (data.length > 0) {
-            return true;
-        }
-        return 'Host must not be empty!';
+        return ValidationService.hasLength(data, 1, 'Host must not be empty!');
     };
 
     /**
-     * Validates the updated DocumentRoot string befor submitting to Server
+     * Validates the updated DocumentRoot string before submitting to Server
      *
      * @param data
      * @return {string | boolean} ErrorMessage or True if valid
      */
     $scope.updateDocumentRoot = function (data) {
-        if (data.length > 0) {
-            if (data.charAt(data.length - 1) === '/') {
-                return true;
-            }
-            return 'DocRoot must end with "/"!';
+        var res = ValidationService.hasLength(data, 1, 'DocRoot must not be empty!');
+        if (res === true) {
+            return ValidationService.doesLastCharacterMatch(data, '/', 'DocumentRoot must end with "/"!');
         }
-        return 'DocRoot must not be empty!';
+        return res;
     };
 
     /**
-     * Validates the updated Username string befor submitting to Server
+     * Validates the updated Username string before submitting to Server
      *
      * @param data
      * @return {string | boolean} ErrorMessage or True if valid
      */
     $scope.updateUsername = function (data) {
-        if (data.length > 0) {
-            return true;
-        }
-        return 'User must not be empty!';
+        return ValidationService.hasLength(data, 1, 'User must not be empty!');
     };
 
     /**
-     * Validates the updated Context string befor submitting to Server
+     * Validates the updated Context string before submitting to Server
      *
      * @param data
      * @return {string | boolean} ErrorMessage or True if valid
@@ -422,6 +415,7 @@ surfCaptain.directive('serverNameValidate', function () {
         },
         link: function (scope, elem, attr, ctrl) {
 
+            // add a parser
             ctrl.$parsers.unshift(function (value) {
                 var valid = scope.serverNames === undefined || scope.serverNames.indexOf(value) === -1;
                 ctrl.$setValidity('serverNameValidate', valid);
@@ -431,6 +425,7 @@ surfCaptain.directive('serverNameValidate', function () {
                 return valid ? value : undefined;
             });
 
+            // add a formatter
             ctrl.$formatters.unshift(function (value) {
                 var valid = scope.serverNames === undefined || scope.serverNames.indexOf(value) === -1;
                 ctrl.$setValidity('serverNameValidate', valid);
@@ -592,7 +587,7 @@ surfCaptain.factory('ProjectRepository', [ '$http', '$q', function ($http, $q) {
 
     return projectRepository;
 }]);
-/*jslint browser: true*/
+/*global surfCaptain*/
 /*jslint node: true */
 
 'use strict';
@@ -634,3 +629,44 @@ surfCaptain.factory('ServerRepository', ['$http', '$q', function ($http, $q) {
 
     return serverRepository;
 }]);
+/*jslint node: true */
+/*global surfCaptain*/
+
+'use strict';
+
+surfCaptain.service('ValidationService', function () {
+
+    /**
+     * Validates if a given string has at least the length of the given
+     * minLength. A third parameter is an optional string to be returned
+     * on validation failure.
+     *
+     * @param {string} value
+     * @param {integer} minLength
+     * @param {string} message
+     * @returns {string|boolean}
+     */
+    this.hasLength = function (value, minLength, message) {
+        if (value.length >= minLength) {
+            return true;
+        }
+        return message || false;
+    };
+
+    /**
+     * Validates if a given string ends with a given character
+     * A third parameter is an optional string to be returned
+     * on validation failure.
+     *
+     * @param {string} value
+     * @param {string} character
+     * @param {string} message
+     * @returns {string|boolean}
+     */
+    this.doesLastCharacterMatch = function (value, character, message) {
+        if (value.charAt(value.length - 1) === character) {
+            return true;
+        }
+        return message || false;
+    };
+});

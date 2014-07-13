@@ -2,7 +2,7 @@
 /*jslint node: true */
 
 'use strict';
-surfCaptain.controller('ServerController', ['$scope', '$controller', 'ServerRepository', function ($scope, $controller, ServerRepository) {
+surfCaptain.controller('ServerController', ['$scope', '$controller', 'ServerRepository', 'ValidationService', function ($scope, $controller, ServerRepository, ValidationService) {
 
     // Inherit from AbstractSingleProjectController
     angular.extend(this, $controller('AbstractSingleProjectController', {$scope: $scope}));
@@ -20,49 +20,41 @@ surfCaptain.controller('ServerController', ['$scope', '$controller', 'ServerRepo
     };
 
     /**
-     * Validates the updated Host string befor submitting to Server
+     * Validates the updated Host string before submitting to Server
      *
      * @param data
      * @return {string | boolean} ErrorMessage or True if valid
      */
     $scope.updateHost = function (data) {
-        if (data.length > 0) {
-            return true;
-        }
-        return 'Host must not be empty!';
+        return ValidationService.hasLength(data, 1, 'Host must not be empty!');
     };
 
     /**
-     * Validates the updated DocumentRoot string befor submitting to Server
+     * Validates the updated DocumentRoot string before submitting to Server
      *
      * @param data
      * @return {string | boolean} ErrorMessage or True if valid
      */
     $scope.updateDocumentRoot = function (data) {
-        if (data.length > 0) {
-            if (data.charAt(data.length - 1) === '/') {
-                return true;
-            }
-            return 'DocRoot must end with "/"!';
+        var res = ValidationService.hasLength(data, 1, 'DocRoot must not be empty!');
+        if (res === true) {
+            return ValidationService.doesLastCharacterMatch(data, '/', 'DocumentRoot must end with "/"!');
         }
-        return 'DocRoot must not be empty!';
+        return res;
     };
 
     /**
-     * Validates the updated Username string befor submitting to Server
+     * Validates the updated Username string before submitting to Server
      *
      * @param data
      * @return {string | boolean} ErrorMessage or True if valid
      */
     $scope.updateUsername = function (data) {
-        if (data.length > 0) {
-            return true;
-        }
-        return 'User must not be empty!';
+        return ValidationService.hasLength(data, 1, 'User must not be empty!');
     };
 
     /**
-     * Validates the updated Context string befor submitting to Server
+     * Validates the updated Context string before submitting to Server
      *
      * @param data
      * @return {string | boolean} ErrorMessage or True if valid
