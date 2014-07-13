@@ -25,6 +25,10 @@ var surfCaptain = angular.module('surfCaptain', ['ngRoute', 'xeditable', 'ngAnim
                 templateUrl: '/_Resources/Static/Packages/Lightwerk.SurfCaptain/Scripts/SurfCaptainApp/Templates/Server.html',
                 controller: 'ServerController'
             }).
+            when('/about', {
+                templateUrl: '/_Resources/Static/Packages/Lightwerk.SurfCaptain/Scripts/SurfCaptainApp/Templates/About.html',
+                controller: 'AboutController'
+            }).
             otherwise({
                 redirectTo: '/'
             });

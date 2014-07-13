@@ -1,9 +1,13 @@
-default:
-  - 'less'
-  - 'concat'
-  - 'karma:unit:run'
-  - 'uglify'
-  - 'watch'
-
 test:
-  - 'karma:unit:run'
+  - karma:unit:run
+default:
+  - less
+  - concat
+  - uglify
+dev:
+  - default
+  - watch
+jsdev:
+  - default
+  - test
+  - watch
