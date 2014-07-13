@@ -5,7 +5,7 @@ module.exports = function (config) {
     config.set({
 
         // base path that will be used to resolve all patterns (eg. files, exclude)
-        basePath: '',
+        basePath: 'Resources/Public/',
 
 
         // frameworks to use
@@ -15,23 +15,27 @@ module.exports = function (config) {
 
         // list of files / patterns to load in the browser
         files: [
-            'Resources/Public/Scripts/Libs.js',
-            'Resources/Public/Components/angular-mocks/angular-mocks.js',
-            'Resources/Public/Scripts/Main.js',
-            'Resources/Public/Scripts/SurfCaptainApp/Tests/Unit/**/*.js'
+            'Scripts/Libs.js',
+            'Components/angular-mocks/angular-mocks.js',
+            'Scripts/Main.js',
+            'Scripts/SurfCaptainApp/Partials/*.html',
+            'Scripts/SurfCaptainApp/Tests/Unit/**/*.js'
         ],
-
-
-        // list of files to exclude
-        exclude: [
-
-        ],
-
 
         // preprocess matching files before serving them to the browser
         // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
         preprocessors: {
+            'Scripts/SurfCaptainApp/Partials/*.html': 'ng-html2js'
+        },
 
+        ngHtml2JsPreprocessor: {
+            // strip the original path
+            stripPrefix: 'Resources/Public/',
+            // and prepend the flow location
+            prependPrefix: '/_Resources/Static/Packages/Lightwerk.SurfCaptain/',
+
+            // Load all partials with module(surfCaptainPartials)
+            moduleName: 'surfCaptainPartials'
         },
 
 
