@@ -13,6 +13,6 @@ describe('chosen', function () {
     }));
 
     it('should initialize chosen library that should create a div with according class after the element', function () {
-        expect(element.next().hasClass('chosen-container')).toEqual(true);
+        expect(element.next().hasClass('chosen-container')).toBeTruthy();
     });
 });
