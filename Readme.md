@@ -1,3 +1,4 @@
 - [Installation](Documentation/Installation.md)
 - [API](Documentation/API.md)
+- [Presets](Documentation/Presets.md)
 - [GitLab API Responses](Documentation/GitLabAPIResponses.md)
