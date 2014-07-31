@@ -22,6 +22,10 @@
             "role": "Developer"
         }
     ],
+    "support": {
+        "issues": "https://bitbucket.org/lightwerk/surfcaptain/issues",
+        "source": "https://bitbucket.org/lightwerk/surfcaptain/src"
+    },
     "require": {
         "typo3/surf": "*",
         "lightwerk/surfclasses": "*"
