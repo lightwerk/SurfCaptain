@@ -64,7 +64,11 @@ abstract class AbstractRestController extends RestController {
 	protected function errorAction() {
 		// we like to have a 400 status
 		$this->response->setStatus(400);
-		return parent::errorAction();
+		if ($this->mediaType === 'application/json') {
+			$this->addErrorFlashMessage();
+		} else {
+			return parent::errorAction();
+		}
 	}
 
 	/**
@@ -79,6 +83,47 @@ abstract class AbstractRestController extends RestController {
 		$this->addFlashMessage($e->getMessage(), get_class($e), Message::SEVERITY_ERROR, array(), $e->getCode());
 	}
 
+	/**
+	 * Redirects the request to another action and / or controller.
+	 *
+	 * @param string $actionName Name of the action to forward to
+	 * @param string $controllerName Unqualified object name of the controller to forward to. If not specified, the current controller is used.
+	 * @param string $packageKey Key of the package containing the controller to forward to. If not specified, the current package is assumed.
+	 * @param array $arguments Array of arguments for the target action
+	 * @param integer $delay (optional) The delay in seconds. Default is no delay.
+	 * @param integer $statusCode (optional) The HTTP status code for the redirect. Default is "303 See Other"
+	 * @param string $format The format to use for the redirect URI
+	 * @return void
+	 * @throws \TYPO3\Flow\Mvc\Exception\StopActionException
+	 * @see forward()
+	 * @api
+	 */
+	protected function redirect($actionName, $controllerName = NULL, $packageKey = NULL, array $arguments = NULL, $delay = 0, $statusCode = 303, $format = NULL) {
+		if ($this->mediaType === 'application/json') {
+			// render all arguments
+			foreach ($arguments as $key => $value) {
+				$this->view->assign($key, $value);
+			}
+			// get uri (like AbstractController->redirect())
+			// do we need/want the uri?
+			if ($packageKey !== NULL && strpos($packageKey, '\\') !== FALSE) {
+				list($packageKey, $subpackageKey) = explode('\\', $packageKey, 2);
+			} else {
+				$subpackageKey = NULL;
+			}
+			$this->uriBuilder->reset();
+			if ($format === NULL) {
+				$this->uriBuilder->setFormat($this->request->getFormat());
+			} else {
+				$this->uriBuilder->setFormat($format);
+			}
+
+			$uri = $this->uriBuilder->setCreateAbsoluteUri(TRUE)->uriFor($actionName, $arguments, $controllerName, $packageKey, $subpackageKey);
+			$this->view->assign('see', $uri);
+		} else {
+			return parent::redirect($actionName, $controllerName, $packageKey, $arguments, $delay, $statusCode, $format);
+		}
+	}
 
 	/**
 	 * A custom redirect, that does not set action, controller, package and format arguments
@@ -90,6 +135,7 @@ abstract class AbstractRestController extends RestController {
 	 * @throws \TYPO3\Flow\Mvc\Exception\StopActionException
 	 */
 	protected function redirectToResource($parameter = array(), $controllerName = NULL, $statusCode = 303) {
+		// i think we do not need this method
 		$httpRequest = $this->request->getHttpRequest();
 		$uri = $httpRequest->getBaseUri() . 'api/';
 		$uri .= !empty($controllerName) ? $controllerName : strtolower($this->request->getControllerName());

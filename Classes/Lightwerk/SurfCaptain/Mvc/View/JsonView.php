@@ -24,6 +24,7 @@ class JsonView extends \TYPO3\Flow\Mvc\View\JsonView {
 	 * @api
 	 */
 	public function render() {
+		// we do not have to set response Content-Type
 		if (count($this->variablesToRender) === 0) {
 			// render all variables exclude settings
 			foreach($this->variables AS $key => $value) {
@@ -35,6 +36,7 @@ class JsonView extends \TYPO3\Flow\Mvc\View\JsonView {
 		$propertiesToRender = $this->renderArray();
 		$flashMessagesToRender = $this->renderFlashMessages();
 		$propertiesToRender['flashMessages'] = $flashMessagesToRender;
+		$propertiesToRender['validationErrors'] = $this->renderValidationErrors();
 		return json_encode($propertiesToRender);
 	}
 
@@ -56,6 +58,20 @@ class JsonView extends \TYPO3\Flow\Mvc\View\JsonView {
 		return $this->transformValue($valueToRender, $configuration);
 	}
 
+	/**
+	 * Transforms a value depending on type recursively using the
+	 * supplied configuration.
+	 *
+	 * @param mixed $value The value to transform
+	 * @param array $configuration Configuration for transforming the value
+	 * @return array The transformed value
+	 */
+	protected function transformValue($value, array $configuration) {
+		// render always the identifier for entities
+		$configuration['_exposeObjectIdentifier'] = TRUE;
+		return parent::transformValue($value, $configuration);
+	}
+
 
 	/**
 	 * renderFlashMessages 
@@ -67,11 +83,34 @@ class JsonView extends \TYPO3\Flow\Mvc\View\JsonView {
 		$messages = array();
 		foreach ($allMessages AS $message) {
 			$messages[] = array(
-				'message' => $message->getMessage(),
+				'message' => $message->render(),
 				'title' => $message->getTitle(),
 				'severity' => $message->getSeverity()
 			);
 		}
 		return $messages;
+	}
+
+	/**
+	 * renderValidationErrors 
+	 * 
+	 * @access protected
+	 * @return void
+	 */
+	protected function renderValidationErrors() {
+		$arguments = $this->controllerContext->getArguments();
+		$validationResults = $arguments->getValidationResults();
+		$validationErrors = array();
+		foreach ($validationResults->getFlattenedErrors() as $key => $errors) {
+			$validationError  = array('property' => $key, 'errors' => array());
+			foreach ($errors as $error) {
+				$validationError['errors'][] = array(
+					'message' => $error->getMessage(),
+					'code' => $error->getCode()
+				);
+			}
+			$validationErrors[] = $validationError;
+		}
+		return $validationErrors;
 	}
 }
