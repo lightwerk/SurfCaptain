@@ -4095,13 +4095,16 @@ div.project-selection .error p {
   color: red;
 }
 div.project-buttons {
-  padding: 20px 0;
+  padding: 10px 0;
   background-color: #333333 !important;
   width: 100%;
 }
 div.project-buttons .btn {
   color: #000;
   margin-right: 15px;
+}
+div.project-buttons .btn[disabled] {
+  opacity: 0.3 !important;
 }
 div.project-buttons .project-brand {
   color: #999999;
@@ -4304,6 +4307,28 @@ div.project-history table tr td {
 }
 .project-server .new-server.animate .messages .error {
   color: red;
+}
+.project-server .new-server.animate .server-name-suggestions {
+  height: 88px;
+}
+.project-server .new-server.animate .server-name-suggestions span.label {
+  display: inline-block;
+  cursor: pointer;
+  font-size: 20px;
+  margin: 1px 6px;
+  padding: 6px;
+}
+.project-server .new-server.animate .server-name-suggestions span.label a {
+  color: black;
+  text-decoration: none;
+}
+.project-server .new-server.animate .server-name-suggestions span.label:hover {
+  color: black;
+}
+.project-server .new-server.animate .server-name-suggestions span.label.unavailable {
+  cursor: default;
+  color: #888;
+  opacity: 0.4;
 }
 .project-server .animate.ng-hide-add,
 .project-server .animate.ng-hide-remove {

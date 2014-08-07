@@ -290,7 +290,7 @@ surfCaptain.controller('ProjectsController', ['$scope', 'ProjectRepository', fun
     this.init();
 }]);
 /*global surfCaptain, angular*/
-/*jslint node: true */
+/*jslint node: true, plusplus:true */
 
 'use strict';
 surfCaptain.controller('ServerController', ['$scope', '$controller', 'ServerRepository', 'ValidationService', function ($scope, $controller, ServerRepository, ValidationService) {
@@ -300,6 +300,14 @@ surfCaptain.controller('ServerController', ['$scope', '$controller', 'ServerRepo
 
     $scope.contexts = [
         'Production', 'Development', 'Staging'
+    ];
+
+    $scope.nameSuggestions = [
+        {suffix: 'live', available: true},
+        {suffix: 'qa', available: true},
+        {suffix: 'staging', available: true},
+        {suffix: 'test', available: true},
+        {suffix: 'dev', available: true}
     ];
 
     $scope.deleteServer = function (server) {
@@ -327,7 +335,7 @@ surfCaptain.controller('ServerController', ['$scope', '$controller', 'ServerRepo
      * @return {string | boolean} ErrorMessage or True if valid
      */
     $scope.updateDocumentRoot = function (data) {
-        var res = ValidationService.hasLength(data, 1, 'DocRoot must not be empty!');
+        var res = ValidationService.hasLength(data, 1, 'DocumentRoot is required!');
         if (res === true) {
             return ValidationService.doesLastCharacterMatch(data, '/', 'DocumentRoot must end with "/"!');
         }
@@ -351,13 +359,24 @@ surfCaptain.controller('ServerController', ['$scope', '$controller', 'ServerRepo
      * @return {string | boolean} ErrorMessage or True if valid
      */
     $scope.updateContext = function (data) {
-        if ($scope.contexts.indexOf(data) > -1) {
-            return true;
-        }
-        return 'Context is not valid!';
+        return ValidationService.doesArrayContainsItem($scope.contexts, data, 'Context is not valid!');
+    };
+
+    /**
+     * Applies a server suffix to the current project name.
+     *
+     * @param {string} suffix
+     * @returns {string}
+     */
+    $scope.generateServerName = function (suffix) {
+        return $scope.name + '-' + suffix;
     };
 
     $scope.$watch('project', function (newValue, oldValue) {
+        var elements,
+            i = 0,
+            numberOfNameSuggestions = $scope.nameSuggestions.length,
+            serverName;
         if (newValue.name === undefined) {
             return;
         }
@@ -366,6 +385,11 @@ surfCaptain.controller('ServerController', ['$scope', '$controller', 'ServerRepo
                 return entry.project === newValue.id;
             });
             $scope.serverNames = ['bma-live', 'bma-qa'];
+
+            for (i; i < numberOfNameSuggestions; i++) {
+                serverName = $scope.generateServerName($scope.nameSuggestions[i].suffix);
+                $scope.nameSuggestions[i].available = !ValidationService.doesArrayContainsItem($scope.serverNames, serverName);
+            }
         });
     });
 
@@ -665,6 +689,21 @@ surfCaptain.service('ValidationService', function () {
      */
     this.doesLastCharacterMatch = function (value, character, message) {
         if (value.charAt(value.length - 1) === character) {
+            return true;
+        }
+        return message || false;
+    };
+
+    /**
+     * Validates if a given Item i found within a given array.
+     *
+     * @param {array} array
+     * @param {mixed} item
+     * @param {string} message
+     * @returns {string|boolean}
+     */
+    this.doesArrayContainsItem = function (array, item, message) {
+        if (array instanceof Array && array.indexOf(item) > -1) {
             return true;
         }
         return message || false;

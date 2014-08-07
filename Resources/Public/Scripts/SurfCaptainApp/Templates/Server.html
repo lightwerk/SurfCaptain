@@ -19,23 +19,19 @@
 			<div class="new-server animate row text-left" data-ng-show="addAServer">
 				<form data-ng-submit="updateServer(newServer)" name="newServerForm">
 					<div class="col-xs-4 col-xs-offset-2">
-						<label>Name:</label> *
-						<input
-							type="text"
-							data-ng-model="newServer.name"
-							placeholder="Name"
-							class="form-control"
-							name="name"
-							required
-							data-ng-trim
-							server-name-validate
-							server-names="serverNames"
-						/>
-						<div class="messages">
-							<div data-ng-messages="newServerForm.name.$error" data-ng-if="newServerForm.name.$dirty">
-								<span class="error" data-ng-message="required">Name is required!</span>
-								<span class="error" data-ng-message="server-name-validate">Not unique!</span>
-							</div>
+						<div class="server-name-suggestions">
+							<label>Choose a name that is not yet taken:</label><br />
+							<span
+								data-ng-repeat="nameSuggestion in nameSuggestions"
+								class="label label-primary"
+								ng-class="{false:'unavailable'}[nameSuggestion.available]"
+							>
+								<a
+									data-ng-if="nameSuggestion.available"
+									data-ng-click="$parent.$parent.newServer.name = generateServerName(nameSuggestion.suffix)"
+								>{{nameSuggestion.suffix}}</a>
+								<span data-ng-if="!nameSuggestion.available">{{nameSuggestion.suffix}}</span>
+							</span>
 						</div>
 
 						<label>Host:</label> *
@@ -70,6 +66,26 @@
 					</div>
 
 					<div class="col-xs-4">
+
+						<label>Or type a name:</label> *
+						<input
+								type="text"
+								data-ng-model="newServer.name"
+								placeholder="Name"
+								class="form-control"
+								name="name"
+								required
+								data-ng-trim
+								server-name-validate
+								server-names="serverNames"
+								/>
+						<div class="messages">
+							<div data-ng-messages="newServerForm.name.$error" data-ng-if="newServerForm.name.$dirty">
+								<span class="error" data-ng-message="required">Name is required!</span>
+								<span class="error" data-ng-message="server-name-validate">Not unique!</span>
+							</div>
+						</div>
+
 						<label>User:</label> *
 						<input
 							type="text"
@@ -100,15 +116,6 @@
 								<span class="error" data-ng-message="required">Context is required!</span>
 							</div>
 						</div>
-
-						<label>TYPO3_SYSTEM (optional)</label>
-						<input
-							type="text"
-							data-ng-model="newServer.system"
-							placeholder="TYPO3_SYSTEM"
-							class="form-control"
-							name="system" data-ng-trim
-						/>
 					</div>
 
 					<div class="col-xs-12 text-center submit-new-server">

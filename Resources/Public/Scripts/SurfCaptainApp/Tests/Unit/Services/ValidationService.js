@@ -60,4 +60,40 @@ describe('ValidationService', function () {
         });
     });
 
+    it('should have a method doesArrayContainsItem', function () {
+        expect(validationService.doesArrayContainsItem).toBeDefined();
+    });
+
+    describe('doesArrayContainsItem', function () {
+        it('should return true if passed array contains passed item', function () {
+            expect(validationService.doesArrayContainsItem([1, 2, 3, 4, 5], 4)).toEqual(true);
+            expect(validationService.doesArrayContainsItem(['a', 'b', 'c', 'd'], 'b')).toEqual(true);
+        });
+
+        it('should return false if passed array does not contains passed item', function () {
+            expect(validationService.doesArrayContainsItem([1, 2, 3, 4, 5], 6)).toEqual(false);
+            expect(validationService.doesArrayContainsItem(['a', 'b', 'c', 'd'], 'z')).toEqual(false);
+        });
+
+        it('should return false if passed array is empty', function () {
+            expect(validationService.doesArrayContainsItem([], 11)).toEqual(false);
+        });
+
+        it('should return false if first argument is no array', function () {
+            expect(validationService.doesArrayContainsItem({}, 11)).toEqual(false);
+        });
+
+        it('should return the passed string if passed array does not contains passed item', function () {
+            expect(validationService.doesArrayContainsItem([1, 2, 3], 11, 'foo')).toEqual('foo');
+        });
+
+        it('should return the passed string if passed array is empty', function () {
+            expect(validationService.doesArrayContainsItem([], 11, 'foo')).toEqual('foo');
+        });
+
+        it('should return the passed string if first argument is no array', function () {
+            expect(validationService.doesArrayContainsItem({}, 11, 'foo')).toEqual('foo');
+        });
+    });
+
 });

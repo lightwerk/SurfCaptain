@@ -153,13 +153,16 @@ div.project-selection {
 }
 
 div.project-buttons {
-	padding: 20px 0;
+	padding: 10px 0;
 	background-color: @main-color !important;
 	width: 100%;
 
 	.btn {
 		color: #000;
 		margin-right: 15px;
+	}
+	.btn[disabled] {
+		opacity: 0.3 !important;
 	}
 	.project-brand {
 		color: #999999;
@@ -381,6 +384,28 @@ div.project-history {
 			margin-bottom: 0px;
 			.error {
 				color: red;
+			}
+		}
+		.server-name-suggestions {
+			height: 88px;
+			span.label {
+				display: inline-block;
+				cursor: pointer;
+				font-size: 20px;
+				margin: 1px 6px;
+				padding: 6px;
+				a {
+					color: black;
+					text-decoration: none;
+				}
+				&:hover {
+					color: black;
+				}
+				&.unavailable {
+					cursor: default;
+					color: #888;
+					opacity: 0.4;
+				}
 			}
 		}
 	}
