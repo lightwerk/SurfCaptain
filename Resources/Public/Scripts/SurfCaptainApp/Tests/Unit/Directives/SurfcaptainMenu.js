@@ -12,7 +12,7 @@ describe('surfcaptainMenu', function () {
         };
         module('surfCaptain', 'surfCaptainPartials', function ($provide) {
             $provide.decorator('$routeParams', function () {
-                var mock = {itemName: 'foo'};
+                var mock = {projectName: 'foo'};
                 return mock;
             });
             $provide.decorator('$location', function ($delegate) {

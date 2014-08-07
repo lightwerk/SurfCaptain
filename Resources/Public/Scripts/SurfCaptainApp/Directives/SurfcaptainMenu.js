@@ -6,10 +6,10 @@ surfCaptain.directive('surfcaptainMenu', ['$routeParams', '$location', function 
     return {
         restrict: 'E',
         templateUrl: '/_Resources/Static/Packages/Lightwerk.SurfCaptain/Scripts/SurfCaptainApp/Partials/Menu.html',
-        scope: true,
+        scope: {},
         link: function (scope, element, attributes) {
             var lastUrlPart = $location.path().split('/').pop();
-            scope.project = $routeParams.itemName;
+            scope.project = $routeParams.projectName;
             scope.context = lastUrlPart === scope.project ? 'history' : lastUrlPart;
         }
     };

@@ -12,6 +12,10 @@ describe('ValidationService', function () {
         });
     });
 
+    it('should have a method hasLength', function () {
+        expect(validationService.hasLength).toBeDefined();
+    });
+
     describe('hasLength', function () {
 
         it('should return true if passed minLength is exceeded', function () {
@@ -33,6 +37,10 @@ describe('ValidationService', function () {
             var res = validationService.hasLength('foo', 10);
             expect(res).toEqual(false);
         });
+    });
+
+    it('should have a method doesLastCharacterMatch', function () {
+        expect(validationService.doesLastCharacterMatch).toBeDefined();
     });
 
     describe('doesLastCharacterMatch', function () {

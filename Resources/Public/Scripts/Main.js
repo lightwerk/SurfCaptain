@@ -9,19 +9,19 @@ var surfCaptain = angular.module('surfCaptain', ['ngRoute', 'xeditable', 'ngAnim
                 templateUrl: '/_Resources/Static/Packages/Lightwerk.SurfCaptain/Scripts/SurfCaptainApp/Templates/Projects.html',
                 controller: 'ProjectsController'
             }).
-            when('/project/:itemName', {
+            when('/project/:projectName', {
                 templateUrl: '/_Resources/Static/Packages/Lightwerk.SurfCaptain/Scripts/SurfCaptainApp/Templates/Project.html',
                 controller: 'ProjectController'
             }).
-            when('/project/:itemName/deploy', {
+            when('/project/:projectName/deploy', {
                 templateUrl: '/_Resources/Static/Packages/Lightwerk.SurfCaptain/Scripts/SurfCaptainApp/Templates/Deploy.html',
                 controller: 'DeployController'
             }).
-            when('/project/:itemName/sync', {
+            when('/project/:projectName/sync', {
                 templateUrl: '/_Resources/Static/Packages/Lightwerk.SurfCaptain/Scripts/SurfCaptainApp/Templates/Sync.html',
                 controller: 'SyncController'
             }).
-            when('/project/:itemName/server', {
+            when('/project/:projectName/server', {
                 templateUrl: '/_Resources/Static/Packages/Lightwerk.SurfCaptain/Scripts/SurfCaptainApp/Templates/Server.html',
                 controller: 'ServerController'
             }).
@@ -151,7 +151,7 @@ surfCaptain.controller('AboutController', ['$scope', function ($scope) {
 
 'use strict';
 surfCaptain.controller('AbstractSingleProjectController', ['$scope', '$routeParams', 'ProjectRepository', function ($scope, $routeParams, ProjectRepository) {
-    $scope.name = $routeParams.itemName;
+    $scope.name = $routeParams.projectName;
     $scope.project = {};
 
     this.init = function () {
@@ -255,7 +255,7 @@ surfCaptain.controller('ProjectController', ['$scope', '$controller', 'HistoryRe
     angular.extend(this, $controller('AbstractSingleProjectController', {$scope: $scope}));
 
     $scope.ordering = 'date';
-    $scope.constraint = '';
+    $scope.constraint = 'dummy';
 
     $scope.$watch('project', function (newValue, oldValue) {
         if (newValue === undefined || newValue.name === undefined) {
@@ -463,10 +463,10 @@ surfCaptain.directive('surfcaptainMenu', ['$routeParams', '$location', function 
     return {
         restrict: 'E',
         templateUrl: '/_Resources/Static/Packages/Lightwerk.SurfCaptain/Scripts/SurfCaptainApp/Partials/Menu.html',
-        scope: true,
+        scope: {},
         link: function (scope, element, attributes) {
             var lastUrlPart = $location.path().split('/').pop();
-            scope.project = $routeParams.itemName;
+            scope.project = $routeParams.projectName;
             scope.context = lastUrlPart === scope.project ? 'history' : lastUrlPart;
         }
     };

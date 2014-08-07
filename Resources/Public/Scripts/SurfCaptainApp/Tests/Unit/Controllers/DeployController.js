@@ -95,7 +95,7 @@ describe('DeployController', function () {
         });
     });
 
-    // Test code that is triggerd by $watch
+    // Test code that is triggered by $watch
     describe('$watch', function () {
         var unsetLoadingKeySpy, gitTagSpy, gitBranchSpy, serverSpy, historySpy;
 
