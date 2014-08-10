@@ -50,25 +50,31 @@ class GitService {
 	 */
 	public function initializeObject() {
 		$this->browserRequestEngine->setOption(CURLOPT_SSL_VERIFYPEER, FALSE);
+		$this->browserRequestEngine->setOption(CURLOPT_SSL_VERIFYHOST, FALSE);
 		$this->browser->setRequestEngine($this->browserRequestEngine);
 	}
 
 	/**
-	 * @param $command
-	 * @return \TYPO3\Flow\Http\Response
-	 * @throws \TYPO3\Flow\Http\Client\InfiniteRedirectionException
+	 * @param string $command
+	 * @param string $method
+	 * @param array $parameters
+	 * @return array $json
+	 * @throws GitServiceException
+	 * @throws TYPO3\Flow\Http\Exception
 	 */
 	protected function getGitLabApiResponse($command, $method = 'GET', array $parameters = array()) {
 		$parameters['private_token'] = $this->settings['git']['privateToken'];
-		$response = $this->browser->request(
-			$this->settings['git']['url'] . $command . '?' . http_build_query($parameters),
-			$method
-		);
-		$this->lastResponse = $response;
-		return json_decode(
+		$url = $this->settings['git']['url'] . $command . '?' . http_build_query($parameters);
+		// maybe we will throw own exception to give less information (token is outputed)
+		$response = $this->browser->request($url, $method);
+		$json = json_decode(
 			$response->getContent(),
 			TRUE
 		);
+		if ($json === NULL) {
+			throw new GitServiceException('response cannot decode to json', 1406818561);
+		}
+		return $json;
 	}
 
 	/**
