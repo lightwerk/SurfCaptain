@@ -8,12 +8,14 @@ namespace Lightwerk\SurfCaptain\Mvc\View;
 
 class JsonView extends \TYPO3\Flow\Mvc\View\JsonView {
 
-	 /**
-	  * empty array instead of array('value')
-	  *
-	  * @var array
-	  */
-	 protected $variablesToRender = array();
+	/**
+	 * The rendering configuration for this JSON view which
+	 * determines which properties of each variable to render.
+	 * @var array
+	 */
+	protected $configuration = array(
+		'_exposeObjectIdentifier' => TRUE,
+	);
 
 	/**
 	 * Transforms the value view variable to a serializable
@@ -24,54 +26,11 @@ class JsonView extends \TYPO3\Flow\Mvc\View\JsonView {
 	 * @api
 	 */
 	public function render() {
-		// we do not have to set response Content-Type
-		if (count($this->variablesToRender) === 0) {
-			// render all variables exclude settings
-			foreach($this->variables AS $key => $value) {
-				if ($key !== 'settings') {
-					$this->variablesToRender[] = $key;
-				}
-			}
-		}
 		$propertiesToRender = $this->renderArray();
-		$flashMessagesToRender = $this->renderFlashMessages();
-		$propertiesToRender['flashMessages'] = $flashMessagesToRender;
+		$propertiesToRender['flashMessages'] = $this->renderFlashMessages();
 		$propertiesToRender['validationErrors'] = $this->renderValidationErrors();
 		return json_encode($propertiesToRender);
 	}
-
-	/**
-	 * Loads the configuration and transforms the value to a serializable
-	 * array.
-	 * 
-	 * lw_af always render assoc
-	 *
-	 * @return array An array containing the values, ready to be JSON encoded
-	 * @api
-	 */
-	protected function renderArray() {
-		$valueToRender = array();
-		foreach ($this->variablesToRender as $variableName) {
-			$valueToRender[$variableName] = isset($this->variables[$variableName]) ? $this->variables[$variableName] : NULL;
-		}
-		$configuration = $this->configuration;
-		return $this->transformValue($valueToRender, $configuration);
-	}
-
-	/**
-	 * Transforms a value depending on type recursively using the
-	 * supplied configuration.
-	 *
-	 * @param mixed $value The value to transform
-	 * @param array $configuration Configuration for transforming the value
-	 * @return array The transformed value
-	 */
-	protected function transformValue($value, array $configuration) {
-		// render always the identifier for entities
-		$configuration['_exposeObjectIdentifier'] = TRUE;
-		return parent::transformValue($value, $configuration);
-	}
-
 
 	/**
 	 * renderFlashMessages 
@@ -82,6 +41,7 @@ class JsonView extends \TYPO3\Flow\Mvc\View\JsonView {
 		$allMessages = $this->controllerContext->getFlashMessageContainer()->getMessagesAndFlush();
 		$messages = array();
 		foreach ($allMessages AS $message) {
+			/** @var \TYPO3\Flow\Error\Message $message */
 			$messages[] = array(
 				'message' => $message->render(),
 				'title' => $message->getTitle(),
@@ -93,9 +53,8 @@ class JsonView extends \TYPO3\Flow\Mvc\View\JsonView {
 
 	/**
 	 * renderValidationErrors 
-	 * 
-	 * @access protected
-	 * @return void
+	 *
+	 * @return array
 	 */
 	protected function renderValidationErrors() {
 		$arguments = $this->controllerContext->getArguments();
@@ -104,6 +63,7 @@ class JsonView extends \TYPO3\Flow\Mvc\View\JsonView {
 		foreach ($validationResults->getFlattenedErrors() as $key => $errors) {
 			$validationError  = array('property' => $key, 'errors' => array());
 			foreach ($errors as $error) {
+				/** @var \TYPO3\Flow\Error\Error $error */
 				$validationError['errors'][] = array(
 					'message' => $error->getMessage(),
 					'code' => $error->getCode()

@@ -67,7 +67,7 @@ abstract class AbstractRestController extends RestController {
 		if ($this->mediaType === 'application/json') {
 			$this->addErrorFlashMessage();
 		} else {
-			return parent::errorAction();
+			parent::errorAction();
 		}
 	}
 
@@ -118,10 +118,12 @@ abstract class AbstractRestController extends RestController {
 				$this->uriBuilder->setFormat($format);
 			}
 
-			$uri = $this->uriBuilder->setCreateAbsoluteUri(TRUE)->uriFor($actionName, $arguments, $controllerName, $packageKey, $subpackageKey);
+			$uri = $this->uriBuilder
+						->setCreateAbsoluteUri(TRUE)
+						->uriFor($actionName, $arguments, $controllerName, $packageKey, $subpackageKey);
 			$this->view->assign('see', $uri);
 		} else {
-			return parent::redirect($actionName, $controllerName, $packageKey, $arguments, $delay, $statusCode, $format);
+			parent::redirect($actionName, $controllerName, $packageKey, $arguments, $delay, $statusCode, $format);
 		}
 	}
 

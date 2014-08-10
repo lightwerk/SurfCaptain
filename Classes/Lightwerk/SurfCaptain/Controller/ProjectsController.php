@@ -34,7 +34,7 @@ class ProjectsController extends AbstractRestController {
 					'web_url' => $project['web_url'],
 				);
 			}
-			$this->view->assign('projects', $projects);
+			$this->view->assign('value', array('projects' => $projects));
 			$this->addFlashMessage('we have a flashMessage', 'Oops', Message::SEVERITY_NOTICE);
 		} catch (GitServiceException $e) {
 			// adds a flashMessage
