@@ -27,8 +27,7 @@
         "source": "https://bitbucket.org/lightwerk/surfcaptain/src"
     },
     "require": {
-        "typo3/surf": "*",
-        "lightwerk/surfclasses": "*"
+        "typo3/surf": "*"
     },
     "autoload": {
         "psr-0": {

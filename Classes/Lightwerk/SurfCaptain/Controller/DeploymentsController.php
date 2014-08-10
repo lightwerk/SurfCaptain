@@ -6,8 +6,8 @@ namespace Lightwerk\SurfCaptain\Controller;
  *                                                                        *
  *                                                                        */
 
-use Lightwerk\SurfClasses\Domain\Model\Deployment;
-use Lightwerk\SurfClasses\Domain\Repository\DeploymentRepository;
+use Lightwerk\SurfCaptain\Domain\Model\Deployment;
+use Lightwerk\SurfCaptain\Domain\Repository\DeploymentRepository;
 use TYPO3\Flow\Annotations as Flow;
 
 class DeploymentsController extends AbstractRestController {
