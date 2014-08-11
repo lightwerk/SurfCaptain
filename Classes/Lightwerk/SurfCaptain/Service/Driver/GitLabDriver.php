@@ -166,17 +166,22 @@ class GitLabDriver implements DriverInterface {
 	 * @return string
 	 */
 	public function getFileContent($repositoryUrl, $filePath, $reference = 'master') {
-		// ToDo lm: Case for decoding
-		return base64_decode(
-			$this->getGitLabApiResponse(
-				'projects/' . $this->getId($repositoryUrl) . '/repository/files',
-				'GET',
-				array(
-					'file_path' => $filePath,
-					'ref' => $reference,
-				)
-			)['content']
+		$response = $this->getGitLabApiResponse(
+			'projects/' . $this->getId($repositoryUrl) . '/repository/files',
+			'GET',
+			array(
+				'file_path' => $filePath,
+				'ref' => $reference,
+			)
 		);
+		switch ($response['encoding']) {
+			case 'base64':
+				$content = base64_decode($response['content']);
+				break;
+			default:
+				throw new Exception('Encoding "' . $response['encoding'] . '" is unknown!', 1407793800);
+		}
+		return $content;
 	}
 
 	/**

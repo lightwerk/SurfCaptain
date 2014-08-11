@@ -103,11 +103,11 @@ Example response:
 
 Example call to get the last 10 deployments of all repositories:
 
-curl -H "Accept: application/json" http://surf.flow.lp.lw.loc/api/deployments | jq '.'
+	curl -H "Accept: application/json" http://surf.flow.lp.lw.loc/api/deployments | jq '.'
 
 Example call to get the last 30 deployments of git@git.lightwerk.com:boilerplate/typo3_cms.git:
 
-curl -H "Accept: application/json" http://surf.flow.lp.lw.loc/api/deployments\?repositoryUrl\=git%40git.lightwerk.com%3Aboilerplate%2Ftypo3_cms.git\&limit\=30 | jq '.'
+	curl -H "Accept: application/json" http://surf.flow.lp.lw.loc/api/deployments\?repositoryUrl\=git%40git.lightwerk.com%3Aboilerplate%2Ftypo3_cms.git\&limit\=30 | jq '.'
 
 ### Create new deployment
 
@@ -119,11 +119,11 @@ curl -H "Accept: application/json" http://surf.flow.lp.lw.loc/api/deployments\?r
 
 Example call with a configuration:
 
-curl -H "Accept: application/json" -v -X POST http://surf.flow.lp.lw.loc/api/deployments\?configuration\=%7B%22applications%22%3A%5B%7B%22type%22%3A%22TYPO3%5C%5CCMS%5C%5CDeploy%22%2C%22options%22%3A%7B%22repositoryUrl%22%3A%22git%40git.lightwerk.com%3Aboilerplate%5C%2Ftypo3_cms.git%22%2C%22documentRoot%22%3A%22%5C%2Fvar%5C%2Fwww%5C%2FprojectName%5C%2Fcontext%5C%2F%22%2C%22context%22%3A%22Development%22%2C%22tag%22%3A%221.2.3%22%7D%2C%22nodes%22%3A%5B%7B%22name%22%3A%22Front-End+Server+2%22%2C%22hostname%22%3A%22www2.sma.de%22%2C%22username%22%3A%22user2%22%7D%5D%7D%5D%7D
+	curl -H "Accept: application/json" -v -X POST http://surf.flow.lp.lw.loc/api/deployments\?configuration\=%7B%22applications%22%3A%5B%7B%22type%22%3A%22TYPO3%5C%5CCMS%5C%5CDeploy%22%2C%22options%22%3A%7B%22repositoryUrl%22%3A%22git%40git.lightwerk.com%3Aboilerplate%5C%2Ftypo3_cms.git%22%2C%22documentRoot%22%3A%22%5C%2Fvar%5C%2Fwww%5C%2FprojectName%5C%2Fcontext%5C%2F%22%2C%22context%22%3A%22Development%22%2C%22tag%22%3A%221.2.3%22%7D%2C%22nodes%22%3A%5B%7B%22name%22%3A%22Front-End+Server+2%22%2C%22hostname%22%3A%22www2.sma.de%22%2C%22username%22%3A%22user2%22%7D%5D%7D%5D%7D
 
 Example call with a key:
 
-curl -H "Accept: application/json" -v -X POST http://surf.flow.lp.lw.loc/api/deployments\?key\=sma
+	curl -H "Accept: application/json" -v -X POST http://surf.flow.lp.lw.loc/api/deployments\?key\=sma
 
 Example of a decode configuration parameter:
 
@@ -158,7 +158,7 @@ Example of a decode configuration parameter:
 
 Example call:
 
-curl -H "Accept: application/json" -v -X DELETE http://surf.flow.lp.lw.loc/api/deployments\?deployment\=ac964cbf-9f85-c9d3-63b8-85b40414f53c
+	curl -H "Accept: application/json" -v -X DELETE http://surf.flow.lp.lw.loc/api/deployments\?deployment\=ac964cbf-9f85-c9d3-63b8-85b40414f53c
 
 ## Logs
 
@@ -172,11 +172,11 @@ curl -H "Accept: application/json" -v -X DELETE http://surf.flow.lp.lw.loc/api/d
 
 Example call:
 
-curl -H "Accept: application/json" http://surf.flow.lp.lw.loc/api/logs\?deployment\=ac964cbf-9f85-c9d3-63b8-85b40414f53c | jq '.'
+	curl -H "Accept: application/json" http://surf.flow.lp.lw.loc/api/logs\?deployment\=ac964cbf-9f85-c9d3-63b8-85b40414f53c | jq '.'
 
 Example call with a offset of 23:
 
-curl -H "Accept: application/json" http://surf.flow.lp.lw.loc/api/logs\?deployment\=ac964cbf-9f85-c9d3-63b8-85b40414f53c\&offset=23 | jq '.'
+	curl -H "Accept: application/json" http://surf.flow.lp.lw.loc/api/logs\?deployment\=ac964cbf-9f85-c9d3-63b8-85b40414f53c\&offset=23 | jq '.'
 
 ## Presets
 
@@ -190,11 +190,11 @@ curl -H "Accept: application/json" http://surf.flow.lp.lw.loc/api/logs\?deployme
 
 Example call to list presets of a defined project:
 
-curl -H "Accept: application/json" http://surf.flow.lp.lw.loc/api/presets\?repositoryUrl\=git%40git.lightwerk.com%3Aboilerplate%2Ftypo3_cms.git | jq '.'
+	curl -H "Accept: application/json" http://surf.flow.lp.lw.loc/api/presets\?repositoryUrl\=git%40git.lightwerk.com%3Aboilerplate%2Ftypo3_cms.git | jq '.'
 
 Example call to list presets without a defined project (Wildcards for developer instances):
 
-curl -H "Accept: application/json" http://surf.flow.lp.lw.loc/api/presets\?repositoryUrl\= | jq '.'
+	curl -H "Accept: application/json" http://surf.flow.lp.lw.loc/api/presets\?repositoryUrl\= | jq '.'
 
 ### Add presets
 
@@ -206,7 +206,7 @@ curl -H "Accept: application/json" http://surf.flow.lp.lw.loc/api/presets\?repos
 
 Example call:
 
-curl -H "Accept: application/json" -v -X POST http://surf.flow.lp.lw.loc/api/presets\?key=sma\&configuration\=%7B%22applications%22%3A%5B%7B%22options%22%3A%7B%22repositoryUrl%22%3A%22git%40git.lightwerk.com%3Aboilerplate%5C%2Ftypo3_cms.git%22%2C%22documentRoot%22%3A%22%5C%2Fvar%5C%2Fwww%5C%2FprojectName%5C%2Fcontext%5C%2F%22%2C%22context%22%3A%22Development%22%7D%2C%22nodes%22%3A%5B%7B%22name%22%3A%22Front-End+Server+2%22%2C%22hostname%22%3A%22www2.sma.de%22%2C%22username%22%3A%22user2%22%7D%5D%7D%5D%7D
+	curl -H "Accept: application/json" -v -X POST http://surf.flow.lp.lw.loc/api/presets\?key=sma\&configuration\=%7B%22applications%22%3A%5B%7B%22options%22%3A%7B%22repositoryUrl%22%3A%22git%40git.lightwerk.com%3Aboilerplate%5C%2Ftypo3_cms.git%22%2C%22documentRoot%22%3A%22%5C%2Fvar%5C%2Fwww%5C%2FprojectName%5C%2Fcontext%5C%2F%22%2C%22context%22%3A%22Development%22%7D%2C%22nodes%22%3A%5B%7B%22name%22%3A%22Front-End+Server+2%22%2C%22hostname%22%3A%22www2.sma.de%22%2C%22username%22%3A%22user2%22%7D%5D%7D%5D%7D
 
 Example of a decoded configuration parameter:
 
@@ -240,7 +240,7 @@ Example of a decoded configuration parameter:
 
 Example call:
 
-curl -H "Accept: application/json" -v -X PUT http://surf.flow.lp.lw.loc/api/presets\?key=sma\&configuration\=%7B%22applications%22%3A%5B%7B%22options%22%3A%7B%22repositoryUrl%22%3A%22git%40git.lightwerk.com%3Aboilerplate%5C%2Ftypo3_cms.git%22%2C%22documentRoot%22%3A%22%5C%2Fvar%5C%2Fwww%5C%2FprojectName%5C%2Fcontext%5C%2F%22%2C%22context%22%3A%22Development%22%7D%2C%22nodes%22%3A%5B%7B%22name%22%3A%22Front-End+Server+2%22%2C%22hostname%22%3A%22www2.sma.de%22%2C%22username%22%3A%22user2%22%7D%5D%7D%5D%7D
+	curl -H "Accept: application/json" -v -X PUT http://surf.flow.lp.lw.loc/api/presets\?key=sma\&configuration\=%7B%22applications%22%3A%5B%7B%22options%22%3A%7B%22repositoryUrl%22%3A%22git%40git.lightwerk.com%3Aboilerplate%5C%2Ftypo3_cms.git%22%2C%22documentRoot%22%3A%22%5C%2Fvar%5C%2Fwww%5C%2FprojectName%5C%2Fcontext%5C%2F%22%2C%22context%22%3A%22Development%22%7D%2C%22nodes%22%3A%5B%7B%22name%22%3A%22Front-End+Server+2%22%2C%22hostname%22%3A%22www2.sma.de%22%2C%22username%22%3A%22user2%22%7D%5D%7D%5D%7D
 
 ### Delete preset
 
@@ -251,4 +251,4 @@ curl -H "Accept: application/json" -v -X PUT http://surf.flow.lp.lw.loc/api/pres
 
 Example call:
 
-curl -H "Accept: application/json" -v -X DELETE http://surf.flow.lp.lw.loc/api/presets\?key\=sma
+	curl -H "Accept: application/json" -v -X DELETE http://surf.flow.lp.lw.loc/api/presets\?key\=sma
