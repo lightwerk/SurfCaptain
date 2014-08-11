@@ -81,7 +81,9 @@ class GitService implements Driver\DriverInterface {
 	 * @throws Exception
 	 */
 	protected function getDriverFromRepositoryUrl($repositoryUrl) {
-		return GeneralUtility::getUrlPartsFromRepositoryUrl($repositoryUrl)['host'];
+		return $this->getDriverFromHost(
+			GeneralUtility::getUrlPartsFromRepositoryUrl($repositoryUrl)['host']
+		);
 	}
 
 	/**
@@ -126,8 +128,8 @@ class GitService implements Driver\DriverInterface {
 	 * @return string
 	 */
 	public function getFileContent($repositoryUrl, $filePath, $reference = 'master') {
-		$this->getDriverFromRepositoryUrl($repositoryUrl)
-			->getFileContent($repositoryUrl, $filePath, $reference);
+		return $this->getDriverFromRepositoryUrl($repositoryUrl)
+					->getFileContent($repositoryUrl, $filePath, $reference);
 	}
 
 	/**
@@ -152,8 +154,8 @@ class GitService implements Driver\DriverInterface {
 	 * @return array
 	 */
 	public function getBranches($repositoryUrl) {
-		$this->getDriverFromRepositoryUrl($repositoryUrl)
-			 ->getBranches($repositoryUrl);
+		return $this->getDriverFromRepositoryUrl($repositoryUrl)
+					->getBranches($repositoryUrl);
 	}
 
 	/**
@@ -163,7 +165,7 @@ class GitService implements Driver\DriverInterface {
 	 * @return array
 	 */
 	public function getTags($repositoryUrl) {
-		$this->getDriverFromRepositoryUrl($repositoryUrl)
-			 ->getTags($repositoryUrl);
+		return $this->getDriverFromRepositoryUrl($repositoryUrl)
+					->getTags($repositoryUrl);
 	}
 }

@@ -209,7 +209,7 @@ class GitLabDriver implements DriverInterface {
 	 * @return array
 	 */
 	public function getBranches($repositoryUrl) {
-		return $this->getGitLabApiResponse('/projects/' . $this->getId($repositoryUrl) . '/repository/branches');
+		return $this->getGitLabApiResponse('projects/' . $this->getId($repositoryUrl) . '/repository/branches');
 	}
 
 	/**
@@ -219,6 +219,6 @@ class GitLabDriver implements DriverInterface {
 	 * @return array
 	 */
 	public function getTags($repositoryUrl) {
-		return $this->getGitLabApiResponse('/projects/' . $this->getId($repositoryUrl) . '/repository/tags');
+		return $this->getGitLabApiResponse('projects/' . $this->getId($repositoryUrl) . '/repository/tags');
 	}
 }

@@ -101,8 +101,10 @@ abstract class AbstractRestController extends RestController {
 	protected function redirect($actionName, $controllerName = NULL, $packageKey = NULL, array $arguments = NULL, $delay = 0, $statusCode = 303, $format = NULL) {
 		if ($this->mediaType === 'application/json') {
 			// render all arguments
-			foreach ($arguments as $key => $value) {
-				$this->view->assign($key, $value);
+			if (!empty($arguments)) {
+				foreach ($arguments as $key => $value) {
+					$this->view->assign($key, $value);
+				}
 			}
 			// get uri (like AbstractController->redirect())
 			// do we need/want the uri?
