@@ -1,7 +1,19 @@
 Lightwerk:
   SurfCaptain:
-    git:
-      privateToken: 'Please define this value in root/Configuration/Settings.yaml'
-      url: https://git.lightwerk.com/api/v3/
-      projects:
-        groupId: 10
+    sources:
+      git.lightwerk.com:
+        className: \Lightwerk\SurfCaptain\Service\Driver\GitLabDriver
+        privateToken: 'Please define this value in root/Configuration/Settings.yaml'
+        url: https://git.lightwerk.com/api/v3/
+        repositories:
+          projectFilter:
+            groupIds:
+              - 10
+#      git.sma.de:
+#        className: \Lightwerk\SurfCaptain\Service\Driver\GitLabDriver
+#        privateToken: 'Please define this value in root/Configuration/Settings.yaml'
+#        url: http://git.sma.de/api/v3/
+#        repositories:
+#          rcwSmaDeFilter:
+#            repositoryUrls:
+#              - git@git.sma.de:sma-websites/rcw-sma-de.git

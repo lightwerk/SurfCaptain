@@ -6,12 +6,18 @@ namespace Lightwerk\SurfCaptain\Service;
  *                                                                        *
  *                                                                        */
 
+use Lightwerk\SurfCaptain\Utility\GeneralUtility;
 use TYPO3\Flow\Annotations as Flow;
 
 /**
  * @Flow\Scope("singleton")
  */
-class GitService {
+class GitService implements Driver\DriverInterface {
+
+	/**
+	 * @var Driver\DriverInterface[]
+	 */
+	protected $drivers = array();
 
 	/**
 	 * @var array
@@ -19,21 +25,64 @@ class GitService {
 	protected $settings;
 
 	/**
-	 * @Flow\Inject
-	 * @var \TYPO3\Flow\Http\Client\Browser
+	 * @return void
+	 * @throws Exception
 	 */
-	protected $browser;
+	protected function initializeObject() {
+		$this->initializeDrivers();
+	}
 
 	/**
-	 * @Flow\Inject
-	 * @var \TYPO3\Flow\Http\Client\CurlEngine
+	 * @return void
+	 * @throws Exception
 	 */
-	protected $browserRequestEngine;
+	protected function initializeDrivers() {
+		if (!is_array($this->settings['sources'])) {
+			throw new Exception('No existing sources', 1407702241);
+		}
+		foreach ($this->settings['sources'] as $host => $source) {
+			if (empty($source['className'])) {
+				throw new Exception('No className defined for "' . $host . '"', 1407702622);
+			}
+			if (!class_exists($source['className'])) {
+				throw new Exception('Class "' . $source['className'] . '" does not exist!', 1407702669);
+			}
+			$driver = new $source['className']();
+			if ($driver instanceof Driver\DriverInterface) {
+				$driver->setSettings($source);
+				$this->drivers[$host] = $driver;
+			} else {
+				throw new Exception(
+					'Class "' . $source['className'] . '" does not implement Lightwerk\SurfCaptain\Service\Driver\DriverInterface!',
+					1407739781
+				);
+			}
+		}
+	}
 
 	/**
-	 * @var \TYPO3\Flow\Http\Response
+	 * Returns a driver for a defined host
+	 *
+	 * @return Driver\DriverInterface
+	 * @throws Exception
 	 */
-	protected $lastResponse;
+	protected function getDriverFromHost($host) {
+		if (!isset($this->drivers[$host])) {
+			throw new Exception('No existing driver for host "' . $host . '"', 1407701580);
+		}
+		return $this->drivers[$host];
+	}
+
+	/**
+	 * Returns a driver for a repositoryUrl
+	 *
+	 * @param string $repositoryUrl
+	 * @return Driver\DriverInterface
+	 * @throws Exception
+	 */
+	protected function getDriverFromRepositoryUrl($repositoryUrl) {
+		return GeneralUtility::getUrlPartsFromRepositoryUrl($repositoryUrl)['host'];
+	}
 
 	/**
 	 * Inject the settings
@@ -46,98 +95,75 @@ class GitService {
 	}
 
 	/**
+	 * Sets the settings
+	 *
+	 * @param array $settings
 	 * @return void
 	 */
-	public function initializeObject() {
-		$this->browserRequestEngine->setOption(CURLOPT_SSL_VERIFYPEER, FALSE);
-		$this->browserRequestEngine->setOption(CURLOPT_SSL_VERIFYHOST, FALSE);
-		$this->browser->setRequestEngine($this->browserRequestEngine);
+	public function setSettings(array $settings) {
+		$this->settings = $settings;
 	}
 
 	/**
-	 * @param string $command
-	 * @param string $method
-	 * @param array $parameters
-	 * @return array $json
-	 * @throws GitServiceException
-	 * @throws TYPO3\Flow\Http\Exception
+	 * Returns repositories
+	 *
+	 * @return array
 	 */
-	protected function getGitLabApiResponse($command, $method = 'GET', array $parameters = array()) {
-		$parameters['private_token'] = $this->settings['git']['privateToken'];
-		$url = $this->settings['git']['url'] . $command . '?' . http_build_query($parameters);
-		// maybe we will throw own exception to give less information (token is outputed)
-		$response = $this->browser->request($url, $method);
-		$json = json_decode(
-			$response->getContent(),
-			TRUE
-		);
-		if ($json === NULL) {
-			throw new GitServiceException('response cannot decode to json', 1406818561);
+	public function getRepositories() {
+		$repositories = array();
+		foreach ($this->drivers as $driver) {
+			$repositories = array_merge($repositories, $driver->getRepositories());
 		}
-		return $json;
+		return $repositories;
 	}
 
 	/**
-	 * @param integer $groupId
-	 * @return \TYPO3\Flow\Http\Response
-	 */
-	public function getProjectsOfGroup($groupId) {
-		return $this->getGitLabApiResponse('groups/' . $groupId);
-	}
-
-	/**
-	 * @param integer $projectId
+	 * Return the content of a file
+	 *
+	 * @param string $repositoryUrl
 	 * @param string $filePath
-	 * @param string $ref
+	 * @param string $reference branch name, tag name or hash
 	 * @return string
 	 */
-	public function getFileContent($projectId, $filePath, $ref = 'master') {
-		return base64_decode(
-			$this->getGitLabApiResponse(
-				'projects/' . $projectId . '/repository/files',
-				'GET',
-				array(
-					'file_path' => $filePath,
-					'ref' => $ref,
-				)
-			)['content']
-		);
+	public function getFileContent($repositoryUrl, $filePath, $reference = 'master') {
+		$this->getDriverFromRepositoryUrl($repositoryUrl)
+			->getFileContent($repositoryUrl, $filePath, $reference);
 	}
 
 	/**
-	 * @param integer $projectId
+	 * Sets the content of a file
+	 *
+	 * @param string $repositoryUrl
 	 * @param string $filePath
 	 * @param string $content
 	 * @param string $commitMessage
 	 * @param string $branchName
 	 * @return void
 	 */
-	public function setFileContent($projectId, $filePath, $content, $commitMessage, $branchName = 'master') {
-		$this->getGitLabApiResponse(
-			'projects/' . $projectId . '/repository/files',
-			'PUT',
-			array(
-				'file_path' => $filePath,
-				'branch_name' => $branchName,
-				'commit_message' => $commitMessage,
-				'content' => $content
-			)
-		);
+	public function setFileContent($repositoryUrl, $filePath, $content, $commitMessage, $branchName = 'master') {
+		$this->getDriverFromRepositoryUrl($repositoryUrl)
+			 ->setFileContent($repositoryUrl, $filePath, $content, $commitMessage, $branchName);
 	}
 
 	/**
-	 * @param $projectId
-	 * @return \TYPO3\Flow\Http\Response
+	 * Returns branches of a repository
+	 *
+	 * @param string $repositoryUrl
+	 * @return array
 	 */
-	public function getBranches($projectId) {
-		return $this->getGitLabApiResponse('/projects/' . $projectId . '/repository/branches');
+	public function getBranches($repositoryUrl) {
+		$this->getDriverFromRepositoryUrl($repositoryUrl)
+			 ->getBranches($repositoryUrl);
 	}
 
 	/**
-	 * @param $projectId
-	 * @return \TYPO3\Flow\Http\Response
+	 * Returns tags of a repository
+	 *
+	 * @param string $repositoryUrl
+	 * @return array
 	 */
-	public function getTags($projectId) {
-		return $this->getGitLabApiResponse('/projects/' . $projectId . '/repository/tags');
+	public function getTags($repositoryUrl) {
+		$this->getDriverFromRepositoryUrl($repositoryUrl)
+			 ->getTags($repositoryUrl);
 	}
 }
