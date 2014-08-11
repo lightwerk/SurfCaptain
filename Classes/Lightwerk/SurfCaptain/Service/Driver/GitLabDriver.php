@@ -7,6 +7,7 @@ namespace Lightwerk\SurfCaptain\Service\Driver;
  *                                                                        */
 
 use Lightwerk\SurfCaptain\Utility\GeneralUtility;
+use Lightwerk\SurfCaptain\Utility\MarkerUtility;
 use TYPO3\Flow\Annotations as Flow;
 
 class GitLabDriver implements DriverInterface {
@@ -68,7 +69,7 @@ class GitLabDriver implements DriverInterface {
 	 */
 	protected function getGitLabApiResponse($command, $method = 'GET', array $parameters = array()) {
 		$parameters['private_token'] = $this->settings['privateToken'];
-		$url = $this->settings['url'] . $command . '?' . http_build_query($parameters);
+		$url = $this->settings['apiUrl'] . $command . '?' . http_build_query($parameters);
 		// maybe we will throw own exception to give less information (token is outputed)
 		$response = $this->browser->request($url, $method);
 		$content = json_decode($response->getContent(), TRUE);
@@ -84,7 +85,9 @@ class GitLabDriver implements DriverInterface {
 	 * @throws Exception
 	 */
 	protected function getProjectFromRepositoryUrl($repositoryUrl) {
-		return $this->getGitLabApiResponse('projects/' . $this->getId($repositoryUrl));
+		$project = $this->getGitLabApiResponse('projects/' . $this->getId($repositoryUrl));
+		$project = $this->replaceMarkersInItem($project, 'repositories');
+		return $project;
 	}
 
 	/**
@@ -93,7 +96,9 @@ class GitLabDriver implements DriverInterface {
 	 * @throws Exception
 	 */
 	protected function getProjectsOfGroup($groupId) {
-		return $this->getGitLabApiResponse('groups/' . $groupId)['projects'];
+		$projects = $this->getGitLabApiResponse('groups/' . $groupId)['projects'];
+		$projects = $this->replaceMarkersInItems($projects, 'repositories');
+		return $projects;
 	}
 
 	/**
@@ -113,7 +118,9 @@ class GitLabDriver implements DriverInterface {
 	 * @throws Exception
 	 */
 	protected function getAllProjects() {
-		return $this->getGitLabApiResponse('projects');
+		$projects = $this->getGitLabApiResponse('projects');
+		$projects = $this->replaceMarkersInItems($projects, 'repositories');
+		return $projects;
 	}
 
 	/**
@@ -123,10 +130,10 @@ class GitLabDriver implements DriverInterface {
 	 */
 	public function getRepositories() {
 		$repositories = array();
-		if (empty($this->settings['repositories']) || !is_array($this->settings['repositories'])) {
+		if (empty($this->settings['repositories']['filters']) || !is_array($this->settings['repositories']['filters'])) {
 			return $repositories;
 		}
-		foreach ($this->settings['repositories'] as $filter) {
+		foreach ($this->settings['repositories']['filters'] as $filter) {
 			$tempRepositories = array();
 
 			if (!empty($filter['groupIds']) && is_array($filter['groupIds'])) {
@@ -214,7 +221,9 @@ class GitLabDriver implements DriverInterface {
 	 * @return array
 	 */
 	public function getBranches($repositoryUrl) {
-		return $this->getGitLabApiResponse('projects/' . $this->getId($repositoryUrl) . '/repository/branches');
+		$branches = $this->getGitLabApiResponse('projects/' . $this->getId($repositoryUrl) . '/repository/branches');
+		$branches = $this->replaceMarkersInItems($branches, 'branches');
+		return $branches;
 	}
 
 	/**
@@ -224,6 +233,35 @@ class GitLabDriver implements DriverInterface {
 	 * @return array
 	 */
 	public function getTags($repositoryUrl) {
-		return $this->getGitLabApiResponse('projects/' . $this->getId($repositoryUrl) . '/repository/tags');
+		$tags = $this->getGitLabApiResponse('projects/' . $this->getId($repositoryUrl) . '/repository/tags');
+		$tags = $this->replaceMarkersInItems($tags, 'branches');
+		return $tags;
+	}
+
+	/**
+	 * @param array $items
+	 * @param string $type
+	 * @return array
+	 */
+	protected function replaceMarkersInItems(array $items, $type) {
+		foreach ($items as $key => $item) {
+			$items[$key] = $this->replaceMarkersInItem($item, $type);
+		}
+		return $items;
+	}
+
+	/**
+	 * @param array $item
+	 * @param string $type
+	 * @return array
+	 */
+	protected function replaceMarkersInItem($item, $type) {
+		if (!empty($this->settings[$type]['properties']) && is_array($this->settings[$type]['properties'])) {
+			$item = array_merge(
+				$item,
+				MarkerUtility::replaceVariablesInArray($this->settings[$type]['properties'], $item)
+			);
+		}
+		return $item;
 	}
 }

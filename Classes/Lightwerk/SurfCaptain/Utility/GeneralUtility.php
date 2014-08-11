@@ -8,9 +8,6 @@ namespace Lightwerk\SurfCaptain\Utility;
 
 use TYPO3\Flow\Annotations as Flow;
 
-/**
- * @Flow\Scope("singleton")
- */
 class GeneralUtility {
 
 	/**

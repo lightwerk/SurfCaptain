@@ -26,8 +26,7 @@ class RepositoriesController extends AbstractRestController {
 			$repositories = array();
 			foreach ($tempRepositories as $tempRepository) {
 				$repositories[] = array(
-					'id' => $tempRepository['id'],
-					'ssh_url_to_repo' => $tempRepository['ssh_url_to_repo'],
+					'repository_url' => $tempRepository['ssh_url_to_repo'],
 					'name' => $tempRepository['name'],
 					'web_url' => $tempRepository['web_url'],
 				);

@@ -11,20 +11,6 @@ Example call:
 
     curl -H "Accept: application/json" http://surf.flow.lp.lw.loc/api/repositories | jq '.'
 
-Example response:
-
-	{
-	  "validationErrors": [],
-	  "flashMessages": [],
-	  "repositories": [
-	    {
-	      "web_url": "https://git.lightwerk.com/project/labweb",
-	      "name": "labweb",
-	      "ssh_url_to_repo": "git@git.lightwerk.com:project/labweb.git",
-	      "id": 27
-	    },
-	    ...
-
 ## Branches & Tags
 
 ### List branches of a repository
