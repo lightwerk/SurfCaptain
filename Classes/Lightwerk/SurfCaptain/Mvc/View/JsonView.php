@@ -33,6 +33,19 @@ class JsonView extends \TYPO3\Flow\Mvc\View\JsonView {
 	}
 
 	/**
+	 * Loads the configuration and transforms the value to a serializable
+	 * array.
+	 *
+	 * @return array An array containing the values, ready to be JSON encoded
+	 * @api
+	 */
+	protected function renderArray() {
+		$valueToRender = $this->variables;
+		unset($valueToRender['settings']);
+		return $this->transformValue($valueToRender, $this->configuration);
+	}
+
+	/**
 	 * renderFlashMessages 
 	 * 
 	 * @return array

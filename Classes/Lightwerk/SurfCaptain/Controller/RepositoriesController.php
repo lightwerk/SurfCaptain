@@ -32,7 +32,7 @@ class RepositoriesController extends AbstractRestController {
 					'web_url' => $tempRepository['web_url'],
 				);
 			}
-			$this->view->assign('value', array('repositories' => $repositories));
+			$this->view->assign('repositories', $repositories);
 		} catch (\Lightwerk\SurfCaptain\Service\Exception $e) {
 			$this->handleException($e);
 		} catch (\TYPO3\Flow\Http\Exception $e) {
