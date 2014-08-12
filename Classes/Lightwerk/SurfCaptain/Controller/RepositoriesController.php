@@ -34,7 +34,6 @@ class RepositoriesController extends AbstractRestController {
 				$repositories[] = array(
 					'repository_url' => $tempRepository['ssh_url_to_repo'],
 					'name' => $tempRepository['name'],
-					'path_with_namespace' => $tempRepository['path_with_namespace'],
 					'web_url' => $tempRepository['web_url'],
 					'identifier' => $this->getIdentifier($tempRepository['name']),
 				);
