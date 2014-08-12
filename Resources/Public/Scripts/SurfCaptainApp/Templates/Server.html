@@ -24,7 +24,7 @@
 							<span
 								data-ng-repeat="nameSuggestion in nameSuggestions"
 								class="label label-primary"
-								ng-class="{false:'unavailable'}[nameSuggestion.available]"
+								data-ng-class="{false:'unavailable'}[nameSuggestion.available]"
 							>
 								<a
 									data-ng-if="nameSuggestion.available"

@@ -198,7 +198,7 @@ body {
   font-size: 16px;
   line-height: 1.42857143;
   color: #333333;
-  background-color: #000000;
+  background-color: #222222;
 }
 input,
 button,
@@ -239,7 +239,7 @@ img {
 .img-thumbnail {
   padding: 4px;
   line-height: 1.42857143;
-  background-color: #000000;
+  background-color: #222222;
   border: 1px solid #dddddd;
   border-radius: 4px;
   -webkit-transition: all 0.2s ease-in-out;
@@ -1355,7 +1355,7 @@ th {
   border-top: 2px solid #dddddd;
 }
 .table .table {
-  background-color: #000000;
+  background-color: #222222;
 }
 .table-condensed > thead > tr > th,
 .table-condensed > tbody > tr > th,
@@ -3967,9 +3967,9 @@ div.project-history .sub-header {
 div.surfcaptain .btn,
 div.project-history .btn {
   position: absolute;
-  color: #333333;
+  color: #000000;
   background-color: transparent;
-  border-color: #333333;
+  border-color: #000000;
   width: 56px;
   overflow: hidden;
   display: inline-block;
@@ -4053,7 +4053,7 @@ div.project-selection table tbody tr .btn {
   margin-left: 20px;
 }
 div.project-selection table tbody tr:hover {
-  background-color: #333333;
+  background-color: #000000;
 }
 div.project-selection table tbody tr:hover td .btn {
   display: inline-block;
@@ -4096,7 +4096,7 @@ div.project-selection .error p {
 }
 div.project-buttons {
   padding: 10px 0;
-  background-color: #333333 !important;
+  background-color: #000000 !important;
   width: 100%;
 }
 div.project-buttons .btn {
@@ -4115,7 +4115,7 @@ div.project-buttons .project-brand {
 }
 div.project-history {
   margin-top: 15px;
-  background-color: #000 !important;
+  background-color: #222222 !important;
   color: #99cccc;
 }
 div.project-history table {
@@ -4127,7 +4127,7 @@ div.project-history table thead tr {
   border-bottom: 2px solid #99cccc;
 }
 div.project-history table tr.odd {
-  background-color: #333333;
+  background-color: #000000;
 }
 div.project-history table tr td {
   padding: 3px 2px;
@@ -4140,7 +4140,7 @@ div.project-history table tr td {
   padding-bottom: 60px;
 }
 .footer {
-  background-color: #333333;
+  background-color: #000000;
   color: #99cccc;
   height: 50px;
   text-align: center;
@@ -4166,7 +4166,6 @@ div.project-history table tr td {
   color: #d9534f;
   margin-bottom: 20px;
   padding-top: 15px;
-  border-top: 1px dashed #d9534f;
 }
 .project-deploy .configure-deployment-row .configure-deployment:first-child {
   border-top: none;
@@ -4192,15 +4191,18 @@ div.project-history table tr td {
 }
 .project-deploy .configure-deployment-row .deploy-history {
   color: #888888;
-  border: 1px dashed #d9534f;
+  border: 3px solid #000000;
   border-radius: 5px;
+  padding: 10px;
+  box-shadow: 0px 0px 5px #000000;
   height: auto;
 }
 .project-deploy .configure-deployment-row .deploy-history .form-control {
   padding: 1px 6px;
-  width: 60px;
+  width: 150px;
   margin: auto;
   height: 25px;
+  opacity: 0.5;
 }
 .project-deploy .configure-deployment-row .deploy-history table td,
 .project-deploy .configure-deployment-row .deploy-history table th {
@@ -4214,7 +4216,7 @@ div.project-history table tr td {
   width: 790px;
   height: 120px;
   border: 1px solid #999999;
-  color: #333333;
+  color: #000000;
   border-radius: 50px 0 0 50px;
   margin: 35px auto;
   padding: 10px 10px 10px 10px;
@@ -4246,7 +4248,7 @@ div.project-history table tr td {
   padding: 2px;
 }
 .project-server .server .single-server .server-data .editable-click:hover {
-  border: 1px solid #333333;
+  border: 1px solid #000000;
 }
 .project-server .server .single-server .server-data table {
   width: 100%;
@@ -4271,7 +4273,7 @@ div.project-history table tr td {
   width: 45%;
 }
 .project-server .server .single-server .server-data table td .tooltip-inner {
-  background-color: #333333;
+  background-color: #000000;
   color: #000000;
 }
 .project-server .server .single-server .server-data table td .help-block {

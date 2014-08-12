@@ -175,7 +175,7 @@ div.project-buttons {
 
 div.project-history {
 	margin-top: 15px;
-	background-color: #000 !important;
+	background-color: @body-bg !important;
 	color:  @brand-primary;
 
 	table {
@@ -233,7 +233,6 @@ div.project-history {
 			color: @brand-danger;
 			margin-bottom: 20px;
 			padding-top: 15px;
-			border-top: 1px dashed @brand-danger;
 			&:first-child {
 				border-top: none;
 			}
@@ -258,14 +257,17 @@ div.project-history {
 		}
 		.deploy-history {
 			color: @main-color-bright;
-			border: 1px dashed @brand-danger;
+			border: 3px solid @main-color;
 			border-radius: 5px;
+			padding: 10px;
+			box-shadow: @shadow;
 			height: auto;
 			.form-control {
 				padding: 1px 6px;
-				width: 60px;
+				width: 150px;
 				margin: auto;
 				height: 25px;
+				opacity: 0.5;
 			}
 			table {
 				td,th {

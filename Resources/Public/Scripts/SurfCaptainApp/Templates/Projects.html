@@ -17,22 +17,22 @@
 						</tr>
 					</thead>
 					<tbody>
-						<tr data-ng-class-odd="'odd'" data-ng-repeat="(id,project) in projects | orderBy:ordering:reverse | filter:search:0">
+						<tr data-ng-class-odd="'odd'" data-ng-repeat="project in projects | orderBy:ordering:reverse | filter:search:0">
 							<td class="project">
-								<a href="#/project/{{project.name}}" class="project-link">
+								<a data-ng-href="#/project/{{project.name}}" class="project-link">
 									{{project.name | uppercase }}
 								</a>
 							</td>
 							<td>
-								<a href="#/project/{{project.name}}/deploy" class="btn btn-danger">
+								<a data-ng-href="#/project/{{project.name}}/deploy" class="btn btn-danger">
 									Deploy
 									<span class="glyphicon glyphicon-road"></span>
 								</a>
-								<a href="#/project/{{project.name}}/sync" class="btn btn-warning">
+								<a data-ng-href="#/project/{{project.name}}/sync" class="btn btn-warning">
 									Sync
 									<span class="glyphicon glyphicon-refresh"></span>
 								</a>
-								<a href="#/project/{{project.name}}/server" class="btn btn-success">
+								<a data-ng-href="#/project/{{project.name}}/server" class="btn btn-success">
 									Server
 									<span class="glyphicon glyphicon-hdd"></span>
 								</a>

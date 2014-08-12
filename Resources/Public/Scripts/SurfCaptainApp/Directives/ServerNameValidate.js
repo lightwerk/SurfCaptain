@@ -10,7 +10,6 @@ surfCaptain.directive('serverNameValidate', function () {
             serverNames: '='
         },
         link: function (scope, elem, attr, ctrl) {
-
             // add a parser
             ctrl.$parsers.unshift(function (value) {
                 var valid = scope.serverNames === undefined || scope.serverNames.indexOf(value) === -1;
