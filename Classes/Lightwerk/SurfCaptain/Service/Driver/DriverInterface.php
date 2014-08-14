@@ -6,6 +6,10 @@ namespace Lightwerk\SurfCaptain\Service\Driver;
  *                                                                        *
  *                                                                        */
 
+use Lightwerk\SurfCaptain\Domain\Model\Branch;
+use Lightwerk\SurfCaptain\Domain\Model\Repository;
+use Lightwerk\SurfCaptain\Domain\Model\Tag;
+
 interface DriverInterface {
 
 	/**
@@ -19,9 +23,17 @@ interface DriverInterface {
 	/**
 	 * Returns repositories
 	 *
-	 * @return array
+	 * @return Repository[]
 	 */
 	public function getRepositories();
+
+	/**
+	 * Returns repository
+	 *
+	 * @param string $repositoryUrl
+	 * @return Repository
+	 */
+	public function getRepository($repositoryUrl);
 
 	/**
 	 * Return the content of a file
@@ -49,7 +61,7 @@ interface DriverInterface {
 	 * Returns branches of a repository
 	 *
 	 * @param string $repositoryUrl
-	 * @return array
+	 * @return Branch[]
 	 */
 	public function getBranches($repositoryUrl);
 
@@ -57,7 +69,7 @@ interface DriverInterface {
 	 * Returns tags of a repository
 	 *
 	 * @param string $repositoryUrl
-	 * @return array
+	 * @return Tag[]
 	 */
 	public function getTags($repositoryUrl);
 }

@@ -7,7 +7,6 @@ namespace Lightwerk\SurfCaptain\Controller;
  *                                                                        */
 
 use Lightwerk\SurfCaptain\Service\PresetService;
-use Lightwerk\SurfCaptain\Utility\GeneralUtility;
 use TYPO3\Flow\Annotations as Flow;
 
 /**
@@ -35,9 +34,7 @@ class PresetsController extends AbstractRestController {
 	 */
 	public function showAction($key) {
 		try {
-			$preset = $this->presetService->getPreset($key);
-			GeneralUtility::arrayUnsetRecursive($preset, 'password');
-			$this->view->assign('preset', $preset);
+			$this->view->assign('preset', $this->presetService->getPreset($key));
 		} catch (\Lightwerk\SurfCaptain\Service\Exception $e) {
 			$this->handleException($e);
 		} catch (\TYPO3\Flow\Http\Exception $e) {
@@ -53,7 +50,6 @@ class PresetsController extends AbstractRestController {
 	public function listAction($repositoryUrl, $type = NULL) {
 		try {
 			$presets = $this->presetService->getPresets();
-			GeneralUtility::arrayUnsetRecursive($presets, 'password');
 			foreach ($presets as $key => $preset) {
 				foreach ($preset['applications'] as $application) {
 					if (
