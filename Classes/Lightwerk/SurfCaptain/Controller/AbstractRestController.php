@@ -67,7 +67,7 @@ abstract class AbstractRestController extends RestController {
 		if ($this->mediaType === 'application/json') {
 			$this->addErrorFlashMessage();
 		} else {
-			return parent::errorAction();
+			parent::errorAction();
 		}
 	}
 
@@ -101,8 +101,10 @@ abstract class AbstractRestController extends RestController {
 	protected function redirect($actionName, $controllerName = NULL, $packageKey = NULL, array $arguments = NULL, $delay = 0, $statusCode = 303, $format = NULL) {
 		if ($this->mediaType === 'application/json') {
 			// render all arguments
-			foreach ($arguments as $key => $value) {
-				$this->view->assign($key, $value);
+			if (!empty($arguments)) {
+				foreach ($arguments as $key => $value) {
+					$this->view->assign($key, $value);
+				}
 			}
 			// get uri (like AbstractController->redirect())
 			// do we need/want the uri?
@@ -118,34 +120,12 @@ abstract class AbstractRestController extends RestController {
 				$this->uriBuilder->setFormat($format);
 			}
 
-			$uri = $this->uriBuilder->setCreateAbsoluteUri(TRUE)->uriFor($actionName, $arguments, $controllerName, $packageKey, $subpackageKey);
+			$uri = $this->uriBuilder
+						->setCreateAbsoluteUri(TRUE)
+						->uriFor($actionName, $arguments, $controllerName, $packageKey, $subpackageKey);
 			$this->view->assign('see', $uri);
 		} else {
-			return parent::redirect($actionName, $controllerName, $packageKey, $arguments, $delay, $statusCode, $format);
+			parent::redirect($actionName, $controllerName, $packageKey, $arguments, $delay, $statusCode, $format);
 		}
-	}
-
-	/**
-	 * A custom redirect, that does not set action, controller, package and format arguments
-	 *
-	 * @param array $parameter
-	 * @param string $controllerName
-	 * @param integer $statusCode
-	 * @return void
-	 * @throws \TYPO3\Flow\Mvc\Exception\StopActionException
-	 */
-	protected function redirectToResource($parameter = array(), $controllerName = NULL, $statusCode = 303) {
-		// i think we do not need this method
-		$httpRequest = $this->request->getHttpRequest();
-		$uri = $httpRequest->getBaseUri() . 'api/';
-		$uri .= !empty($controllerName) ? $controllerName : strtolower($this->request->getControllerName());
-		if (count($parameter)) {
-			$uri .= '?' . http_build_query($parameter);
-		}
-		$this->response->setHeader('Location', $uri);
-		$this->response->setStatus($statusCode);
-		$this->response->setHeader('Accept', $this->request->getHttpRequest()->getHeaders()->get('HTTP_ACCEPT'));
-		$this->response->setContent('');
-		throw new \TYPO3\Flow\Mvc\Exception\StopActionException();
 	}
 }

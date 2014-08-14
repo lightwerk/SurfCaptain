@@ -8,15 +8,8 @@ namespace Lightwerk\SurfCaptain\Controller;
 
 use Lightwerk\SurfCaptain\Service\GitService;
 use TYPO3\Flow\Annotations as Flow;
-use TYPO3\Flow\Mvc\Controller\RestController;
 
-class TagsController extends RestController {
-
-	/**
-	 * @var string
-	 * @see \TYPO3\Flow\Mvc\Controller\ActionController
-	 */
-	protected $defaultViewObjectName = 'TYPO3\\Flow\\Mvc\\View\\JsonView';
+class TagsController extends AbstractRestController {
 
 	/**
 	 * @Flow\Inject
@@ -25,31 +18,33 @@ class TagsController extends RestController {
 	protected $gitService;
 
 	/**
-	 * @param integer $projectId
+	 * @param string $repositoryUrl
 	 * @return void
 	 */
-	public function listAction($projectId) {
-		header('Access-Control-Allow-Origin: *');
-		$glTags = $this->gitService->getTags($projectId);
-		$tags = array();
-		foreach ($glTags as $tag) {
-			$tags[] = array(
-				'name' => $tag['name'],
-				'commit' => array(
-					'id' => $tag['commit']['id'],
-					'message' => $tag['commit']['message'],
-					'committed_date' => $tag['commit']['committed_date'],
-					'committer' => array(
-						'name' => $tag['commit']['committer']['name'],
-					)
-				),
-				'type' => 'Tag',
-				'group' => 'Tags'
-			);
+	public function listAction($repositoryUrl) {
+		try {
+			$tempTags = $this->gitService->getTags($repositoryUrl);
+			$tags = array();
+			foreach ($tempTags as $tempTag) {
+				$tags[] = array(
+					'name' => $tempTag['name'],
+					'commit' => array(
+						'id' => $tempTag['commit']['id'],
+						'message' => $tempTag['commit']['message'],
+						'committed_date' => $tempTag['commit']['committed_date'],
+						'committer' => array(
+							'name' => $tempTag['commit']['committer']['name'],
+						)
+					),
+					'type' => 'Tag',
+					'group' => 'Tags'
+				);
+			}
+			$this->view->assign('tags', $tags);
+		} catch (\Lightwerk\SurfCaptain\Service\Exception $e) {
+			$this->handleException($e);
+		} catch (\TYPO3\Flow\Http\Exception $e) {
+			$this->handleException($e);
 		}
-
-		$this->view->assign('value', array(
-			'tags' => $tags,
-		));
 	}
 }

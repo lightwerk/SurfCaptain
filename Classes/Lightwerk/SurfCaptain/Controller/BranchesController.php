@@ -18,31 +18,33 @@ class BranchesController extends AbstractRestController {
 	protected $gitService;
 
 	/**
-	 * @param integer $projectId
+	 * @param string $repositoryUrl
 	 * @return void
 	 */
-	public function listAction($projectId) {
-		header('Access-Control-Allow-Origin: *');
-		$glBranches = $this->gitService->getBranches($projectId);
-		$branches = array();
-		foreach ($glBranches as $branch) {
-			$branches[] = array(
-				'name' => $branch['name'],
-				'commit' => array(
-					'id' => $branch['commit']['id'],
-					'message' => $branch['commit']['message'],
-					'committed_date' => $branch['commit']['committed_date'],
-					'committer' => array(
-						'name' => $branch['commit']['committer']['name'],
-					)
-				),
-				'type' => 'Branch',
-				'group' => 'Branches'
-			);
+	public function listAction($repositoryUrl) {
+		try {
+			$tempBranches = $this->gitService->getBranches($repositoryUrl);
+			$branches = array();
+			foreach ($tempBranches as $tempBranch) {
+				$branches[] = array(
+					'name' => $tempBranch['name'],
+					'commit' => array(
+						'id' => $tempBranch['commit']['id'],
+						'message' => $tempBranch['commit']['message'],
+						'committed_date' => $tempBranch['commit']['committed_date'],
+						'committer' => array(
+							'name' => $tempBranch['commit']['committer']['name'],
+						)
+					),
+					'type' => 'Branch',
+					'group' => 'Branches'
+				);
+			}
+			$this->view->assign('branches', $branches);
+		} catch (\Lightwerk\SurfCaptain\Service\Exception $e) {
+			$this->handleException($e);
+		} catch (\TYPO3\Flow\Http\Exception $e) {
+			$this->handleException($e);
 		}
-
-		$this->view->assign('value', array(
-			'branches' => $branches,
-		));
 	}
 }

@@ -9,5 +9,3 @@ namespace Lightwerk\SurfCaptain\Service;
 class Exception extends \Lightwerk\SurfCaptain\Exception {
 
 }
-
-?>
