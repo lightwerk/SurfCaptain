@@ -192,9 +192,24 @@
 							</table>
 						</div>
 						<div class="server-edit">
-							<button class="btn btn-danger remove" tooltip data-placement="bottom" title="Delete" data-ng-click="deleteServer(preset)">
+							<button class="btn btn-danger remove" tooltip data-placement="bottom" title="Delete" data-ng-click="setCurrentPreset(preset)" modal="confirm-deletion">
 								<span class="glyphicon glyphicon-trash"></span>
 							</button>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="modal fade confirm-deletion">
+				<div class="modal-dialog">
+					<div class="modal-content">
+						<div class="modal-header">
+							<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+							<h4 class="modal-title">Delete Server {{currentPreset.applications.0.nodes.0.name}}?</h4>
+						</div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-danger" data-ng-click="deleteServer(currentPreset)" data-dismiss="modal">OK</button>
+							<button type="button" class="btn btn-primary" data-dismiss="modal">Cancel</button>
 						</div>
 					</div>
 				</div>

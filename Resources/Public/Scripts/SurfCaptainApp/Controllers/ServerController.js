@@ -76,6 +76,11 @@ surfCaptain.controller('ServerController', ['$scope', '$controller', 'ServerRepo
     angular.extend(this, $controller('AbstractSingleProjectController', {$scope: $scope}));
 
     $scope.newPreset = getNewPreset();
+    $scope.currentPreset = {};
+
+    $scope.setCurrentPreset = function (preset) {
+        $scope.currentPreset = preset;
+    };
 
     $scope.contexts = [
         'Production', 'Development', 'Staging'
@@ -90,7 +95,6 @@ surfCaptain.controller('ServerController', ['$scope', '$controller', 'ServerRepo
     ];
 
     $scope.deleteServer = function (server) {
-        // TODO confirmation
         // TODO Spinner
         ServerRepository.deleteServer(server).then(
             function (response) {
