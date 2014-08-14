@@ -1,14 +1,14 @@
 /*global describe,beforeEach,module,it,xit,expect,inject,spyOn*/
 
 describe('ProjectsController', function () {
-    var ctrl, scope, projectRepository, q, projects, succeedPromise, controller;
-
-    function createController() {
-        ctrl = controller('ProjectsController', {
-            $scope: scope,
-            ProjectRepository: projectRepository
-        });
-    }
+    var ctrl, scope, projectRepository, q, projects, succeedPromise, controller,
+        createController = function () {
+            ctrl = controller('ProjectsController', {
+                $scope: scope,
+                ProjectRepository: projectRepository
+            });
+            scope.$digest();
+        };
 
     beforeEach(module('surfCaptain'));
 
@@ -30,27 +30,30 @@ describe('ProjectsController', function () {
 
     }));
 
-    it('should initialize scope.ordering with name', function () {
-        createController();
-        expect(scope.ordering).toEqual('name');
-    });
+    describe('Initialization', function () {
 
-    it('should initialize scope.projects with empty array', function () {
-        createController();
-        expect(scope.projects).toEqual([]);
+        beforeEach(function () {
+            createController();
+        });
+
+        it('should initialize scope.ordering with "name"', function () {
+            expect(scope.ordering).toEqual('name');
+        });
+
+        it('should initialize scope.projects with empty array', function () {
+            expect(scope.projects).toEqual([]);
+        });
     });
 
     it('should store recieved projects records in scope.projects', function () {
         succeedPromise = true;
         createController();
-        scope.$digest();
         expect(scope.projects).toEqual(projects.projects);
     });
 
     it('should store message in scope.message if request fails', function () {
         succeedPromise = false;
         createController();
-        scope.$digest();
         expect(scope.message).toEqual('API call failed. GitLab is currently not available.');
     });
 

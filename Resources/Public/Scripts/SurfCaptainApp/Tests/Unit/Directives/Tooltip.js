@@ -9,7 +9,7 @@ describe('tooltip', function () {
         element = angular.element('<span tooltip title="foo"></span>');
         scope = $rootScope;
         $compile(element)(scope);
-        //scope.$digest();
+        scope.$digest();
     }));
 
     it('should initialize bootstrap tooltip that should set data attribute original-title', function () {

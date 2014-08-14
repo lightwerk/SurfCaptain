@@ -3,7 +3,7 @@
 
 'use strict';
 surfCaptain.controller('AbstractSingleProjectController', ['$scope', '$routeParams', 'ProjectRepository', function ($scope, $routeParams, ProjectRepository) {
-    $scope.name = $routeParams.itemName;
+    $scope.name = $routeParams.projectName;
     $scope.project = {};
 
     this.init = function () {

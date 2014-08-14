@@ -14,6 +14,6 @@ describe('appVersion', function () {
     }));
 
     it('should set the content of the element containing the directive to the current version', function () {
-        expect(element.html()).toEqual(currentVersion);
+        expect(element.text()).toEqual(currentVersion);
     });
 });

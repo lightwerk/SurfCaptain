@@ -38,4 +38,19 @@ surfCaptain.service('ValidationService', function () {
         }
         return message || false;
     };
+
+    /**
+     * Validates if a given Item i found within a given array.
+     *
+     * @param {array} array
+     * @param {mixed} item
+     * @param {string} message
+     * @returns {string|boolean}
+     */
+    this.doesArrayContainsItem = function (array, item, message) {
+        if (array instanceof Array && array.indexOf(item) > -1) {
+            return true;
+        }
+        return message || false;
+    };
 });

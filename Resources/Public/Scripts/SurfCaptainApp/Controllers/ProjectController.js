@@ -8,7 +8,7 @@ surfCaptain.controller('ProjectController', ['$scope', '$controller', 'HistoryRe
     angular.extend(this, $controller('AbstractSingleProjectController', {$scope: $scope}));
 
     $scope.ordering = 'date';
-    $scope.constraint = '';
+    $scope.constraint = 'dummy';
 
     $scope.$watch('project', function (newValue, oldValue) {
         if (newValue === undefined || newValue.name === undefined) {

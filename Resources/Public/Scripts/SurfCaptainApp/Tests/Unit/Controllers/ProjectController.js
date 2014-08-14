@@ -47,8 +47,8 @@ describe('ProjectController', function () {
         expect(scope.ordering).toEqual('date');
     });
 
-    it('should initialize scope.constraint with empty string', function () {
-        expect(scope.constraint).toEqual('');
+    it('should initialize scope.constraint with dummy string', function () {
+        expect(scope.constraint).toEqual('dummy');
     });
 
     it('should store recieved history records in scope.history', function () {

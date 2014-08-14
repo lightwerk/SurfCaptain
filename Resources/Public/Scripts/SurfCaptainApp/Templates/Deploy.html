@@ -67,11 +67,11 @@
 						  onaftersave="updateDeployment(server)">
 						{{deployment.server.servers.0.documentRoot}}
 					</span>
-					<label>Override TYPO3_SYSTEM</label>
-					<span editable-text="deployment.server.servers.0.system"
+					<label>Override TYPO3_CONTEXT</label>
+					<span editable-text="deployment.server.servers.0.context"
 						  onbeforesave="updateSystem($data)"
 						  onaftersave="updateDeployment(server)">
-						{{deployment.server.servers.0.system}}
+						{{deployment.server.servers.0.context}}
 					</span>
 				</div>
 			</div>
@@ -91,7 +91,7 @@
 		################## -->
 		<div class="col-md-5 deploy-history">
 			<h4>Recent {{name | uppercase}} Deployments</h4>
-			<input type="number" data-ng-model="amountOfRecentDeloyments" data-ng-init="amountOfRecentDeloyments=2" class="form-control">
+			<input type="range" data-ng-model="amountOfRecentDeloyments" data-ng-init="amountOfRecentDeloyments=2" class="form-control" min="1" max="{{history.length}}">
 			<table>
 				<thead>
 				<tr>

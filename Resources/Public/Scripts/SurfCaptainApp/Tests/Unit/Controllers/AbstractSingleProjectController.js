@@ -11,7 +11,7 @@ describe('AbstractSingleProjectController', function () {
     beforeEach(inject(function ($controller, $rootScope, $q, ProjectRepository) {
         scope = $rootScope.$new();
         routeParams = {
-            itemName: 'foo'
+            projectName: 'foo'
         };
         projectRepository = ProjectRepository;
         projects = {projects:

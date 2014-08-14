@@ -109,13 +109,16 @@ div.project-selection {
 					margin-left: 20px;
 				}
 				&:hover {
-					background-color: @main-color;
+					background-color: #333;
 					td .btn {
 						display: inline-block;
 					}
 				}
 				td {
 					height: 60px;
+					&:first-child {
+						padding-left: 16px;
+					}
 				}
 				.project-link {
 					width: 100%;
@@ -150,16 +153,22 @@ div.project-selection {
 			color: red;
 		}
 	}
+	.spinner {
+		margin: 50px auto;
+	}
 }
 
 div.project-buttons {
-	padding: 20px 0;
+	padding: 10px 0;
 	background-color: @main-color !important;
 	width: 100%;
 
 	.btn {
 		color: #000;
 		margin-right: 15px;
+	}
+	.btn[disabled] {
+		opacity: 0.5 !important;
 	}
 	.project-brand {
 		color: #999999;
@@ -172,7 +181,7 @@ div.project-buttons {
 
 div.project-history {
 	margin-top: 15px;
-	background-color: #000 !important;
+	background-color: @body-bg !important;
 	color:  @brand-primary;
 
 	table {
@@ -230,7 +239,6 @@ div.project-history {
 			color: @brand-danger;
 			margin-bottom: 20px;
 			padding-top: 15px;
-			border-top: 1px dashed @brand-danger;
 			&:first-child {
 				border-top: none;
 			}
@@ -255,14 +263,17 @@ div.project-history {
 		}
 		.deploy-history {
 			color: @main-color-bright;
-			border: 1px dashed @brand-danger;
+			border: 3px solid @main-color;
 			border-radius: 5px;
+			padding: 10px;
+			box-shadow: @shadow;
 			height: auto;
 			.form-control {
 				padding: 1px 6px;
-				width: 60px;
+				width: 150px;
 				margin: auto;
 				height: 25px;
+				opacity: 0.5;
 			}
 			table {
 				td,th {
@@ -308,7 +319,7 @@ div.project-history {
 					}
 				}
 				.editable-click {
-					border-bottom: none;
+					border: 1px solid @body-bg;
 					color: #999999;
 					padding: 2px;
 				}
@@ -381,6 +392,28 @@ div.project-history {
 			margin-bottom: 0px;
 			.error {
 				color: red;
+			}
+		}
+		.server-name-suggestions {
+			height: 88px;
+			span.label {
+				display: inline-block;
+				cursor: pointer;
+				font-size: 20px;
+				margin: 1px 6px;
+				padding: 6px;
+				a {
+					color: black;
+					text-decoration: none;
+				}
+				&:hover {
+					color: black;
+				}
+				&.unavailable {
+					cursor: default;
+					color: #888;
+					opacity: 0.4;
+				}
 			}
 		}
 	}
@@ -461,7 +494,7 @@ div.project-history {
 				background: url("../Images/Git-logo.svg") no-repeat scroll center center / 85% auto transparent;
 			}
 			&.mysql {
-				background: url("../Images/includes-mysql-167x86-wob.png") no-repeat scroll center center / 100% auto transparent;
+				background: url("../Images/Mysql-logo.svg") no-repeat scroll center center / 100% auto transparent;
 			}
 			&.html5 {
 				background: url("../Images/Html5-logo.svg") no-repeat scroll center center / 85% auto transparent;
@@ -480,8 +513,9 @@ div.project-history {
 			width: 100%;
 			height: 100%;
 			opacity: 0;
-			background-color: #000;
+			background-color: @body-bg;
 			border-radius: 5px;
+			border: 2px solid black;
 			color: #FFF;
 			text-align: center;
 			-webkit-transition: all linear 0.5s;
