@@ -23,7 +23,6 @@ class Deployment {
 
 	/**
 	 * @var string
-	 * @Flow\Validate(type="NotEmpty")
 	 */
 	protected $repositoryUrl;
 
@@ -31,7 +30,6 @@ class Deployment {
 	 * @var string
 	 * @ORM\Column(type="text")
 	 * @ORM\Column(length=80)
-	 * @Flow\Validate(type="NotEmpty")
 	 */
 	protected $referenceName;
 
@@ -39,19 +37,16 @@ class Deployment {
 	 * @var string
 	 * @ORM\Column(type="text")
 	 * @ORM\Column(length=15)
-	 * @Flow\Validate(type="NotEmpty")
 	 */
 	protected $clientIp;
 
 	/**
 	 * @var string
-	 * @Flow\Validate(type="NotEmpty")
 	 */
-	protected $status;
+	protected $status = 'waiting';
 
 	/**
 	 * @var \DateTime
-	 * @Flow\Validate(type="NotEmpty")
 	 */
 	protected $date;
 
@@ -67,6 +62,8 @@ class Deployment {
 	 */
 	public function __construct() {
 		$this->logs = new \Doctrine\Common\Collections\ArrayCollection();
+		$this->setDate(new \DateTime());
+
 	}
 
 	/**
@@ -185,6 +182,19 @@ class Deployment {
 	 * @return Deployment
 	 */
 	public function setConfiguration($configuration) {
+		if (!empty($configuration['applications'][0]['options'])) {
+			$options = $configuration['applications'][0]['options'];
+			if (!empty($options['repositoryUrl'])) {
+				$this->setRepositoryUrl($options['repositoryUrl']);
+			}
+			if (!empty($options['sha1'])) {
+				$this->setReferenceName('Sha1: ' . $options['ref']);
+			} elseif (!empty($options['tag'])) {
+				$this->setReferenceName('Tag: ' . $options['tag']);
+			} elseif (!empty($options['branch'])) {
+				$this->setReferenceName('Branch: ' . $options['branch']);
+			}
+		}
 		$this->configuration = $configuration;
 		return $this;
 	}

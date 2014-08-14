@@ -27,23 +27,23 @@ Example call:
 Example response:
 
 	{
-	  "validationErrors": [],
-	  "flashMessages": [],
-	  "branches": [
-	    {
-	      "group": "Branches",
-	      "type": "Branch",
-	      "commit": {
-	        "committer": {
-	          "name": "Stephan Gruber"
-	        },
-	        "committed_date": "2014-05-07T15:45:19+02:00",
-	        "message": "Merge branch 'master' of git.lightwerk.com:project/drxintra",
-	        "id": "dc929fa1c493967b58c90e9eb1a1d0ce2a343010"
-	      },
-	      "name": "DRXINTRA-15"
-	    },
-	    ...
+	 "validationErrors": [],
+	 "flashMessages": [],
+	 "branches": [
+	   {
+	     "group": "Branches",
+	     "type": "Branch",
+	     "commit": {
+	       "committer": {
+	         "name": "Stephan Gruber"
+	       },
+	       "committed_date": "2014-05-07T15:45:19+02:00",
+	       "message": "Merge branch 'master' of git.lightwerk.com:project/drxintra",
+	       "id": "dc929fa1c493967b58c90e9eb1a1d0ce2a343010"
+	     },
+	     "name": "DRXINTRA-15"
+	   },
+	   ...
 
 ### List tags of a repository
 
@@ -59,23 +59,23 @@ Example call:
 Example response:
 
 	{
-	  "validationErrors": [],
-	  "flashMessages": [],
-	  "tags": [
-	    {
-	      "group": "Tags",
-	      "type": "Tag",
-	      "commit": {
-	        "committer": {
-	          "name": "Jannik Hormel"
-	        },
-	        "committed_date": "2014-07-28T16:46:32+02:00",
-	        "message": "[TASK] lw_drx_intra_locations: update drx_changemanagement ext_tables.sql",
-	        "id": "731f8d10fdc59c5bdba579566e2b048b2a85929e"
-	      },
-	      "name": "1.3.0"
-	    },
-	    ...
+	 "validationErrors": [],
+	 "flashMessages": [],
+	 "tags": [
+	   {
+	     "group": "Tags",
+	     "type": "Tag",
+	     "commit": {
+	       "committer": {
+	         "name": "Jannik Hormel"
+	       },
+	       "committed_date": "2014-07-28T16:46:32+02:00",
+	       "message": "[TASK] lw_drx_intra_locations: update drx_changemanagement ext_tables.sql",
+	       "id": "731f8d10fdc59c5bdba579566e2b048b2a85929e"
+	     },
+	     "name": "1.3.0"
+	   },
+	   ...
 
 ## Deployments
 
@@ -105,34 +105,34 @@ Example call to get the last 30 deployments of git@git.lightwerk.com:boilerplate
 
 Example call with a configuration:
 
-	curl -H "Accept: application/json" -v -X POST http://surf.flow.lp.lw.loc/api/deployments\?configuration\=%7B%22applications%22%3A%5B%7B%22type%22%3A%22TYPO3%5C%5CCMS%5C%5CDeploy%22%2C%22options%22%3A%7B%22repositoryUrl%22%3A%22git%40git.lightwerk.com%3Aboilerplate%5C%2Ftypo3_cms.git%22%2C%22documentRoot%22%3A%22%5C%2Fvar%5C%2Fwww%5C%2FprojectName%5C%2Fcontext%5C%2F%22%2C%22context%22%3A%22Development%22%2C%22tag%22%3A%221.2.3%22%7D%2C%22nodes%22%3A%5B%7B%22name%22%3A%22Front-End+Server+2%22%2C%22hostname%22%3A%22www2.sma.de%22%2C%22username%22%3A%22user2%22%7D%5D%7D%5D%7D
+	curl -H "Accept: application/json" -H "Content-Type: application/json" -v -X POST http://surf.flow.lp.lw.loc/api/deployment -d '{
+		"deployment": {
+			"configuration": {
+				"applications": [
+					{
+						"type": "TYPO3\\CMS\\Deploy",
+						"options": {
+							"repositoryUrl": "git@git.lightwerk.com:boilerplate/typo3_cms.git",
+							"documentRoot": "/var/www/projectName/context/",
+							"context": "Development",
+							"tag": "1.2.3"
+						},
+						"nodes": [
+							{
+								"name": "Front-End Server 2",
+								"hostname": "www2.sma.de",
+								"username": "user2"
+							}
+						]
+					}
+				]
+			}
+		}
+	}'
 
 Example call with a key:
 
 	curl -H "Accept: application/json" -v -X POST http://surf.flow.lp.lw.loc/api/deployments\?key\=sma
-
-Example of a decode configuration parameter:
-
-     {
-        "applications": [
-            {
-                "type": "TYPO3\\CMS\\Deploy",
-                "options": {
-                    "repositoryUrl": "git@git.lightwerk.com:boilerplate/typo3_cms.git",
-                    "documentRoot": "/var/www/projectName/context/",
-                    "context": "Development",
-                    "tag": "1.2.3"
-                },
-                "nodes": [
-                    {
-                        "name": "Front-End Server 2",
-                        "hostname": "www2.sma.de",
-                        "username": "user2"
-                    }
-                ]
-            }
-        ]
-    }
 
 ### Cancel a deployment
 

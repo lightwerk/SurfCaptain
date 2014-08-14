@@ -6,7 +6,6 @@ namespace Lightwerk\SurfCaptain\Domain\Repository;
  *                                                                        *
  *                                                                        */
 
-use Lightwerk\SurfCaptain\Domain\Model\Deployment;
 use TYPO3\Flow\Annotations as Flow;
 use TYPO3\Flow\Persistence\QueryInterface;
 use TYPO3\Flow\Persistence\Repository;
@@ -23,29 +22,4 @@ class DeploymentRepository extends Repository {
 	protected $defaultOrderings = array(
 		'date' => QueryInterface::ORDER_DESCENDING,
 	);
-
-	/**
-	 * @param string $repositoryUrl
-	 * @param integer $limit
-	 * @return \TYPO3\Flow\Persistence\QueryResultInterface<Deployment>
-	 */
-	public function findByRepositoryUrlWithLimit($repositoryUrl, $limit) {
-		$query = $this->createQuery();
-		return $query
-			->matching($query->equals('repositoryUrl', $repositoryUrl))
-			->setLimit($limit)
-			->execute();
-	}
-
-	/**
-	 * @param integer $limit
-	 * @return \TYPO3\Flow\Persistence\QueryResultInterface<Deployment>
-	 */
-	public function findAllWithLimit($limit) {
-		$query = $this->createQuery();
-		return $query
-			->setLimit($limit)
-			->execute();
-	}
-
 }
