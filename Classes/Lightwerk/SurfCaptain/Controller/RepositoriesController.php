@@ -31,12 +31,14 @@ class RepositoriesController extends AbstractRestController {
 			$repositories = array();
 			$this->clearIdentifiers();
 			foreach ($tempRepositories as $tempRepository) {
-				$repositories[] = array(
-					'repository_url' => $tempRepository['ssh_url_to_repo'],
-					'name' => $tempRepository['name'],
-					'web_url' => $tempRepository['web_url'],
-					'identifier' => $this->getIdentifier($tempRepository['name']),
-				);
+				if (isset($tempRepository['name'])) {
+					$repositories[] = array(
+						'repository_url' => $tempRepository['ssh_url_to_repo'],
+						'name' => $tempRepository['name'],
+						'web_url' => $tempRepository['web_url'],
+						'identifier' => $this->getIdentifier($tempRepository['name']),
+					);
+				}
 			}
 			$this->view->assign('repositories', $repositories);
 		} catch (\Lightwerk\SurfCaptain\Service\Exception $e) {
