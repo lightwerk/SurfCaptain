@@ -22,18 +22,10 @@ class Deployment {
 	protected $logs;
 
 	/**
-	 * @var integer
-	 * @Flow\Validate(type="NotEmpty")
-	 */
-	protected $project;
-
-	/**
 	 * @var string
-	 * @ORM\Column(type="text")
-	 * @ORM\Column(length=40)
 	 * @Flow\Validate(type="NotEmpty")
 	 */
-	protected $reference;
+	protected $repositoryUrl;
 
 	/**
 	 * @var string
@@ -98,34 +90,22 @@ class Deployment {
 	}
 
 	/**
-	 * @return integer
-	 */
-	public function getProject() {
-		return $this->project;
-	}
-
-	/**
-	 * @param integer $project
-	 * @return Deployment
-	 */
-	public function setProject($project) {
-		$this->project = $project;
-		return $this;
-	}
-
-	/**
+	 * Returns RepositoryUrl
+	 *
 	 * @return string
 	 */
-	public function getReference() {
-		return $this->reference;
+	public function getRepositoryUrl() {
+		return $this->repositoryUrl;
 	}
 
 	/**
-	 * @param string $reference
+	 * Sets RepositoryUrl
+	 *
+	 * @param string $repositoryUrl
 	 * @return Deployment
 	 */
-	public function setReference($reference) {
-		$this->reference = $reference;
+	public function setRepositoryUrl($repositoryUrl) {
+		$this->repositoryUrl = $repositoryUrl;
 		return $this;
 	}
 
@@ -201,7 +181,7 @@ class Deployment {
 	}
 
 	/**
-	 * @param array $server
+	 * @param array $configuration
 	 * @return Deployment
 	 */
 	public function setConfiguration($configuration) {

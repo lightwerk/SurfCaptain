@@ -1,11 +1,10 @@
 <?php
-namespace Lightwerk\SurfCaptain\Service;
+namespace Lightwerk\SurfCaptain\Service\Driver;
 
 /*                                                                        *
  * This script belongs to the TYPO3 Flow package "Lightwerk.SurfCaptain". *
  *                                                                        *
  *                                                                        */
 
-class GitServiceException extends Exception {
-
+class Exception extends \Lightwerk\SurfCaptain\Service\Exception {
 }

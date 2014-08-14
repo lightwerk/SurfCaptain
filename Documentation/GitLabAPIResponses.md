@@ -1,5 +1,76 @@
 # GitLab API Responses
 
+  curl --insecure --header "PRIVATE-TOKEN: ..." https://git.lightwerk.com/api/v3/projects | jq '.'
+  [
+    {
+      "namespace": {
+        "avatar": null,
+        "description": "",
+        "updated_at": "2014-04-14T10:26:03.380Z",
+        "created_at": "2014-04-14T10:26:03.380Z",
+        "owner_id": 7,
+        "path": "bb",
+        "name": "bb",
+        "id": 14
+      },
+      "last_activity_at": "2014-05-12T18:58:56.118Z",
+      "created_at": "2014-05-07T12:44:52.201Z",
+      "snippets_enabled": false,
+      "wiki_enabled": true,
+      "web_url": "https://git.lightwerk.com/bb/smastuff",
+      "http_url_to_repo": "https://git.lightwerk.com/bb/smastuff.git",
+      "ssh_url_to_repo": "git@git.lightwerk.com:bb/smastuff.git",
+      "visibility_level": 0,
+      "public": false,
+      "default_branch": "master",
+      "description": "",
+      "id": 264,
+      "owner": {
+        "created_at": "2014-04-14T10:26:03.368Z",
+        "state": "blocked",
+        "name": "Benjamin Bretz",
+        "email": "bb@lightwerk.com",
+        "username": "bb",
+        "id": 7
+      },
+      "name": "smastuff",
+      "name_with_namespace": "Benjamin Bretz / smastuff",
+      "path": "smastuff",
+      "path_with_namespace": "bb/smastuff",
+      "issues_enabled": true,
+      "merge_requests_enabled": true,
+      "wall_enabled": false
+    },
+
+    curl --insecure --header "PRIVATE-TOKEN: ..." https://git.lightwerk.com/api/v3/projects/project%2Fgtinter/repository/branches | jq '.'
+    [
+      {
+        "protected": false,
+        "commit": {
+          "committed_date": "2013-10-29T15:21:14+01:00",
+          "authored_date": "2013-10-29T15:21:14+01:00",
+          "committer": {
+            "email": "dlg@xdev.lightwerk.loc",
+            "name": "dlg"
+          },
+          "author": {
+            "email": "dlg@xdev.lightwerk.loc",
+            "name": "dlg"
+          },
+          "message": "[TASK] new logo and text for europtec clients, configuration and css files for new clients",
+          "tree": "8a85f8162f2e98f26fba2b705078a7fcecc9ce92",
+          "parents": [
+            {
+              "id": "27b4c4a5f139d61a9a870a1a983a7afbec90ee8f"
+            }
+          ],
+          "id": "14b8eec6d0393003dd1cb8b7a39b514b4d21e0e6"
+        },
+        "name": "GTWEB-154"
+      },
+      ..
+    ]
+
     curl --insecure --header "PRIVATE-TOKEN: ..." https://git.lightwerk.com/api/v3/groups/10 | jq '.'
     {
       "projects": [
