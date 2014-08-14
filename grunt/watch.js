@@ -3,7 +3,7 @@
 'use strict';
 module.exports = {
     stylesheets: {
-        files: ['Resources/Public/Stylesheets/SurfCaptain.less'],
+        files: ['Resources/Public/Stylesheets/*.less'],
         tasks: ['less'],
         options: {
             nospawn: true

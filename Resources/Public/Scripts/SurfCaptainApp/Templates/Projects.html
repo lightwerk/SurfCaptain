@@ -41,6 +41,10 @@
 					</tbody>
 				</table>
 
+				<div class="spinner" data-ng-if=!projects.length>
+					<img src="/_Resources/Static/Packages/Lightwerk.SurfCaptain/Images/spinner.gif" width="30px" height="30px" />
+				</div>
+
 				<div class="error" data-ng-if="message">
 					<p>{{message}}</p>
 				</div>

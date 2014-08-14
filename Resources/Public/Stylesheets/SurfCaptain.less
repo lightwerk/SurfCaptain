@@ -109,13 +109,16 @@ div.project-selection {
 					margin-left: 20px;
 				}
 				&:hover {
-					background-color: @main-color;
+					background-color: #333;
 					td .btn {
 						display: inline-block;
 					}
 				}
 				td {
 					height: 60px;
+					&:first-child {
+						padding-left: 16px;
+					}
 				}
 				.project-link {
 					width: 100%;
@@ -150,6 +153,9 @@ div.project-selection {
 			color: red;
 		}
 	}
+	.spinner {
+		margin: 50px auto;
+	}
 }
 
 div.project-buttons {
@@ -162,7 +168,7 @@ div.project-buttons {
 		margin-right: 15px;
 	}
 	.btn[disabled] {
-		opacity: 0.3 !important;
+		opacity: 0.5 !important;
 	}
 	.project-brand {
 		color: #999999;
@@ -313,7 +319,7 @@ div.project-history {
 					}
 				}
 				.editable-click {
-					border-bottom: none;
+					border: 1px solid @body-bg;
 					color: #999999;
 					padding: 2px;
 				}
@@ -488,7 +494,7 @@ div.project-history {
 				background: url("../Images/Git-logo.svg") no-repeat scroll center center / 85% auto transparent;
 			}
 			&.mysql {
-				background: url("../Images/includes-mysql-167x86-wob.png") no-repeat scroll center center / 100% auto transparent;
+				background: url("../Images/Mysql-logo.svg") no-repeat scroll center center / 100% auto transparent;
 			}
 			&.html5 {
 				background: url("../Images/Html5-logo.svg") no-repeat scroll center center / 85% auto transparent;
@@ -507,8 +513,9 @@ div.project-history {
 			width: 100%;
 			height: 100%;
 			opacity: 0;
-			background-color: #000;
+			background-color: @body-bg;
 			border-radius: 5px;
+			border: 2px solid black;
 			color: #FFF;
 			text-align: center;
 			-webkit-transition: all linear 0.5s;

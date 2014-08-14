@@ -4053,13 +4053,16 @@ div.project-selection table tbody tr .btn {
   margin-left: 20px;
 }
 div.project-selection table tbody tr:hover {
-  background-color: #000000;
+  background-color: #333;
 }
 div.project-selection table tbody tr:hover td .btn {
   display: inline-block;
 }
 div.project-selection table tbody tr td {
   height: 60px;
+}
+div.project-selection table tbody tr td:first-child {
+  padding-left: 16px;
 }
 div.project-selection table tbody tr .project-link {
   width: 100%;
@@ -4094,6 +4097,9 @@ div.project-selection .error p {
   margin: 0;
   color: red;
 }
+div.project-selection .spinner {
+  margin: 50px auto;
+}
 div.project-buttons {
   padding: 10px 0;
   background-color: #000000 !important;
@@ -4104,7 +4110,7 @@ div.project-buttons .btn {
   margin-right: 15px;
 }
 div.project-buttons .btn[disabled] {
-  opacity: 0.3 !important;
+  opacity: 0.5 !important;
 }
 div.project-buttons .project-brand {
   color: #999999;
@@ -4243,7 +4249,7 @@ div.project-history table tr td {
   color: #FFFFFF !important;
 }
 .project-server .server .single-server .server-data .editable-click {
-  border-bottom: none;
+  border: 1px solid #222222;
   color: #999999;
   padding: 2px;
 }
@@ -4407,7 +4413,7 @@ div.project-history table tr td {
   background: url("../Images/Git-logo.svg") no-repeat scroll center center / 85% auto transparent;
 }
 .about-view .techs .sub-tech.mysql {
-  background: url("../Images/includes-mysql-167x86-wob.png") no-repeat scroll center center / 100% auto transparent;
+  background: url("../Images/Mysql-logo.svg") no-repeat scroll center center / 100% auto transparent;
 }
 .about-view .techs .sub-tech.html5 {
   background: url("../Images/Html5-logo.svg") no-repeat scroll center center / 85% auto transparent;
@@ -4423,8 +4429,9 @@ div.project-history table tr td {
   width: 100%;
   height: 100%;
   opacity: 0;
-  background-color: #000;
+  background-color: #222222;
   border-radius: 5px;
+  border: 2px solid black;
   color: #FFF;
   text-align: center;
   -webkit-transition: all linear 0.5s;
