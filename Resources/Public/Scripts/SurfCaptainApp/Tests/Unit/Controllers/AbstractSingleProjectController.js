@@ -14,7 +14,7 @@ describe('AbstractSingleProjectController', function () {
             projectName: 'foo'
         };
         projectRepository = ProjectRepository;
-        projects = {projects:
+        projects = {repositories:
                 [{
                 "name": "foo",
                 "ssh_url_to_repo": "git@git.example.com:project/foo.git",
@@ -59,12 +59,12 @@ describe('AbstractSingleProjectController', function () {
     it('should call getProjectByName on ProjectRepository with response of getProjects and projectName', function () {
         ctrl.init();
         scope.$digest();
-        expect(projectRepository.getProjectByName).toHaveBeenCalledWith(projects.projects, 'foo');
+        expect(projectRepository.getProjectByName).toHaveBeenCalledWith(projects.repositories, 'foo');
     });
 
     it('should set project to the response of ProjectRepository call', function () {
         ctrl.init();
         scope.$digest();
-        expect(scope.project).toEqual(projects.projects[0]);
+        expect(scope.project).toEqual(projects.repositories[0]);
     });
 });

@@ -23,7 +23,7 @@ describe('DeployController', function () {
         simulateReceivementOfProjectData = function () {
             scope.$digest();
             scope.$apply(function () {
-                scope.project = projects.projects[0];
+                scope.project = projects.repositories[0];
             });
         };
 
@@ -37,7 +37,7 @@ describe('DeployController', function () {
             {name: 'loading ...', group: 'Tags'},
             {name: 'loading ...', group: 'Branches'}
         ];
-        projects = {projects: [
+        projects = {repositories: [
             {"name": "foo", "ssh_url_to_repo": "git@git.example.com:project/foo.git", "id": 1}
         ]};
         serverRepository = ServerRepository;

@@ -10,7 +10,7 @@ describe('ProjectController', function () {
         simulateRecievementOfProjectData = function () {
             scope.$digest();
             scope.$apply(function () {
-                scope.project = projects.projects[0];
+                scope.project = projects.repositories[0];
             });
         };
 
@@ -19,7 +19,7 @@ describe('ProjectController', function () {
     beforeEach(inject(function ($controller, $rootScope, $q, HistoryRepository, ProjectRepository) {
         scope = $rootScope.$new();
         historyRepository = HistoryRepository;
-        projects = {projects: [
+        projects = {repositories: [
             {"name": "foo", "ssh_url_to_repo": "git@git.example.com:project/foo.git", "id": 1}
         ]};
         q = $q;

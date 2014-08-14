@@ -17,7 +17,7 @@
 			</div>
 
 			<div class="new-server animate row text-left" data-ng-show="addAServer">
-				<form data-ng-submit="updateServer(newServer)" name="newServerForm">
+				<form data-ng-submit="addServer(newPreset)" name="newServerForm">
 					<div class="col-xs-4 col-xs-offset-2">
 						<div class="server-name-suggestions">
 							<label>Choose a name that is not yet taken:</label><br />
@@ -28,7 +28,7 @@
 							>
 								<a
 									data-ng-if="nameSuggestion.available"
-									data-ng-click="$parent.$parent.newServer.name = generateServerName(nameSuggestion.suffix)"
+									data-ng-click="$parent.$parent.newPreset.nodes.0.name = generateServerName(nameSuggestion.suffix)"
 								>{{nameSuggestion.suffix}}</a>
 								<span data-ng-if="!nameSuggestion.available">{{nameSuggestion.suffix}}</span>
 							</span>
@@ -37,11 +37,12 @@
 						<label>Host:</label> *
 						<input
 							type="text"
-							data-ng-model="newServer.host"
+							data-ng-model="newPreset.nodes.0.hostname"
 							placeholder="Host"
 							class="form-control"
 							name="host"
-							required data-ng-trim
+							required
+							data-ng-trim
 						/>
 						<div class="messages">
 							<div data-ng-messages="newServerForm.host.$error" data-ng-if="newServerForm.host.$dirty">
@@ -52,14 +53,18 @@
 						<label>DocumentRoot:</label> *
 						<input
 							type="text"
-							data-ng-model="newServer.documentRoot"
+							data-ng-model="newPreset.options.documentRoot"
 							placeholder="DocumentRoot"
 							class="form-control"
 							name="documentRoot"
-							required data-ng-trim
+							data-ng-trim
+							last-character-validate
+							character="/"
+							required
 						/>
 						<div class="messages">
 							<div data-ng-messages="newServerForm.documentRoot.$error" data-ng-if="newServerForm.documentRoot.$dirty">
+								<span class="error" data-ng-message="last-character-validate">Must end with a '/'!</span>
 								<span class="error" data-ng-message="required">DocumentRoot is required!</span>
 							</div>
 						</div>
@@ -70,7 +75,7 @@
 						<label>Or type a name:</label> *
 						<input
 								type="text"
-								data-ng-model="newServer.name"
+								data-ng-model="newPreset.nodes.0.name"
 								placeholder="Name"
 								class="form-control"
 								name="name"
@@ -89,7 +94,7 @@
 						<label>User:</label> *
 						<input
 							type="text"
-							data-ng-model="newServer.username"
+							data-ng-model="newPreset.nodes.0.username"
 							placeholder="User"
 							class="form-control"
 							name="username"
@@ -103,7 +108,7 @@
 
 						<label>Context:</label> *
 						<select
-							data-ng-model="newServer.context"
+							data-ng-model="newPreset.options.context"
 							class="form-control"
 							data-ng-options="context for context in contexts"
 							name="context"
@@ -131,63 +136,63 @@
 				</form>
 			</div>
 
-			<div class="row text-center" data-ng-repeat="collection in servers">
+			<div class="row text-center" data-ng-repeat="preset in servers">
 				<div class="server">
-					<div class="single-server" data-ng-repeat="server in collection.servers | limitTo:1">
+					<div class="single-server">
 						<div class="server-icon">
 							<span class="glyphicon glyphicon-hdd"></span>
 						</div>
 						<div class="server-data">
 							<h3>
-								<span editable-text="server.key">{{server.key}}</span>
+								<span editable-text="preset.applications.0.nodes.0.name">{{preset.applications.0.nodes.0.name}}</span>
 							</h3>
 							<table>
 								<tr>
 									<td><span class="wrapper">H:
 											<span
-												editable-text="server.host"
+												editable-text="preset.applications.0.nodes.0.hostname"
 												onbeforesave="updateHost($data)"
 												onaftersave="updateServer(server)"
 											>
-												{{server.host || 'please add'}}
+												{{preset.applications.0.nodes.0.hostname || 'please add'}}
 											</span>
 										</span></td>
 									<td><span class="wrapper">C:
 											<span
 												class="context"
-												editable-select="server.context"
+												editable-select="preset.applications.0.options.context"
 												e-ng-options="context for context in contexts"
 												onbeforesave="updateContext($data)"
 												onaftersave="updateServer(server)"
 											>
-												{{server.context || 'please add'}}
+												{{preset.applications.0.options.context || 'please add'}}
 											</span>
 									</span></td>
 								</tr>
 								<tr>
 									<td><span class="wrapper">D:
 											<span
-												editable-text="server.documentRoot"
+												editable-text="preset.applications.0.options.documentRoot"
 												onbeforesave="updateDocumentRoot($data)"
 												onaftersave="updateServer(server)"
 											>
-												{{server.documentRoot || 'please add'}}
+												{{preset.applications.0.options.documentRoot || 'please add'}}
 											</span>
 									</span></td>
 									<td><span class="wrapper">U:
 											<span
-												editable-text="server.username"
+												editable-text="preset.applications.0.nodes.0.username"
 												onbeforesave="updateUsername($data)"
 												onaftersave="updateServer(server)"
 											>
-												{{server.username || 'please add'}}
+												{{preset.applications.0.nodes.0.username || 'please add'}}
 											</span>
 									</span></td>
 								</tr>
 							</table>
 						</div>
 						<div class="server-edit">
-							<button class="btn btn-danger remove" tooltip data-placement="bottom" title="Delete" data-ng-click="deleteServer(server)">
+							<button class="btn btn-danger remove" tooltip data-placement="bottom" title="Delete" data-ng-click="deleteServer(preset)">
 								<span class="glyphicon glyphicon-trash"></span>
 							</button>
 						</div>

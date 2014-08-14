@@ -1,11 +1,81 @@
-/*global surfCaptain, angular*/
 /*jslint node: true, plusplus:true */
+/*global surfCaptain, angular*/
+
+// TODO uinittests
 
 'use strict';
 surfCaptain.controller('ServerController', ['$scope', '$controller', 'ServerRepository', 'ValidationService', function ($scope, $controller, ServerRepository, ValidationService) {
 
+    var getAllServers, setTakenServerNamesAsUnavailableSuggestions, getNewPreset;
+
+    /**
+     * Returns the skeleton of a preset object
+     *
+     * @returns {object}
+     */
+    getNewPreset = function () {
+        return {
+            "options": {
+                "repositoryUrl": '',
+                "documentRoot": '',
+                "context": ''
+            },
+            "nodes": [
+                {
+                    "name": '',
+                    "hostname": '',
+                    "username": ''
+                }
+            ]
+        };
+    };
+
+    /**
+     * Sets all serverNames that are already in use as
+     * unavailable in the nameSuggestions array in the $scope
+     *
+     * @return {void}
+     */
+    setTakenServerNamesAsUnavailableSuggestions = function () {
+        var i = 0, numberOfNameSuggestions, serverName, serverNames = [], property;
+
+        for (property in $scope.servers) {
+            if ($scope.servers.hasOwnProperty(property)) {
+                serverNames.push(property);
+            }
+        }
+
+        if (serverNames.length) {
+            numberOfNameSuggestions = $scope.nameSuggestions.length;
+
+            for (i; i < numberOfNameSuggestions; i++) {
+                serverName = $scope.generateServerName($scope.nameSuggestions[i].suffix);
+                $scope.nameSuggestions[i].available = !ValidationService.doesArrayContainsItem(serverNames, serverName);
+            }
+        }
+    };
+
+    /**
+     * @return {void}
+     */
+    getAllServers = function () {
+        $scope.newPreset.options.repositoryUrl = $scope.project.repository_url;
+        ServerRepository.getServers($scope.project.repository_url).then(
+            function (response) {
+                $scope.servers = response.presets;
+                // TODO remove Spinner
+                setTakenServerNamesAsUnavailableSuggestions();
+            },
+            function (response) {
+                // an error occurred
+            }
+        );
+    };
+
     // Inherit from AbstractSingleProjectController
     angular.extend(this, $controller('AbstractSingleProjectController', {$scope: $scope}));
+
+    $scope.newPreset = getNewPreset();
 
     $scope.contexts = [
         'Production', 'Development', 'Staging'
@@ -20,11 +90,34 @@ surfCaptain.controller('ServerController', ['$scope', '$controller', 'ServerRepo
     ];
 
     $scope.deleteServer = function (server) {
-        ServerRepository.deleteServer(server);
+        // TODO confirmation
+        // TODO Spinner
+        ServerRepository.deleteServer(server).then(
+            function (response) {
+                getAllServers();
+            },
+            function (response) {
+                // an error occurred
+            }
+        );
     };
 
     $scope.updateServer = function (server) {
-        ServerRepository.putServer(server);
+        ServerRepository.updateServer(server);
+    };
+
+    $scope.addServer = function (server) {
+        ServerRepository.addServer(server).then(
+            function (response) {
+                // TODO Animation
+                $scope.newPreset = getNewPreset();
+                $scope.newServerForm.$setPristine();
+                getAllServers();
+            },
+            function (response) {
+                // an error occurred
+            }
+        );
     };
 
     /**
@@ -78,28 +171,20 @@ surfCaptain.controller('ServerController', ['$scope', '$controller', 'ServerRepo
      * @returns {string}
      */
     $scope.generateServerName = function (suffix) {
-        return $scope.name + '-' + suffix;
+        return $scope.project.identifier + '-' + suffix;
     };
 
+    /**
+     * Watches fpr the project property. If it gets filled,
+     * further requests are triggered.
+     *
+     * @return {void}
+     */
     $scope.$watch('project', function (newValue, oldValue) {
-        var elements,
-            i = 0,
-            numberOfNameSuggestions = $scope.nameSuggestions.length,
-            serverName;
         if (newValue.name === undefined) {
             return;
         }
-        ServerRepository.getServers().then(function (response) {
-            $scope.servers = response.filter(function (entry) {
-                return entry.project === newValue.id;
-            });
-            $scope.serverNames = ['bma-live', 'bma-qa'];
-
-            for (i; i < numberOfNameSuggestions; i++) {
-                serverName = $scope.generateServerName($scope.nameSuggestions[i].suffix);
-                $scope.nameSuggestions[i].available = !ValidationService.doesArrayContainsItem($scope.serverNames, serverName);
-            }
-        });
+        getAllServers();
     });
 
 }]);
