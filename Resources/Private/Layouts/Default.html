@@ -7,7 +7,15 @@
 		</title>
 		<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
 	</head>
-	<body>
+	<body style="padding-top: 70px;">
+		<nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+			<div class="container">
+				<ul class="nav navbar-nav">
+					<li><f:link.action controller="Deployment" action="List">Deployment</f:link.action></li>
+					<li><f:link.action controller="FrontendSetting" action="List">Frontend Setting</f:link.action></li>
+				</ul>
+			</div>
+		</nav>
 		<div class="container">
 			<f:flashMessages class="flashmessages"/>
 			<f:render partial="ValidationErrors"/>
