@@ -28,7 +28,7 @@
 							>
 								<a
 									data-ng-if="nameSuggestion.available"
-									data-ng-click="$parent.$parent.newPreset.nodes.0.name = generateServerName(nameSuggestion.suffix)"
+									data-ng-click="$parent.$parent.newPreset.nodes.0.name = generateServerName(nameSuggestion.suffix); $parent.$parent.newPreset.options.context = nameSuggestion.context"
 								>{{nameSuggestion.suffix}}</a>
 								<span data-ng-if="!nameSuggestion.available">{{nameSuggestion.suffix}}</span>
 							</span>

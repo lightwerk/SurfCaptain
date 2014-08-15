@@ -33,9 +33,8 @@ var surfCaptain = angular.module('surfCaptain', ['ngRoute', 'xeditable', 'ngAnim
                 redirectTo: '/'
             });
     }])
-    .value('version', '0.7.0')
-    .value('domain', 'http://api.surfcaptain.local.loc/');
+    .value('version', '0.7.0');
 
-surfCaptain.run(function (editableOptions) {
+surfCaptain.run(['editableOptions', function (editableOptions) {
     editableOptions.theme = 'bs3';
-});
+}]);

@@ -1,7 +1,14 @@
 Lightwerk:
   SurfCaptain:
     frontendSettings:
-      testKey: testValue
+      defaultUser: 'lw-deployment'
+      defaultDocumentRoot: '/var/www/{{project}}/{{suffix}}/htdocs/'
+      nameSuggestions:
+        live: 'Production'
+        qa: 'Staging'
+        staging: 'Staging'
+        test: 'Staging'
+        dev: 'Development'
     presets:
       repositoryUrl: git@git.lightwerk.com:lm/lightwerk-surfcaptain-settings.git
       filePath: Presets.json

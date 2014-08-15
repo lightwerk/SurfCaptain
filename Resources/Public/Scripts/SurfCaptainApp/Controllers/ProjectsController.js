@@ -2,7 +2,8 @@
 /*jslint node: true */
 
 'use strict';
-surfCaptain.controller('ProjectsController', ['$scope', 'ProjectRepository', function ($scope, ProjectRepository) {
+surfCaptain.controller('ProjectsController', ['$scope', 'ProjectRepository', 'SettingsRepository', function ($scope, ProjectRepository, SettingsRepository) {
+    $scope.settings = {};
     $scope.ordering = 'name';
     $scope.projects = [];
 
@@ -15,6 +16,11 @@ surfCaptain.controller('ProjectsController', ['$scope', 'ProjectRepository', fun
             function () {
                 //an error occurred
                 $scope.message = 'API call failed. GitLab is currently not available.';
+            }
+        );
+        SettingsRepository.getSettings().then(
+            function (response) {
+                $scope.settings = response;
             }
         );
     };
