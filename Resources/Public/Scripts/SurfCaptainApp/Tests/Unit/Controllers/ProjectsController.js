@@ -14,7 +14,7 @@ describe('ProjectsController', function () {
 
     beforeEach(inject(function ($controller, $rootScope, $q, ProjectRepository) {
         scope = $rootScope.$new();
-        projects = {projects: [
+        projects = {repositories: [
             {"name": "foo", "ssh_url_to_repo": "git@git.example.com:project/foo.git", "id": 1}
         ]};
         controller = $controller;
@@ -48,7 +48,7 @@ describe('ProjectsController', function () {
     it('should store recieved projects records in scope.projects', function () {
         succeedPromise = true;
         createController();
-        expect(scope.projects).toEqual(projects.projects);
+        expect(scope.projects).toEqual(projects.repositories);
     });
 
     it('should store message in scope.message if request fails', function () {

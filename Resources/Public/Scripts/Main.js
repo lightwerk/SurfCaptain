@@ -33,7 +33,7 @@ var surfCaptain = angular.module('surfCaptain', ['ngRoute', 'xeditable', 'ngAnim
                 redirectTo: '/'
             });
     }])
-    .value('version', '0.5.7')
+    .value('version', '0.7.0')
     .value('domain', 'http://api.surfcaptain.local.loc/');
 
 surfCaptain.run(function (editableOptions) {
@@ -156,7 +156,7 @@ surfCaptain.controller('AbstractSingleProjectController', ['$scope', '$routePara
 
     this.init = function () {
         ProjectRepository.getProjects().then(function (projects) {
-            $scope.project = ProjectRepository.getProjectByName(projects.projects, $scope.name);
+            $scope.project = ProjectRepository.getProjectByName(projects.repositories, $scope.name);
         });
     };
     this.init();
@@ -279,7 +279,7 @@ surfCaptain.controller('ProjectsController', ['$scope', 'ProjectRepository', fun
         // Retrieve Projects from Factory
         ProjectRepository.getProjects().then(
             function (response) {
-                $scope.projects = response.projects;
+                $scope.projects = response.repositories;
             },
             function () {
                 //an error occurred
@@ -289,14 +289,89 @@ surfCaptain.controller('ProjectsController', ['$scope', 'ProjectRepository', fun
     };
     this.init();
 }]);
-/*global surfCaptain, angular*/
 /*jslint node: true, plusplus:true */
+/*global surfCaptain, angular*/
+
+// TODO uinittests
 
 'use strict';
 surfCaptain.controller('ServerController', ['$scope', '$controller', 'ServerRepository', 'ValidationService', function ($scope, $controller, ServerRepository, ValidationService) {
 
+    var getAllServers, setTakenServerNamesAsUnavailableSuggestions, getNewPreset;
+
+    /**
+     * Returns the skeleton of a preset object
+     *
+     * @returns {object}
+     */
+    getNewPreset = function () {
+        return {
+            "options": {
+                "repositoryUrl": '',
+                "documentRoot": '',
+                "context": ''
+            },
+            "nodes": [
+                {
+                    "name": '',
+                    "hostname": '',
+                    "username": 'lw-deployment'
+                }
+            ]
+        };
+    };
+
+    /**
+     * Sets all serverNames that are already in use as
+     * unavailable in the nameSuggestions array in the $scope
+     *
+     * @return {void}
+     */
+    setTakenServerNamesAsUnavailableSuggestions = function () {
+        var i = 0, numberOfNameSuggestions, serverName, serverNames = [], property;
+
+        for (property in $scope.servers) {
+            if ($scope.servers.hasOwnProperty(property)) {
+                serverNames.push(property);
+            }
+        }
+
+        if (serverNames.length) {
+            numberOfNameSuggestions = $scope.nameSuggestions.length;
+
+            for (i; i < numberOfNameSuggestions; i++) {
+                serverName = $scope.generateServerName($scope.nameSuggestions[i].suffix);
+                $scope.nameSuggestions[i].available = !ValidationService.doesArrayContainsItem(serverNames, serverName);
+            }
+        }
+    };
+
+    /**
+     * @return {void}
+     */
+    getAllServers = function () {
+        $scope.newPreset.options.repositoryUrl = $scope.project.repository_url;
+        ServerRepository.getServers($scope.project.repository_url).then(
+            function (response) {
+                $scope.servers = response.presets;
+                // TODO remove Spinner
+                setTakenServerNamesAsUnavailableSuggestions();
+            },
+            function (response) {
+                // an error occurred
+            }
+        );
+    };
+
     // Inherit from AbstractSingleProjectController
     angular.extend(this, $controller('AbstractSingleProjectController', {$scope: $scope}));
+
+    $scope.newPreset = getNewPreset();
+    $scope.currentPreset = {};
+
+    $scope.setCurrentPreset = function (preset) {
+        $scope.currentPreset = preset;
+    };
 
     $scope.contexts = [
         'Production', 'Development', 'Staging'
@@ -311,11 +386,33 @@ surfCaptain.controller('ServerController', ['$scope', '$controller', 'ServerRepo
     ];
 
     $scope.deleteServer = function (server) {
-        ServerRepository.deleteServer(server);
+        // TODO Spinner
+        ServerRepository.deleteServer(server).then(
+            function (response) {
+                getAllServers();
+            },
+            function (response) {
+                // an error occurred
+            }
+        );
     };
 
     $scope.updateServer = function (server) {
-        ServerRepository.putServer(server);
+        ServerRepository.updateServer(server);
+    };
+
+    $scope.addServer = function (server) {
+        ServerRepository.addServer(server).then(
+            function (response) {
+                // TODO Animation
+                $scope.newPreset = getNewPreset();
+                $scope.newServerForm.$setPristine();
+                getAllServers();
+            },
+            function (response) {
+                // an error occurred
+            }
+        );
     };
 
     /**
@@ -369,28 +466,20 @@ surfCaptain.controller('ServerController', ['$scope', '$controller', 'ServerRepo
      * @returns {string}
      */
     $scope.generateServerName = function (suffix) {
-        return $scope.name + '-' + suffix;
+        return $scope.project.identifier + '-' + suffix;
     };
 
+    /**
+     * Watches fpr the project property. If it gets filled,
+     * further requests are triggered.
+     *
+     * @return {void}
+     */
     $scope.$watch('project', function (newValue, oldValue) {
-        var elements,
-            i = 0,
-            numberOfNameSuggestions = $scope.nameSuggestions.length,
-            serverName;
         if (newValue.name === undefined) {
             return;
         }
-        ServerRepository.getServers().then(function (response) {
-            $scope.servers = response.filter(function (entry) {
-                return entry.project === newValue.id;
-            });
-            $scope.serverNames = ['bma-live', 'bma-qa'];
-
-            for (i; i < numberOfNameSuggestions; i++) {
-                serverName = $scope.generateServerName($scope.nameSuggestions[i].suffix);
-                $scope.nameSuggestions[i].available = !ValidationService.doesArrayContainsItem($scope.serverNames, serverName);
-            }
-        });
+        getAllServers();
     });
 
 }]);
@@ -424,6 +513,57 @@ surfCaptain.directive('chosen', function () {
     return {
         restrict: 'A',
         link: linker
+    };
+});
+/*global surfCaptain*/
+/*jslint node: true */
+
+'use strict';
+surfCaptain.directive('lastCharacterValidate', ['ValidationService', function (ValidationService) {
+    return {
+        restrict: 'A',
+        require: 'ngModel',
+        scope: {
+            character: '@character'
+        },
+        link: function (scope, elem, attr, ctrl) {
+            var character = scope.character || '';
+            // add a parser
+            ctrl.$parsers.unshift(function (value) {
+                var valid = value ? ValidationService.doesLastCharacterMatch(value.slice(-1), character) : false;
+                ctrl.$setValidity('last-character-validate', valid);
+
+                // if it's valid, return the value to the model,
+                // otherwise return undefined.
+                return valid ? value : undefined;
+            });
+
+            // add a formatter
+            ctrl.$formatters.unshift(function (value) {
+                var valid = value ? ValidationService.doesLastCharacterMatch(value.slice(-1), character) : false;
+                ctrl.$setValidity('last-character-validate', valid);
+
+                // return the value or nothing will be written to the DOM.
+                return value;
+            });
+
+        }
+    };
+}]);
+/*global surfCaptain, angular*/
+/*jslint node: true */
+
+'use strict';
+surfCaptain.directive('modal', function () {
+    return {
+        scope: {
+            modal: '@modal'
+        },
+        link: function (scope, element, attributes) {
+            element.bind('click', function () {
+                angular.element('.' + scope.modal).modal();
+            });
+        }
     };
 });
 /*global surfCaptain*/
@@ -577,7 +717,7 @@ surfCaptain.factory('HistoryRepository', [ '$http', '$q', function ($http, $q) {
 surfCaptain.factory('ProjectRepository', [ '$http', '$q', function ($http, $q) {
     var projectRepository = {},
         projects = {},
-        url = '/api/projects';
+        url = '/api/repositories';
 
     /**
      *
@@ -617,40 +757,110 @@ surfCaptain.factory('ProjectRepository', [ '$http', '$q', function ($http, $q) {
 
 surfCaptain.factory('ServerRepository', ['$http', '$q', function ($http, $q) {
     var serverRepository = {},
-        url = '/_Resources/Static/Packages/Lightwerk.SurfCaptain/Scripts/SurfCaptainApp/ExampleData/servers.json';
+        url = '/api/presets';
 
     /**
      * Gets all servers from the collection
      *
-     * @returns {Promise} – promise object
+     * @param {object} server
+     * @returns {string} – json string
      */
-    serverRepository.getServers = function () {
+    serverRepository.getFullPresetAsString = function (server) {
+        var container = {"applications": []};
+        container.applications[0] = server;
+        console.log(container);
+        return JSON.stringify(container);
+    };
+
+    /**
+     *
+     * @param {object} server
+     * @returns {string}
+     */
+    serverRepository.getKeyFromServerConfiguration = function (server) {
+        return server.nodes[0].name;
+    };
+
+    /**
+     *
+     * @param {object} server
+     * @return {object}
+     */
+    serverRepository.getApplicationContainer = function (server) {
+        var applicationContainer = {"applications": []};
+        applicationContainer.applications[0] = server;
+        return applicationContainer;
+    };
+
+    /**
+     * Gets all servers from the collection
+     *
+     * @param {string} repositoryUrl
+     * @returns {Q.promise|promise} – promise object
+     */
+    serverRepository.getServers = function (repositoryUrl) {
         var deferred = $q.defer();
-        $http.get(url).success(deferred.resolve).error(deferred.reject);
+        $http.get(url + '?repositoryUrl=' + repositoryUrl).success(deferred.resolve).error(deferred.reject);
         return deferred.promise;
     };
 
     /**
      * Adds a single server to the server collection
      *
+     * @param {string} repositoryUrl
      * @param server {object}
-     * @returns {Promise} – promise object
+     * @returns {Q.promise|promise} – promise object
      */
     serverRepository.putServer = function (server) {
         console.log(server);
     };
 
     /**
+     * Adds a single server to the server collection
+     *
+     * @param server {object}
+     * @returns {Q.promise|promise} – promise object
+     */
+    serverRepository.postServer = function (server) {
+        var deferred = $q.defer(),
+            configuration = this.getFullPresetAsString(server);
+        $http({
+            method: 'POST',
+            url: url + '?key=' + this.getKeyFromServerConfiguration(server) + '&configuration=' + configuration,
+            headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+        }).success(deferred.resolve).error(deferred.reject);
+        return deferred.promise;
+    };
+
+    /**
      * Removes a single server from the server collection
      *
      * @param server {object}
-     * @returns {Promise} – promise object
+     * @returns {Q.promise|promise} – promise object
      */
     serverRepository.deleteServer = function (server) {
-        console.log(server);
+        var deferred = $q.defer();
+        $http.delete(url + '?key=' + serverRepository.getKeyFromServerConfiguration(server.applications[0]))
+            .success(deferred.resolve)
+            .error(deferred.reject);
+        return deferred.promise;
     };
 
-    return serverRepository;
+    // Public API
+    return {
+        getServers: function (repositoryUrl) {
+            return serverRepository.getServers(repositoryUrl);
+        },
+        updateServer: function (server) {
+            return serverRepository.putServer(server);
+        },
+        addServer: function (server) {
+            return serverRepository.postServer(server);
+        },
+        deleteServer: function (server) {
+            return serverRepository.deleteServer(server);
+        }
+    };
 }]);
 /*jslint node: true */
 /*global surfCaptain*/

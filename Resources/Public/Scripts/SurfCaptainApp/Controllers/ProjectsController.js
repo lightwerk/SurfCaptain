@@ -10,7 +10,7 @@ surfCaptain.controller('ProjectsController', ['$scope', 'ProjectRepository', fun
         // Retrieve Projects from Factory
         ProjectRepository.getProjects().then(
             function (response) {
-                $scope.projects = response.projects;
+                $scope.projects = response.repositories;
             },
             function () {
                 //an error occurred

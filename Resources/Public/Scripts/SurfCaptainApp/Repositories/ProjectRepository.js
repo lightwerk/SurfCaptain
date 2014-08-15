@@ -7,7 +7,7 @@
 surfCaptain.factory('ProjectRepository', [ '$http', '$q', function ($http, $q) {
     var projectRepository = {},
         projects = {},
-        url = '/api/projects';
+        url = '/api/repositories';
 
     /**
      *
