@@ -24,7 +24,7 @@ surfCaptain.controller('ServerController', ['$scope', '$controller', 'ServerRepo
                 {
                     "name": '',
                     "hostname": '',
-                    "username": ''
+                    "username": 'lw-deployment'
                 }
             ]
         };
