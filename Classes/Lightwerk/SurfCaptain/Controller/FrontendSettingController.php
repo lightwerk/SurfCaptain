@@ -6,18 +6,21 @@ namespace Lightwerk\SurfCaptain\Controller;
  *                                                                        *
  *                                                                        */
 
+use Lightwerk\SurfCaptain\Configuration\ConfigurationManager;
 use TYPO3\Flow\Annotations as Flow;
 
 class FrontendSettingController extends AbstractRestController {
 
 	/**
+	 * @var ConfigurationManager
+	 * @FLOW\Inject
+	 */
+	protected $configurationManager;
+
+	/**
 	 * @return void
 	 */
 	public function listAction() {
-		$frontendSettings = array();
-		if (!empty($this->settings['frontendSettings']) && is_array($this->settings['frontendSettings'])) {
-			$frontendSettings = $this->settings['frontendSettings'];
-		}
-		$this->view->assign('frontendSettings', $frontendSettings);
+		$this->view->assign('frontendSettings', $this->configurationManager->getFrontendSettings());
 	}
 }
