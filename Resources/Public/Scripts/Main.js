@@ -350,8 +350,8 @@ surfCaptain.controller('ServerController', ['$scope', '$controller', 'ServerRepo
      * @return {void}
      */
     getAllServers = function () {
-        $scope.newPreset.options.repositoryUrl = $scope.project.repository_url;
-        ServerRepository.getServers($scope.project.repository_url).then(
+        $scope.newPreset.options.repositoryUrl = $scope.project.ssh_url_to_repo;
+        ServerRepository.getServers($scope.project.ssh_url_to_repo).then(
             function (response) {
                 $scope.servers = response.presets;
                 // TODO remove Spinner
@@ -466,7 +466,7 @@ surfCaptain.controller('ServerController', ['$scope', '$controller', 'ServerRepo
      * @returns {string}
      */
     $scope.generateServerName = function (suffix) {
-        return $scope.project.identifier + '-' + suffix;
+        return $scope.project.name + '-' + suffix;
     };
 
     /**
