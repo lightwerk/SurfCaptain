@@ -50,11 +50,14 @@ class DeploymentController extends AbstractRestController {
 		$this->redirect('index', NULL, NULL, array('deployment' => $deployment));
 	}
 
+	// ToDo: Update erstellen, delete löschen
+
 	/**
 	 * @param Deployment $deployment
 	 * @return void
 	 */
 	public function deleteAction(Deployment $deployment) {
+		// PersistensManager?
 		if ($deployment->getStatus() === 'waiting') {
 			$deployment->setStatus('canceled');
 			$this->deploymentRepository->update($deployment);

@@ -6,8 +6,11 @@ namespace Lightwerk\SurfCaptain\Service\Driver;
  *                                                                        *
  *                                                                        */
 
+use Lightwerk\SurfCaptain\Domain\Model\Branch;
+use Lightwerk\SurfCaptain\Domain\Model\Repository;
+use Lightwerk\SurfCaptain\Domain\Model\Tag;
+use Lightwerk\SurfCaptain\Mapper\DataMapper;
 use Lightwerk\SurfCaptain\Utility\GeneralUtility;
-use Lightwerk\SurfCaptain\Utility\MarkerUtility;
 use TYPO3\Flow\Annotations as Flow;
 
 class GitLabDriver implements DriverInterface {
@@ -28,6 +31,12 @@ class GitLabDriver implements DriverInterface {
 	 * @var \TYPO3\Flow\Http\Client\CurlEngine
 	 */
 	protected $browserRequestEngine;
+
+	/**
+	 * @FLow\Inject
+	 * @var DataMapper
+	 */
+	protected $dataMapper;
 
 	/**
 	 * Sets the settings
@@ -81,24 +90,22 @@ class GitLabDriver implements DriverInterface {
 
 	/**
 	 * @param string $repositoryUrl
-	 * @return array
+	 * @return Repository
 	 * @throws Exception
 	 */
 	protected function getProjectFromRepositoryUrl($repositoryUrl) {
-		$project = $this->getGitLabApiResponse('projects/' . $this->getId($repositoryUrl));
-		$project = $this->replaceMarkersInItem($project, 'repositories');
-		return $project;
+		$projectData = $this->getGitLabApiResponse('projects/' . $this->getId($repositoryUrl));
+		return $this->dataMapper->mapToObject($projectData, '\\Lightwerk\\SurfCaptain\\Domain\\Model\\Repository');
 	}
 
 	/**
 	 * @param integer $groupId
-	 * @return array
+	 * @return Repository[]
 	 * @throws Exception
 	 */
 	protected function getProjectsOfGroup($groupId) {
-		$projects = $this->getGitLabApiResponse('groups/' . $groupId)['projects'];
-		$projects = $this->replaceMarkersInItems($projects, 'repositories');
-		return $projects;
+		$projectsData = $this->getGitLabApiResponse('groups/' . $groupId)['projects'];
+		return $this->dataMapper->mapToObject($projectsData, '\\Lightwerk\\SurfCaptain\\Domain\\Model\\Repository[]');
 	}
 
 	/**
@@ -114,13 +121,12 @@ class GitLabDriver implements DriverInterface {
 	}
 
 	/**
-	 * @return mixed
+	 * @return Repository[]
 	 * @throws Exception
 	 */
 	protected function getAllProjects() {
-		$projects = $this->getGitLabApiResponse('projects');
-		$projects = $this->replaceMarkersInItems($projects, 'repositories');
-		return $projects;
+		$projectsData = $this->getGitLabApiResponse('projects');
+		return $this->dataMapper->mapToObject($projectsData, '\\Lightwerk\\SurfCaptain\\Domain\\Model\\Repository[]');
 	}
 
 	/**
@@ -162,6 +168,16 @@ class GitLabDriver implements DriverInterface {
 			}
 		}
 		return $repositories;
+	}
+
+	/**
+	 * Returns repository
+	 *
+	 * @param string $repositoryUrl
+	 * @return Repository
+	 */
+	public function getRepository($repositoryUrl) {
+		// TODO: Implement getRepository() method.
 	}
 
 	/**
@@ -218,50 +234,21 @@ class GitLabDriver implements DriverInterface {
 	 * Returns branches of a repository
 	 *
 	 * @param string $repositoryUrl
-	 * @return array
+	 * @return Branch[]
 	 */
 	public function getBranches($repositoryUrl) {
-		$branches = $this->getGitLabApiResponse('projects/' . $this->getId($repositoryUrl) . '/repository/branches');
-		$branches = $this->replaceMarkersInItems($branches, 'branches');
-		return $branches;
+		$branchesData = $this->getGitLabApiResponse('projects/' . $this->getId($repositoryUrl) . '/repository/branches');
+		return $this->dataMapper->mapToObject($branchesData, '\\Lightwerk\\SurfCaptain\\Domain\\Model\\Branch[]');
 	}
 
 	/**
 	 * Returns tags of a repository
 	 *
 	 * @param string $repositoryUrl
-	 * @return array
+	 * @return Tag[]
 	 */
 	public function getTags($repositoryUrl) {
-		$tags = $this->getGitLabApiResponse('projects/' . $this->getId($repositoryUrl) . '/repository/tags');
-		$tags = $this->replaceMarkersInItems($tags, 'branches');
-		return $tags;
-	}
-
-	/**
-	 * @param array $items
-	 * @param string $type
-	 * @return array
-	 */
-	protected function replaceMarkersInItems(array $items, $type) {
-		foreach ($items as $key => $item) {
-			$items[$key] = $this->replaceMarkersInItem($item, $type);
-		}
-		return $items;
-	}
-
-	/**
-	 * @param array $item
-	 * @param string $type
-	 * @return array
-	 */
-	protected function replaceMarkersInItem($item, $type) {
-		if (!empty($this->settings[$type]['properties']) && is_array($this->settings[$type]['properties'])) {
-			$item = array_merge(
-				$item,
-				MarkerUtility::replaceVariablesInArray($this->settings[$type]['properties'], $item)
-			);
-		}
-		return $item;
+		$tagsData = $this->getGitLabApiResponse('projects/' . $this->getId($repositoryUrl) . '/repository/tags');
+		return $this->dataMapper->mapToObject($tagsData, '\\Lightwerk\\SurfCaptain\\Domain\\Model\\Tag[]');
 	}
 }

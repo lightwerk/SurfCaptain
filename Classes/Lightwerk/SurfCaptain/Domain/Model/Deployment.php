@@ -14,6 +14,8 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Deployment {
 
+	// ToDo: Constants für Status
+
 	/**
 	 * @var \Doctrine\Common\Collections\Collection<\Lightwerk\SurfCaptain\Domain\Model\Log>
 	 * @ORM\OneToMany(mappedBy="deployment")
@@ -28,14 +30,12 @@ class Deployment {
 
 	/**
 	 * @var string
-	 * @ORM\Column(type="text")
 	 * @ORM\Column(length=80)
 	 */
 	protected $referenceName;
 
 	/**
 	 * @var string
-	 * @ORM\Column(type="text")
 	 * @ORM\Column(length=15)
 	 */
 	protected $clientIp;

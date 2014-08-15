@@ -82,26 +82,18 @@ Example response:
 ### List deployments
 
 - Methode: GET
-- Path: /api/deployments
-- Parameters:
-	- repositoryUrl (optional) - string
-	- limit (optional) - integer (Default: 10, All: 0)
+- Path: /api/deployment
 
 Example call to get the last 10 deployments of all repositories:
 
 	curl -H "Accept: application/json" http://surf.flow.lp.lw.loc/api/deployments | jq '.'
 
-Example call to get the last 30 deployments of git@git.lightwerk.com:boilerplate/typo3_cms.git:
-
-	curl -H "Accept: application/json" http://surf.flow.lp.lw.loc/api/deployments\?repositoryUrl\=git%40git.lightwerk.com%3Aboilerplate%2Ftypo3_cms.git\&limit\=30 | jq '.'
-
 ### Create new deployment
 
 - Methode: POST
-- Path: /api/deployments
+- Path: /api/deployment
 - Parameters:
 	- configuration (optional) - json
-	- key (optional) - string (Gets the configuration from Presets.json)
 
 Example call with a configuration:
 
@@ -130,15 +122,11 @@ Example call with a configuration:
 		}
 	}'
 
-Example call with a key:
-
-	curl -H "Accept: application/json" -v -X POST http://surf.flow.lp.lw.loc/api/deployments\?key\=sma
-
 ### Cancel a deployment
 
 - Info: Works just if it has still "waiting" as status
 - Methode: DELETE
-- Path: /api/deployments
+- Path: /api/deployment
 - Parameters:
 	- deployment (required) - string
 
@@ -163,6 +151,17 @@ Example call:
 Example call with a offset of 23:
 
 	curl -H "Accept: application/json" http://surf.flow.lp.lw.loc/api/logs\?deployment\=ac964cbf-9f85-c9d3-63b8-85b40414f53c\&offset=23 | jq '.'
+
+## Frontend Settings
+
+### List settings
+
+- Methode: GET
+- Path: /api/frontendsetting
+
+Example call to list presets of a defined project:
+
+	curl -H "Accept: application/json" http://surf.flow.lp.lw.loc/api/frontendsetting | jq '.'
 
 ## Presets
 

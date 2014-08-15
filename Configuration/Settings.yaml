@@ -1,5 +1,7 @@
 Lightwerk:
   SurfCaptain:
+    frontendSettings:
+      testKey: testValue
     presets:
       repositoryUrl: git@git.lightwerk.com:lm/lightwerk-surfcaptain-settings.git
       filePath: Presets.json
