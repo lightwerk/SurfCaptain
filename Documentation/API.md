@@ -27,23 +27,23 @@ Example call:
 Example response:
 
 	{
-	  "validationErrors": [],
-	  "flashMessages": [],
-	  "branches": [
-	    {
-	      "group": "Branches",
-	      "type": "Branch",
-	      "commit": {
-	        "committer": {
-	          "name": "Stephan Gruber"
-	        },
-	        "committed_date": "2014-05-07T15:45:19+02:00",
-	        "message": "Merge branch 'master' of git.lightwerk.com:project/drxintra",
-	        "id": "dc929fa1c493967b58c90e9eb1a1d0ce2a343010"
-	      },
-	      "name": "DRXINTRA-15"
-	    },
-	    ...
+	 "validationErrors": [],
+	 "flashMessages": [],
+	 "branches": [
+	   {
+	     "group": "Branches",
+	     "type": "Branch",
+	     "commit": {
+	       "committer": {
+	         "name": "Stephan Gruber"
+	       },
+	       "committed_date": "2014-05-07T15:45:19+02:00",
+	       "message": "Merge branch 'master' of git.lightwerk.com:project/drxintra",
+	       "id": "dc929fa1c493967b58c90e9eb1a1d0ce2a343010"
+	     },
+	     "name": "DRXINTRA-15"
+	   },
+	   ...
 
 ### List tags of a repository
 
@@ -59,86 +59,74 @@ Example call:
 Example response:
 
 	{
-	  "validationErrors": [],
-	  "flashMessages": [],
-	  "tags": [
-	    {
-	      "group": "Tags",
-	      "type": "Tag",
-	      "commit": {
-	        "committer": {
-	          "name": "Jannik Hormel"
-	        },
-	        "committed_date": "2014-07-28T16:46:32+02:00",
-	        "message": "[TASK] lw_drx_intra_locations: update drx_changemanagement ext_tables.sql",
-	        "id": "731f8d10fdc59c5bdba579566e2b048b2a85929e"
-	      },
-	      "name": "1.3.0"
-	    },
-	    ...
+	 "validationErrors": [],
+	 "flashMessages": [],
+	 "tags": [
+	   {
+	     "group": "Tags",
+	     "type": "Tag",
+	     "commit": {
+	       "committer": {
+	         "name": "Jannik Hormel"
+	       },
+	       "committed_date": "2014-07-28T16:46:32+02:00",
+	       "message": "[TASK] lw_drx_intra_locations: update drx_changemanagement ext_tables.sql",
+	       "id": "731f8d10fdc59c5bdba579566e2b048b2a85929e"
+	     },
+	     "name": "1.3.0"
+	   },
+	   ...
 
 ## Deployments
 
 ### List deployments
 
 - Methode: GET
-- Path: /api/deployments
-- Parameters:
-	- repositoryUrl (optional) - string
-	- limit (optional) - integer (Default: 10, All: 0)
+- Path: /api/deployment
 
 Example call to get the last 10 deployments of all repositories:
 
 	curl -H "Accept: application/json" http://surf.flow.lp.lw.loc/api/deployments | jq '.'
 
-Example call to get the last 30 deployments of git@git.lightwerk.com:boilerplate/typo3_cms.git:
-
-	curl -H "Accept: application/json" http://surf.flow.lp.lw.loc/api/deployments\?repositoryUrl\=git%40git.lightwerk.com%3Aboilerplate%2Ftypo3_cms.git\&limit\=30 | jq '.'
-
 ### Create new deployment
 
 - Methode: POST
-- Path: /api/deployments
+- Path: /api/deployment
 - Parameters:
 	- configuration (optional) - json
-	- key (optional) - string (Gets the configuration from Presets.json)
 
 Example call with a configuration:
 
-	curl -H "Accept: application/json" -v -X POST http://surf.flow.lp.lw.loc/api/deployments\?configuration\=%7B%22applications%22%3A%5B%7B%22type%22%3A%22TYPO3%5C%5CCMS%5C%5CDeploy%22%2C%22options%22%3A%7B%22repositoryUrl%22%3A%22git%40git.lightwerk.com%3Aboilerplate%5C%2Ftypo3_cms.git%22%2C%22documentRoot%22%3A%22%5C%2Fvar%5C%2Fwww%5C%2FprojectName%5C%2Fcontext%5C%2F%22%2C%22context%22%3A%22Development%22%2C%22tag%22%3A%221.2.3%22%7D%2C%22nodes%22%3A%5B%7B%22name%22%3A%22Front-End+Server+2%22%2C%22hostname%22%3A%22www2.sma.de%22%2C%22username%22%3A%22user2%22%7D%5D%7D%5D%7D
-
-Example call with a key:
-
-	curl -H "Accept: application/json" -v -X POST http://surf.flow.lp.lw.loc/api/deployments\?key\=sma
-
-Example of a decode configuration parameter:
-
-     {
-        "applications": [
-            {
-                "type": "TYPO3\\CMS\\Deploy",
-                "options": {
-                    "repositoryUrl": "git@git.lightwerk.com:boilerplate/typo3_cms.git",
-                    "documentRoot": "/var/www/projectName/context/",
-                    "context": "Development",
-                    "tag": "1.2.3"
-                },
-                "nodes": [
-                    {
-                        "name": "Front-End Server 2",
-                        "hostname": "www2.sma.de",
-                        "username": "user2"
-                    }
-                ]
-            }
-        ]
-    }
+	curl -H "Accept: application/json" -H "Content-Type: application/json" -v -X POST http://surf.flow.lp.lw.loc/api/deployment -d '{
+		"deployment": {
+			"configuration": {
+				"applications": [
+					{
+						"type": "TYPO3\\CMS\\Deploy",
+						"options": {
+							"repositoryUrl": "git@git.lightwerk.com:boilerplate/typo3_cms.git",
+							"documentRoot": "/var/www/projectName/context/",
+							"context": "Development",
+							"tag": "1.2.3"
+						},
+						"nodes": [
+							{
+								"name": "Front-End Server 2",
+								"hostname": "www2.sma.de",
+								"username": "user2"
+							}
+						]
+					}
+				]
+			}
+		}
+	}'
 
 ### Cancel a deployment
 
 - Info: Works just if it has still "waiting" as status
 - Methode: DELETE
-- Path: /api/deployments
+- Path: /api/deployment
 - Parameters:
 	- deployment (required) - string
 
@@ -163,6 +151,17 @@ Example call:
 Example call with a offset of 23:
 
 	curl -H "Accept: application/json" http://surf.flow.lp.lw.loc/api/logs\?deployment\=ac964cbf-9f85-c9d3-63b8-85b40414f53c\&offset=23 | jq '.'
+
+## Frontend Settings
+
+### List settings
+
+- Methode: GET
+- Path: /api/frontendsetting
+
+Example call to list presets of a defined project:
+
+	curl -H "Accept: application/json" http://surf.flow.lp.lw.loc/api/frontendsetting | jq '.'
 
 ## Presets
 

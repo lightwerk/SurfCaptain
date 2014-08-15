@@ -1,5 +1,5 @@
 <?php
-namespace Lightwerk\SurfCaptain\Domain\Repository;
+namespace Lightwerk\SurfCaptain\Mapper;
 
 /*                                                                        *
  * This script belongs to the TYPO3 Flow package "Lightwerk.SurfCaptain". *
@@ -7,19 +7,18 @@ namespace Lightwerk\SurfCaptain\Domain\Repository;
  *                                                                        */
 
 use TYPO3\Flow\Annotations as Flow;
-use TYPO3\Flow\Persistence\QueryInterface;
-use TYPO3\Flow\Persistence\Repository;
 
 /**
  * @Flow\Scope("singleton")
  */
-class DeploymentRepository extends Repository {
+class DataMapper {
 
 	/**
-	 * @var array
-	 * @see \TYPO3\Flow\Persistence\Repository
+	 * @param array $objectData
+	 * @param string $objectClass
+	 * @return object
 	 */
-	protected $defaultOrderings = array(
-		'date' => QueryInterface::ORDER_DESCENDING,
-	);
+	public function mapToObject(array $objectData, $objectClass) {
+		return $objectData;
+	}
 }

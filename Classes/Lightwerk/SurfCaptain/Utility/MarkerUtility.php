@@ -11,20 +11,6 @@ use TYPO3\Flow\Annotations as Flow;
 class MarkerUtility {
 
 	/**
-	 * @param array $array
-	 * @param string $variables
-	 * @return array
-	 */
-	static public function replaceVariablesInArray(array $array, array $variables) {
-		foreach ($array as $key => $value) {
-			if (is_scalar($value)) {
-				$array[$key] = self::replaceVariablesInValue($value, $variables);
-			}
-		}
-		return $array;
-	}
-
-	/**
 	 * @param string $value
 	 * @param array $variables
 	 * @return string

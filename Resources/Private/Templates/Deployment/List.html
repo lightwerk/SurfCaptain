@@ -1,0 +1,51 @@
+<f:layout name="Default" />
+
+<f:section name="Title">List of all deployments</f:section>
+
+<f:section name="Content">
+	<f:if condition="{deployments}">
+		<f:then>
+			<table class="table table-striped">
+				<thead>
+					<tr>
+						<th>Date</th>
+						<th>Repository URL</th>
+						<th>Reference Name</th>
+						<th>Client IP</th>
+						<th>Status</th>
+						<th>Actions</th>
+					</tr>
+				</thead>
+				<tbody>
+					<f:for each="{deployments}" as="deployment">
+						<tr>
+							<td>
+								<f:link.action action="index" arguments="{deployment: deployment}">
+									<f:format.date date="{deployment.date}" format="d.m.Y H:i:s" />
+								</f:link.action>
+							</td>
+							<td>{deployment.repositoryUrl}</td>
+							<td>{deployment.referenceName}</td>
+							<td>{deployment.clientIp}</td>
+							<td>{deployment.status}</td>
+							<td>
+								<f:if condition="{deployment.status} == 'waiting'">
+									<f:form action="delete" arguments="{deployment: deployment}">
+										<f:form.hidden name="__method" value="DELETE" />
+										<f:form.submit value="Cancel" class="btn btn-danger btn-xs" />
+									</f:form>
+								</f:if>
+							</td>
+						</tr>
+					</f:for>
+				</tbody>
+			</table>
+		</f:then>
+		<f:else>
+			<p>No deployments created yet.</p>
+		</f:else>
+	</f:if>
+
+	<f:render partial="Deployment/Create" arguments="{_all}" />
+
+</f:section>

@@ -1,0 +1,42 @@
+<f:layout name="Default" />
+
+<f:section name="Title">Details of deployment</f:section>
+
+<f:section name="Content">
+	<dl class="dl-horizontal">
+		<dt>Date</dt>
+		<dd>{deployment.date -> f:format.date(format: 'd.m.Y H:i:s')}</dd>
+		<dt>Repository URL</dt>
+		<dd>{deployment.repositoryUrl}</dd>
+		<dt>Reference name</dt>
+		<dd>{deployment.referenceName}</dd>
+		<dt>Client IP</dt>
+		<dd>{deployment.clientIp}</dd>
+		<dt>Status</dt>
+		<dd>{deployment.status}</dd>
+		<dt>Configuration</dt>
+		<dd>{deployment.configuration -> f:format.json()}</dd>
+	</dl>
+
+	<h2>Log</h2>
+	<f:if condition="{deployment.logs}">
+		<f:then>
+			<table class="table table-striped">
+				<tbody>
+					<f:for each="{deployment.logs}" as="log">
+						<tr>
+							<td>{log.date -> f:format.date(format: 'd.m.Y H:i:s')}</td>
+							<td>{log.severity}</td>
+							<td><pre>{log.message}</pre></td>
+						</tr>
+					</f:for>
+				</tbody>
+			</table>
+		</f:then>
+		<f:else>
+			<p>No log entries.</p>
+		</f:else>
+	</f:if>
+
+	<f:link.action action="index" class="btn btn-primary">Back</f:link.action>
+</f:section>

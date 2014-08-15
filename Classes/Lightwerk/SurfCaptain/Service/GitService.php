@@ -6,6 +6,7 @@ namespace Lightwerk\SurfCaptain\Service;
  *                                                                        *
  *                                                                        */
 
+use Lightwerk\SurfCaptain\Domain\Model\Repository;
 use Lightwerk\SurfCaptain\Utility\GeneralUtility;
 use TYPO3\Flow\Annotations as Flow;
 
@@ -109,7 +110,7 @@ class GitService implements Driver\DriverInterface {
 	/**
 	 * Returns repositories
 	 *
-	 * @return array
+	 * @return Repository[]
 	 */
 	public function getRepositories() {
 		$repositories = array();
@@ -117,6 +118,17 @@ class GitService implements Driver\DriverInterface {
 			$repositories = array_merge($repositories, $driver->getRepositories());
 		}
 		return $repositories;
+	}
+
+	/**
+	 * Returns repository
+	 *
+	 * @param string $repositoryUrl
+	 * @return Repository
+	 */
+	public function getRepository($repositoryUrl) {
+		return $this->getDriverFromRepositoryUrl($repositoryUrl)
+					->getRepository($repositoryUrl);
 	}
 
 	/**
