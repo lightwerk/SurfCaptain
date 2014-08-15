@@ -7,7 +7,7 @@
 surfCaptain.factory('ProjectRepository', [ '$http', '$q', function ($http, $q) {
     var projectRepository = {},
         projects = {},
-        url = '/api/repositories';
+        url = '/api/repository';
 
     /**
      *
@@ -15,7 +15,10 @@ surfCaptain.factory('ProjectRepository', [ '$http', '$q', function ($http, $q) {
      */
     projectRepository.getProjects = function () {
         var deferred = $q.defer();
-        $http.get(url, {cache: true}).success(deferred.resolve).error(deferred.reject);
+        $http.get(url, {
+            cache: true,
+            headers: {'Accept': 'application/json'}
+        }).success(deferred.resolve).error(deferred.reject);
         return deferred.promise;
     };
 
