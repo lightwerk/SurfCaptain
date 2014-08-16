@@ -1,0 +1,59 @@
+div.surfcaptain,
+div.project-history {
+	min-height: 150px;
+	background-color: @brand-primary;
+	width: 100%;
+	.glyphicon {
+		font-size: 100px;
+		display: inline-block;
+		width: 100%;
+	}
+	.project-name {
+		display: inline-block;
+		margin-top: 10px;
+	}
+	.sub-header {
+		font-size: 75%;
+	}
+	.btn {
+		position: absolute;
+		color: @main-color;
+		background-color: transparent;
+		border-color: @main-color;
+		width: 56px;
+		overflow: hidden;
+		display: inline-block;
+		text-align: left;
+		-webkit-transition: width 0.2s ease-in-out;
+		-moz-transition: width 0.2s ease-in-out;
+		-o-transition: width 0.2s ease-in-out;
+		transition: width 0.2s ease-in-out;
+		z-index: 49;
+		&:hover {
+			width: 200px;
+		}
+		&.home-button {
+			top: 15px;
+			left: 30px;
+		}
+		&.server-button {
+			top: 80px;
+			left: 30px;
+		}
+		&.extensions-button, &.about-button {
+			right: 30px;
+			top: 15px;
+			&:hover {
+				width: 250px;
+			}
+		}
+		&.about-button {
+			top: 80px;
+		}
+		.glyphicon {
+			font-size: 22px;
+			width: 30px;
+			padding-right: 34px;
+		}
+	}
+}

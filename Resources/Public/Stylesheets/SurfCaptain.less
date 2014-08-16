@@ -1,72 +1,19 @@
 html,body {
 	height: 100%;
 }
+
+@import "Partials/Header.less";
+@import "Partials/Menu.less";
+@import "Partials/Footer.less";
+@import "Partials/About.less";
+@import "Partials/Projects.less";
+@import "Partials/Project.less";
+@import "Partials/Deploy.less";
+@import "Partials/Server.less";
+
 .surfcaptain-container {
 	min-height: 100%;
 	position: relative;
-}
-
-.ui-match {
-	background: yellow;
-}
-div.surfcaptain,
-div.project-history {
-	min-height: 150px;
-	background-color: @brand-primary;
-	width: 100%;
-	.glyphicon {
-		font-size: 100px;
-		display: inline-block;
-		width: 100%;
-	}
-	.project-name {
-		display: inline-block;
-		margin-top: 10px;
-	}
-	.sub-header {
-		font-size: 75%;
-	}
-	.btn {
-		position: absolute;
-		color: @main-color;
-		background-color: transparent;
-		border-color: @main-color;
-		width: 56px;
-		overflow: hidden;
-		display: inline-block;
-		text-align: left;
-		-webkit-transition: width 0.2s ease-in-out;
-		-moz-transition: width 0.2s ease-in-out;
-		-o-transition: width 0.2s ease-in-out;
-		transition: width 0.2s ease-in-out;
-		z-index: 999;
-		&:hover {
-			width: 200px;
-		}
-		&.home-button {
-			top: 15px;
-			left: 30px;
-		}
-		&.server-button {
-			top: 80px;
-			left: 30px;
-		}
-		&.extensions-button, &.about-button {
-			right: 30px;
-			top: 15px;
-			&:hover {
-				width: 250px;
-			}
-		}
-		&.about-button {
-			top: 80px;
-		}
-		.glyphicon {
-			font-size: 22px;
-			width: 30px;
-			padding-right: 34px;
-		}
-	}
 }
 
 div.surfcaptain.deploy {
@@ -85,453 +32,12 @@ div.surfcaptain.about {
 	background-color: @brand-primary;
 }
 
-div.project-selection {
-	position: relative;
-	color: @main-color-bright;
-	table {
-		width: 90%;
-		margin: auto;
-		thead {
-			h4 {
-				margin: 0px;
-			}
-		}
-
-		tbody {
-			color: @brand-primary;
-			tr {
-				border-bottom: 1px solid @brand-primary;
-
-				.btn {
-					display: none;
-					float: right;
-					margin-left: 20px;
-				}
-				&:hover {
-					background-color: #333;
-					td .btn {
-						display: inline-block;
-					}
-				}
-				td {
-					height: 60px;
-					&:first-child {
-						padding-left: 16px;
-					}
-				}
-				.project-link {
-					width: 100%;
-					height: 100%;
-					display: inline-block;
-					padding-top: 8px;
-					&:hover {
-						text-decoration: none;
-					}
-				}
-			}
-		}
-		th,td {
-			padding: 8px 4px;
-			text-align: left;
-			&:first-child {
-				font-weight: 600;
-			}
-			&:last-child {
-				width: 350px;
-			}
-		}
-	}
-	.error {
-		margin: 50px auto;
-		width: 400px;
-		padding: 10px;
-		border: solid red 2px;
-		border-radius: 10px;
-		p {
-			margin: 0;
-			color: red;
-		}
-	}
-	.spinner {
-		margin: 50px auto;
-	}
-}
-
-div.project-buttons {
-	padding: 10px 0;
-	background-color: @main-color !important;
-	width: 100%;
-
-	.btn {
-		color: #000;
-		margin-right: 15px;
-	}
-	.btn[disabled] {
-		opacity: 0.5 !important;
-	}
-	.project-brand {
-		color: #999999;
-		font-size: 30px;
-		font-weight: 600;
-		line-height: 50px;
-		height: 50px;
-	}
-}
-
-div.project-history {
-	margin-top: 15px;
-	background-color: @body-bg !important;
-	color:  @brand-primary;
-
-	table {
-		text-align: left;
-		width: 80%;
-		margin: 15px auto;
-
-		thead tr {
-			border-bottom: 2px solid @brand-primary;
-		}
-
-		tr {
-			&.odd {
-				background-color: @main-color;
-			}
-			td {
-				padding: 3px 2px;
-			}
-		}
-	}
-}
-
 .dark {
 	margin-top: 15px;
 	color: @main-color-bright;
 }
 .ngview {
 	padding-bottom: 60px;
-}
-.footer {
-	background-color: @main-color;
-	color: @brand-primary;
-	height: 50px;
-	text-align: center;
-	position: absolute;
-	bottom: 0px;
-	width: 100%;
-	padding-top: 10px;
-	margin-top: 15px;
-	font-style: italic;
-	font-size: 80%;
-	.angular-logo {
-		background: url("../Images/AngularJS-Shield-small.png") no-repeat scroll center top / 100% auto transparent;
-		display: inline-block;
-		height: 28px;
-		margin-bottom: -9px;
-		width: 28px;
-	}
-}
-
-.project-deploy {
-	.configure-deployment-row {
-		margin-top: 30px;
-		.configure-deployment {
-			color: @brand-danger;
-			margin-bottom: 20px;
-			padding-top: 15px;
-			&:first-child {
-				border-top: none;
-			}
-			select, .chosen-container {
-				margin-bottom: 15px;
-				width: 80%;
-			}
-			label {
-				width: 100%;
-				margin-top: 5px;
-			}
-			h2 {
-				margin-top: 10px;
-			}
-		}
-		.deploy-git-checkout {
-			display: inline-block;
-			font-size: 90%;
-			font-style: italic;
-			margin-top: 5px;
-			color: @main-color-bright;
-		}
-		.deploy-history {
-			color: @main-color-bright;
-			border: 3px solid @main-color;
-			border-radius: 5px;
-			padding: 10px;
-			box-shadow: @shadow;
-			height: auto;
-			.form-control {
-				padding: 1px 6px;
-				width: 150px;
-				margin: auto;
-				height: 25px;
-				opacity: 0.5;
-			}
-			table {
-				td,th {
-					padding: 6px;
-					text-align: left;
-				}
-			}
-		}
-		.submit-deployment {
-			margin-top: 30px;
-		}
-	}
-}
-
-.project-server {
-	.server {
-		width: 790px;
-		height: 120px;
-		border:1px solid #999999;
-		color: @main-color;
-		border-radius: 50px 0 0 50px;
-		margin: 35px auto;
-		padding: 10px 10px 10px 10px;
-		.single-server {
-			.server-icon {
-				font-size: 50px;
-				float: left;
-				line-height: 100px;
-				padding: 0 10px 0 10px;
-				color: #FFFFFF !important;
-			}
-			.server-data {
-				float: left;
-				width: 650px;
-				padding: 0 0 0 10px;
-				text-align: left;
-				h3 {
-					margin: -55px;
-					text-align: right;
-					font-size: 40px;
-					.editable-click {
-						color: #FFFFFF !important;
-					}
-				}
-				.editable-click {
-					border: 1px solid @body-bg;
-					color: #999999;
-					padding: 2px;
-				}
-				.editable-click:hover {
-					border: 1px solid @main-color;
-				}
-				table {
-					width: 100%;
-					margin-top: 62px;
-					td {
-						width: 55%;
-						padding: 0px;
-						line-height: 35px;
-						height: 55px;
-						font-size: 20px;
-						vertical-align: top;
-						.editable-input {
-							padding: 2px;
-							height: 28px;
-						}
-						.btn {
-							padding: 2px;
-						}
-						&:last-child {
-							width: 45%;
-						}
-						.tooltip-inner {
-							background-color: @main-color;
-							color: #000000;
-						}
-						.help-block {
-							padding: 0px;
-							margin: 0px;
-							line-height: 20px;
-						}
-					}
-				}
-			}
-			.server-edit {
-				.remove {
-					float: right;
-					position: relative;
-					top: 5px;
-					display: none;
-				}
-			}
-		}
-		&:hover {
-			.server-edit {
-				.remove {
-					display: inline-block;
-				}
-			}
-		}
-	}
-	.new-server-button {
-		margin: 20px auto;
-	}
-	.new-server.animate {
-		margin: 15px auto 30px;
-		padding:10px;
-		.form-control.ng-dirty.ng-invalid {
-			border-color: red;
-		}
-		.submit-new-server {
-			margin-top: 20px;
-		}
-		.messages {
-			height: 25px;
-			margin-bottom: 0px;
-			.error {
-				color: red;
-			}
-		}
-		.server-name-suggestions {
-			height: 88px;
-			span.label {
-				display: inline-block;
-				cursor: pointer;
-				font-size: 20px;
-				margin: 1px 6px;
-				padding: 6px;
-				a {
-					color: black;
-					text-decoration: none;
-				}
-				&:hover {
-					color: black;
-				}
-				&.unavailable {
-					cursor: default;
-					color: #888;
-					opacity: 0.4;
-				}
-			}
-		}
-	}
-	.animate.ng-hide-add, .animate.ng-hide-remove {
-		-webkit-transition: all linear 1s;
-		-moz-transition: all linear 1s;
-		-o-transition: all linear 1s;
-		transition: all linear 1s;
-		display: block!important;
-	}
-	.animate.ng-hide-add.ng-hide-add-active,
-	.animate.ng-hide-remove {
-		opacity:0;
-	}
-	.animate.ng-hide-add,
-	.animate.ng-hide-remove.ng-hide-remove-active {
-		opacity:1;
-	}
-}
-
-.about-view {
-	.techs {
-		margin-top: 15px;
-		a {
-			text-decoration: none;
-			.logo {
-				width: 200px;
-				height: 150px;
-				margin: auto;
-				border-radius: 10px;
-				&.angular {
-					background: url("../Images/AngularJS-Shield.svg") no-repeat scroll center center / 130% auto transparent;
-				}
-				&.flow {
-					background: url("../Images/TYPO3_FLOW_Logo.png") no-repeat scroll center center / 100% auto transparent;
-				}
-				&.bootstrap {
-					background: url("../Images/Bootstrap-logo.svg") no-repeat scroll center center / 60% auto transparent;
-				}
-				&:hover {
-					.description {
-						text-decoration: none;
-						opacity: 0.85;
-					}
-				}
-				h3 {
-					padding-top: 15px;
-				}
-			}
-		}
-		.sub-tech {
-			height: 100px;
-			width: 120px;
-			border-radius: 5px;
-			margin: 15px auto;
-			&.grunt {
-				background: url("../Images/Grunt-logo.svg") no-repeat scroll center center / 85% auto transparent;
-			}
-			&.bower {
-				background: url("../Images/Bower-logo.svg") no-repeat scroll center center / 85% auto transparent;
-			}
-			&.composer {
-				background: url("../Images/Logo-composer.png") no-repeat scroll center center / 65% auto transparent;
-			}
-			&.karma {
-				background: url("../Images/Karma-Logo.png") no-repeat scroll center center / 85% auto transparent;
-			}
-			&.jasmine {
-				background: url("../Images/Jasmin-logo.svg") no-repeat scroll center center / 100% auto transparent;
-			}
-			&.jquery {
-				background: url("../Images/Logo_jQuery.svg") no-repeat scroll center center / 100% auto transparent;
-			}
-			&.css3 {
-				background: url("../Images/Css3-logo.svg") no-repeat scroll center center / 70% auto transparent;
-			}
-			&.git {
-				background: url("../Images/Git-logo.svg") no-repeat scroll center center / 85% auto transparent;
-			}
-			&.mysql {
-				background: url("../Images/Mysql-logo.svg") no-repeat scroll center center / 100% auto transparent;
-			}
-			&.html5 {
-				background: url("../Images/Html5-logo.svg") no-repeat scroll center center / 85% auto transparent;
-			}
-			&:hover {
-				.description {
-					text-decoration: none;
-					opacity: 0.75;
-				}
-			}
-			h4 {
-				padding-top: 35px;
-			}
-		}
-		.description {
-			width: 100%;
-			height: 100%;
-			opacity: 0;
-			background-color: @body-bg;
-			border-radius: 5px;
-			border: 2px solid black;
-			color: #FFF;
-			text-align: center;
-			-webkit-transition: all linear 0.5s;
-			-moz-transition: all linear 0.5s;
-			-o-transition: all linear 0.5s;
-			transition: all linear 0.5s;
-			h3,h4 {
-				margin: 0;
-				opacity: 1;
-			}
-			span {
-				display: inline-block;
-				font-weight: 600;
-				opacity: 1;
-			}
-		}
-	}
 }
 
 .modal-dialog {
@@ -547,5 +53,29 @@ div.project-history {
 			padding: 12px;
 			text-align: center;
 		}
+	}
+}
+
+div.overlay {
+	position: absolute;
+	left: 0;
+	top: 0;
+	bottom: 0;
+	right: 0;
+	background: #333;
+	opacity: 0.8;
+	filter: alpha(opacity=80);
+	z-index: 50;
+}
+
+.spinner {
+	z-index: 100;
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	margin: -40px 0 0 -40px;
+	img {
+		width: 80px;
+		height: 80px;
 	}
 }
