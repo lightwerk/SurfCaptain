@@ -1,19 +1,31 @@
-/*global surfCaptain*/
+/*global surfCaptain, angular*/
 /*jslint node: true */
 
 'use strict';
 
-surfCaptain.factory('SettingsRepository', [ '$http', '$q', function ($http, $q) {
+surfCaptain.factory('SettingsRepository', ['$http', '$q', '$cacheFactory', function ($http, $q, $cacheFactory) {
     var settingsRepository = {},
         url = '/api/frontendSetting';
+
+    $cacheFactory('settingsCache');
 
     /**
      *
      * @returns {Q.promise|promise} – promise object
      */
     settingsRepository.getFrontendSettings = function () {
-        var deferred = $q.defer();
-        $http.get(url, {cache: true}).success(deferred.resolve).error(deferred.reject);
+        var deferred = $q.defer(),
+            settingsCache = $cacheFactory.get('settingsCache');
+        if (angular.isDefined(settingsCache.get('configuration'))) {
+            deferred.resolve(settingsCache.get('configuration'));
+            return deferred.promise;
+        }
+        $http.get(url, {cache: true}).success(
+            function (data) {
+                settingsCache.put('configuration', data.frontendSettings);
+                deferred.resolve(data.frontendSettings);
+            }
+        ).error(deferred.reject);
         return deferred.promise;
     };
 
