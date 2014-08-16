@@ -4,13 +4,9 @@
 'use strict';
 surfCaptain.controller('GlobalServerController', [
     '$scope',
-    '$controller',
     'ServerRepository',
-    'ValidationService',
-    'SettingsRepository',
-    'MarkerService',
     'PresetService',
-    function ($scope, $controller, ServerRepository, ValidationService, SettingsRepository, MarkerService, PresetService) {
+    function ($scope, ServerRepository, PresetService) {
 
         $scope.contexts = [
             'Production', 'Development', 'Staging'
