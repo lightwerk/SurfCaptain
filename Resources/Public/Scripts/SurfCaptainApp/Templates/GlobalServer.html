@@ -1,7 +1,5 @@
 <surfcaptain-header icon="hdd"></surfcaptain-header>
 
-<surfcaptain-menu></surfcaptain-menu>
-
 <div class="container project-server dark">
 	<div class="row">
 		<div class="col-xs-12 text-center">
@@ -12,29 +10,31 @@
 					data-ng-click="addAServer = !addAServer"
 				>
 					<span class="glyphicon glyphicon-plus-sign"></span>
-					Add a Server
+					Add a global Server
 				</button>
 			</div>
 
 			<div class="new-server animate row text-left" data-ng-show="addAServer">
 				<form data-ng-submit="addServer(newPreset)" name="newServerForm">
 					<div class="col-xs-4 col-xs-offset-2">
-						<div class="server-name-suggestions">
-							<label>Choose a name that is not yet taken:</label><br />
-							<span
-								data-ng-repeat="nameSuggestion in nameSuggestions"
-								class="label label-primary"
-								data-ng-class="{false:'unavailable'}[nameSuggestion.available]"
-							>
-								<a
-									data-ng-if="nameSuggestion.available"
-									data-ng-click="
-										$parent.$parent.newPreset.nodes.0.name = generateServerName(nameSuggestion.suffix);
-										$parent.$parent.newPreset.options.context = nameSuggestion.context;
-										$parent.$parent.setDocumentRoot(nameSuggestion.suffix)"
-								>{{nameSuggestion.suffix}}</a>
-								<span data-ng-if="!nameSuggestion.available">{{nameSuggestion.suffix}}</span>
-							</span>
+
+						<label>Name:</label> *
+						<input
+								type="text"
+								data-ng-model="newPreset.nodes.0.name"
+								placeholder="Name"
+								class="form-control"
+								name="name"
+								required
+								data-ng-trim
+								server-name-validate
+								server-names="serverNames"
+								/>
+						<div class="messages">
+							<div data-ng-messages="newServerForm.name.$error" data-ng-if="newServerForm.name.$dirty">
+								<span class="error" data-ng-message="required">Name is required!</span>
+								<span class="error" data-ng-message="server-name-validate">Not unique!</span>
+							</div>
 						</div>
 
 						<label>Host:</label> *
@@ -74,25 +74,6 @@
 					</div>
 
 					<div class="col-xs-4">
-
-						<label>Or type a name:</label> *
-						<input
-								type="text"
-								data-ng-model="newPreset.nodes.0.name"
-								placeholder="Name"
-								class="form-control"
-								name="name"
-								required
-								data-ng-trim
-								server-name-validate
-								server-names="serverNames"
-								/>
-						<div class="messages">
-							<div data-ng-messages="newServerForm.name.$error" data-ng-if="newServerForm.name.$dirty">
-								<span class="error" data-ng-message="required">Name is required!</span>
-								<span class="error" data-ng-message="server-name-validate">Not unique!</span>
-							</div>
-						</div>
 
 						<label>User:</label> *
 						<input
@@ -139,7 +120,7 @@
 				</form>
 			</div>
 
-			<server-list servers="servers" getAllServers="getAllServers()" finished="finished"></server-list>
+			<server-list servers="servers" finished="finished" getAllServers="getAllServers()"></server-list>
 
 		</div>
 	</div>

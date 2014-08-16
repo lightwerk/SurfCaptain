@@ -16,6 +16,7 @@ surfCaptain.controller('ServerController', [
 
         var self = this, generateNameSuggestions, replaceMarkers;
 
+        $scope.finished = false;
         $scope.currentPreset = {};
         $scope.contexts = [
             'Production', 'Development', 'Staging'
@@ -50,10 +51,11 @@ surfCaptain.controller('ServerController', [
         /**
          * @return {void}
          */
-        this.getAllServers = function () {
+        $scope.getAllServers = function () {
             $scope.newPreset.options.repositoryUrl = $scope.project.ssh_url_to_repo;
             ServerRepository.getServers($scope.project.ssh_url_to_repo).then(
                 function (response) {
+                    $scope.finished = true;
                     $scope.servers = response.presets;
                     // TODO remove Spinner
                     if (angular.isDefined($scope.nameSuggestions)) {
@@ -121,82 +123,18 @@ surfCaptain.controller('ServerController', [
 
         };
 
-        $scope.setCurrentPreset = function (preset) {
-            $scope.currentPreset = preset;
-        };
-
-        $scope.deleteServer = function (server) {
-            // TODO Spinner
-            ServerRepository.deleteServer(server).then(
-                function (response) {
-                    self.getAllServers();
-                },
-                function (response) {
-                    // an error occurred
-                }
-            );
-        };
-
-        $scope.updateServer = function (server) {
-            ServerRepository.updateServer(server);
-        };
-
         $scope.addServer = function (server) {
             ServerRepository.addServer(server).then(
                 function (response) {
                     // TODO Animation
                     $scope.newPreset = PresetService.getNewPreset($scope.settings);
                     $scope.newServerForm.$setPristine();
-                    self.getAllServers();
+                    $scope.getAllServers();
                 },
                 function (response) {
                     // an error occurred
                 }
             );
-        };
-
-        /**
-         * Validates the updated Host string before submitting to Server
-         *
-         * @param data
-         * @return {string | boolean} ErrorMessage or True if valid
-         */
-        $scope.updateHost = function (data) {
-            return ValidationService.hasLength(data, 1, 'Host must not be empty!');
-        };
-
-        /**
-         * Validates the updated DocumentRoot string before submitting to Server
-         *
-         * @param data
-         * @return {string | boolean} ErrorMessage or True if valid
-         */
-        $scope.updateDocumentRoot = function (data) {
-            var res = ValidationService.hasLength(data, 1, 'DocumentRoot is required!');
-            if (res === true) {
-                return ValidationService.doesLastCharacterMatch(data, '/', 'DocumentRoot must end with "/"!');
-            }
-            return res;
-        };
-
-        /**
-         * Validates the updated Username string before submitting to Server
-         *
-         * @param data
-         * @return {string | boolean} ErrorMessage or True if valid
-         */
-        $scope.updateUsername = function (data) {
-            return ValidationService.hasLength(data, 1, 'User must not be empty!');
-        };
-
-        /**
-         * Validates the updated Context string before submitting to Server
-         *
-         * @param data
-         * @return {string | boolean} ErrorMessage or True if valid
-         */
-        $scope.updateContext = function (data) {
-            return ValidationService.doesArrayContainItem($scope.contexts, data, 'Context is not valid!');
         };
 
         /**
@@ -222,11 +160,11 @@ surfCaptain.controller('ServerController', [
                         $scope.settings = response;
                         $scope.newPreset = PresetService.getNewPreset($scope.settings);
                         self.handleSettings();
-                        self.getAllServers();
+                        $scope.getAllServers();
                     },
                     function () {
                         $scope.newPreset = PresetService.getNewPreset();
-                        self.getAllServers();
+                        $scope.getAllServers();
                     }
                 );
             }
