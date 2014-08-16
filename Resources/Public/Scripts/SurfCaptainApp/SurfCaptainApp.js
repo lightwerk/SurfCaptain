@@ -34,6 +34,10 @@ var surfCaptain = angular.module('surfCaptain', ['ngRoute', 'xeditable', 'ngAnim
                 templateUrl: templatePath + 'GlobalServer.html',
                 controller: 'GlobalServerController'
             }).
+            when('/extensions', {
+                templateUrl: templatePath + 'Extensions.html',
+                controller: 'ExtensionsController'
+            }).
             otherwise({
                 redirectTo: '/'
             });
