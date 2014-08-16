@@ -22,7 +22,8 @@ surfCaptain.directive('serverList', ['ServerRepository', 'ValidationService', fu
          * @return void
          */
         scope.deleteServer = function (server) {
-            // TODO Spinner
+            scope.finished = false;
+            scope.$parent.finished = false;
             ServerRepository.deleteServer(server).then(
                 function (response) {
                     scope.$parent.getAllServers();
@@ -86,10 +87,6 @@ surfCaptain.directive('serverList', ['ServerRepository', 'ValidationService', fu
         scope.updateContext = function (data) {
             return ValidationService.doesArrayContainItem($scope.contexts, data, 'Context is not valid!');
         };
-
-        scope.$watch('finished', function (finished) {
-            console.log(finished);
-        });
 
     };
 

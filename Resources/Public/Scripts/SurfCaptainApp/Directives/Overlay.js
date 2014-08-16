@@ -2,13 +2,16 @@
 /*jslint node: true */
 
 'use strict';
-surfCaptain.directive('spinner', function () {
+surfCaptain.directive('overlay', function () {
     var linker = function (scope, element, attrs) {
     };
 
     return {
         restrict: 'E',
-        template: '<img src="/_Resources/Static/Packages/Lightwerk.SurfCaptain/Images/spinner.gif" />',
+        template: '<div data-ng-class="{false:\'overlay\'}[finished]"></div>',
+        scope: {
+            finished: '='
+        },
         link: linker
     };
 });

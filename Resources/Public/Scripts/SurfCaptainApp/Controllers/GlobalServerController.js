@@ -32,9 +32,9 @@ surfCaptain.controller('GlobalServerController', [
          * @return {void}
          */
         $scope.addServer = function (server) {
+            $scope.finished = false;
             ServerRepository.addServer(server).then(
                 function (response) {
-                    // TODO Animation
                     $scope.newPreset = PresetService.getNewPreset();
                     $scope.newServerForm.$setPristine();
                     $scope.getAllServers();

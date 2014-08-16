@@ -57,7 +57,6 @@ surfCaptain.controller('ServerController', [
                 function (response) {
                     $scope.finished = true;
                     $scope.servers = response.presets;
-                    // TODO remove Spinner
                     if (angular.isDefined($scope.nameSuggestions)) {
                         self.setTakenServerNamesAsUnavailableSuggestions();
                     }
@@ -71,6 +70,9 @@ surfCaptain.controller('ServerController', [
          */
         this.handleSettings = function () {
             var docRoot;
+            if (angular.isUndefined($scope.settings)) {
+                return;
+            }
             if (angular.isDefined($scope.settings.nameSuggestions)) {
                 generateNameSuggestions($scope.settings.nameSuggestions);
             }
@@ -124,11 +126,12 @@ surfCaptain.controller('ServerController', [
         };
 
         $scope.addServer = function (server) {
+            $scope.finished = false;
             ServerRepository.addServer(server).then(
                 function (response) {
-                    // TODO Animation
                     $scope.newPreset = PresetService.getNewPreset($scope.settings);
                     $scope.newServerForm.$setPristine();
+                    self.handleSettings();
                     $scope.getAllServers();
                 },
                 function (response) {
