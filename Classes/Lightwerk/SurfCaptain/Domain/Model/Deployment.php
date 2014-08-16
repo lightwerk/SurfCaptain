@@ -47,7 +47,7 @@ class Deployment {
 	/**
 	 * @var string
 	 */
-	protected $status = 'waiting';
+	protected $status;
 
 	/**
 	 * @var \DateTime
@@ -67,12 +67,10 @@ class Deployment {
 	public function __construct() {
 		$this->logs = new \Doctrine\Common\Collections\ArrayCollection();
 		$this->setDate(new \DateTime());
-
+		$this->setStatus(self::STATUS_WAITING);
 	}
 
 	/**
-	 * Returns Logs
-	 *
 	 * @return \Doctrine\Common\Collections\Collection<\Lightwerk\SurfCaptain\Domain\Model\Log>
 	 */
 	public function getLogs() {
@@ -80,8 +78,6 @@ class Deployment {
 	}
 
 	/**
-	 * Adds a log to this deployment
-	 *
 	 * @param Log $log
 	 * @return void
 	 */
@@ -91,8 +87,6 @@ class Deployment {
 	}
 
 	/**
-	 * Returns RepositoryUrl
-	 *
 	 * @return string
 	 */
 	public function getRepositoryUrl() {
@@ -100,8 +94,6 @@ class Deployment {
 	}
 
 	/**
-	 * Sets RepositoryUrl
-	 *
 	 * @param string $repositoryUrl
 	 * @return Deployment
 	 */
