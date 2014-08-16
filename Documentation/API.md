@@ -5,11 +5,23 @@
 ### List Repositories
 
 - Methode: GET
-- Path: /api/repositories
+- Path: /api/repository
 
 Example call:
 
     curl -H "Accept: application/json" http://surf.flow.lp.lw.loc/api/repositories | jq '.'
+
+### Show Repository
+
+- Methode: GET
+- Path: /api/repository
+- Parameters:
+	- repositoryUrl (required) - string
+- Info: Contains git tags and branches of a repository
+
+Example call:
+
+    curl -H "Accept: application/json" http://surf.flow.lp.lw.loc/api/repository\?repositoryUrl\=git%40git.lightwerk.com%3Aboilerplate%2Ftypo3_cms.git | jq '.'
 
 ## Deployments
 

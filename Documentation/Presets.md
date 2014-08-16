@@ -1,5 +1,8 @@
 # Presets
 
+- if type is not given: Selectable in SurfCaptain for Deploy and Sync
+- if repositoryUrl is not given: Selectable in all projects (developer machines)
+
 ## Minimum configuration
 
     {
@@ -8,7 +11,6 @@
                 "applications": [
                     {
                         "options": {
-                            "repositoryUrl": "git@git.lightwerk.com:boilerplate/typo3_cms.git",
                             "documentRoot": "/var/www/projectName/context/"
                         },
                         "nodes": [
@@ -23,13 +25,68 @@
         ]
     }
 
-## Default configuration for surf captian
+### Default Configuration for developer instances
+
+(without "repositoryUrl")
 
     {
         "sma": [
             {
                 "applications": [
                     {
+                        "options": {
+                            "documentRoot": "/var/www/projectName/context/",
+                            "context": "Development"
+                        },
+                        "nodes": [
+                            {
+                                "name": "Front-End Server",
+                                "hostname": "www.sma.de",
+                                "username": "user"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+
+
+## Default configuration for surf captian
+
+(for Deploy and Sync)
+
+    {
+        "sma": [
+            {
+                "applications": [
+                    {
+                        "options": {
+                            "repositoryUrl": "git@git.lightwerk.com:boilerplate/typo3_cms.git",
+                            "documentRoot": "/var/www/projectName/context/",
+                            "context": "Development"
+                        },
+                        "nodes": [
+                            {
+                                "name": "Front-End Server",
+                                "hostname": "www.sma.de",
+                                "username": "user"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+
+## Default configuration just for Deploy
+
+    {
+        "sma": [
+            {
+                "applications": [
+                    {
+                        "type": "TYPO3\\CMS\\Deploy",
                         "options": {
                             "repositoryUrl": "git@git.lightwerk.com:boilerplate/typo3_cms.git",
                             "documentRoot": "/var/www/projectName/context/",
