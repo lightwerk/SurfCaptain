@@ -11,40 +11,16 @@ surfCaptain.controller('ServerController', [
     'ValidationService',
     'SettingsRepository',
     'MarkerService',
-    function ($scope, $controller, ServerRepository, ValidationService, SettingsRepository, MarkerService) {
+    'PresetService',
+    function ($scope, $controller, ServerRepository, ValidationService, SettingsRepository, MarkerService, PresetService) {
 
-        var getAllServers, setTakenServerNamesAsUnavailableSuggestions, getNewPreset, handleSettings, generateNameSuggestions, replaceMarkers;
+        var self = this, generateNameSuggestions, replaceMarkers;
 
         $scope.currentPreset = {};
-        $scope.defaultUser = '';
-        $scope.defaultDocumentRoot = '';
         $scope.contexts = [
             'Production', 'Development', 'Staging'
         ];
 
-        /**
-         * Returns the skeleton of a preset object
-         *
-         * @returns {object}
-         */
-        getNewPreset = function () {
-            return {
-                "options": {
-                    "repositoryUrl": '',
-                    "documentRoot": $scope.defaultDocumentRoot,
-                    "context": ''
-                },
-                "nodes": [
-                    {
-                        "name": '',
-                        "hostname": '',
-                        "username": $scope.defaultUser
-                    }
-                ]
-            };
-        };
-
-        $scope.newPreset = getNewPreset();
 
         /**
          * Sets all serverNames that are already in use as
@@ -52,7 +28,7 @@ surfCaptain.controller('ServerController', [
          *
          * @return {void}
          */
-        setTakenServerNamesAsUnavailableSuggestions = function () {
+        this.setTakenServerNamesAsUnavailableSuggestions = function () {
             var i = 0, numberOfNameSuggestions, serverName, serverNames = [], property;
 
             for (property in $scope.servers) {
@@ -66,7 +42,7 @@ surfCaptain.controller('ServerController', [
 
                 for (i; i < numberOfNameSuggestions; i++) {
                     serverName = $scope.generateServerName($scope.nameSuggestions[i].suffix);
-                    $scope.nameSuggestions[i].available = !ValidationService.doesArrayContainsItem(serverNames, serverName);
+                    $scope.nameSuggestions[i].available = !ValidationService.doesArrayContainItem(serverNames, serverName);
                 }
             }
         };
@@ -74,14 +50,14 @@ surfCaptain.controller('ServerController', [
         /**
          * @return {void}
          */
-        getAllServers = function () {
+        this.getAllServers = function () {
             $scope.newPreset.options.repositoryUrl = $scope.project.ssh_url_to_repo;
             ServerRepository.getServers($scope.project.ssh_url_to_repo).then(
                 function (response) {
                     $scope.servers = response.presets;
                     // TODO remove Spinner
                     if (angular.isDefined($scope.nameSuggestions)) {
-                        setTakenServerNamesAsUnavailableSuggestions();
+                        self.setTakenServerNamesAsUnavailableSuggestions();
                     }
                 }
             );
@@ -91,22 +67,22 @@ surfCaptain.controller('ServerController', [
          *
          * @return {void}
          */
-        handleSettings = function () {
+        this.handleSettings = function () {
             var docRoot;
             if (angular.isDefined($scope.settings.nameSuggestions)) {
                 generateNameSuggestions($scope.settings.nameSuggestions);
             }
-            if (angular.isDefined($scope.settings.defaultUser)) {
-                $scope.defaultUser = $scope.settings.defaultUser;
-                $scope.newPreset.nodes[0].username = $scope.defaultUser;
-            }
             if (angular.isDefined($scope.settings.defaultDocumentRoot)) {
                 docRoot = $scope.settings.defaultDocumentRoot;
-                if (docRoot.indexOf('{{') !== -1) {
+                if (ValidationService.doesStringContainSubstring(docRoot, '{{')) {
                     docRoot = MarkerService.replaceMarkers(docRoot, $scope.project);
                 }
-                $scope.defaultDocumentRoot = docRoot;
-                $scope.newPreset.options.documentRoot = docRoot;
+                if (ValidationService.doesStringContainSubstring(docRoot, '{{')) {
+                    $scope.newPreset.options.documentRoot = MarkerService.getStringBeforeFirstMarker(docRoot);
+                    $scope.newPreset.options.documentRootWithMarkers = docRoot;
+                } else {
+                    $scope.newPreset.options.documentRoot = docRoot;
+                }
             }
         };
 
@@ -133,6 +109,18 @@ surfCaptain.controller('ServerController', [
         // Inherit from AbstractSingleProjectController
         angular.extend(this, $controller('AbstractSingleProjectController', {$scope: $scope}));
 
+        $scope.setDocumentRoot = function (suffix) {
+            var docRoot;
+            if (angular.isDefined($scope.newPreset.options.documentRootWithMarkers)) {
+                docRoot = MarkerService.replaceMarkers(
+                    $scope.newPreset.options.documentRootWithMarkers,
+                    {suffix: suffix}
+                );
+                $scope.newPreset.options.documentRoot = docRoot;
+            }
+
+        };
+
         $scope.setCurrentPreset = function (preset) {
             $scope.currentPreset = preset;
         };
@@ -141,7 +129,7 @@ surfCaptain.controller('ServerController', [
             // TODO Spinner
             ServerRepository.deleteServer(server).then(
                 function (response) {
-                    getAllServers();
+                    self.getAllServers();
                 },
                 function (response) {
                     // an error occurred
@@ -157,9 +145,9 @@ surfCaptain.controller('ServerController', [
             ServerRepository.addServer(server).then(
                 function (response) {
                     // TODO Animation
-                    $scope.newPreset = getNewPreset();
+                    $scope.newPreset = PresetService.getNewPreset($scope.settings);
                     $scope.newServerForm.$setPristine();
-                    getAllServers();
+                    self.getAllServers();
                 },
                 function (response) {
                     // an error occurred
@@ -208,7 +196,7 @@ surfCaptain.controller('ServerController', [
          * @return {string | boolean} ErrorMessage or True if valid
          */
         $scope.updateContext = function (data) {
-            return ValidationService.doesArrayContainsItem($scope.contexts, data, 'Context is not valid!');
+            return ValidationService.doesArrayContainItem($scope.contexts, data, 'Context is not valid!');
         };
 
         /**
@@ -231,12 +219,14 @@ surfCaptain.controller('ServerController', [
             if (angular.isDefined(newValue.name)) {
                 SettingsRepository.getSettings().then(
                     function (response) {
-                        $scope.settings = response.frontendSettings;
-                        handleSettings();
-                        getAllServers();
+                        $scope.settings = response;
+                        $scope.newPreset = PresetService.getNewPreset($scope.settings);
+                        self.handleSettings();
+                        self.getAllServers();
                     },
                     function () {
-                        getAllServers();
+                        $scope.newPreset = PresetService.getNewPreset();
+                        self.getAllServers();
                     }
                 );
             }
