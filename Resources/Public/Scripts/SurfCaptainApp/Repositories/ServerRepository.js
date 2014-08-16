@@ -16,7 +16,6 @@ surfCaptain.factory('ServerRepository', ['$http', '$q', function ($http, $q) {
     serverRepository.getFullPresetAsString = function (server) {
         var container = {"applications": []};
         container.applications[0] = server;
-        console.log(container);
         return JSON.stringify(container);
     };
 
