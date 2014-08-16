@@ -14,7 +14,11 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Deployment {
 
-	// ToDo: Constants für Status
+	const STATUS_WAITING = 'waiting';
+	const STATUS_CANCELLED = 'cancelled';
+	const STATUS_RUNNING = 'running';
+	const STATUS_SUCCESS = 'success';
+	const STATUS_FAILED = 'failed';
 
 	/**
 	 * @var \Doctrine\Common\Collections\Collection<\Lightwerk\SurfCaptain\Domain\Model\Log>
@@ -150,6 +154,7 @@ class Deployment {
 	 * @return Deployment
 	 */
 	public function setStatus($status) {
+		// ToDo: Check if status is valid
 		$this->status = $status;
 		return $this;
 	}

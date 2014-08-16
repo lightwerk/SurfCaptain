@@ -84,7 +84,7 @@ Example response:
 - Methode: GET
 - Path: /api/deployment
 
-Example call to get the last 10 deployments of all repositories:
+Example call to get the deployments of all repositories:
 
 	curl -H "Accept: application/json" http://surf.flow.lp.lw.loc/api/deployments | jq '.'
 
@@ -93,7 +93,7 @@ Example call to get the last 10 deployments of all repositories:
 - Methode: POST
 - Path: /api/deployment
 - Parameters:
-	- configuration (optional) - json
+	- deployment (required) - json
 
 Example call with a configuration:
 
@@ -125,14 +125,19 @@ Example call with a configuration:
 ### Cancel a deployment
 
 - Info: Works just if it has still "waiting" as status
-- Methode: DELETE
+- Methode: PUT
 - Path: /api/deployment
 - Parameters:
-	- deployment (required) - string
+	- deployment (required) - json
 
 Example call:
 
-	curl -H "Accept: application/json" -v -X DELETE http://surf.flow.lp.lw.loc/api/deployments\?deployment\=ac964cbf-9f85-c9d3-63b8-85b40414f53c
+	curl -H "Accept: application/json" -H "Content-Type: application/json" -v -X PUT http://surf.flow.lp.lw.loc/api/deployment -d '{
+		"deployment": {
+			"__identity": "de45df59-c62f-0367-8a27-8e6899e3673d",
+			"status": "cancelled"
+		}
+	}'
 
 ## Logs
 

@@ -30,8 +30,9 @@
 							<td>{deployment.status}</td>
 							<td>
 								<f:if condition="{deployment.status} == 'waiting'">
-									<f:form action="delete" arguments="{deployment: deployment}">
-										<f:form.hidden name="__method" value="DELETE" />
+									<f:form action="index" name="deployment" object="{deployment}">
+										<f:form.hidden name="__method" value="PUT" />
+										<f:form.hidden property="status" value="cancelled" />
 										<f:form.submit value="Cancel" class="btn btn-danger btn-xs" />
 									</f:form>
 								</f:if>

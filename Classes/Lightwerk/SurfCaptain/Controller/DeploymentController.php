@@ -50,21 +50,14 @@ class DeploymentController extends AbstractRestController {
 		$this->redirect('index', NULL, NULL, array('deployment' => $deployment));
 	}
 
-	// ToDo: Update erstellen, delete löschen
-
 	/**
 	 * @param Deployment $deployment
 	 * @return void
 	 */
-	public function deleteAction(Deployment $deployment) {
-		// PersistensManager?
-		if ($deployment->getStatus() === 'waiting') {
-			$deployment->setStatus('canceled');
-			$this->deploymentRepository->update($deployment);
-			$this->addFlashMessage('Canceled deployment.');
-		} else {
-			$this->handleException(new Exception('Just waiting deployments can be canceled.', 1408041167));
-		}
+	public function updateAction(Deployment $deployment) {
+		// ToDo: Just status can be changed to canceled if it was waiting before!
+		$this->deploymentRepository->update($deployment);
+		$this->addFlashMessage('Updated a deployment.');
 		$this->redirect('index', NULL, NULL, array('deployment' => $deployment));
 	}
 }

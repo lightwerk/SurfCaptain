@@ -3,7 +3,7 @@
 	<head>
 		<meta charset="utf-8">
 		<title>
-			<f:render section="Title"/>
+			<f:render section="Title" />
 		</title>
 		<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
 	</head>
@@ -17,13 +17,13 @@
 			</div>
 		</nav>
 		<div class="container">
-			<f:flashMessages class="flashmessages"/>
-			<f:render partial="ValidationErrors"/>
+			<f:render partial="FlashMessages" />
+			<f:render partial="ValidationErrors" />
 
 			<h1>
-				<f:render section="Title"/>
+				<f:render section="Title" />
 			</h1>
-			<f:render section="Content"/>
+			<f:render section="Content" />
 		</div>
 	</body>
 </html>
