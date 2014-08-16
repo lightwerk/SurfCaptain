@@ -49,20 +49,10 @@ class PresetsController extends AbstractRestController {
 	 */
 	public function listAction($repositoryUrl, $type = NULL) {
 		try {
-			$presets = $this->presetService->getPresets();
-			foreach ($presets as $key => $preset) {
-				foreach ($preset['applications'] as $application) {
-					if (
-						(empty($repositoryUrl) && !empty($application['options']['repositoryUrl']))
-						|| (!empty($repositoryUrl) && (empty($application['options']['repositoryUrl']) || $repositoryUrl !== $application['options']['repositoryUrl']))
-						|| ($type === '' && !empty($application['type']))
-						|| (!empty($type) && (empty($application['type']) || $type !== $application['type']))
-					) {
-						unset($presets[$key]);
-					}
-				}
-			}
-			$this->view->assign('presets', $presets);
+			$this->view->assign(
+				'presets',
+				$presets = $this->presetService->getPresetsByRepositoryUrlAndType($repositoryUrl, $type)
+			);
 		} catch (\Lightwerk\SurfCaptain\Service\Exception $e) {
 			$this->handleException($e);
 		} catch (\TYPO3\Flow\Http\Exception $e) {
