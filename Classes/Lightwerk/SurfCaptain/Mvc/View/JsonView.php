@@ -37,6 +37,11 @@ class JsonView extends \TYPO3\Flow\Mvc\View\JsonView {
 				'_exposeClassName' => 1,
 			),
 		),
+		'repositories' => array(
+			'_descendAll' => array(
+				'_exclude' => array('tags', 'branches', 'deployments', 'presets'),
+			),
+		),
 		'repository' => array(
 			'_descend' => array(
 				'tags' => array(
