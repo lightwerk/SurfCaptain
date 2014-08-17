@@ -64,6 +64,7 @@ class PresetController extends AbstractRestController {
 	public function createAction($key, $configuration) {
 		try {
 			$this->presetService->addPreset($key, json_decode($configuration, TRUE));
+			$this->addFlashMessage('Created a new preset.');
 			$this->redirect('show', NULL, NULL, array('key' => $key));
 		} catch (\Lightwerk\SurfCaptain\Service\Exception $e) {
 			$this->handleException($e);
@@ -80,6 +81,7 @@ class PresetController extends AbstractRestController {
 	public function updateAction($key, $configuration) {
 		try {
 			$this->presetService->updatePreset($key, json_decode($configuration, TRUE));
+			$this->addFlashMessage('Updated a a preset.');
 			$this->redirect('show', NULL, NULL, array('key' => $key));
 		} catch (\Lightwerk\SurfCaptain\Service\Exception $e) {
 			$this->handleException($e);
@@ -95,6 +97,7 @@ class PresetController extends AbstractRestController {
 	public function deleteAction($key) {
 		try {
 			$this->presetService->deletePreset($key);
+			$this->addFlashMessage('Deleted a preset.');
 			$this->redirect('list');
 		} catch (\Lightwerk\SurfCaptain\Service\Exception $e) {
 			$this->handleException($e);
