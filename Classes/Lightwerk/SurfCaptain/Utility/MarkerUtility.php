@@ -24,11 +24,13 @@ class MarkerUtility {
 	 * @param array $variables
 	 * @return array
 	 */
-	static protected function getMarkers(array $variables) {
+	static protected function getMarkers(array $variables, $prefix = '') {
 		$markers = array();
 		foreach ($variables as $key => $value) {
 			if (is_scalar($value)) {
-				$markers['{{' . $key . '}}'] = $value;
+				$markers['{{' . $prefix . $key . '}}'] = $value;
+			} elseif (is_array($value)) {
+				$markers = array_merge($markers, self::getMarkers($value, $prefix . $key . '.'));
 			}
 		}
 		return $markers;

@@ -18,19 +18,27 @@ Lightwerk:
         privateToken: 'Please define this value in root/Configuration/Settings.yaml'
         apiUrl: https://git.lightwerk.com/api/v3/
         repositories:
-          filters:
-            _projectFilter:
-              groupIds:
-                - 10
+          _projectFilter:
+            groupIds:
+              - 10
+        mapping:
+          Repository:
+            repositoryUrl: '{{ssh_url_to_repo}}'
+          Commit:
+            date: '{{committed_date}}'
+            committerName: '{{committer.name}}'
       git.sma.de:
         className: \Lightwerk\SurfCaptain\Service\Driver\GitLabDriver
         privateToken: 'Please define this value in root/Configuration/Settings.yaml'
         apiUrl: http://git.sma.de/api/v3/
         repositories:
-          properties:
-            ssh_url_to_repo: 'git@git.sma.de:{{path_with_namespace}}.git'
-            web_url: 'http://git.sma.de/{{path_with_namespace}}'
-          filters:
-            _rcwSmaDeFilter:
-              repositoryUrls:
-                - git@git.sma.de:sma-websites/rcw-sma-de.git
+          _rcwSmaDeFilter:
+            repositoryUrls:
+              - git@git.sma.de:sma-websites/rcw-sma-de.git
+        mapping:
+          Repository:
+            repositoryUrl: 'git@git.sma.de:{{path_with_namespace}}.git'
+            webUrl: 'http://git.sma.de/{{path_with_namespace}}'
+          Commit:
+            date: '{{committed_date}}'
+            committerName: '{{committer.name}}'

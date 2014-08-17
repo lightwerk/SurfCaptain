@@ -56,15 +56,13 @@ class PresetService {
 	 * @return array
 	 * @throws Exception
 	 */
-	public function getPresetsByRepositoryUrlAndType($repositoryUrl, $type) {
+	public function getPresetsByRepositoryUrlWithEmptyOnes($repositoryUrl) {
 		$presets = $this->getPresets();
 		foreach ($presets as $key => $preset) {
 			foreach ($preset['applications'] as $application) {
 				if (
-					(empty($repositoryUrl) && !empty($application['options']['repositoryUrl']))
-					|| (!empty($repositoryUrl) && (empty($application['options']['repositoryUrl']) || $repositoryUrl !== $application['options']['repositoryUrl']))
-					|| ($type === '' && !empty($application['type']))
-					|| (!empty($type) && (empty($application['type']) || $type !== $application['type']))
+					!empty($application['options']['repositoryUrl'])
+					&& $repositoryUrl !== $application['options']['repositoryUrl']
 				) {
 					unset($presets[$key]);
 				}

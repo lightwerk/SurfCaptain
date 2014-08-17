@@ -14,9 +14,9 @@ class Branch {
 	protected $name;
 
 	/**
-	 * @var Commit[]
+	 * @var Commit
 	 */
-	protected $commits;
+	protected $commit;
 
 	/**
 	 * @return string
@@ -35,27 +35,18 @@ class Branch {
 	}
 
 	/**
-	 * @return Commit[]
+	 * @return Commit
 	 */
-	public function getCommits() {
-		return $this->commits;
-	}
-
-	/**
-	 * @param Commit[] $commits
-	 * @return Branch
-	 */
-	public function setCommits(array $commits) {
-		$this->commits = $commits;
-		return $this;
+	public function getCommit() {
+		return $this->commit;
 	}
 
 	/**
 	 * @param Commit $commit
-	 * @return Branch
+	 * @return Tag
 	 */
-	public function addCommit(Commit $commit) {
-		$this->commits[] = $commit;
+	public function setCommit($commit) {
+		$this->commit = $commit;
 		return $this;
 	}
 

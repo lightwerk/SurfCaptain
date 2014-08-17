@@ -1,0 +1,18 @@
+<h2>Branches</h2>
+<f:if condition="{branches}">
+	<f:then>
+		<table class="table table-striped">
+			<tbody>
+			<f:for each="{branches}" as="branch">
+				<tr>
+					<td>{branch.name}</td>
+					<td><f:render partial="Commit/Show" arguments="{commit: branch.commit}" /></td>
+				</tr>
+			</f:for>
+			</tbody>
+		</table>
+	</f:then>
+	<f:else>
+		<p>No branches available.</p>
+	</f:else>
+</f:if>

@@ -34,6 +34,11 @@ class Deployment {
 
 	/**
 	 * @var string
+	 */
+	protected $type;
+
+	/**
+	 * @var string
 	 * @ORM\Column(length=80)
 	 */
 	protected $referenceName;
@@ -99,6 +104,22 @@ class Deployment {
 	 */
 	public function setRepositoryUrl($repositoryUrl) {
 		$this->repositoryUrl = $repositoryUrl;
+		return $this;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getType() {
+		return $this->type;
+	}
+
+	/**
+	 * @param string $type
+	 * @return Deployment
+	 */
+	public function setType($type) {
+		$this->type = $type;
 		return $this;
 	}
 
@@ -179,6 +200,9 @@ class Deployment {
 	 * @return Deployment
 	 */
 	public function setConfiguration($configuration) {
+		if (!empty($configuration['applications'][0]['type'])) {
+			$this->setType($configuration['applications'][0]['type']);
+		}
 		if (!empty($configuration['applications'][0]['options'])) {
 			$options = $configuration['applications'][0]['options'];
 			if (!empty($options['repositoryUrl'])) {

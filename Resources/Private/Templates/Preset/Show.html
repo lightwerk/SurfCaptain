@@ -1,0 +1,17 @@
+<f:layout name="Default" />
+
+<f:section name="Title">Details of preset</f:section>
+
+<f:section name="Content">
+	<dl class="dl-horizontal">
+		<dt>Key</dt>
+		<dd>{key}</dd>
+		<dt>Configuration</dt>
+		<dd>
+			<pre class="pretty-json">{configuration -> f:format.json()}</pre>
+		</dd>
+	</dl>
+
+	<f:link.action action="index" class="btn btn-primary">Back</f:link.action>
+	<f:render partial="PrettyJson" />
+</f:section>

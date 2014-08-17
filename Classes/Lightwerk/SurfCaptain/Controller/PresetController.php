@@ -14,7 +14,7 @@ use TYPO3\Flow\Annotations as Flow;
  *
  * @package Lightwerk\SurfCaptain\Controller
  */
-class PresetsController extends AbstractRestController {
+class PresetController extends AbstractRestController {
 
 	/**
 	 * @Flow\Inject
@@ -34,7 +34,8 @@ class PresetsController extends AbstractRestController {
 	 */
 	public function showAction($key) {
 		try {
-			$this->view->assign('preset', $this->presetService->getPreset($key));
+			$this->view->assign('key', $key)
+					   ->assign('configuration', $this->presetService->getPreset($key));
 		} catch (\Lightwerk\SurfCaptain\Service\Exception $e) {
 			$this->handleException($e);
 		} catch (\TYPO3\Flow\Http\Exception $e) {
@@ -43,16 +44,11 @@ class PresetsController extends AbstractRestController {
 	}
 
 	/**
-	 * @param string $repositoryUrl
-	 * @param string $type
 	 * @return void
 	 */
-	public function listAction($repositoryUrl, $type = NULL) {
+	public function listAction() {
 		try {
-			$this->view->assign(
-				'presets',
-				$presets = $this->presetService->getPresetsByRepositoryUrlAndType($repositoryUrl, $type)
-			);
+			$this->view->assign('presets', $presets = $this->presetService->getPresets());;
 		} catch (\Lightwerk\SurfCaptain\Service\Exception $e) {
 			$this->handleException($e);
 		} catch (\TYPO3\Flow\Http\Exception $e) {

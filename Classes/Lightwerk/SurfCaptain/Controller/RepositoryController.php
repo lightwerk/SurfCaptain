@@ -6,7 +6,9 @@ namespace Lightwerk\SurfCaptain\Controller;
  *                                                                        *
  *                                                                        */
 
+use Lightwerk\SurfCaptain\Domain\Repository\DeploymentRepository;
 use Lightwerk\SurfCaptain\Service\GitService;
+use Lightwerk\SurfCaptain\Service\PresetService;
 use TYPO3\Flow\Annotations as Flow;
 
 class RepositoryController extends AbstractRestController {
@@ -16,6 +18,18 @@ class RepositoryController extends AbstractRestController {
 	 * @var GitService
 	 */
 	protected $gitService;
+
+	/**
+	 * @Flow\Inject
+	 * @var DeploymentRepository
+	 */
+	protected $deploymentRepository;
+
+	/**
+	 * @Flow\Inject
+	 * @var PresetService
+	 */
+	protected $presetService;
 
 	/**
 	 * @var string
@@ -29,9 +43,11 @@ class RepositoryController extends AbstractRestController {
 	 */
 	public function showAction($repositoryUrl) {
 		try {
-			$repository = $this->gitService->getRepository($repositoryUrl);
-			$repository->setTags($this->gitService->getTags($repositoryUrl))
-					   ->setBranches($this->gitService->getBranches($repositoryUrl));
+			$repository = $this->gitService->getRepository($repositoryUrl)
+				->setTags($this->gitService->getTags($repositoryUrl))
+				->setBranches($this->gitService->getBranches($repositoryUrl))
+				->setDeployments($this->deploymentRepository->findByRepositoryUrl($repositoryUrl))
+				->setPresets($this->presetService->getPresetsByRepositoryUrlWithEmptyOnes($repositoryUrl));
 			$this->view->assign('repository', $repository);
 		} catch (\Lightwerk\SurfCaptain\Service\Exception $e) {
 			$this->handleException($e);

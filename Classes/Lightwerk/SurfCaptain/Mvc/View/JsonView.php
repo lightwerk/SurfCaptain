@@ -14,21 +14,39 @@ class JsonView extends \TYPO3\Flow\Mvc\View\JsonView {
 	 * @var array
 	 */
 	protected $configuration = array(
-		'_exposeObjectIdentifier' => TRUE,
-		'branch' => array(
-			'_descendAll' => TRUE,
-		),
-		'commit' => array(
-			'_descendAll' => TRUE,
-		),
 		'deployment' => array(
-			'_descendAll' => TRUE,
+			'_descend' => array(
+				'date' => array(),
+				'configuration' => array(),
+			),
 		),
 		'repository' => array(
-			'_descendAll' => TRUE,
-		),
-		'tag' => array(
-			'_descendAll' => TRUE,
+			'_descend' => array(
+				'tags' => array(
+					'_descendAll' => array(
+						'_descend' => array(
+							'commit' => array(
+							),
+						)
+					),
+				),
+				'branches' => array(
+					'_descendAll' => array(
+						'_descend' => array(
+							'commit' => array(
+							),
+						)
+					),
+				),
+				'deployments' => array(
+					'_exposeObjectIdentifier' => TRUE,
+					'_descendAll' => array(
+						'date' => array(),
+						'configuration' => array(),
+					),
+				),
+				'presets' => array(),
+			),
 		),
 	);
 

@@ -143,6 +143,38 @@
       },
       ...
     ]
+
+    curl --insecure --header "PRIVATE-TOKEN: ..." http://git.sma.de/api/v3/projects/sma-websites%2Frcw-sma-de/repository/tags | jq '.'
+    [
+      {
+        "protected": null,
+        "commit": {
+          "committed_date": "2013-05-21T15:28:29+02:00",
+          "authored_date": "2013-05-21T15:28:29+02:00",
+          "committer": {
+            "email": "af@lightwerk.com",
+            "name": "Achim Fritz"
+          },
+          "author": {
+            "email": "af@lightwerk.com",
+            "name": "Achim Fritz"
+          },
+          "message": "Merge branch 'master' of git.sma.de:sma-websites/rcw-sma-de",
+          "tree": "b127352641a6968a43fbe6227029e60decfdb686",
+          "parents": [
+            {
+              "id": "9bfcf4532451c6b6955ec89c614036b80f029420"
+            },
+            {
+              "id": "8c9494356d0ab986a1b4c9b572f86f6bccf5d80e"
+            }
+          ],
+          "id": "850cecb0e21d078a5eaccd0ed2bca8c2953ab8a9"
+        },
+        "name": "surftest"
+      },
+      ...
+    ]
     
     curl --insecure --header "PRIVATE-TOKEN: ..." https://git.lightwerk.com/api/v3/projects/17/repository/branches | jq '.'
     [

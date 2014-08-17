@@ -1,0 +1,39 @@
+<f:layout name="Default" />
+
+<f:section name="Title">List of all repositories</f:section>
+
+<f:section name="Content">
+	<f:if condition="{repositories}">
+		<f:then>
+			<table class="table table-striped">
+				<thead>
+					<tr>
+						<th>Repository URL</th>
+						<th>Name</th>
+						<th>Identifier</th>
+						<th>Web URL</th>
+						<th>Actions</th>
+					</tr>
+				</thead>
+				<tbody>
+					<f:for each="{repositories}" as="repository">
+						<tr>
+							<td>
+								<f:link.action action="index" arguments="{repositoryUrl: repository.repositoryUrl}">
+									{repository.repositoryUrl}
+								</f:link.action>
+							</td>
+							<td>{repository.name}</td>
+							<td>{repository.identifier}</td>
+							<td>{repository.webUrl}</td>
+						</tr>
+					</f:for>
+				</tbody>
+			</table>
+		</f:then>
+		<f:else>
+			<p>No repositories available.</p>
+		</f:else>
+	</f:if>
+
+</f:section>

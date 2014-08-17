@@ -33,6 +33,16 @@ class Repository {
 	 */
 	protected $branches;
 
+	/**
+	 * @var Deployment[]
+	 */
+	protected $deployments;
+
+	/**
+	 * @var array
+	 */
+	protected $presets;
+
 
 	/**
 	 * @return string
@@ -86,9 +96,8 @@ class Repository {
 	 * @return string
 	 */
 	public function getIdentifier() {
-		return preg_replace('/[^A-Za-z0-9]/', '', strtolower($this->getName())
-			. '-'
-			. substr(sha1($this->getRepositoryUrl()), 0, 4));
+		// ToDo: Unique name
+		return preg_replace('/[^A-Za-z0-9-_]/', '', strtolower($this->getName()));
 	}
 
 	/**
@@ -120,6 +129,38 @@ class Repository {
 	 */
 	public function setTags($tags) {
 		$this->tags = $tags;
+		return $this;
+	}
+
+	/**
+	 * @return Deployment[]
+	 */
+	public function getDeployments() {
+		return $this->deployments;
+	}
+
+	/**
+	 * @param Deployment[] $deployments
+	 * @return Repository
+	 */
+	public function setDeployments($deployments) {
+		$this->deployments = $deployments;
+		return $this;
+	}
+
+	/**
+	 * @return array
+	 */
+	public function getPresets() {
+		return $this->presets;
+	}
+
+	/**
+	 * @param array $presets
+	 * @return Repository
+	 */
+	public function setPresets($presets) {
+		$this->presets = $presets;
 		return $this;
 	}
 }

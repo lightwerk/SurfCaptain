@@ -95,7 +95,11 @@ class GitLabDriver implements DriverInterface {
 	 */
 	protected function getProjectFromRepositoryUrl($repositoryUrl) {
 		$projectData = $this->getGitLabApiResponse('projects/' . $this->getId($repositoryUrl));
-		return $this->dataMapper->mapToObject($projectData, '\\Lightwerk\\SurfCaptain\\Domain\\Model\\Repository');
+		return $this->dataMapper->mapToObject(
+			$projectData,
+			'\\Lightwerk\\SurfCaptain\\Domain\\Model\\Repository',
+			$this->settings['mapping']
+		);
 	}
 
 	/**
@@ -105,7 +109,11 @@ class GitLabDriver implements DriverInterface {
 	 */
 	protected function getProjectsOfGroup($groupId) {
 		$projectsData = $this->getGitLabApiResponse('groups/' . $groupId)['projects'];
-		return $this->dataMapper->mapToObject($projectsData, '\\Lightwerk\\SurfCaptain\\Domain\\Model\\Repository[]');
+		return $this->dataMapper->mapToObject(
+			$projectsData,
+			'\\Lightwerk\\SurfCaptain\\Domain\\Model\\Repository[]',
+			$this->settings['mapping']
+		);
 	}
 
 	/**
@@ -126,7 +134,11 @@ class GitLabDriver implements DriverInterface {
 	 */
 	protected function getAllProjects() {
 		$projectsData = $this->getGitLabApiResponse('projects');
-		return $this->dataMapper->mapToObject($projectsData, '\\Lightwerk\\SurfCaptain\\Domain\\Model\\Repository[]');
+		return $this->dataMapper->mapToObject(
+			$projectsData,
+			'\\Lightwerk\\SurfCaptain\\Domain\\Model\\Repository[]',
+			$this->settings['mapping']
+		);
 	}
 
 	/**
@@ -136,10 +148,10 @@ class GitLabDriver implements DriverInterface {
 	 */
 	public function getRepositories() {
 		$repositories = array();
-		if (empty($this->settings['repositories']['filters']) || !is_array($this->settings['repositories']['filters'])) {
+		if (empty($this->settings['repositories']) || !is_array($this->settings['repositories'])) {
 			return $repositories;
 		}
-		foreach ($this->settings['repositories']['filters'] as $filter) {
+		foreach ($this->settings['repositories'] as $filter) {
 			$tempRepositories = array();
 
 			if (!empty($filter['groupIds']) && is_array($filter['groupIds'])) {
@@ -177,7 +189,12 @@ class GitLabDriver implements DriverInterface {
 	 * @return Repository
 	 */
 	public function getRepository($repositoryUrl) {
-		// TODO: Implement getRepository() method.
+		$projectData = $this->getGitLabApiResponse('projects/' . $this->getId($repositoryUrl));
+		return $this->dataMapper->mapToObject(
+			$projectData,
+			'\\Lightwerk\\SurfCaptain\\Domain\\Model\\Repository',
+			$this->settings['mapping']
+		);
 	}
 
 	/**
@@ -238,7 +255,11 @@ class GitLabDriver implements DriverInterface {
 	 */
 	public function getBranches($repositoryUrl) {
 		$branchesData = $this->getGitLabApiResponse('projects/' . $this->getId($repositoryUrl) . '/repository/branches');
-		return $this->dataMapper->mapToObject($branchesData, '\\Lightwerk\\SurfCaptain\\Domain\\Model\\Branch[]');
+		return $this->dataMapper->mapToObject(
+			$branchesData,
+			'\\Lightwerk\\SurfCaptain\\Domain\\Model\\Branch[]',
+			$this->settings['mapping']
+		);
 	}
 
 	/**
@@ -249,6 +270,10 @@ class GitLabDriver implements DriverInterface {
 	 */
 	public function getTags($repositoryUrl) {
 		$tagsData = $this->getGitLabApiResponse('projects/' . $this->getId($repositoryUrl) . '/repository/tags');
-		return $this->dataMapper->mapToObject($tagsData, '\\Lightwerk\\SurfCaptain\\Domain\\Model\\Tag[]');
+		return $this->dataMapper->mapToObject(
+			$tagsData,
+			'\\Lightwerk\\SurfCaptain\\Domain\\Model\\Tag[]',
+			$this->settings['mapping']
+		);
 	}
 }

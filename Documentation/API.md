@@ -17,7 +17,7 @@ Example call:
 - Path: /api/repository
 - Parameters:
 	- repositoryUrl (required) - string
-- Info: Contains git tags and branches of a repository
+- Info: Contains git tags, git branches and presets of a repository
 
 Example call:
 
@@ -120,17 +120,11 @@ Example call to list presets of a defined project:
 
 - Methode: GET
 - Path: /api/presets
-- Parameters:
-	- repositoryUrl (required) - string
-	- type (optional) - string (type= to get presets without a type)
+- Info: To list presets of a repository, please use the Repository-API (Show)
 
-Example call to list presets of a defined project:
+Example call to list all presets:
 
-	curl -H "Accept: application/json" http://surf.flow.lp.lw.loc/api/presets\?repositoryUrl\=git%40git.lightwerk.com%3Aboilerplate%2Ftypo3_cms.git | jq '.'
-
-Example call to list presets without a defined project (Wildcards for developer instances):
-
-	curl -H "Accept: application/json" http://surf.flow.lp.lw.loc/api/presets\?repositoryUrl\= | jq '.'
+	curl -H "Accept: application/json" http://surf.flow.lp.lw.loc/api/presets | jq '.'
 
 ### Add presets
 
