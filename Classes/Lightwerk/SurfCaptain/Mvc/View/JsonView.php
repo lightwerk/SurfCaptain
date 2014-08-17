@@ -15,9 +15,26 @@ class JsonView extends \TYPO3\Flow\Mvc\View\JsonView {
 	 */
 	protected $configuration = array(
 		'deployment' => array(
+			'_exposeObjectIdentifier' => true,
+			'_exposeClassName' => 1,
 			'_descend' => array(
 				'date' => array(),
 				'configuration' => array(),
+				'logs' => array(
+					'_descendAll' => array(
+						'_exposeObjectIdentifier' => true,
+						'_exposeClassName' => 1,
+						'_descend' => array(
+							'date' => array(),
+						),
+					),
+				),
+			),
+		),
+		'deployments' => array(
+			'_descendAll' => array(
+				'_exposeObjectIdentifier' => true,
+				'_exposeClassName' => 1,
 			),
 		),
 		'repository' => array(
@@ -40,6 +57,7 @@ class JsonView extends \TYPO3\Flow\Mvc\View\JsonView {
 				),
 				'deployments' => array(
 					'_exposeObjectIdentifier' => TRUE,
+					'_exposeClassName' => 1,
 					'_descendAll' => array(
 						'date' => array(),
 						'configuration' => array(),
