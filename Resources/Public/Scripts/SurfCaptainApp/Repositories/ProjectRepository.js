@@ -69,6 +69,7 @@ surfCaptain.factory('ProjectRepository', [ '$http', '$q', '$cacheFactory', funct
      * @param {string} name
      * @param {array} projects
      * @returns {object} a single project
+     * @throws {ProjectRepositoryException}
      */
     projectRepository.getProjectByName = function (name, projects) {
         var projectCache = $cacheFactory.get('projectCache');

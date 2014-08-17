@@ -2,19 +2,20 @@
 	<div class="server">
 		<div class="single-server">
 			<div class="server-icon">
-				<span class="glyphicon glyphicon-hdd"></span>
+				<span class="glyphicon glyphicon-hdd" data-ng-class="{true:'changed'}[preset.changed]"></span>
 			</div>
 			<div class="server-data">
 				<h3>
 					<span editable-text="preset.applications.0.nodes.0.name">{{preset.applications.0.nodes.0.name}}</span>
 				</h3>
+				<span class="not-saved-yet">&nbsp;<span data-ng-if="preset.changed">Changes not saved yet</span></span>
 				<table>
 					<tr>
 						<td><span class="wrapper">H:
 											<span
 													editable-text="preset.applications.0.nodes.0.hostname"
 													onbeforesave="updateHost($data)"
-													onaftersave="updateServer(server)"
+													onaftersave="preset.changed=true"
 													>
 												{{preset.applications.0.nodes.0.hostname || 'please add'}}
 											</span>
@@ -25,7 +26,7 @@
 													editable-select="preset.applications.0.options.context"
 													e-ng-options="context for context in contexts"
 													onbeforesave="updateContext($data)"
-													onaftersave="updateServer(server)"
+													onaftersave="preset.changed=true"
 													>
 												{{preset.applications.0.options.context || 'please add'}}
 											</span>
@@ -36,7 +37,7 @@
 											<span
 													editable-text="preset.applications.0.options.documentRoot"
 													onbeforesave="updateDocumentRoot($data)"
-													onaftersave="updateServer(server)"
+													onaftersave="preset.changed=true"
 													>
 												{{preset.applications.0.options.documentRoot || 'please add'}}
 											</span>
@@ -45,7 +46,7 @@
 											<span
 													editable-text="preset.applications.0.nodes.0.username"
 													onbeforesave="updateUsername($data)"
-													onaftersave="updateServer(server)"
+													onaftersave="preset.changed=true"
 													>
 												{{preset.applications.0.nodes.0.username || 'please add'}}
 											</span>
@@ -57,6 +58,15 @@
 				<button class="btn btn-danger remove" tooltip data-placement="bottom" title="Delete"
 						data-ng-click="setCurrentPreset(preset)" modal="confirm-deletion">
 					<span class="glyphicon glyphicon-trash"></span>
+				</button>
+				<button
+						class="btn btn-primary update"
+						tooltip data-placement="bottom"
+						title="Save changes"
+						data-ng-click="updateServer(preset)"
+						data-ng-if="preset.changed"
+				>
+					<span class="glyphicon glyphicon-floppy-disk"></span>
 				</button>
 			</div>
 		</div>

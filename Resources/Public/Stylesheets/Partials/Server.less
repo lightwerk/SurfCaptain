@@ -1,6 +1,6 @@
 .project-server {
 	.server {
-		width: 790px;
+		width: 840px;
 		height: 120px;
 		border:1px solid #999999;
 		color: @main-color;
@@ -14,12 +14,21 @@
 				line-height: 100px;
 				padding: 0 10px 0 10px;
 				color: #FFFFFF !important;
+				.changed {
+					color: @brand-primary !important;
+				}
 			}
 			.server-data {
 				float: left;
-				width: 650px;
+				width: 700px;
 				padding: 0 0 0 10px;
 				text-align: left;
+				.not-saved-yet {
+					display: inline-block;
+					position: relative;
+					bottom: -30px;
+					color: @brand-primary;
+				}
 				h3 {
 					margin: -55px;
 					text-align: right;
@@ -38,9 +47,9 @@
 				}
 				table {
 					width: 100%;
-					margin-top: 62px;
+					margin-top: 38px;
 					td {
-						width: 55%;
+						width: 60%;
 						padding: 0px;
 						line-height: 35px;
 						height: 55px;
@@ -54,7 +63,7 @@
 							padding: 2px;
 						}
 						&:last-child {
-							width: 45%;
+							width: 40%;
 						}
 						.tooltip-inner {
 							background-color: @main-color;
@@ -76,10 +85,21 @@
 					display: none;
 				}
 			}
+			.server-edit {
+				.update {
+					float: right;
+					position: relative;
+					top: 22px;
+					display: none;
+				}
+			}
 		}
 		&:hover {
 			.server-edit {
 				.remove {
+					display: inline-block;
+				}
+				.update {
 					display: inline-block;
 				}
 			}

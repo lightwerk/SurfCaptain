@@ -1,4 +1,4 @@
-/*global surfCaptain*/
+/*global surfCaptain, angular*/
 /*jslint node: true */
 
 'use strict';
@@ -6,6 +6,13 @@
 surfCaptain.factory('ServerRepository', ['$http', '$q', function ($http, $q) {
     var serverRepository = {},
         url = '/api/presets';
+
+    function ServerRepositoryException(message) {
+        this.name = 'ServerRepositoryException';
+        this.message = message;
+    }
+    ServerRepositoryException.prototype = new Error();
+    ServerRepositoryException.prototype.constructor = ServerRepositoryException;
 
     /**
      * Gets all servers from the collection
@@ -23,8 +30,15 @@ surfCaptain.factory('ServerRepository', ['$http', '$q', function ($http, $q) {
      *
      * @param {object} server
      * @returns {string}
+     * @throws {ServerRepositoryException}
      */
     serverRepository.getKeyFromServerConfiguration = function (server) {
+        if (angular.isUndefined(server.nodes[0].name)) {
+            if (angular.isUndefined(server.apllications[0].nodes[0].name)) {
+                throw new ServerRepositoryException('ServerRepository.getKeyFromServerConfiguratio failed. Server configuration contains no key.');
+            }
+            return server.apllications[0].nodes[0].name;
+        }
         return server.nodes[0].name;
     };
 
@@ -54,26 +68,40 @@ surfCaptain.factory('ServerRepository', ['$http', '$q', function ($http, $q) {
     /**
      * Adds a single server to the server collection
      *
-     * @param {string} repositoryUrl
-     * @param server {object}
+     * @param {object} preset
      * @returns {Q.promise|promise} – promise object
      */
-    serverRepository.putServer = function (server) {
-        console.log(server);
+    serverRepository.putServer = function (preset) {
+        return this.sendSinglePresetToApi(preset, 'PUT');
     };
 
     /**
      * Adds a single server to the server collection
      *
-     * @param server {object}
+     * @param preset {object}
      * @returns {Q.promise|promise} – promise object
      */
-    serverRepository.postServer = function (server) {
+    serverRepository.postServer = function (preset) {
+        return this.sendSinglePresetToApi(preset, 'POST');
+    };
+
+
+    /**
+     * Performs a request to the api with a single preset.
+     * This request can either be POST or PUT which can
+     * be determined with the method argument. Any other
+     * method will result in a failed API call.
+     *
+     * @param {object} preset
+     * @param {string} method
+     * @returns {promise|Q.promise}
+     */
+    serverRepository.sendSinglePresetToApi = function (preset, method) {
         var deferred = $q.defer(),
-            configuration = this.getFullPresetAsString(server);
+            configuration = this.getFullPresetAsString(preset);
         $http({
-            method: 'POST',
-            url: url + '?key=' + this.getKeyFromServerConfiguration(server) + '&configuration=' + configuration,
+            method: method,
+            url: url + '?key=' + this.getKeyFromServerConfiguration(preset) + '&configuration=' + configuration,
             headers: {'Content-Type': 'application/x-www-form-urlencoded'}
         }).success(deferred.resolve).error(deferred.reject);
         return deferred.promise;

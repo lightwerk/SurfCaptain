@@ -4,6 +4,14 @@
 'use strict';
 surfCaptain.directive('serverList', ['ServerRepository', 'ValidationService', function (ServerRepository, ValidationService) {
     var linker = function (scope, element, attrs) {
+        scope.toggleSpinnerAndOverlay = function () {
+            scope.finished = !scope.finished;
+            scope.$parent.finished = !scope.$parent.finished;
+        };
+
+        scope.contexts = [
+            'Production', 'Development', 'Staging'
+        ];
 
         /**
          * Stores a preset object in a scope variable
@@ -22,8 +30,7 @@ surfCaptain.directive('serverList', ['ServerRepository', 'ValidationService', fu
          * @return void
          */
         scope.deleteServer = function (server) {
-            scope.finished = false;
-            scope.$parent.finished = false;
+            scope.toggleSpinnerAndOverlay();
             ServerRepository.deleteServer(server).then(
                 function (response) {
                     scope.$parent.getAllServers();
@@ -41,7 +48,13 @@ surfCaptain.directive('serverList', ['ServerRepository', 'ValidationService', fu
          * @return void
          */
         scope.updateServer = function (server) {
-            ServerRepository.updateServer(server);
+            scope.toggleSpinnerAndOverlay();
+            ServerRepository.updateServer(server.applications[0]).then(
+                function () {
+                    server.changed = false;
+                    scope.toggleSpinnerAndOverlay();
+                }
+            );
         };
 
         /**
@@ -85,7 +98,7 @@ surfCaptain.directive('serverList', ['ServerRepository', 'ValidationService', fu
          * @return {string | boolean} ErrorMessage or True if valid
          */
         scope.updateContext = function (data) {
-            return ValidationService.doesArrayContainItem($scope.contexts, data, 'Context is not valid!');
+            return ValidationService.doesArrayContainItem(scope.contexts, data, 'Context is not valid!');
         };
 
     };
