@@ -42,7 +42,7 @@ var surfCaptain = angular.module('surfCaptain', ['ngRoute', 'xeditable', 'ngAnim
                 redirectTo: '/'
             });
     }])
-    .value('version', '0.8.2');
+    .value('version', '0.8.4');
 
 surfCaptain.run(['editableOptions', function (editableOptions) {
     editableOptions.theme = 'bs3';
