@@ -25,6 +25,14 @@ surfCaptain.controller('GlobalServerController', [
                 function (response) {
                     $scope.finished = true;
                     $scope.servers = response.presets;
+                    if ($scope.servers.length === 0) {
+                        $scope.messages = FlashMessageService.addFlashMessage(
+                            'FYI!',
+                            'There are no servers yet. Why dont you create one, hmm?',
+                            SEVERITY.info,
+                            'global-server-request-no-results'
+                        );
+                    }
                 },
                 function (response) {
                     $scope.finished = true;

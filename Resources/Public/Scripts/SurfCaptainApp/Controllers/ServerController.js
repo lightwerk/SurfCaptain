@@ -63,6 +63,22 @@ surfCaptain.controller('ServerController', [
                     if (angular.isDefined($scope.nameSuggestions)) {
                         self.setTakenServerNamesAsUnavailableSuggestions();
                     }
+                    if ($scope.servers.length === 0) {
+                        $scope.messages = FlashMessageService.addFlashMessage(
+                            'No Servers yet!',
+                            'FYI: There are no servers for project <span class="uppercase">' + $scope.name  + '</span> yet. Why dont you create one, hmm?',
+                            SEVERITY.info
+                        );
+                    }
+                },
+                function (response) {
+                    $scope.finished = true;
+                    $scope.messages = FlashMessageService.addFlashMessage(
+                        'Request failed!',
+                        'The servers could not be received. Please try again later..',
+                        SEVERITY.error,
+                        'server-request-failed'
+                    );
                 }
             );
         };
