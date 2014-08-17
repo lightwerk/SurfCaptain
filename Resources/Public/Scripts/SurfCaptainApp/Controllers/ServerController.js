@@ -12,12 +12,15 @@ surfCaptain.controller('ServerController', [
     'SettingsRepository',
     'MarkerService',
     'PresetService',
-    function ($scope, $controller, ServerRepository, ValidationService, SettingsRepository, MarkerService, PresetService) {
+    'FlashMessageService',
+    'SEVERITY',
+    function ($scope, $controller, ServerRepository, ValidationService, SettingsRepository, MarkerService, PresetService, FlashMessageService, SEVERITY) {
 
         var self = this, generateNameSuggestions, replaceMarkers;
 
         $scope.finished = false;
         $scope.currentPreset = {};
+        $scope.messages = [];
         $scope.contexts = [
             'Production', 'Development', 'Staging'
         ];
@@ -133,9 +136,18 @@ surfCaptain.controller('ServerController', [
                     $scope.newServerForm.$setPristine();
                     self.handleSettings();
                     $scope.getAllServers();
+                    $scope.messages = FlashMessageService.addFlashMessage(
+                        'Server created!',
+                        'The Server "' + server.nodes[0].name + '" was successfully created.',
+                        SEVERITY.ok
+                    );
                 },
                 function (response) {
-                    // an error occurred
+                    $scope.messages = FlashMessageService.addFlashMessage(
+                        'Creation failed!',
+                        'The Server "' + server.nodes[0].name + '" could not be created.',
+                        SEVERITY.error
+                    );
                 }
             );
         };

@@ -6,13 +6,16 @@ surfCaptain.controller('GlobalServerController', [
     '$scope',
     'ServerRepository',
     'PresetService',
-    function ($scope, ServerRepository, PresetService) {
+    'FlashMessageService',
+    'SEVERITY',
+    function ($scope, ServerRepository, PresetService, FlashMessageService, SEVERITY) {
 
         $scope.contexts = [
             'Production', 'Development', 'Staging'
         ];
         $scope.newPreset = PresetService.getNewPreset();
         $scope.finished = false;
+        $scope.messages = [];
 
         /**
          * @return {void}
@@ -22,6 +25,15 @@ surfCaptain.controller('GlobalServerController', [
                 function (response) {
                     $scope.finished = true;
                     $scope.servers = response.presets;
+                },
+                function (response) {
+                    $scope.finished = true;
+                    $scope.messages = FlashMessageService.addFlashMessage(
+                        'Request failed!',
+                        'The global servers could not be received. Please try again later..',
+                        SEVERITY.error,
+                        'global-server-request-failed'
+                    );
                 }
             );
         };
@@ -38,9 +50,19 @@ surfCaptain.controller('GlobalServerController', [
                     $scope.newPreset = PresetService.getNewPreset();
                     $scope.newServerForm.$setPristine();
                     $scope.getAllServers();
+                    $scope.messages = FlashMessageService.addFlashMessage(
+                        'Server created!',
+                        'The Server ' + server.nodes[0].name + ' was successfully created.',
+                        SEVERITY.ok
+                    );
                 },
                 function (response) {
-                    // an error occurred
+                    $scope.finished = true;
+                    $scope.messages = FlashMessageService.addFlashMessage(
+                        'Creation failed!',
+                        'The Server "' + server.nodes[0].name + '" could not be created.',
+                        SEVERITY.error
+                    );
                 }
             );
         };

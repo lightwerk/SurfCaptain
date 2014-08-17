@@ -1,3 +1,5 @@
+<flash-messages messages="messages" />
+
 <overlay finished="finished" />
 <div data-ng-if="!finished" class="spinner">
 	<spinner />
@@ -143,7 +145,7 @@
 				</form>
 			</div>
 
-			<server-list servers="servers" getAllServers="getAllServers()" finished="finished"></server-list>
+			<server-list servers="servers" getAllServers="getAllServers()" finished="finished" messages="messages"></server-list>
 
 		</div>
 	</div>

@@ -2,7 +2,7 @@
 /*jslint node: true */
 
 'use strict';
-surfCaptain.directive('serverList', ['ServerRepository', 'ValidationService', function (ServerRepository, ValidationService) {
+surfCaptain.directive('serverList', ['ServerRepository', 'ValidationService', 'FlashMessageService', 'SEVERITY', function (ServerRepository, ValidationService, FlashMessageService, SEVERITY) {
     var linker = function (scope, element, attrs) {
         scope.toggleSpinnerAndOverlay = function () {
             scope.finished = !scope.finished;
@@ -34,9 +34,19 @@ surfCaptain.directive('serverList', ['ServerRepository', 'ValidationService', fu
             ServerRepository.deleteServer(server).then(
                 function (response) {
                     scope.$parent.getAllServers();
+                    scope.messages = FlashMessageService.addFlashMessage(
+                        'Server deleted!',
+                        'The Server "' + server.applications[0].nodes[0].name + '" was successfully removed.',
+                        SEVERITY.ok
+                    );
                 },
                 function (response) {
-                    // an error occurred
+                    scope.toggleSpinnerAndOverlay();
+                    scope.messages = FlashMessageService.addFlashMessage(
+                        'Deletion failed!',
+                        'The Server "' + server.applications[0].nodes[0].name + '" could not be removed.',
+                        SEVERITY.error
+                    );
                 }
             );
         };
@@ -53,6 +63,19 @@ surfCaptain.directive('serverList', ['ServerRepository', 'ValidationService', fu
                 function () {
                     server.changed = false;
                     scope.toggleSpinnerAndOverlay();
+                    scope.messages = FlashMessageService.addFlashMessage(
+                        'Update successful!',
+                        'The Server "' + server.applications[0].nodes[0].name + '" was updated successfully.',
+                        SEVERITY.ok
+                    );
+                },
+                function () {
+                    scope.toggleSpinnerAndOverlay();
+                    scope.messages = FlashMessageService.addFlashMessage(
+                        'Update failed!',
+                        'The Server "' + server.applications[0].nodes[0].name + '" could not be updated.',
+                        SEVERITY.error
+                    );
                 }
             );
         };
@@ -109,7 +132,8 @@ surfCaptain.directive('serverList', ['ServerRepository', 'ValidationService', fu
         scope: {
             servers: '=',
             getAllServers: '&',
-            finished: '='
+            finished: '=',
+            messages: '='
         },
         link: linker
     };

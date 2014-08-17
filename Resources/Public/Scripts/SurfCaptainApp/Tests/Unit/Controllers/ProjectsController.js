@@ -59,12 +59,6 @@ describe('ProjectsController', function () {
         expect(scope.projects).toEqual(projects);
     });
 
-    it('should store message in scope.message if request fails', function () {
-        succeedPromise = false;
-        createController();
-        expect(scope.message).toEqual('API call failed. GitLab is currently not available.');
-    });
-
     it('should store received settings in scope.settings', function () {
         createController();
         expect(scope.settings).toEqual(settings);
