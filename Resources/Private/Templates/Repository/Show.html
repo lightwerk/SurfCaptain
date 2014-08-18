@@ -14,11 +14,47 @@
 		<dd><a href="{repository.webUrl}" target="_blank">{repository.webUrl}</a></dd>
 	</dl>
 
-	<f:render partial="Tag/List" arguments="{tags: repository.tags}" />
-	<f:render partial="Branch/List" arguments="{branches: repository.branches}" />
+	<ul class="nav nav-tabs" role="tablist">
+		<li class="active">
+			<a href="#tags" role="tab" data-toggle="tab">Tags <span class="badge">{repository.tags -> f:count()}</span></a>
+		</li>
+		<li>
+			<a href="#branches" role="tab" data-toggle="tab">Branches <span class="badge">{repository.branches -> f:count()}</span></a>
+		</li>
+		<li>
+			<a href="#deployments" role="tab" data-toggle="tab">Deployments <span class="badge">{repository.deployments -> f:count()}</span></a>
+		</li>
+		<li>
+			<a href="#presets" role="tab" data-toggle="tab">Presets <span class="badge">{repository.presets -> f:count()}</span></a>
+		</li>
+	</ul>
 
-	<h2>Deployments</h2>
-	<f:render partial="Deployment/List" arguments="{deployments: repository.deployments}" />
+	<!-- Tab panes -->
+	<div class="tab-content">
+		<div class="tab-pane active" id="tags">
+			<f:render partial="Tag/List" arguments="{tags: repository.tags}" />
+		</div>
+		<div class="tab-pane" id="branches">
+			<f:render partial="Branch/List" arguments="{branches: repository.branches}" />
+		</div>
+		<div class="tab-pane" id="deployments">
+			<h2>Deployments</h2>
+			<f:render partial="Deployment/List" arguments="{deployments: repository.deployments}" />
+		</div>
+		<div class="tab-pane" id="presets">
+			<h2>Presets</h2>
+			<f:render partial="Preset/List" arguments="{presets: repository.presets}" />
+		</div>
+	</div>
 
-	<f:link.action action="index" class="btn btn-primary">Back</f:link.action>
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+	<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+	<script type="text/javascript">
+		<!--
+		$('.nav-tabs a').click(function (e) {
+			e.preventDefault()
+			$(this).tab('show')
+		})
+		-->
+	</script>
 </f:section>

@@ -1,0 +1,33 @@
+<f:if condition="{presets}">
+	<f:then>
+		<table class="table table-striped">
+			<thead>
+			<tr>
+				<th>Key</th>
+				<th>Actions</th>
+			</tr>
+			</thead>
+			<tbody>
+			<f:for each="{presets}" key="key" as="configuration">
+				<tr>
+					<td>
+						<f:link.action controller="Preset" action="index" arguments="{key: key}">
+							{key}
+						</f:link.action>
+					</td>
+					<td>
+						<f:form controller="Preset" action="index">
+							<f:form.hidden name="__method" value="DELETE" />
+							<f:form.hidden property="key" value="{key}" />
+							<f:form.submit value="Delete" class="btn btn-danger btn-xs" />
+						</f:form>
+					</td>
+				</tr>
+			</f:for>
+			</tbody>
+		</table>
+	</f:then>
+	<f:else>
+		<p>No presets created yet.</p>
+	</f:else>
+</f:if>
