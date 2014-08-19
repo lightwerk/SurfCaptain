@@ -4,36 +4,51 @@
 'use strict';
 var surfCaptain = angular.module('surfCaptain', ['ngRoute', 'xeditable', 'ngAnimate', 'ngMessages'])
     .config(['$routeProvider', function ($routeProvider) {
+        var templatePath = '/_Resources/Static/Packages/Lightwerk.SurfCaptain/Scripts/SurfCaptainApp/Templates/';
         $routeProvider.
             when('/', {
-                templateUrl: '/_Resources/Static/Packages/Lightwerk.SurfCaptain/Scripts/SurfCaptainApp/Templates/Projects.html',
+                templateUrl: templatePath + 'Projects.html',
                 controller: 'ProjectsController'
             }).
             when('/project/:projectName', {
-                templateUrl: '/_Resources/Static/Packages/Lightwerk.SurfCaptain/Scripts/SurfCaptainApp/Templates/Project.html',
+                templateUrl: templatePath + 'Project.html',
                 controller: 'ProjectController'
             }).
             when('/project/:projectName/deploy', {
-                templateUrl: '/_Resources/Static/Packages/Lightwerk.SurfCaptain/Scripts/SurfCaptainApp/Templates/Deploy.html',
+                templateUrl: templatePath + 'Deploy.html',
                 controller: 'DeployController'
             }).
             when('/project/:projectName/sync', {
-                templateUrl: '/_Resources/Static/Packages/Lightwerk.SurfCaptain/Scripts/SurfCaptainApp/Templates/Sync.html',
+                templateUrl: templatePath + 'Sync.html',
                 controller: 'SyncController'
             }).
             when('/project/:projectName/server', {
-                templateUrl: '/_Resources/Static/Packages/Lightwerk.SurfCaptain/Scripts/SurfCaptainApp/Templates/Server.html',
+                templateUrl: templatePath + 'Server.html',
                 controller: 'ServerController'
             }).
             when('/about', {
-                templateUrl: '/_Resources/Static/Packages/Lightwerk.SurfCaptain/Scripts/SurfCaptainApp/Templates/About.html',
+                templateUrl: templatePath + 'About.html',
                 controller: 'AboutController'
+            }).
+            when('/server', {
+                templateUrl: templatePath + 'GlobalServer.html',
+                controller: 'GlobalServerController'
+            }).
+            when('/extensions', {
+                templateUrl: templatePath + 'Extensions.html',
+                controller: 'ExtensionsController'
             }).
             otherwise({
                 redirectTo: '/'
             });
     }])
-    .value('version', '0.7.0');
+    .value('version', '0.8.4')
+    .constant('SEVERITY', {
+        ok: 0,
+        info: 1,
+        warning: 2,
+        error: 3
+    });
 
 surfCaptain.run(['editableOptions', function (editableOptions) {
     editableOptions.theme = 'bs3';

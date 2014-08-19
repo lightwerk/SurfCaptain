@@ -10,8 +10,8 @@ surfCaptain.factory('GitRepository', [ '$http', '$q', function ($http, $q) {
 
     /**
      *
-     * @param project {string}
-     * @returns {Promise} – promise object
+     * @param {string} projectId
+     * @returns {Q.promise|promise} – promise object
      */
     gitRepository.getTagsByProjectId = function (projectId) {
         var deferred = $q.defer();
@@ -21,8 +21,8 @@ surfCaptain.factory('GitRepository', [ '$http', '$q', function ($http, $q) {
 
     /**
      *
-     * @param project {string}
-     * @returns {Promise} – promise object
+     * @param {string} projectId
+     * @returns {Q.promise|promise} – promise object
      */
     gitRepository.getBranchesByProjectId = function (projectId) {
         var deferred = $q.defer();

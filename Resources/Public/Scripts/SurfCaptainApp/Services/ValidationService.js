@@ -40,15 +40,30 @@ surfCaptain.service('ValidationService', function () {
     };
 
     /**
-     * Validates if a given Item i found within a given array.
+     * Validates if a given Item is found within a given array.
      *
      * @param {array} array
      * @param {mixed} item
      * @param {string} message
      * @returns {string|boolean}
      */
-    this.doesArrayContainsItem = function (array, item, message) {
+    this.doesArrayContainItem = function (array, item, message) {
         if (array instanceof Array && array.indexOf(item) > -1) {
+            return true;
+        }
+        return message || false;
+    };
+
+    /**
+     * Validates if a given Substring is found within a given string.
+     *
+     * @param {string} string
+     * @param {string} substring
+     * @param {string} message
+     * @returns {string|boolean}
+     */
+    this.doesStringContainSubstring = function (string, substring, message) {
+        if (typeof string === 'string' && string.indexOf(substring) !== -1) {
             return true;
         }
         return message || false;

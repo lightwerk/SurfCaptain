@@ -10,7 +10,8 @@ describe('ProjectController', function () {
         simulateRecievementOfProjectData = function () {
             scope.$digest();
             scope.$apply(function () {
-                scope.project = projects.repositories[0];
+                scope.project = projects[0];
+                scope.projects = projects;
             });
         };
 
@@ -19,9 +20,9 @@ describe('ProjectController', function () {
     beforeEach(inject(function ($controller, $rootScope, $q, HistoryRepository, ProjectRepository) {
         scope = $rootScope.$new();
         historyRepository = HistoryRepository;
-        projects = {repositories: [
+        projects = [
             {"name": "foo", "ssh_url_to_repo": "git@git.example.com:project/foo.git", "id": 1}
-        ]};
+        ];
         q = $q;
 
         var historyDefer = q.defer(),
@@ -30,7 +31,7 @@ describe('ProjectController', function () {
         // We have to mock this due to inheritance from AbstractSingleProjectController
         projectsDefer.resolve(projects);
         spyOn(ProjectRepository, 'getProjects').andReturn(projectsDefer.promise);
-        spyOn(ProjectRepository, 'getProjectByName').andCallThrough();
+        spyOn(ProjectRepository, 'getProjectByName').andReturn(projects[0]);
 
         historyDefer.resolve(history);
         spyOn(historyRepository, 'getHistoryByProject').andReturn(historyDefer.promise);

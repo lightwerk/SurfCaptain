@@ -102,6 +102,13 @@ surfCaptain.controller('AboutController', ['$scope', function ($scope) {
             description: {
                 headline: 'MySQL'
             }
+        },
+        {
+            name: 'less',
+            url: 'http://www.lesscss.de/',
+            description: {
+                headline: 'LESS'
+            }
         }
     ];
 }]);

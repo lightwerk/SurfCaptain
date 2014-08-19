@@ -32,8 +32,8 @@ surfCaptain.controller('DeployController', [
             var key;
             for (key in $scope.deployableCommits) {
                 if ($scope.deployableCommits.hasOwnProperty(key)) {
-                    if ($scope.deployableCommits[key].name !== undefined
-                            && $scope.deployableCommits[key].group !== undefined
+                    if (angular.isDefined($scope.deployableCommits[key].name)
+                            && angular.isDefined($scope.deployableCommits[key].group)
                             && $scope.deployableCommits[key].name === loadingString
                             && $scope.deployableCommits[key].group === group) {
                         $scope.deployableCommits.splice(key, 1);
@@ -43,12 +43,12 @@ surfCaptain.controller('DeployController', [
             }
         };
 
-        $scope.$watch('project', function (newValue, oldValue) {
+        $scope.$watch('project', function (project) {
             var id;
-            if (newValue === undefined || newValue.id === undefined) {
+            if (angular.isUndefined(project.ssh_url_to_repo)) {
                 return;
             }
-            id = newValue.id;
+            id = project.id;
             GitRepository.getTagsByProjectId(id.toString()).then(
                 function (response) {
                     $scope.unsetLoadingKeyForGroup('Tags');
@@ -69,9 +69,14 @@ surfCaptain.controller('DeployController', [
                     $scope.unsetLoadingKeyForGroup('Branches');
                 }
             );
+//            GitRepository.getRepository(project.ssh_url_to_repo).then(
+//                function (data) {
+//                    console.log(data);
+//                }
+//            );
             ServerRepository.getServers().then(function (response) {
                 $scope.servers = response.filter(function (entry) {
-                    return entry.project === newValue.id;
+                    return entry.project === project.id;
                 });
             });
 

@@ -15,9 +15,9 @@ describe('ProjectsController', function () {
 
     beforeEach(inject(function ($controller, $rootScope, $q, ProjectRepository, SettingsRepository) {
         scope = $rootScope.$new();
-        projects = {repositories: [
+        projects = [
             {"name": "foo", "ssh_url_to_repo": "git@git.example.com:project/foo.git", "id": 1}
-        ]};
+        ];
         settings = {a: 'b'};
         controller = $controller;
         projectRepository = ProjectRepository;
@@ -56,13 +56,7 @@ describe('ProjectsController', function () {
     it('should store recieved projects records in scope.projects', function () {
         succeedPromise = true;
         createController();
-        expect(scope.projects).toEqual(projects.repositories);
-    });
-
-    it('should store message in scope.message if request fails', function () {
-        succeedPromise = false;
-        createController();
-        expect(scope.message).toEqual('API call failed. GitLab is currently not available.');
+        expect(scope.projects).toEqual(projects);
     });
 
     it('should store received settings in scope.settings', function () {

@@ -11,40 +11,20 @@ surfCaptain.controller('ServerController', [
     'ValidationService',
     'SettingsRepository',
     'MarkerService',
-    function ($scope, $controller, ServerRepository, ValidationService, SettingsRepository, MarkerService) {
+    'PresetService',
+    'FlashMessageService',
+    'SEVERITY',
+    function ($scope, $controller, ServerRepository, ValidationService, SettingsRepository, MarkerService, PresetService, FlashMessageService, SEVERITY) {
 
-        var getAllServers, setTakenServerNamesAsUnavailableSuggestions, getNewPreset, handleSettings, generateNameSuggestions, replaceMarkers;
+        var self = this, generateNameSuggestions, replaceMarkers;
 
+        $scope.finished = false;
         $scope.currentPreset = {};
-        $scope.defaultUser = '';
-        $scope.defaultDocumentRoot = '';
+        $scope.messages = [];
         $scope.contexts = [
             'Production', 'Development', 'Staging'
         ];
 
-        /**
-         * Returns the skeleton of a preset object
-         *
-         * @returns {object}
-         */
-        getNewPreset = function () {
-            return {
-                "options": {
-                    "repositoryUrl": '',
-                    "documentRoot": $scope.defaultDocumentRoot,
-                    "context": ''
-                },
-                "nodes": [
-                    {
-                        "name": '',
-                        "hostname": '',
-                        "username": $scope.defaultUser
-                    }
-                ]
-            };
-        };
-
-        $scope.newPreset = getNewPreset();
 
         /**
          * Sets all serverNames that are already in use as
@@ -52,7 +32,7 @@ surfCaptain.controller('ServerController', [
          *
          * @return {void}
          */
-        setTakenServerNamesAsUnavailableSuggestions = function () {
+        this.setTakenServerNamesAsUnavailableSuggestions = function () {
             var i = 0, numberOfNameSuggestions, serverName, serverNames = [], property;
 
             for (property in $scope.servers) {
@@ -66,7 +46,7 @@ surfCaptain.controller('ServerController', [
 
                 for (i; i < numberOfNameSuggestions; i++) {
                     serverName = $scope.generateServerName($scope.nameSuggestions[i].suffix);
-                    $scope.nameSuggestions[i].available = !ValidationService.doesArrayContainsItem(serverNames, serverName);
+                    $scope.nameSuggestions[i].available = !ValidationService.doesArrayContainItem(serverNames, serverName);
                 }
             }
         };
@@ -74,15 +54,31 @@ surfCaptain.controller('ServerController', [
         /**
          * @return {void}
          */
-        getAllServers = function () {
+        $scope.getAllServers = function () {
             $scope.newPreset.options.repositoryUrl = $scope.project.ssh_url_to_repo;
             ServerRepository.getServers($scope.project.ssh_url_to_repo).then(
                 function (response) {
+                    $scope.finished = true;
                     $scope.servers = response.presets;
-                    // TODO remove Spinner
                     if (angular.isDefined($scope.nameSuggestions)) {
-                        setTakenServerNamesAsUnavailableSuggestions();
+                        self.setTakenServerNamesAsUnavailableSuggestions();
                     }
+                    if ($scope.servers.length === 0) {
+                        $scope.messages = FlashMessageService.addFlashMessage(
+                            'No Servers yet!',
+                            'FYI: There are no servers for project <span class="uppercase">' + $scope.name  + '</span> yet. Why dont you create one, hmm?',
+                            SEVERITY.info
+                        );
+                    }
+                },
+                function (response) {
+                    $scope.finished = true;
+                    $scope.messages = FlashMessageService.addFlashMessage(
+                        'Request failed!',
+                        'The servers could not be received. Please try again later..',
+                        SEVERITY.error,
+                        'server-request-failed'
+                    );
                 }
             );
         };
@@ -91,22 +87,25 @@ surfCaptain.controller('ServerController', [
          *
          * @return {void}
          */
-        handleSettings = function () {
+        this.handleSettings = function () {
             var docRoot;
+            if (angular.isUndefined($scope.settings)) {
+                return;
+            }
             if (angular.isDefined($scope.settings.nameSuggestions)) {
                 generateNameSuggestions($scope.settings.nameSuggestions);
             }
-            if (angular.isDefined($scope.settings.defaultUser)) {
-                $scope.defaultUser = $scope.settings.defaultUser;
-                $scope.newPreset.nodes[0].username = $scope.defaultUser;
-            }
             if (angular.isDefined($scope.settings.defaultDocumentRoot)) {
                 docRoot = $scope.settings.defaultDocumentRoot;
-                if (docRoot.indexOf('{{') !== -1) {
+                if (ValidationService.doesStringContainSubstring(docRoot, '{{')) {
                     docRoot = MarkerService.replaceMarkers(docRoot, $scope.project);
                 }
-                $scope.defaultDocumentRoot = docRoot;
-                $scope.newPreset.options.documentRoot = docRoot;
+                if (ValidationService.doesStringContainSubstring(docRoot, '{{')) {
+                    $scope.newPreset.options.documentRoot = MarkerService.getStringBeforeFirstMarker(docRoot);
+                    $scope.newPreset.options.documentRootWithMarkers = docRoot;
+                } else {
+                    $scope.newPreset.options.documentRoot = docRoot;
+                }
             }
         };
 
@@ -133,82 +132,40 @@ surfCaptain.controller('ServerController', [
         // Inherit from AbstractSingleProjectController
         angular.extend(this, $controller('AbstractSingleProjectController', {$scope: $scope}));
 
-        $scope.setCurrentPreset = function (preset) {
-            $scope.currentPreset = preset;
-        };
+        $scope.setDocumentRoot = function (suffix) {
+            var docRoot;
+            if (angular.isDefined($scope.newPreset.options.documentRootWithMarkers)) {
+                docRoot = MarkerService.replaceMarkers(
+                    $scope.newPreset.options.documentRootWithMarkers,
+                    {suffix: suffix}
+                );
+                $scope.newPreset.options.documentRoot = docRoot;
+            }
 
-        $scope.deleteServer = function (server) {
-            // TODO Spinner
-            ServerRepository.deleteServer(server).then(
-                function (response) {
-                    getAllServers();
-                },
-                function (response) {
-                    // an error occurred
-                }
-            );
-        };
-
-        $scope.updateServer = function (server) {
-            ServerRepository.updateServer(server);
         };
 
         $scope.addServer = function (server) {
+            $scope.finished = false;
             ServerRepository.addServer(server).then(
                 function (response) {
-                    // TODO Animation
-                    $scope.newPreset = getNewPreset();
+                    $scope.newPreset = PresetService.getNewPreset($scope.settings);
                     $scope.newServerForm.$setPristine();
-                    getAllServers();
+                    self.handleSettings();
+                    $scope.getAllServers();
+                    $scope.messages = FlashMessageService.addFlashMessage(
+                        'Server created!',
+                        'The Server "' + server.nodes[0].name + '" was successfully created.',
+                        SEVERITY.ok
+                    );
                 },
                 function (response) {
-                    // an error occurred
+                    $scope.messages = FlashMessageService.addFlashMessage(
+                        'Creation failed!',
+                        'The Server "' + server.nodes[0].name + '" could not be created.',
+                        SEVERITY.error
+                    );
                 }
             );
-        };
-
-        /**
-         * Validates the updated Host string before submitting to Server
-         *
-         * @param data
-         * @return {string | boolean} ErrorMessage or True if valid
-         */
-        $scope.updateHost = function (data) {
-            return ValidationService.hasLength(data, 1, 'Host must not be empty!');
-        };
-
-        /**
-         * Validates the updated DocumentRoot string before submitting to Server
-         *
-         * @param data
-         * @return {string | boolean} ErrorMessage or True if valid
-         */
-        $scope.updateDocumentRoot = function (data) {
-            var res = ValidationService.hasLength(data, 1, 'DocumentRoot is required!');
-            if (res === true) {
-                return ValidationService.doesLastCharacterMatch(data, '/', 'DocumentRoot must end with "/"!');
-            }
-            return res;
-        };
-
-        /**
-         * Validates the updated Username string before submitting to Server
-         *
-         * @param data
-         * @return {string | boolean} ErrorMessage or True if valid
-         */
-        $scope.updateUsername = function (data) {
-            return ValidationService.hasLength(data, 1, 'User must not be empty!');
-        };
-
-        /**
-         * Validates the updated Context string before submitting to Server
-         *
-         * @param data
-         * @return {string | boolean} ErrorMessage or True if valid
-         */
-        $scope.updateContext = function (data) {
-            return ValidationService.doesArrayContainsItem($scope.contexts, data, 'Context is not valid!');
         };
 
         /**
@@ -231,12 +188,14 @@ surfCaptain.controller('ServerController', [
             if (angular.isDefined(newValue.name)) {
                 SettingsRepository.getSettings().then(
                     function (response) {
-                        $scope.settings = response.frontendSettings;
-                        handleSettings();
-                        getAllServers();
+                        $scope.settings = response;
+                        $scope.newPreset = PresetService.getNewPreset($scope.settings);
+                        self.handleSettings();
+                        $scope.getAllServers();
                     },
                     function () {
-                        getAllServers();
+                        $scope.newPreset = PresetService.getNewPreset();
+                        $scope.getAllServers();
                     }
                 );
             }

@@ -16,7 +16,7 @@ describe('ValidationService', function () {
         expect(validationService.hasLength).toBeDefined();
     });
 
-    describe('hasLength', function () {
+    describe('->hasLength()', function () {
 
         it('should return true if passed minLength is exceeded', function () {
             var res = validationService.hasLength('foo', 1, 'bar');
@@ -43,7 +43,7 @@ describe('ValidationService', function () {
         expect(validationService.doesLastCharacterMatch).toBeDefined();
     });
 
-    describe('doesLastCharacterMatch', function () {
+    describe('->doesLastCharacterMatch()', function () {
         it('should return true if the passed string ends with the passed character', function () {
             var res = validationService.doesLastCharacterMatch('foo', 'o', 'bar');
             expect(res).toEqual(true);
@@ -60,39 +60,73 @@ describe('ValidationService', function () {
         });
     });
 
-    it('should have a method doesArrayContainsItem', function () {
-        expect(validationService.doesArrayContainsItem).toBeDefined();
+    it('should have a method doesArrayContainItem', function () {
+        expect(validationService.doesArrayContainItem).toBeDefined();
     });
 
-    describe('doesArrayContainsItem', function () {
+    describe('->doesArrayContainItem()', function () {
         it('should return true if passed array contains passed item', function () {
-            expect(validationService.doesArrayContainsItem([1, 2, 3, 4, 5], 4)).toEqual(true);
-            expect(validationService.doesArrayContainsItem(['a', 'b', 'c', 'd'], 'b')).toEqual(true);
+            expect(validationService.doesArrayContainItem([1, 2, 3, 4, 5], 4)).toEqual(true);
+            expect(validationService.doesArrayContainItem(['a', 'b', 'c', 'd'], 'b')).toEqual(true);
         });
 
         it('should return false if passed array does not contains passed item', function () {
-            expect(validationService.doesArrayContainsItem([1, 2, 3, 4, 5], 6)).toEqual(false);
-            expect(validationService.doesArrayContainsItem(['a', 'b', 'c', 'd'], 'z')).toEqual(false);
+            expect(validationService.doesArrayContainItem([1, 2, 3, 4, 5], 6)).toEqual(false);
+            expect(validationService.doesArrayContainItem(['a', 'b', 'c', 'd'], 'z')).toEqual(false);
         });
 
         it('should return false if passed array is empty', function () {
-            expect(validationService.doesArrayContainsItem([], 11)).toEqual(false);
+            expect(validationService.doesArrayContainItem([], 11)).toEqual(false);
         });
 
         it('should return false if first argument is no array', function () {
-            expect(validationService.doesArrayContainsItem({}, 11)).toEqual(false);
+            expect(validationService.doesArrayContainItem({}, 11)).toEqual(false);
         });
 
         it('should return the passed string if passed array does not contains passed item', function () {
-            expect(validationService.doesArrayContainsItem([1, 2, 3], 11, 'foo')).toEqual('foo');
+            expect(validationService.doesArrayContainItem([1, 2, 3], 11, 'foo')).toEqual('foo');
         });
 
         it('should return the passed string if passed array is empty', function () {
-            expect(validationService.doesArrayContainsItem([], 11, 'foo')).toEqual('foo');
+            expect(validationService.doesArrayContainItem([], 11, 'foo')).toEqual('foo');
         });
 
         it('should return the passed string if first argument is no array', function () {
-            expect(validationService.doesArrayContainsItem({}, 11, 'foo')).toEqual('foo');
+            expect(validationService.doesArrayContainItem({}, 11, 'foo')).toEqual('foo');
+        });
+    });
+
+    it('should have a method doesStringContainSubstring', function () {
+        expect(validationService.doesStringContainSubstring()).toBeDefined();
+    });
+
+    describe('->doesStringContainSubstring()', function () {
+        it('should return true if passed string contains passed substring', function () {
+            expect(validationService.doesStringContainSubstring('foobar', 'oba')).toEqual(true);
+        });
+
+        it('should return false if passed string does not contains passed substring', function () {
+            expect(validationService.doesStringContainSubstring('foobar', 'obaaa')).toEqual(false);
+        });
+
+        it('should return false if passed string is empty', function () {
+            expect(validationService.doesStringContainSubstring('', 'oba')).toEqual(false);
+        });
+
+        it('should return false if first argument is no string', function () {
+            expect(validationService.doesStringContainSubstring({}, 'oba')).toEqual(false);
+        });
+
+        it('should return the passed string if passed string does not contains passed substring', function () {
+            expect(validationService.doesStringContainSubstring('foobar', 'obaaa', 'foo')).toEqual('foo');
+        });
+
+        it('should return the passed string if passed string is empty', function () {
+            expect(validationService.doesStringContainSubstring('', 'oba', 'foo')).toEqual('foo');
+        });
+
+        it('should return the passed string if first argument is no string', function () {
+            expect(validationService.doesStringContainSubstring({}, 'oba', 'foo')).toEqual('foo');
         });
     });
 
