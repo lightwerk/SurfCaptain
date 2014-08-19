@@ -26,8 +26,11 @@ class PresetService {
 	protected $gitService;
 
 	/**
-	 * Inject the settings
-	 *
+	 * @var array
+	 */
+	protected $presets;
+
+	/**
 	 * @param array $settings
 	 * @return void
 	 */
@@ -39,36 +42,50 @@ class PresetService {
 	 * @return array
 	 */
 	public function getPresets() {
-		$settings = $this->settings['presets'];
-		$presets = json_decode(
-			$this->gitService->getFileContent($settings['repositoryUrl'], $settings['filePath']),
-			TRUE
-		);
-		if (!$presets) {
-			throw new Exception('Could not load presets', 1407782202);
+		if (!isset($this->presets)) {
+			$settings = $this->settings['presets'];
+			$this->presets = json_decode(
+				$this->gitService->getFileContent($settings['repositoryUrl'], $settings['filePath']),
+				TRUE
+			);
+			if (empty($this->presets)) {
+				throw new Exception('Could not load presets', 1407782202);
+			}
 		}
-		return $presets;
+		return $this->presets;
 	}
 
 	/**
 	 * @param $repositoryUrl
-	 * @param $type
 	 * @return array
-	 * @throws Exception
 	 */
-	public function getPresetsByRepositoryUrlWithEmptyOnes($repositoryUrl) {
+	public function getPresetsByRepositoryUrl($repositoryUrl) {
 		$presets = $this->getPresets();
+		$repositoryPresets = array();
 		foreach ($presets as $key => $preset) {
 			foreach ($preset['applications'] as $application) {
-				if (
-					!empty($application['options']['repositoryUrl'])
-					&& $repositoryUrl !== $application['options']['repositoryUrl']
-				) {
-					unset($presets[$key]);
+				if (!empty($application['options']['repositoryUrl']) && $repositoryUrl === $application['options']['repositoryUrl']) {
+					$repositoryPresets[$key] = $preset;
 				}
 			}
 		}
-		return $presets;
+		return $repositoryPresets;
+	}
+
+	/**
+	 * @return array
+	 */
+	public function getGlobalPresets() {
+		$presets = $this->getPresets();
+		$globalPresets = array();
+		foreach ($presets as $key => $preset) {
+			foreach ($preset['applications'] as $application) {
+				if (empty($application['options']['repositoryUrl'])) {
+					$globalPresets[$key] = $preset;
+				}
+			}
+		}
+		return $globalPresets;
 	}
 
 	/**
@@ -98,6 +115,7 @@ class PresetService {
 			json_encode($presets, JSON_PRETTY_PRINT),
 			$commitMessage
 		);
+		$this->presets = NULL;
 	}
 
 	/**

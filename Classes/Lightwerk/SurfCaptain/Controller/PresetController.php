@@ -44,11 +44,17 @@ class PresetController extends AbstractRestController {
 	}
 
 	/**
+	 * @param boolean $globals
 	 * @return void
 	 */
-	public function listAction() {
+	public function listAction($globals = NULL) {
 		try {
-			$this->view->assign('presets', $presets = $this->presetService->getPresets());;
+			if (empty($globals)) {
+				$presets = $this->presetService->getPresets();
+			} else {
+				$presets = $this->presetService->getGlobalPresets();
+			}
+			$this->view->assign('presets', $presets);
 		} catch (\Lightwerk\SurfCaptain\Service\Exception $e) {
 			$this->handleException($e);
 		} catch (\TYPO3\Flow\Http\Exception $e) {

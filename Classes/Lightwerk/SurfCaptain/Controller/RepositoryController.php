@@ -47,7 +47,7 @@ class RepositoryController extends AbstractRestController {
 				->setTags($this->gitService->getTags($repositoryUrl))
 				->setBranches($this->gitService->getBranches($repositoryUrl))
 				->setDeployments($this->deploymentRepository->findByRepositoryUrl($repositoryUrl))
-				->setPresets($this->presetService->getPresetsByRepositoryUrlWithEmptyOnes($repositoryUrl));
+				->setPresets($this->presetService->getPresetsByRepositoryUrl($repositoryUrl));
 			$this->view->assign('repository', $repository);
 		} catch (\Lightwerk\SurfCaptain\Service\Exception $e) {
 			$this->handleException($e);

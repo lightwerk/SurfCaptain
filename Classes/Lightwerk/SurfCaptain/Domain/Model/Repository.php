@@ -43,7 +43,6 @@ class Repository {
 	 */
 	protected $presets;
 
-
 	/**
 	 * @return string
 	 */

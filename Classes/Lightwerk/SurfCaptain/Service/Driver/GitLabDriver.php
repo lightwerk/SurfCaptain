@@ -81,9 +81,15 @@ class GitLabDriver implements DriverInterface {
 		$url = $this->settings['apiUrl'] . $command . '?' . http_build_query($parameters);
 		// maybe we will throw own exception to give less information (token is outputed)
 		$response = $this->browser->request($url, $method);
+
+		$statusCode = $response->getStatusCode();
+		if ($statusCode < 200 || $statusCode >= 400) {
+			throw new Exception('GitLab request was not successful. Response was: ' . $response->getStatus(), 1408473972);
+		}
+
 		$content = json_decode($response->getContent(), TRUE);
 		if ($content === NULL) {
-			throw new Exception('Response is not a valid json', 1406818561);
+			throw new Exception('Response from GitLab is not a valid json', 1406818561);
 		}
 		return $content;
 	}
