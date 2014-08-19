@@ -1,0 +1,18 @@
+<f:if condition="{logs}">
+	<f:then>
+		<table class="table table-striped">
+			<tbody>
+			<f:for each="{logs}" as="log">
+				<tr>
+					<td>{log.date -> f:format.date(format: 'd.m.Y H:i:s')}</td>
+					<td>{log.severity}</td>
+					<td>{log.message -> f:format.nl2br()}</td>
+				</tr>
+			</f:for>
+			</tbody>
+		</table>
+	</f:then>
+	<f:else>
+		<p>No log entries.</p>
+	</f:else>
+</f:if>
