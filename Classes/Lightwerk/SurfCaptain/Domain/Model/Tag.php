@@ -65,4 +65,11 @@ class Tag {
 		return 'Tags';
 	}
 
+	/**
+	 * @return string
+	 */
+	public function getIdentifier() {
+		return 'tag-' . $this->getCommit()->getId();
+	}
+
 }

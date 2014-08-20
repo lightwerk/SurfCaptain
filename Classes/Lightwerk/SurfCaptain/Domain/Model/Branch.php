@@ -63,4 +63,11 @@ class Branch {
 	public function getGroup() {
 		return 'Branches';
 	}
+
+	/**
+	 * @return string
+	 */
+	public function getIdentifier() {
+		return 'tag-' . $this->getCommit()->getId();
+	}
 }
