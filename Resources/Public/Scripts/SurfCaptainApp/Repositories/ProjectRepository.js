@@ -73,7 +73,7 @@ surfCaptain.factory('ProjectRepository', [ '$http', '$q', '$cacheFactory', funct
      */
     projectRepository.getProjectByName = function (name, projects) {
         var projectCache = $cacheFactory.get('projectCache');
-        if (angular.isDefined(projectCache.get(name))) {
+        if (angular.isUndefined(projectCache.get(name))) {
             projectRepository.populateSingleProjectCache(projects);
         }
         projectCache = $cacheFactory.get('projectCache');
@@ -83,6 +83,12 @@ surfCaptain.factory('ProjectRepository', [ '$http', '$q', '$cacheFactory', funct
         return projectCache.get(name);
     };
 
+    projectRepository.getFullProjectByRepositoryUrl = function (repositoryUrl) {
+        var deferred = $q.defer();
+        $http.get(url + '?repositoryUrl=' + repositoryUrl).success(deferred.resolve).error(deferred.reject);
+        return deferred.promise;
+    };
+
     // Public API
     return {
         getProjects: function () {
@@ -90,6 +96,9 @@ surfCaptain.factory('ProjectRepository', [ '$http', '$q', '$cacheFactory', funct
         },
         getProjectByName: function (name, projects) {
             return projectRepository.getProjectByName(name, projects);
+        },
+        getFullProjectByRepositoryUrl: function (repositoryUrl) {
+            return projectRepository.getFullProjectByRepositoryUrl(repositoryUrl);
         }
     };
 }]);

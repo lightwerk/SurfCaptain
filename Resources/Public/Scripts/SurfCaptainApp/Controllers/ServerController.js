@@ -7,14 +7,14 @@
 surfCaptain.controller('ServerController', [
     '$scope',
     '$controller',
-    'ServerRepository',
+    'PresetRepository',
     'ValidationService',
     'SettingsRepository',
     'MarkerService',
     'PresetService',
     'FlashMessageService',
     'SEVERITY',
-    function ($scope, $controller, ServerRepository, ValidationService, SettingsRepository, MarkerService, PresetService, FlashMessageService, SEVERITY) {
+    function ($scope, $controller, PresetRepository, ValidationService, SettingsRepository, MarkerService, PresetService, FlashMessageService, SEVERITY) {
 
         var self = this, generateNameSuggestions, replaceMarkers;
 
@@ -55,11 +55,12 @@ surfCaptain.controller('ServerController', [
          * @return {void}
          */
         $scope.getAllServers = function () {
-            $scope.newPreset.options.repositoryUrl = $scope.project.ssh_url_to_repo;
-            ServerRepository.getServers($scope.project.ssh_url_to_repo).then(
+            $scope.newPreset.options.repositoryUrl = $scope.project.repositoryUrl;
+            PresetRepository.getServers($scope.project.repositoryUrl).then(
                 function (response) {
+                    console.log(response.repository.presets);
                     $scope.finished = true;
-                    $scope.servers = response.presets;
+                    $scope.servers = response.repository.presets;
                     if (angular.isDefined($scope.nameSuggestions)) {
                         self.setTakenServerNamesAsUnavailableSuggestions();
                     }
@@ -146,7 +147,7 @@ surfCaptain.controller('ServerController', [
 
         $scope.addServer = function (server) {
             $scope.finished = false;
-            ServerRepository.addServer(server).then(
+            PresetRepository.addServer(server).then(
                 function (response) {
                     $scope.newPreset = PresetService.getNewPreset($scope.settings);
                     $scope.newServerForm.$setPristine();

@@ -5,10 +5,9 @@
 surfCaptain.controller('DeployController', [
     '$scope',
     '$controller',
-    'GitRepository',
-    'ServerRepository',
+    'ProjectRepository',
     'HistoryRepository',
-    function ($scope, $controller, GitRepository, ServerRepository, HistoryRepository) {
+    function ($scope, $controller, ProjectRepository, HistoryRepository) {
 
         var loadingString = 'loading ...';
 
@@ -25,8 +24,27 @@ surfCaptain.controller('DeployController', [
                 group: 'Branches'
             }
         ];
-        $scope.tags = [];
-        $scope.branches = [];
+        $scope.servers = [];
+        $scope.currentPreset = {};
+
+        /**
+         *
+         * @param {object} preset
+         * @return {void}
+         */
+        $scope.setCurrentPreset = function (preset) {
+            $scope.currentPreset = preset;
+        };
+
+        $scope.presetDisplay = function (preset) {
+            if (angular.isUndefined($scope.currentPreset.applications)) {
+                return true;
+            }
+            if ($scope.currentPreset === preset) {
+                return true;
+            }
+            return false;
+        };
 
         $scope.unsetLoadingKeyForGroup = function (group) {
             var key;
@@ -45,40 +63,32 @@ surfCaptain.controller('DeployController', [
 
         $scope.$watch('project', function (project) {
             var id;
-            if (angular.isUndefined(project.ssh_url_to_repo)) {
+            if (angular.isUndefined(project.repositoryUrl)) {
                 return;
             }
-            id = project.id;
-            GitRepository.getTagsByProjectId(id.toString()).then(
+
+            ProjectRepository.getFullProjectByRepositoryUrl(project.repositoryUrl).then(
                 function (response) {
-                    $scope.unsetLoadingKeyForGroup('Tags');
-                    $scope.tags = response.tags;
-                    $scope.deployableCommits = jQuery.merge($scope.tags, $scope.deployableCommits);
-                },
-                function (reason) {
-                    $scope.unsetLoadingKeyForGroup('Tags');
+                    var property,
+                        presets = response.repository.presets,
+                        branchesAmount,
+                        i = 0;
+                    console.log(response);
+                    $scope.deployableCommits = response.repository.tags;
+                    branchesAmount = response.repository.branches.length;
+                    for (i; i < branchesAmount; i++) {
+                        $scope.deployableCommits.push(response.repository.branches[i]);
+                    }
+
+
+                    for (property in presets) {
+                        if (presets.hasOwnProperty(property)) {
+                            $scope.servers.push(presets[property]);
+                        }
+                    }
+                    console.log($scope.servers);
                 }
             );
-            GitRepository.getBranchesByProjectId(id.toString()).then(
-                function (response) {
-                    $scope.unsetLoadingKeyForGroup('Branches');
-                    $scope.branches = response.branches;
-                    $scope.deployableCommits = jQuery.merge($scope.branches, $scope.deployableCommits);
-                },
-                function (reason) {
-                    $scope.unsetLoadingKeyForGroup('Branches');
-                }
-            );
-//            GitRepository.getRepository(project.ssh_url_to_repo).then(
-//                function (data) {
-//                    console.log(data);
-//                }
-//            );
-            ServerRepository.getServers().then(function (response) {
-                $scope.servers = response.filter(function (entry) {
-                    return entry.project === project.id;
-                });
-            });
 
             HistoryRepository.getHistoryByProject($scope.project).then(function (response) {
                 $scope.history = response.filter(function (entry) {

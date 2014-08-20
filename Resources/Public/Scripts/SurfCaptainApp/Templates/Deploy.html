@@ -10,86 +10,95 @@
 		</div>
 	</div>
 	<div class="row configure-deployment-row">
-		<div class="col-md-7">
-			<div class="row configure-deployment">
+		<div class="col-xs-12">
 			<!-- ################
 				#### STEP 1 #####
 				################# -->
-				<div class="col-md-5 col-xs-12 text-center">
+				<div class="col-md-3 col-xs-12 text-center">
 					<h2>Step 1</h2>
 				</div>
-				<div class="col-md-7 col-xs-12">
-					<label>Choose a tag (or branch)</label>
-					<select
-							class="form-control select-git-commit"
-							ng-model="deployment.gitCheckout"
-							chosen="deployableCommits"
-							ng-options="item as item.name group by item.group for item in deployableCommits"
-							/>
-					<br />
-					<span ng-show="deployment.gitCheckout" class="deploy-git-checkout">
-						<strong>{{deployment.gitCheckout.type}} {{deployment.gitCheckout.name}}</strong> --
-						{{deployment.gitCheckout.commit.id | limitTo:8}} by {{deployment.gitCheckout.commit.committer.name}}<br />
-						{{deployment.gitCheckout.commit.message}}
-					</span>
+				<div class="col-md-9 col-xs-12">
+					<div
+						class="deployment-server {{server.applications.0.options.context}}"
+						data-ng-repeat="server in servers"
+						data-ng-class="{false:'disabled'}[presetDisplay(server)]"
+					>
+						<div class="title" data-ng-click="setCurrentPreset(server)">
+							{{server.applications.0.nodes.0.name}}
+						</div>
+						<div class="context-container" data-ng-click="setCurrentPreset(server)">
+							<span class="context">({{server.applications.0.options.context}})</span>
+						</div>
+					</div>
 				</div>
-			</div>
-
-			<!-- ################
-				#### STEP 2 #####
-				################# -->
-			<div class="row configure-deployment" data-ng-show="deployment.gitCheckout">
-				<div class="col-md-5 col-xs-12 text-center">
-					<h2>Step 2</h2>
-				</div>
-				<div class="col-md-7 col-xs-12">
-					<label>Choose a Server</label>
-					<select
-						chosen="servers"
-						ng-options="item as item.key for item in servers"
-						class="form-control select-server"
-						ng-model="deployment.server"
-					/>
-				</div>
-			</div>
-
-			<!-- ################
-				#### STEP 3 #####
-				################# -->
-			<div class="row configure-deployment" data-ng-show="deployment.server">
-				<div class="col-md-5 col-xs-12 text-center">
-					<h2>Step 3</h2>
-				</div>
-				<div class="col-md-7 col-xs-12">
-					<label>Override DocumentRoot</label>
-					<span editable-text="deployment.server.servers.0.documentRoot"
-						  onbeforesave="updateDocumentRoot($data)"
-						  onaftersave="updateDeployment(server)">
-						{{deployment.server.servers.0.documentRoot}}
-					</span>
-					<label>Override TYPO3_CONTEXT</label>
-					<span editable-text="deployment.server.servers.0.context"
-						  onbeforesave="updateSystem($data)"
-						  onaftersave="updateDeployment(server)">
-						{{deployment.server.servers.0.context}}
-					</span>
-				</div>
-			</div>
-
-			<!-- ################
-				#### Submit #####
-				################# -->
-			<div class="row submit-deployment configure-deployment" data-ng-show="deployment.server">
-				<div class="col-xs-12 text-center">
-					<button class="btn btn-lg btn-danger " ng-click="deploy(deployment)">Deploy!</button>
-				</div>
-			</div>
 		</div>
+	</div>
+	<div class="row configure-deployment-row" data-ng-show="currentPreset.applications">
+		<!-- ################
+			#### STEP 2 #####
+			################# -->
+			<div class="col-md-3 col-xs-12 text-center">
+				<h2>Step 2</h2>
+			</div>
+			<div class="col-md-4 col-xs-12">
+				<label>Choose a tag (or branch)</label>
+				<select
+					class="form-control select-git-commit"
+					data-ng-model="gitCheckout"
+					data-ng-options="item.identifier as item.name group by item.group for item in deployableCommits"
+					chosen="deployableCommits"
+				/>
+			</div>
+			<div class="col-md-5 col-xs-12">
+				<span ng-show="deployment.gitCheckout" class="deploy-git-checkout">
+					<strong>{{deployment.gitCheckout.type}} {{deployment.gitCheckout.name}}</strong> --
+					{{deployment.gitCheckout.commit.id | limitTo:8}} by {{deployment.gitCheckout.commit.committerName}}<br />
+					{{deployment.gitCheckout.commit.message}}
+				</span>
 
+				{{gitCheckout}}
+			</div>
+	</div>
+
+	<!-- ################
+		#### STEP 3 #####
+		################# -->
+	<div class="row configure-deployment-row" data-ng-show="deployment.gitCheckout">
+		<div class="col-md-3 col-xs-12 text-center">
+			<h2>Step 3</h2>
+		</div>
+		<div class="col-md-9 col-xs-12">
+			<label>Override DocumentRoot</label>
+			<span editable-text="deployment.server.options.documentRoot"
+				  onbeforesave="updateDocumentRoot($data)"
+				  onaftersave="updateDeployment(server)"
+			>
+				{{deployment.server.options.documentRoot}}
+			</span>
+			<label>Override TYPO3_CONTEXT</label>
+			<span editable-text="deployment.server.options.context"
+				  onbeforesave="updateSystem($data)"
+				  onaftersave="updateDeployment(server)"
+			>
+				{{deployment.server.options.context}}
+			</span>
+		</div>
+	</div>
+
+	<!-- ################
+		#### Submit #####
+		################# -->
+	<div class="row submit-deployment configure-deployment-row" data-ng-show="deployment.gitCheckout">
+		<div class="col-xs-12 text-center">
+			<button class="btn btn-lg btn-danger " ng-click="deploy(deployment)">Deploy!</button>
+		</div>
+	</div>
+
+	<div class="row submit-deployment configure-deployment-row">
 	<!-- #################
 		#### History #####
 		################## -->
-		<div class="col-md-5 deploy-history">
+		<div class="col-xs-12 deploy-history text-center">
 			<h4>Recent {{name | uppercase}} Deployments</h4>
 			<input type="range" data-ng-model="amountOfRecentDeloyments" data-ng-init="amountOfRecentDeloyments=2" class="form-control" min="1" max="{{history.length}}">
 			<table>
@@ -119,7 +128,5 @@
 				</tbody>
 			</table>
 		</div>
-
 	</div>
-
 </div>

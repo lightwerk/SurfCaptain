@@ -4,11 +4,11 @@
 'use strict';
 surfCaptain.controller('GlobalServerController', [
     '$scope',
-    'ServerRepository',
+    'PresetRepository',
     'PresetService',
     'FlashMessageService',
     'SEVERITY',
-    function ($scope, ServerRepository, PresetService, FlashMessageService, SEVERITY) {
+    function ($scope, PresetRepository, PresetService, FlashMessageService, SEVERITY) {
 
         $scope.contexts = [
             'Production', 'Development', 'Staging'
@@ -21,7 +21,7 @@ surfCaptain.controller('GlobalServerController', [
          * @return {void}
          */
         $scope.getAllServers = function () {
-            ServerRepository.getServers('').then(
+            PresetRepository.getGlobalServers('').then(
                 function (response) {
                     $scope.finished = true;
                     $scope.servers = response.presets;
@@ -53,7 +53,7 @@ surfCaptain.controller('GlobalServerController', [
          */
         $scope.addServer = function (server) {
             $scope.finished = false;
-            ServerRepository.addServer(server).then(
+            PresetRepository.addServer(server).then(
                 function (response) {
                     $scope.newPreset = PresetService.getNewPreset();
                     $scope.newServerForm.$setPristine();
