@@ -7,7 +7,10 @@ surfCaptain.controller('DeployController', [
     '$controller',
     'ProjectRepository',
     'HistoryRepository',
-    function ($scope, $controller, ProjectRepository, HistoryRepository) {
+    'SEVERITY',
+    'FlashMessageService',
+    'CONFIG',
+    function ($scope, $controller, ProjectRepository, HistoryRepository, SEVERITY, FlashMessageService, CONFIG) {
 
         var loadingString = 'loading ...';
 
@@ -25,6 +28,8 @@ surfCaptain.controller('DeployController', [
             }
         ];
         $scope.servers = [];
+        $scope.error = false;
+        $scope.finished = false;
         $scope.currentPreset = {};
 
         /**
@@ -34,16 +39,65 @@ surfCaptain.controller('DeployController', [
          */
         $scope.setCurrentPreset = function (preset) {
             $scope.currentPreset = preset;
+            if (angular.isDefined($scope.selectedCommit) && $scope.selectedCommit !== '') {
+                $scope.setCommitInCurrentPreset();
+            }
         };
 
+        $scope.deploy = function (preset) {
+            if (preset === $scope.currentPreset) {
+                $scope.currentPreset.applications[0].type = CONFIG.applicationTypes.deployTYPO3;
+                console.log($scope.currentPreset);
+            }
+        };
+
+        /**
+         * @return {void}
+         */
+        $scope.setCommitInCurrentPreset = function () {
+            var commit = $scope.deployableCommits.filter(function (commit) {
+                return commit.identifier === $scope.selectedCommit;
+            }), date;
+            if (angular.isUndefined(commit[0]) || commit === null || commit.length > 1) {
+                FlashMessageService.addFlashMessage(
+                    'Error',
+                    'Something went wrong with the chosen Commit',
+                    SEVERITY.error
+                );
+                $scope.error = true;
+                return;
+            }
+            $scope.currentCommit = commit[0];
+            switch ($scope.currentCommit.type) {
+            case 'Branch':
+                delete $scope.currentPreset.applications[0].options.tag;
+                $scope.currentPreset.applications[0].options.branch = $scope.currentCommit.name;
+                break;
+            case 'Tag':
+                delete $scope.currentPreset.applications[0].options.branch;
+                $scope.currentPreset.applications[0].options.tag = $scope.currentCommit.name;
+                break;
+            default:
+                FlashMessageService.addFlashMessage(
+                    'Error',
+                    'Something went wrong with the chosen Commit',
+                    SEVERITY.error
+                );
+                $scope.error = true;
+                $scope.currentCommit = null;
+                return;
+            }
+        };
+
+        /**
+         * @param {object} preset
+         * @returns {boolean}
+         */
         $scope.presetDisplay = function (preset) {
             if (angular.isUndefined($scope.currentPreset.applications)) {
                 return true;
             }
-            if ($scope.currentPreset === preset) {
-                return true;
-            }
-            return false;
+            return $scope.currentPreset === preset;
         };
 
         $scope.unsetLoadingKeyForGroup = function (group) {
@@ -70,30 +124,35 @@ surfCaptain.controller('DeployController', [
             ProjectRepository.getFullProjectByRepositoryUrl(project.repositoryUrl).then(
                 function (response) {
                     var property,
-                        presets = response.repository.presets,
-                        branchesAmount,
-                        i = 0;
-                    console.log(response);
+                        presets = response.repository.presets;
+                    $scope.repositoryUrl = response.repository.webUrl;
                     $scope.deployableCommits = response.repository.tags;
-                    branchesAmount = response.repository.branches.length;
-                    for (i; i < branchesAmount; i++) {
-                        $scope.deployableCommits.push(response.repository.branches[i]);
-                    }
-
+                    jQuery.merge($scope.deployableCommits, response.repository.branches);
 
                     for (property in presets) {
                         if (presets.hasOwnProperty(property)) {
-                            $scope.servers.push(presets[property]);
+                            if (angular.isUndefined(presets[property].applications[0].type) || presets[property].applications[0].type === CONFIG.applicationTypes.deployTYPO3) {
+                                $scope.servers.push(presets[property]);
+                            }
                         }
                     }
-                    console.log($scope.servers);
+                    $scope.finished = true;
+                    if ($scope.servers.length === 0) {
+                        $scope.messages = FlashMessageService.addFlashMessage(
+                            'No Servers yet!',
+                            'FYI: There are no servers for project <span class="uppercase">' + $scope.name  + '</span> yet. Why dont you create one, hmm?',
+                            SEVERITY.info
+                        );
+                    }
+                },
+                function () {
+                    FlashMessageService.addFlashMessage(
+                        'Error',
+                        'API call failed. Deployment not possible.',
+                        SEVERITY.error,
+                        'deployment-project-call-failed'
+                    );
                 }
             );
-
-            HistoryRepository.getHistoryByProject($scope.project).then(function (response) {
-                $scope.history = response.filter(function (entry) {
-                    return entry.application === 'Deploy';
-                });
-            });
         });
     }]);

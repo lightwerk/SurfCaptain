@@ -42,12 +42,18 @@ var surfCaptain = angular.module('surfCaptain', ['ngRoute', 'xeditable', 'ngAnim
                 redirectTo: '/'
             });
     }])
-    .value('version', '0.8.7')
+    .value('version', '0.9')
     .constant('SEVERITY', {
         ok: 0,
         info: 1,
         warning: 2,
         error: 3
+    })
+    .constant('CONFIG', {
+        applicationTypes: {
+            deployTYPO3: 'TYPO3\\CMS\\Deploy',
+            syncTYPO3: 'TYPO3\\CMS\\Shared'
+        }
     });
 
 surfCaptain.run(['editableOptions', function (editableOptions) {

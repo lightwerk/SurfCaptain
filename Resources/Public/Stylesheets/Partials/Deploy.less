@@ -1,7 +1,6 @@
 .project-deploy {
 	.configure-deployment-row {
 		margin-top: 30px;
-		color: @brand-danger;
 		margin-bottom: 20px;
 		padding-top: 15px;
 		&:first-child {
@@ -16,22 +15,29 @@
 			margin-top: 5px;
 		}
 		h2 {
-			margin-top: 10px;
+			margin-top: 20px;
+		}
+		h3 {
+			margin-top: 0px;
+			font-size: 22px;
 		}
 		.deployment-server {
-			width: 200px;
-			height: 100px;
+			width: 650px;
+			height: 35px;
 			border: solid 2px #000;
 			box-shadow: @shadow;
 			border-radius: 5px;
 			float: left;
-			margin: 10px;
+			margin: 3px;
 			cursor: pointer;
 			color: #000;
-			padding: 10px 10px 5px 10px;
+			padding: 4px;
 
 			&.disabled {
 				opacity: 0.3;
+				&:hover {
+					opacity: 0.6;
+				}
 			}
 			&.Production {
 				background-color: @brand-danger;
@@ -43,15 +49,15 @@
 				background-color: @brand-success;
 			}
 			.title {
-				text-align: center;
-				height: 56px;
-				padding-top: 5px;
 				font-size: 110%;
 				text-transform: uppercase;
-				overflow: scroll;
+				float: left;
+				.glyphicon {
+					margin-right: 8px;
+				}
 			}
 			.context-container {
-				height: 20px;
+				float: right;
 				.context {
 					display: block;
 					margin: auto;
@@ -61,11 +67,30 @@
 			}
 		}
 		.deploy-git-checkout {
-			display: inline-block;
-			font-size: 90%;
-			font-style: italic;
-			margin-top: 5px;
-			color: @main-color-bright;
+			h3 {
+				text-align: center;
+			}
+			.date,
+			.git-link {
+				font-size: 85%;
+				border-bottom: 1px solid;
+				border-top: 1px solid;
+				padding: 4px 0;
+				margin-bottom: 3px;
+				width: 100%;
+				display: inline-block;
+				text-align: center;
+			}
+			.git-link {
+				border-bottom: none;
+			}
+			.message {
+				padding: 6px;
+				display: inline-block;
+			}
+			.glyphicon {
+				margin-right: 5px;
+			}
 		}
 		.deploy-history {
 			color: @main-color-bright;
