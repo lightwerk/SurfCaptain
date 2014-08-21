@@ -8,7 +8,7 @@ surfCaptain.directive('spinner', function () {
 
     return {
         restrict: 'E',
-        template: '<img src="/_Resources/Static/Packages/Lightwerk.SurfCaptain/Images/spinner.gif" />',
+        template: '<i class="fa fa-spinner fa-spin fa-4x"></i>',
         link: linker
     };
 });
