@@ -33,7 +33,7 @@
 						data-ng-click="setCurrentPreset(server)"
 					>
 						<div class="title">
-							<span class="glyphicon glyphicon-hdd"></span>{{server.applications.0.nodes.0.name}}
+							<i class="fa fa-hdd-o"></i>{{server.applications.0.nodes.0.name}}
 						</div>
 						<div class="context-container">
 							<span class="context">({{server.applications.0.options.context}})</span>
@@ -68,8 +68,8 @@
 			<div class="col-md-6 col-xs-12">
 				<span ng-show="currentCommit" class="deploy-git-checkout">
 					<h3>{{currentCommit.type}} {{currentCommit.name}}</h3>
-					<span class="date"><span class="glyphicon glyphicon-time"></span>{{currentCommit.commit.date | date:'medium'}}</span><br />
-					<span class="message"><span class="glyphicon glyphicon-user"></span><strong>{{currentCommit.commit.committerName}}</strong>:
+					<span class="date"><i class="fa fa-clock-o"></i>{{currentCommit.commit.date | date:'medium'}}</span><br />
+					<span class="message"><i class="fa fa-user"></i><strong>{{currentCommit.commit.committerName}}</strong>:
 					{{currentCommit.commit.message}}</span>
 					<span class="git-link">
 						<a data-ng-href="{{repositoryUrl}}/commit/{{currentCommit.commit.id}}" target="_blank">View in Git ({{currentCommit.commit.id | limitTo:8}})</a>

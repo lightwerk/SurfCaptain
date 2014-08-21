@@ -30,9 +30,9 @@ describe('surfcaptainHeader', function () {
         });
     };
 
-    it('should contain the glyphicon passed to the directive', function () {
+    it('should contain the font awesome passed to the directive', function () {
         setUp();
-        expect(element.find('h1').find('.glyphicon').hasClass('glyphicon-foo')).toBeTruthy();
+        expect(element.find('h1').find('.fa').hasClass('fa-foo')).toBeTruthy();
     });
 
     it('should set scope.context as container class if it does not match scope.project', function () {
