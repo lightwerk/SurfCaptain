@@ -16,7 +16,17 @@ surfCaptain.controller('ServerController', [
     'SEVERITY',
     function ($scope, $controller, PresetRepository, ValidationService, SettingsRepository, MarkerService, PresetService, FlashMessageService, SEVERITY) {
 
-        var self = this, generateNameSuggestions, replaceMarkers;
+        var self = this;
+
+        // Inherit from AbstractSingleProjectController
+        angular.extend(this, $controller('AbstractSingleProjectController', {$scope: $scope}));
+
+        function ServerControllerException(message) {
+            this.name = 'ServerControllerException';
+            this.message = message;
+        }
+        ServerControllerException.prototype = new Error();
+        ServerControllerException.prototype.constructor = ServerControllerException;
 
         $scope.finished = false;
         $scope.currentPreset = {};
@@ -32,7 +42,7 @@ surfCaptain.controller('ServerController', [
          */
         this.setServerNames = function () {
             var property;
-
+            $scope.serverNames = [];
             for (property in $scope.servers) {
                 if ($scope.servers.hasOwnProperty(property)) {
                     $scope.serverNames.push(property);
@@ -95,6 +105,26 @@ surfCaptain.controller('ServerController', [
 
         /**
          *
+         * @param {object} nameSuggestions
+         * @return {void}
+         */
+        this.generateNameSuggestions = function (nameSuggestions) {
+            var nameSuggestion, item;
+            $scope.nameSuggestions = [];
+            for (nameSuggestion in nameSuggestions) {
+                if (nameSuggestions.hasOwnProperty(nameSuggestion)) {
+                    item = {
+                        suffix: nameSuggestion,
+                        available: true,
+                        context: nameSuggestions[nameSuggestion]
+                    };
+                    $scope.nameSuggestions.push(item);
+                }
+            }
+        };
+
+        /**
+         *
          * @return {void}
          */
         this.handleSettings = function () {
@@ -103,7 +133,7 @@ surfCaptain.controller('ServerController', [
                 return;
             }
             if (angular.isDefined($scope.settings.nameSuggestions)) {
-                generateNameSuggestions($scope.settings.nameSuggestions);
+                self.generateNameSuggestions($scope.settings.nameSuggestions);
             }
             if (angular.isDefined($scope.settings.defaultDocumentRoot)) {
                 docRoot = $scope.settings.defaultDocumentRoot;
@@ -120,28 +150,13 @@ surfCaptain.controller('ServerController', [
         };
 
         /**
+         * Takes a suffix and tries to replace a {{suffix}} marker
+         * within the document root. Stores the returning string
+         * within the documentRoot property of the newPreset.
          *
-         * @param {object} nameSuggestions
+         * @param {string} suffix
          * @return {void}
          */
-        generateNameSuggestions = function (nameSuggestions) {
-            var nameSuggestion, item;
-            $scope.nameSuggestions = [];
-            for (nameSuggestion in nameSuggestions) {
-                if (nameSuggestions.hasOwnProperty(nameSuggestion)) {
-                    item = {
-                        suffix: nameSuggestion,
-                        available: true,
-                        context: nameSuggestions[nameSuggestion]
-                    };
-                    $scope.nameSuggestions.push(item);
-                }
-            }
-        };
-
-        // Inherit from AbstractSingleProjectController
-        angular.extend(this, $controller('AbstractSingleProjectController', {$scope: $scope}));
-
         $scope.setDocumentRoot = function (suffix) {
             var docRoot;
             if (angular.isDefined($scope.newPreset.options.documentRootWithMarkers)) {
@@ -154,6 +169,13 @@ surfCaptain.controller('ServerController', [
 
         };
 
+        /**
+         * Adds a Server (preset) to the collection of presets.
+         * Indicates the success or failure with a flashMessage.
+         *
+         * @param {object} server
+         * @return {void}
+         */
         $scope.addServer = function (server) {
             $scope.finished = false;
             PresetRepository.addServer(server).then(
@@ -183,8 +205,15 @@ surfCaptain.controller('ServerController', [
          *
          * @param {string} suffix
          * @returns {string}
+         * @throws {ServerControllerException}
          */
         $scope.generateServerName = function (suffix) {
+            if (angular.isUndefined($scope.project)) {
+                throw new ServerControllerException('No project given.');
+            }
+            if (angular.isUndefined($scope.project.name)) {
+                throw new ServerControllerException('Project got no name.');
+            }
             return $scope.project.name + '-' + suffix;
         };
 
