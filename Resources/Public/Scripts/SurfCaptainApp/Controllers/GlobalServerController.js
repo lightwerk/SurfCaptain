@@ -9,6 +9,7 @@ surfCaptain.controller('GlobalServerController', [
     'FlashMessageService',
     'SEVERITY',
     function ($scope, PresetRepository, PresetService, FlashMessageService, SEVERITY) {
+        var self = this;
 
         $scope.contexts = [
             'Production', 'Development', 'Staging'
@@ -16,6 +17,19 @@ surfCaptain.controller('GlobalServerController', [
         $scope.newPreset = PresetService.getNewPreset();
         $scope.finished = false;
         $scope.messages = [];
+        $scope.serverNames = [];
+
+        /**
+         * @return void
+         */
+        this.setServerNames = function () {
+            var property;
+            for (property in $scope.servers) {
+                if ($scope.servers.hasOwnProperty(property)) {
+                    $scope.serverNames.push(property);
+                }
+            }
+        };
 
         /**
          * @return {void}
@@ -25,6 +39,7 @@ surfCaptain.controller('GlobalServerController', [
                 function (response) {
                     $scope.finished = true;
                     $scope.servers = response.presets;
+                    self.setServerNames();
                     if ($scope.servers.length === 0) {
                         $scope.messages = FlashMessageService.addFlashMessage(
                             'FYI!',

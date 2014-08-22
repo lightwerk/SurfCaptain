@@ -24,7 +24,21 @@ surfCaptain.controller('ServerController', [
         $scope.contexts = [
             'Production', 'Development', 'Staging'
         ];
+        $scope.serverNames = [];
 
+
+        /**
+         * @return void
+         */
+        this.setServerNames = function () {
+            var property;
+
+            for (property in $scope.servers) {
+                if ($scope.servers.hasOwnProperty(property)) {
+                    $scope.serverNames.push(property);
+                }
+            }
+        };
 
         /**
          * Sets all serverNames that are already in use as
@@ -33,20 +47,14 @@ surfCaptain.controller('ServerController', [
          * @return {void}
          */
         this.setTakenServerNamesAsUnavailableSuggestions = function () {
-            var i = 0, numberOfNameSuggestions, serverName, serverNames = [], property;
+            var i = 0, numberOfNameSuggestions, serverName;
 
-            for (property in $scope.servers) {
-                if ($scope.servers.hasOwnProperty(property)) {
-                    serverNames.push(property);
-                }
-            }
-
-            if (serverNames.length) {
+            if ($scope.serverNames.length) {
                 numberOfNameSuggestions = $scope.nameSuggestions.length;
 
                 for (i; i < numberOfNameSuggestions; i++) {
                     serverName = $scope.generateServerName($scope.nameSuggestions[i].suffix);
-                    $scope.nameSuggestions[i].available = !ValidationService.doesArrayContainItem(serverNames, serverName);
+                    $scope.nameSuggestions[i].available = !ValidationService.doesArrayContainItem($scope.serverNames, serverName);
                 }
             }
         };
@@ -61,6 +69,7 @@ surfCaptain.controller('ServerController', [
                     console.log(response.repository.presets);
                     $scope.finished = true;
                     $scope.servers = response.repository.presets;
+                    self.setServerNames();
                     if (angular.isDefined($scope.nameSuggestions)) {
                         self.setTakenServerNamesAsUnavailableSuggestions();
                     }
