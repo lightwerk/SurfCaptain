@@ -1,7 +1,9 @@
 /*global angular,describe,beforeEach,afterEach,module,it,xit,expect,inject,spyOn*/
 
 describe('ServerController', function () {
-    var ctrl, scope, nameSuggestions, q, projects, MarkerService,
+    var ctrl, scope, nameSuggestions, q, projects, MarkerService, PresetRepository,
+        PresetService, FlashMessageService, settings, server, ProjectRepository, $http,
+        SettingsRepository, newPreset, success, ValidationService, returnString,
         simulateReceivementOfProjectData = function () {
             scope.$digest();
             scope.$apply(function () {
@@ -111,6 +113,144 @@ describe('ServerController', function () {
         });
     });
 
+    //##########################
+    // generateNameSuggestions #
+    //##########################
+
+    it('should have a method generateNameSuggestions.', function () {
+        expect(ctrl.generateNameSuggestions).toBeDefined();
+    });
+
+    describe('->generateNameSuggestions()', function () {
+
+        beforeEach(function () {
+            nameSuggestions = {
+                foo: 'bar',
+                bar: 'foo'
+            };
+        });
+
+        it('should set $scope.nameSuggestions to an empty array.', function () {
+            ctrl.generateNameSuggestions();
+            expect(scope.nameSuggestions).toEqual([]);
+        });
+
+        it('should set $scope.nameSuggestions to an empty containing objects build from passed nameSuggestions.', function () {
+            ctrl.generateNameSuggestions(nameSuggestions);
+            expect(scope.nameSuggestions).toEqual([
+                {
+                    suffix: 'foo',
+                    available: true,
+                    context: 'bar'
+                },
+                {
+                    suffix: 'bar',
+                    available: true,
+                    context: 'foo'
+                }
+            ]);
+        });
+    });
+
+    //#################
+    // handleSettings #
+    //#################
+
+    it('should have a method handleSettings.', function () {
+        expect(ctrl.handleSettings).toBeDefined();
+    });
+
+    describe('->handleSettings()', function () {
+        beforeEach(inject(function ($controller, $rootScope, _MarkerService_, _ValidationService_) {
+            scope = $rootScope.$new();
+            MarkerService = _MarkerService_;
+            ValidationService = _ValidationService_;
+            returnString = '';
+
+            ctrl = $controller('ServerController', {
+                $scope: scope,
+                MarkerService: MarkerService,
+                ValidationService: ValidationService
+            });
+
+            scope.newPreset = {
+                options: {}
+            };
+
+            scope.settings = {
+                defaultDocumentRoot: '{{foo}}',
+                nameSuggestions: ['a', 'b']
+            };
+
+            spyOn(ctrl, 'generateNameSuggestions');
+            spyOn(ValidationService, 'doesStringContainSubstring').andCallThrough();
+            spyOn(MarkerService, 'replaceMarkers').andCallFake(function () {
+                return returnString;
+            });
+            spyOn(MarkerService, 'getStringBeforeFirstMarker').andReturn('foo/');
+        }));
+
+        it('should not call generateNameSuggestions on controller if $scope.settings.nameSuggestions are undefined.', function () {
+            scope.settings = {};
+            ctrl.handleSettings();
+            expect(ctrl.generateNameSuggestions).not.toHaveBeenCalled();
+        });
+
+        it('should call generateNameSuggestions on controller if $scope.settings.nameSuggestions are defined.', function () {
+            ctrl.handleSettings();
+            expect(ctrl.generateNameSuggestions).toHaveBeenCalled();
+        });
+
+        it('should not call anything on MarkerService nor ValidationService if $scope.settings.defaultDocumentRoot is undefined.', function () {
+            scope.settings = {};
+            ctrl.handleSettings();
+            expect(MarkerService.getStringBeforeFirstMarker).not.toHaveBeenCalled();
+            expect(MarkerService.replaceMarkers).not.toHaveBeenCalled();
+            expect(ValidationService.doesStringContainSubstring).not.toHaveBeenCalled();
+        });
+
+        it('should call ValidationService.doesStringContainSubstring twice if $scope.settings.defaultDocumentRoot is defined.', function () {
+            ctrl.handleSettings();
+            expect(ValidationService.doesStringContainSubstring.callCount).toEqual(2);
+        });
+
+        it('should call MarkerService.replaceMarkers if $scope.settings.defaultDocumentRoot contains "{{".', function () {
+            ctrl.handleSettings();
+            expect(MarkerService.replaceMarkers).toHaveBeenCalled();
+        });
+
+        it('should store return value of MarkerService.replaceMarkers in $scope.newPreset.options.documentRoot if it contains no "{{".', function () {
+            returnString = 'foo';
+            ctrl.handleSettings();
+            expect(scope.newPreset.options.documentRoot).toEqual('foo');
+        });
+
+        it('should not set $scope.newPreset.options.documentRootWithMarkers if return value of MarkerService.replaceMarkers contains no "{{".', function () {
+            returnString = 'foo';
+            ctrl.handleSettings();
+            expect(scope.newPreset.options.documentRootWithMarker).not.toBeDefined();
+        });
+
+        it('should call MarkerService.getStringBeforeFirstMarker if return value of MarkerService.replaceMarkers contains further "{{".', function () {
+            returnString = 'foo/{{suffix}}';
+            ctrl.handleSettings();
+            expect(MarkerService.getStringBeforeFirstMarker).toHaveBeenCalledWith('foo/{{suffix}}');
+        });
+
+        it('should store the return of MarkerService.getStringBeforeFirstMarker in $scope.newPreset.options.documentRoot.', function () {
+            returnString = 'foo/{{suffix}}';
+            ctrl.handleSettings();
+            expect(scope.newPreset.options.documentRoot).toEqual('foo/');
+        });
+
+        it('should store the return of MarkerService.replaceMarkers in $scope.newPreset.options.documentRootWithMarkers if it contains any "{{".', function () {
+            returnString = 'foo/{{suffix}}';
+            ctrl.handleSettings();
+            expect(scope.newPreset.options.documentRootWithMarkers).toEqual('foo/{{suffix}}');
+        });
+
+    });
+
     //#########
     // $scope #
     //#########
@@ -149,7 +289,104 @@ describe('ServerController', function () {
         });
 
         describe('->getAllServers()', function () {
-            // TODO
+            beforeEach(inject(function ($controller, $rootScope, _PresetRepository_,_FlashMessageService_, $q, _$httpBackend_) {
+                scope = $rootScope.$new();
+                PresetRepository = _PresetRepository_;
+                FlashMessageService = _FlashMessageService_;
+                q = $q;
+                $http = _$httpBackend_;
+                success = true;
+
+                ctrl = $controller('ServerController', {
+                    $scope: scope,
+                    PresetRepository: PresetRepository,
+                    FlashMessageService: FlashMessageService
+                });
+
+                scope.newPreset = {
+                    options: {}
+                };
+
+                scope.project = {
+                    repositoryUrl: 'foo/bar'
+                };
+
+                scope.nameSuggestions = nameSuggestions;
+
+                spyOn(PresetRepository, 'getServers').andCallFake(function () {
+                    if (success) {
+                        return $q.when({repository: {
+                            presets: ['a', 'b']
+                        }});
+                    }
+                    return $q.reject();
+                });
+                spyOn(FlashMessageService, 'addFlashMessage');
+                spyOn(ctrl, 'setServerNames');
+                spyOn(ctrl, 'setTakenServerNamesAsUnavailableSuggestions');
+
+                // The call of the extended controller cant be prevented by a spy ...
+                $http.whenGET('/api/repository').respond({ hello: 'World' });
+            }));
+
+            it('should set the repositoryUrl of the newPreset to the scope.project.repositoryUrl.', function () {
+                scope.getAllServers();
+                expect(scope.newPreset.options.repositoryUrl).toEqual('foo/bar');
+            });
+
+            it('should call PresetRepository.getServers().', function () {
+                scope.getAllServers();
+                expect(PresetRepository.getServers).toHaveBeenCalled();
+            });
+
+            describe('on success', function () {
+                beforeEach(function () {
+                    scope.getAllServers();
+                    scope.$digest();
+                });
+
+                it('should set $scope.finished to true.', function () {
+                    expect(scope.finished).toBeTruthy();
+                });
+
+                it('should set $scope.servers to response.repository.presets.', function () {
+                    expect(scope.servers).toEqual(['a', 'b']);
+                });
+
+                it('should call setServerNames on controller', function () {
+                    expect(ctrl.setServerNames).toHaveBeenCalled();
+                });
+
+                it('should call setTakenServerNamesAsUnavailableSuggestions on controller if $scope.nameSuggestions are defined', function () {
+                    expect(ctrl.setTakenServerNamesAsUnavailableSuggestions).toHaveBeenCalled();
+                    nameSuggestions = undefined;
+                });
+
+                it('should not call setTakenServerNamesAsUnavailableSuggestions on controller if $scope.nameSuggestions are undefined', function () {
+                    expect(ctrl.setTakenServerNamesAsUnavailableSuggestions).not.toHaveBeenCalled();
+                });
+
+                it('should not call FlashMessageService.addFlashMessage if $scope.servers is not an empty array.', function () {
+                    expect(FlashMessageService.addFlashMessage).not.toHaveBeenCalled();
+                });
+            });
+
+            describe('on failure', function () {
+                beforeEach(function () {
+                    success = false;
+                    scope.getAllServers();
+                    scope.$digest();
+                });
+
+                it('should set $scope.finished to true.', function () {
+                    expect(scope.finished).toBeTruthy();
+                });
+
+                it('should call FlashMessageService.addFlashMessage.', function () {
+                    expect(FlashMessageService.addFlashMessage).toHaveBeenCalled();
+                });
+            });
+
         });
 
         //###########################
@@ -162,8 +399,8 @@ describe('ServerController', function () {
 
         describe('->setDocumentRoot()', function () {
             beforeEach(inject(function ($controller, $rootScope, _MarkerService_) {
-                scope = $rootScope.$new(),
-                    MarkerService = _MarkerService_;
+                scope = $rootScope.$new();
+                MarkerService = _MarkerService_;
 
                 ctrl = $controller('ServerController', {
                     $scope: scope,
@@ -178,6 +415,7 @@ describe('ServerController', function () {
                         documentRoot: 'foo'
                     }
                 };
+
                 spyOn(MarkerService, 'replaceMarkers').andReturn('markerServiceReturn');
             });
 
@@ -207,7 +445,124 @@ describe('ServerController', function () {
         });
 
         describe('->addServer()', function () {
-            // TODO
+            beforeEach(inject(function ($controller, $rootScope, _PresetService_, _PresetRepository_,_FlashMessageService_, $q, _$httpBackend_) {
+                scope = $rootScope.$new();
+                PresetRepository = _PresetRepository_;
+                PresetService = _PresetService_;
+                FlashMessageService = _FlashMessageService_;
+                q = $q;
+                $http = _$httpBackend_;
+                success = true;
+
+                settings = {a: 'b'};
+                scope.settings = settings;
+
+                server = {success: success};
+
+                ctrl = $controller('ServerController', {
+                    $scope: scope,
+                    PresetRepository: PresetRepository,
+                    PresetService: PresetService,
+                    FlashMessageService: FlashMessageService
+                });
+
+                // The call of the extended controller cant be prevented by a spy ...
+                $http.whenGET('/api/repository').respond({ hello: 'World' });
+
+                spyOn(FlashMessageService, 'addFlashMessage');
+                spyOn(PresetRepository, 'addServer').andCallFake(function (server) {
+                    if (server.success) {
+                        return $q.when();
+                    }
+                    return $q.reject();
+                });
+            }));
+
+            it('should set $scope.finished to false', function () {
+                scope.addServer(server);
+                expect(scope.finished).toBeFalsy();
+            });
+
+            it('should call PresetRepository.addServer.', function () {
+                scope.addServer(server);
+                expect(PresetRepository.addServer).toHaveBeenCalled();
+            });
+
+            it('should call PresetRepository.addServer with the passed server object.', function () {
+                scope.addServer(server);
+                expect(PresetRepository.addServer).toHaveBeenCalledWith(server);
+            });
+
+            describe('on success', function () {
+
+                beforeEach(function () {
+                    server.nodes = [
+                        {name: 'foo'}
+                    ];
+                    scope.newServerForm = {
+                        $valid: false,
+                        $setPristine: function () {
+                            this.$valid = true;
+                        }
+                    };
+                    newPreset = {foo: 'bar'};
+
+                    spyOn(scope, 'getAllServers');
+                    spyOn(ctrl, 'handleSettings');
+                    spyOn(PresetService, 'getNewPreset').andReturn(newPreset);
+
+                    scope.addServer(server);
+                    scope.$digest();
+                });
+
+                it('should call getNewPreset on the PresetService.', function () {
+                    expect(PresetService.getNewPreset).toHaveBeenCalled();
+                });
+
+                it('should call getNewPreset on PresetService with $scope.settings.', function () {
+                    expect(PresetService.getNewPreset).toHaveBeenCalledWith(settings);
+                });
+
+                it('should set $scope.newPreset to the return of PresetService.getNewPreset() .', function () {
+                    expect(scope.newPreset).toEqual(newPreset);
+                });
+
+                it('should call $setPristine on $scope.newServerForm.', function () {
+                    expect(scope.newServerForm.$valid).toBeTruthy();
+                });
+
+                it('should call handleSettings on the controller.', function () {
+                    expect(ctrl.handleSettings).toHaveBeenCalled();
+                });
+
+                it('should call getAllServers on the $scope.', function () {
+                    expect(scope.getAllServers).toHaveBeenCalled();
+                });
+
+                it('should call addFlashMessage on the FlashMessageService.', function () {
+                    expect(FlashMessageService.addFlashMessage).toHaveBeenCalled();
+                });
+            });
+
+            describe('on failure', function () {
+
+                beforeEach(function () {
+                    server = {success: false};
+                    server.nodes = [
+                        {name: 'foo'}
+                    ];
+
+                    scope.addServer(server);
+                    scope.$digest();
+                });
+
+                it('should call addFlashMessage on the FlashMessageService.', function () {
+                    expect(FlashMessageService.addFlashMessage).toHaveBeenCalled();
+                });
+                it('should set $scope.finished to true.', function () {
+                    expect(scope.finished).toBeTruthy();
+                });
+            });
         });
 
         //##############################
@@ -240,6 +595,107 @@ describe('ServerController', function () {
                     scope.generateServerName('bar');
                 }
                 expect(errorFunctionWrapper).toThrow();
+            });
+        });
+
+        //##################
+        // $scope->$watch()#
+        //##################
+
+        describe('$watch', function () {
+            beforeEach(inject(function ($controller, $rootScope, _PresetService_,_SettingsRepository_, $q, _$httpBackend_) {
+                scope = $rootScope.$new();
+                SettingsRepository = _SettingsRepository_;
+                PresetService = _PresetService_;
+                q = $q;
+                $http = _$httpBackend_;
+                success = true;
+
+                settings = {a: 'b'};
+                scope.settings = settings;
+
+                settings = {a: 'b'};
+
+                ctrl = $controller('ServerController', {
+                    $scope: scope,
+                    SettingsRepository: SettingsRepository,
+                    PresetService: PresetService
+                });
+
+                // The call of the extended controller cant be prevented by a spy ...
+                $http.whenGET('/api/repository').respond({ project: {name: 'foo'} });
+
+                spyOn(PresetService, 'getNewPreset').andReturn({foo: 'bar'});
+                spyOn(ctrl, 'handleSettings');
+                spyOn(scope, 'getAllServers');
+                spyOn(SettingsRepository, 'getSettings').andCallFake(function () {
+                    if (success) {
+                        return $q.when(settings);
+                    }
+                    return $q.reject();
+                });
+                scope.project.name = 'foo';
+
+            }));
+
+            it('should call SettingsRepository.getSettings.', function () {
+                scope.$digest();
+                expect(SettingsRepository.getSettings).toHaveBeenCalled();
+            });
+
+            describe('on success', function () {
+                beforeEach(function () {
+                    scope.$digest();
+                });
+
+                it('should store response to $scope.settings.', function () {
+                    expect(scope.settings).toEqual(settings);
+                });
+
+                it('should call PresetService.getNewPreset().', function () {
+                    expect(PresetService.getNewPreset).toHaveBeenCalled();
+                });
+
+                it('should call PresetService.getNewPreset() wit $scope.settings.', function () {
+                    expect(PresetService.getNewPreset).toHaveBeenCalledWith(settings);
+                });
+
+                it('should store return of PresetService.getNewPreset() to $scope.newPreset.', function () {
+                    expect(scope.newPreset).toEqual({foo: 'bar'});
+                });
+
+                it('should call handleSettings() on controller.', function () {
+                    expect(ctrl.handleSettings).toHaveBeenCalled();
+                });
+
+                it('should call $scope.getAllServers().', function () {
+                    expect(scope.getAllServers).toHaveBeenCalled();
+                });
+            });
+
+            describe('on failure', function () {
+
+                beforeEach(function () {
+                    success = false;
+                    scope.settings = {};
+                    scope.$digest();
+                });
+
+                it('should not call handleSettings() on controller.', function () {
+                    expect(ctrl.handleSettings).not.toHaveBeenCalled();
+                });
+
+                it('should not fill $scope.settings.', function () {
+                    expect(scope.settings).toEqual({});
+                });
+
+                it('should call PresetService.getNewPreset().', function () {
+                    expect(PresetService.getNewPreset).toHaveBeenCalled();
+                });
+
+                it('should call $scope.getAllServers().', function () {
+                    expect(scope.getAllServers).toHaveBeenCalled();
+                });
             });
         });
     });

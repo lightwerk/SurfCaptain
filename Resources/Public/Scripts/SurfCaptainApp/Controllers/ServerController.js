@@ -70,40 +70,6 @@ surfCaptain.controller('ServerController', [
         };
 
         /**
-         * @return {void}
-         */
-        $scope.getAllServers = function () {
-            $scope.newPreset.options.repositoryUrl = $scope.project.repositoryUrl;
-            PresetRepository.getServers($scope.project.repositoryUrl).then(
-                function (response) {
-                    console.log(response.repository.presets);
-                    $scope.finished = true;
-                    $scope.servers = response.repository.presets;
-                    self.setServerNames();
-                    if (angular.isDefined($scope.nameSuggestions)) {
-                        self.setTakenServerNamesAsUnavailableSuggestions();
-                    }
-                    if ($scope.servers.length === 0) {
-                        $scope.messages = FlashMessageService.addFlashMessage(
-                            'No Servers yet!',
-                            'FYI: There are no servers for project <span class="uppercase">' + $scope.name  + '</span> yet. Why dont you create one, hmm?',
-                            SEVERITY.info
-                        );
-                    }
-                },
-                function (response) {
-                    $scope.finished = true;
-                    $scope.messages = FlashMessageService.addFlashMessage(
-                        'Request failed!',
-                        'The servers could not be received. Please try again later..',
-                        SEVERITY.error,
-                        'server-request-failed'
-                    );
-                }
-            );
-        };
-
-        /**
          *
          * @param {object} nameSuggestions
          * @return {void}
@@ -150,6 +116,39 @@ surfCaptain.controller('ServerController', [
         };
 
         /**
+         * @return {void}
+         */
+        $scope.getAllServers = function () {
+            $scope.newPreset.options.repositoryUrl = $scope.project.repositoryUrl;
+            PresetRepository.getServers($scope.project.repositoryUrl).then(
+                function (response) {
+                    $scope.finished = true;
+                    $scope.servers = response.repository.presets;
+                    self.setServerNames();
+                    if (angular.isDefined($scope.nameSuggestions)) {
+                        self.setTakenServerNamesAsUnavailableSuggestions();
+                    }
+                    if ($scope.servers.length === 0) {
+                        $scope.messages = FlashMessageService.addFlashMessage(
+                            'No Servers yet!',
+                            'FYI: There are no servers for project <span class="uppercase">' + $scope.name  + '</span> yet. Why dont you create one, hmm?',
+                            SEVERITY.info
+                        );
+                    }
+                },
+                function (response) {
+                    $scope.finished = true;
+                    $scope.messages = FlashMessageService.addFlashMessage(
+                        'Request failed!',
+                        'The servers could not be received. Please try again later..',
+                        SEVERITY.error,
+                        'server-request-failed'
+                    );
+                }
+            );
+        };
+
+        /**
          * Takes a suffix and tries to replace a {{suffix}} marker
          * within the document root. Stores the returning string
          * within the documentRoot property of the newPreset.
@@ -191,6 +190,7 @@ surfCaptain.controller('ServerController', [
                     );
                 },
                 function (response) {
+                    $scope.finished = true;
                     $scope.messages = FlashMessageService.addFlashMessage(
                         'Creation failed!',
                         'The Server "' + server.nodes[0].name + '" could not be created.',
