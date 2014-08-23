@@ -64,12 +64,12 @@ class PresetController extends AbstractRestController {
 
 	/**
 	 * @param string $key
-	 * @param string $configuration
+	 * @param array $configuration
 	 * @return void
 	 */
 	public function createAction($key, $configuration) {
 		try {
-			$this->presetService->addPreset($key, json_decode($configuration, TRUE));
+			$this->presetService->addPreset($key, $configuration);
 			$this->addFlashMessage('Created a new preset.');
 			$this->redirect('show', NULL, NULL, array('key' => $key));
 		} catch (\Lightwerk\SurfCaptain\Service\Exception $e) {
@@ -81,12 +81,12 @@ class PresetController extends AbstractRestController {
 
 	/**
 	 * @param string $key
-	 * @param string $configuration
+	 * @param array $configuration
 	 * @return void
 	 */
 	public function updateAction($key, $configuration) {
 		try {
-			$this->presetService->updatePreset($key, json_decode($configuration, TRUE));
+			$this->presetService->updatePreset($key, $configuration);
 			$this->addFlashMessage('Updated a a preset.');
 			$this->redirect('show', NULL, NULL, array('key' => $key));
 		} catch (\Lightwerk\SurfCaptain\Service\Exception $e) {

@@ -39,6 +39,14 @@ class GitLabDriver implements DriverInterface {
 	protected $dataMapper;
 
 	/**
+	 * @var array
+	 */
+	protected $server = array(
+		'HTTP_CONTENT_TYPE' => 'application/json',
+		'Accept' => 'application/json',
+	);
+
+	/**
 	 * Sets the settings
 	 *
 	 * @param array $settings
@@ -76,11 +84,11 @@ class GitLabDriver implements DriverInterface {
 	 * @throws Exception
 	 * @throws \TYPO3\Flow\Http\Exception
 	 */
-	protected function getGitLabApiResponse($command, $method = 'GET', array $parameters = array()) {
+	protected function getGitLabApiResponse($command, $method = 'GET', array $parameters = array(), array $content = array()) {
 		$parameters['private_token'] = $this->settings['privateToken'];
 		$url = $this->settings['apiUrl'] . $command . '?' . http_build_query($parameters);
 		// maybe we will throw own exception to give less information (token is outputed)
-		$response = $this->browser->request($url, $method);
+		$response = $this->browser->request($url, $method, array(), array(), $this->server, json_encode($content));
 
 		$statusCode = $response->getStatusCode();
 		if ($statusCode < 200 || $statusCode >= 400) {
@@ -244,6 +252,7 @@ class GitLabDriver implements DriverInterface {
 		$this->getGitLabApiResponse(
 			'projects/' . $this->getId($repositoryUrl) . '/repository/files',
 			'PUT',
+			array(),
 			array(
 				'file_path' => $filePath,
 				'branch_name' => $branchName,

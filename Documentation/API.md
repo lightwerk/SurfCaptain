@@ -136,28 +136,27 @@ Example call to list all global presets:
 
 Example call:
 
-	curl -H "Accept: application/json" -v -X POST http://surf.flow.lp.lw.loc/api/preset\?key=sma\&configuration\=%7B%22applications%22%3A%5B%7B%22options%22%3A%7B%22repositoryUrl%22%3A%22git%40git.lightwerk.com%3Aboilerplate%5C%2Ftypo3_cms.git%22%2C%22documentRoot%22%3A%22%5C%2Fvar%5C%2Fwww%5C%2FprojectName%5C%2Fcontext%5C%2F%22%2C%22context%22%3A%22Development%22%7D%2C%22nodes%22%3A%5B%7B%22name%22%3A%22Front-End+Server+2%22%2C%22hostname%22%3A%22www2.sma.de%22%2C%22username%22%3A%22user2%22%7D%5D%7D%5D%7D
-
-Example of a decoded configuration parameter:
-
-	{
-		"applications": [
-			{
-				"options": {
-					"repositoryUrl": "git@git.lightwerk.com:boilerplate/typo3_cms.git",
-					"documentRoot": "/var/www/projectName/context/",
-					"context": "Development"
-				},
-				"nodes": [
-					{
-						"name": "Front-End Server 2",
-						"hostname": "www2.sma.de",
-						"username": "user2"
-					}
-				]
-			}
-		]
-	}
+	curl -H "Accept: application/json" -H "Content-Type: application/json" -v -X POST http://surf.flow.lp.lw.loc/api/preset -d '{
+		"key": "sma",
+		"configuration": {
+			"applications": [
+				{
+					"options": {
+						"repositoryUrl": "git@git.lightwerk.com:boilerplate/typo3_cms.git",
+						"documentRoot": "/var/www/projectName/context/",
+						"context": "Development"
+					},
+					"nodes": [
+						{
+							"name": "Front-End Server 2",
+							"hostname": "www2.sma.de",
+							"username": "user2"
+						}
+					]
+				}
+			]
+		}
+	}'
 
 ### Update presets
 
@@ -170,7 +169,27 @@ Example of a decoded configuration parameter:
 
 Example call:
 
-	curl -H "Accept: application/json" -v -X PUT http://surf.flow.lp.lw.loc/api/preset\?key=sma\&configuration\=%7B%22applications%22%3A%5B%7B%22options%22%3A%7B%22repositoryUrl%22%3A%22git%40git.lightwerk.com%3Aboilerplate%5C%2Ftypo3_cms.git%22%2C%22documentRoot%22%3A%22%5C%2Fvar%5C%2Fwww%5C%2FprojectName%5C%2Fcontext%5C%2F%22%2C%22context%22%3A%22Development%22%7D%2C%22nodes%22%3A%5B%7B%22name%22%3A%22Front-End+Server+2%22%2C%22hostname%22%3A%22www2.sma.de%22%2C%22username%22%3A%22user2%22%7D%5D%7D%5D%7D
+	curl -H "Accept: application/json" -H "Content-Type: application/json" -v -X PUT http://surf.flow.lp.lw.loc/api/preset -d '{
+		"key": "sma",
+		"configuration": {
+			"applications": [
+				{
+					"options": {
+						"repositoryUrl": "git@git.lightwerk.com:boilerplate/typo3_cms.git",
+						"documentRoot": "/var/www/projectName/context/",
+						"context": "Development"
+					},
+					"nodes": [
+						{
+							"name": "Front-End Server 2",
+							"hostname": "www2.sma.de",
+							"username": "user2"
+						}
+					]
+				}
+			]
+		}
+	}'
 
 ### Delete preset
 
