@@ -38,6 +38,14 @@ var surfCaptain = angular.module('surfCaptain', ['ngRoute', 'xeditable', 'ngAnim
                 templateUrl: templatePath + 'Extensions.html',
                 controller: 'ExtensionsController'
             }).
+            when('/deployments', {
+                templateUrl: templatePath + 'Deployments.html',
+                controller: 'DeploymentsController'
+            }).
+            when('/deployments/:deploymentId', {
+                templateUrl: templatePath + 'SingleDeployment.html',
+                controller: 'SingleDeploymentController'
+            }).
             otherwise({
                 redirectTo: '/'
             });
