@@ -23,7 +23,7 @@ surfCaptain.factory('PresetRepository', ['$http', '$q', function ($http, $q) {
     presetRepository.getFullPresetAsString = function (server) {
         var container = {"applications": []};
         container.applications[0] = server;
-        return JSON.stringify(container);
+        return angular.toJson(container, false);
     };
 
     /**
@@ -34,7 +34,7 @@ surfCaptain.factory('PresetRepository', ['$http', '$q', function ($http, $q) {
      */
     presetRepository.getKeyFromServerConfiguration = function (server) {
         if (angular.isUndefined(server.nodes[0].name)) {
-            if (angular.isUndefined(server.apllications[0].nodes[0].name)) {
+            if (angular.isUndefined(server.applications[0].nodes[0].name)) {
                 throw new PresetRepositoryException('PresetRepository.getKeyFromServerConfiguration failed. Server configuration contains no key.');
             }
             return server.apllications[0].nodes[0].name;
@@ -83,7 +83,7 @@ surfCaptain.factory('PresetRepository', ['$http', '$q', function ($http, $q) {
      * @returns {Q.promise|promise} – promise object
      */
     presetRepository.putServer = function (preset) {
-        return this.sendSinglePresetToApi(preset, 'PUT');
+        return this.sendSinglePresetToApi(preset, 'put');
     };
 
     /**
@@ -93,7 +93,7 @@ surfCaptain.factory('PresetRepository', ['$http', '$q', function ($http, $q) {
      * @returns {Q.promise|promise} – promise object
      */
     presetRepository.postServer = function (preset) {
-        return this.sendSinglePresetToApi(preset, 'POST');
+        return this.sendSinglePresetToApi(preset, 'post');
     };
 
 
@@ -112,8 +112,15 @@ surfCaptain.factory('PresetRepository', ['$http', '$q', function ($http, $q) {
             configuration = this.getFullPresetAsString(preset);
         $http({
             method: method,
-            url: url + '?key=' + this.getKeyFromServerConfiguration(preset) + '&configuration=' + configuration,
-            headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+            url: url,
+            data: {
+                'key': this.getKeyFromServerConfiguration(preset),
+                'configuration': configuration
+            },
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            }
         }).success(deferred.resolve).error(deferred.reject);
         return deferred.promise;
     };

@@ -15,22 +15,18 @@
 			<table class="table table-striped">
 				<thead>
 					<tr>
-						<th>ID</th>
+						<th>Date</th>
 						<th>RepositoryURL</th>
 						<th>Reference Name</th>
 						<th>Status</th>
-						<th>Action</th>
 					</tr>
 				</thead>
 				<tbody>
 					<tr data-ng-repeat="deployment in deployments">
-						<td><a data-ng-href="#/deployments/{{deployment.__identity}}">{{deployment.__identity | limitTo:20}}</a></td>
+						<td><a data-ng-href="#/deployments/{{deployment.__identity}}">{{deployment.date | date:'medium'}}</a></td>
 						<td>{{deployment.repositoryUrl}}</td>
 						<td>{{deployment.referenceName}}</td>
-						<td>{{deployment.status}}</td>
-						<td><button data-ng-if="deployment.status === 'waiting'" class="btn btn-danger btn-xs">
-							cancel
-						</button></td>
+						<td><span class="label {{deployment.status}}">{{deployment.status}}</span></td>
 					</tr>
 				</tbody>
 			</table>

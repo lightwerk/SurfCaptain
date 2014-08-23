@@ -1,9 +1,38 @@
+<flash-messages messages="messages" />
+
+<overlay finished="finished" />
+<div data-ng-if="!finished" class="spinner">
+	<spinner />
+</div>
+
 <surfcaptain-header icon="road"></surfcaptain-header>
 
-<div class="container about-view dark">
+<div class="container single-deployment-view dark">
 	<div class="row">
-		<div class="col-xs-12 text-center">
-			<h1>Deployments</h1>
+		<div class="col-xs-12 col-md-8 col-md-offset-2 text-center">
+			<h1>Deployment Details</h1>
+			<h3>{{deployment.referenceName}} onto {{deployment.configuration.applications.0.nodes.0.name}} ({{deployment.date | date:'mediumDate'}})</h3>
+			<br />
+			<button data-ng-if="deployment.status === 'waiting'" class="btn btn-danger">Cancel</button>
+			<br /><br /><br />
+			<dl class="dl-horizontal">
+				<dt>Date</dt>
+				<dd>{{deployment.date|date:'medium'}}</dd>
+				<dt>Repository URL</dt>
+				<dd>{{deployment.repositoryUrl}}</dd>
+				<dt>Reference name</dt>
+				<dd>{{deployment.referenceName}}</dd>
+				<dt>Client IP</dt>
+				<dd>{{deployment.clientIp}}</dd>
+				<dt>Status</dt>
+				<dd><span class="label {{deployment.status}}">{{deployment.status}}</span></dd>
+				<dt>Configuration</dt>
+				<dd>
+			<pre class="pretty-json">
+{{deployment.configuration | json}}
+			</pre>
+				</dd>
+			</dl>
 		</div>
 	</div>
 </div>

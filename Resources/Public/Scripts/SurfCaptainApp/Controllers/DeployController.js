@@ -10,7 +10,10 @@ surfCaptain.controller('DeployController', [
     'SEVERITY',
     'FlashMessageService',
     'CONFIG',
-    function ($scope, $controller, ProjectRepository, HistoryRepository, SEVERITY, FlashMessageService, CONFIG) {
+    'DeploymentRepository',
+    '$location',
+    '$cacheFactory',
+    function ($scope, $controller, ProjectRepository, HistoryRepository, SEVERITY, FlashMessageService, CONFIG, DeploymentRepository, $location, $cacheFactory) {
 
         var loadingString = 'loading ...';
 
@@ -47,7 +50,24 @@ surfCaptain.controller('DeployController', [
         $scope.deploy = function (preset) {
             if (preset === $scope.currentPreset) {
                 $scope.currentPreset.applications[0].type = CONFIG.applicationTypes.deployTYPO3;
-                console.log($scope.currentPreset);
+                DeploymentRepository.addDeployment($scope.currentPreset).then(
+                    function (response) {
+                        $scope.messages = FlashMessageService.addFlashMessage(
+                            'OK!',
+                            $scope.currentCommit.type + ' ' + $scope.currentCommit.name + ' will be shortly deployed onto '
+                                + $scope.currentPreset.applications[0].nodes[0].name + '! You can cancel the deployment while it is still waiting.',
+                            SEVERITY.ok
+                        );
+                        if (angular.isUndefined($cacheFactory.get('deploymentCache'))) {
+                            $cacheFactory('deploymentCache');
+                        }
+                        $cacheFactory.get('deploymentCache').put(response.deployment.__identity, response.deployment);
+                        $location.path('deployments/' + response.deployment.__identity);
+                    },
+                    function (response) {
+
+                    }
+                );
             }
         };
 

@@ -1,12 +1,14 @@
-/*global surfCaptain*/
+/*global surfCaptain, angular*/
 /*jslint node: true */
 
 'use strict';
 
-surfCaptain.factory('DeploymentRepository', [ '$http', '$q', function ($http, $q) {
+surfCaptain.factory('DeploymentRepository', [ '$http', '$q', '$cacheFactory', function ($http, $q, $cacheFactory) {
 
     var deploymentRepository = {},
         url = '/api/deployment';
+
+    $cacheFactory('deploymentCache');
 
     /**
      * @param {object} deployment
@@ -42,6 +44,19 @@ surfCaptain.factory('DeploymentRepository', [ '$http', '$q', function ($http, $q
         return deferred.promise;
     };
 
+    /**
+     * @param {string} identifier
+     */
+    deploymentRepository.getSingleDeployment = function (identifier) {
+        var deferred = $q.defer();
+        if (angular.isDefined($cacheFactory.get('deploymentCache').get(identifier))) {
+            deferred.resolve({deployment: $cacheFactory.get('deploymentCache').get(identifier)});
+            return deferred.promise;
+        }
+        $http.get(url + '?deployment=' + identifier).success(deferred.resolve).error(deferred.reject);
+        return deferred.promise;
+    };
+
     // Public API
     return {
         addDeployment: function (deployment) {
@@ -53,8 +68,8 @@ surfCaptain.factory('DeploymentRepository', [ '$http', '$q', function ($http, $q
         getAllDeployments: function () {
             return deploymentRepository.getDeployments();
         },
-        getSingleDeployment: function () {
-            //TODO
+        getSingleDeployment: function (identifier) {
+            return deploymentRepository.getSingleDeployment(identifier);
         }
     };
 }]);
