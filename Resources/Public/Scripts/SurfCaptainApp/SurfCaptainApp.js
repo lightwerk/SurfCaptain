@@ -38,16 +38,30 @@ var surfCaptain = angular.module('surfCaptain', ['ngRoute', 'xeditable', 'ngAnim
                 templateUrl: templatePath + 'Extensions.html',
                 controller: 'ExtensionsController'
             }).
+            when('/deployments', {
+                templateUrl: templatePath + 'Deployments.html',
+                controller: 'DeploymentsController'
+            }).
+            when('/deployments/:deploymentId', {
+                templateUrl: templatePath + 'SingleDeployment.html',
+                controller: 'SingleDeploymentController'
+            }).
             otherwise({
                 redirectTo: '/'
             });
     }])
-    .value('version', '0.8.4')
+    .value('version', '0.9')
     .constant('SEVERITY', {
         ok: 0,
         info: 1,
         warning: 2,
         error: 3
+    })
+    .constant('CONFIG', {
+        applicationTypes: {
+            deployTYPO3: 'TYPO3\\CMS\\Deploy',
+            syncTYPO3: 'TYPO3\\CMS\\Shared'
+        }
     });
 
 surfCaptain.run(['editableOptions', function (editableOptions) {

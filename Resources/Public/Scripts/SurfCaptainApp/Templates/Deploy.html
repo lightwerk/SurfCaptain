@@ -1,3 +1,10 @@
+<flash-messages messages="messages" />
+
+<overlay finished="finished" />
+<div data-ng-if="!finished" class="spinner">
+	<spinner />
+</div>
+
 <surfcaptain-header icon="road"></surfcaptain-header>
 
 <surfcaptain-menu></surfcaptain-menu>
@@ -10,116 +17,118 @@
 		</div>
 	</div>
 	<div class="row configure-deployment-row">
-		<div class="col-md-7">
-			<div class="row configure-deployment">
+		<div class="col-xs-12">
 			<!-- ################
 				#### STEP 1 #####
 				################# -->
-				<div class="col-md-5 col-xs-12 text-center">
+				<div class="col-md-2 col-xs-12 text-center">
 					<h2>Step 1</h2>
 				</div>
-				<div class="col-md-7 col-xs-12">
-					<label>Choose a tag (or branch)</label>
-					<select
-							class="form-control select-git-commit"
-							ng-model="deployment.gitCheckout"
-							chosen="deployableCommits"
-							ng-options="item as item.name group by item.group for item in deployableCommits"
-							/>
-					<br />
-					<span ng-show="deployment.gitCheckout" class="deploy-git-checkout">
-						<strong>{{deployment.gitCheckout.type}} {{deployment.gitCheckout.name}}</strong> --
-						{{deployment.gitCheckout.commit.id | limitTo:8}} by {{deployment.gitCheckout.commit.committer.name}}<br />
-						{{deployment.gitCheckout.commit.message}}
-					</span>
+				<div class="col-md-10 col-xs-12">
+					<h3>Choose a Server</h3>
+					<div
+						class="deployment-server {{server.applications.0.options.context}}"
+						data-ng-repeat="server in servers"
+						data-ng-class="{false:'disabled'}[presetDisplay(server)]"
+						data-ng-click="setCurrentPreset(server)"
+					>
+						<div class="title">
+							<i class="fa fa-hdd-o"></i>{{server.applications.0.nodes.0.name}}
+						</div>
+						<div class="context-container">
+							<span class="context">({{server.applications.0.options.context}})</span>
+						</div>
+					</div>
+					<div
+						data-ng-if="finished && servers.length === 0">
+						<p><i>There are no project servers configured yet. You can add servers
+							<a data-ng-href="#/project/{{project.identifier}}/server">here</a>. Anyway you can deploy onto
+						a global server.</i></p>
+					</div>
 				</div>
-			</div>
-
-			<!-- ################
-				#### STEP 2 #####
-				################# -->
-			<div class="row configure-deployment" data-ng-show="deployment.gitCheckout">
-				<div class="col-md-5 col-xs-12 text-center">
-					<h2>Step 2</h2>
-				</div>
-				<div class="col-md-7 col-xs-12">
-					<label>Choose a Server</label>
-					<select
-						chosen="servers"
-						ng-options="item as item.key for item in servers"
-						class="form-control select-server"
-						ng-model="deployment.server"
-					/>
-				</div>
-			</div>
-
-			<!-- ################
-				#### STEP 3 #####
-				################# -->
-			<div class="row configure-deployment" data-ng-show="deployment.server">
-				<div class="col-md-5 col-xs-12 text-center">
-					<h2>Step 3</h2>
-				</div>
-				<div class="col-md-7 col-xs-12">
-					<label>Override DocumentRoot</label>
-					<span editable-text="deployment.server.servers.0.documentRoot"
-						  onbeforesave="updateDocumentRoot($data)"
-						  onaftersave="updateDeployment(server)">
-						{{deployment.server.servers.0.documentRoot}}
-					</span>
-					<label>Override TYPO3_CONTEXT</label>
-					<span editable-text="deployment.server.servers.0.context"
-						  onbeforesave="updateSystem($data)"
-						  onaftersave="updateDeployment(server)">
-						{{deployment.server.servers.0.context}}
-					</span>
-				</div>
-			</div>
-
-			<!-- ################
-				#### Submit #####
-				################# -->
-			<div class="row submit-deployment configure-deployment" data-ng-show="deployment.server">
-				<div class="col-xs-12 text-center">
-					<button class="btn btn-lg btn-danger " ng-click="deploy(deployment)">Deploy!</button>
-				</div>
-			</div>
 		</div>
-
-	<!-- #################
-		#### History #####
-		################## -->
-		<div class="col-md-5 deploy-history">
-			<h4>Recent {{name | uppercase}} Deployments</h4>
-			<input type="range" data-ng-model="amountOfRecentDeloyments" data-ng-init="amountOfRecentDeloyments=2" class="form-control" min="1" max="{{history.length}}">
-			<table>
-				<thead>
-				<tr>
-					<th>Date</th>
-					<th>Server</th>
-					<th>Branch/Tag</th>
-				</tr>
-				</thead>
-				<tbody>
-				<tr data-ng-class-odd="'odd'" data-ng-repeat="item in history | orderBy:'date':1 | limitTo:amountOfRecentDeloyments">
-					<td>
-						{{item.date | date:'dd.M.yyyy' }}
-					</td>
-					<td>
-						{{item.server}}
-					</td>
-					<td>
-					<span data-ng-show="item.commit">
-						<a href="{{project.web_url}}/commit/{{item.commit}}">
-							{{item.gitcheckout}}
-						</a>
+	</div>
+	<div class="row configure-deployment-row" data-ng-show="currentPreset.applications">
+		<!-- ################
+			#### STEP 2 #####
+			################# -->
+			<div class="col-md-2 col-xs-12 text-center">
+				<h2>Step 2</h2>
+			</div>
+			<div class="col-md-4 col-xs-12">
+				<h3>Choose a tag (or branch)</h3>
+				<select
+					class="form-control select-git-commit"
+					data-ng-model="selectedCommit"
+					data-ng-change="setCommitInCurrentPreset()"
+					data-ng-options="item.identifier as item.name group by item.group for item in deployableCommits"
+					chosen="deployableCommits"
+				/>
+			</div>
+			<div class="col-md-6 col-xs-12">
+				<span ng-show="currentCommit" class="deploy-git-checkout">
+					<h3>{{currentCommit.type}} {{currentCommit.name}}</h3>
+					<span class="date"><i class="fa fa-clock-o"></i>{{currentCommit.commit.date | date:'medium'}}</span><br />
+					<span class="message"><i class="fa fa-user"></i><strong>{{currentCommit.commit.committerName}}</strong>:
+					{{currentCommit.commit.message}}</span>
+					<span class="git-link">
+						<a data-ng-href="{{repositoryUrl}}/commit/{{currentCommit.commit.id}}" target="_blank">View in Git ({{currentCommit.commit.id | limitTo:8}})</a>
 					</span>
-					</td>
-				</tr>
-				</tbody>
-			</table>
-		</div>
-
+				</span>
+			</div>
 	</div>
 
+	<!-- ################
+		#### STEP 3 #####
+		################# -->
+	<div class="row configure-deployment-row" data-ng-if="currentPreset.applications.0.options.tag || currentPreset.applications.0.options.branch">
+		<div class="col-md-2 col-xs-12 text-center">
+			<h2>Step 3</h2>
+		</div>
+		<div class="col-md-10 col-xs-12">
+			<h3>Override if you must ...</h3>
+			<label>Override DocumentRoot</label>
+			<span editable-text="currentPreset.applications.0.options.documentRoot"
+				  onbeforesave="updateDocumentRoot($data)"
+				  onaftersave="updateDeployment(server)"
+			>
+				{{currentPreset.applications.0.options.documentRoot}}
+			</span>
+			<label>Override TYPO3_CONTEXT</label>
+			<span editable-text="currentPreset.applications.0.options.context"
+				  onbeforesave="updateSystem($data)"
+				  onaftersave="updateDeployment(server)"
+			>
+				{{currentPreset.applications.0.options.context}}
+			</span>
+		</div>
+	</div>
+
+	<!-- ################
+		#### Submit #####
+		################# -->
+	<div class="row submit-deployment configure-deployment-row" data-ng-if="currentPreset.applications.0.options.tag || currentPreset.applications.0.options.branch">
+		<div class="col-xs-12 text-center">
+			<button class="btn btn-lg btn-danger" data-ng-disabled="error"  modal="confirm-deployment">Deploy!</button>
+		</div>
+	</div>
+</div>
+
+<div class="modal fade confirm-deployment">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span
+						class="sr-only">Close</span></button>
+				<h4 class="modal-title">{{currentPreset.applications.0.nodes.0.name}} Deployment</h4>
+				You are going to deploy {{currentCommit.type}} {{currentCommit.name}} onto {{currentPreset.applications.0.nodes.0.name}}.
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-danger" data-ng-click="deploy(currentPreset)"
+						data-dismiss="modal">Continue
+				</button>
+				<button type="button" class="btn btn-primary" data-dismiss="modal">Cancel</button>
+			</div>
+		</div>
+	</div>
 </div>

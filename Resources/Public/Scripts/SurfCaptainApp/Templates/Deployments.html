@@ -1,0 +1,37 @@
+<flash-messages messages="messages" />
+
+<overlay finished="finished" />
+<div data-ng-if="!finished" class="spinner">
+	<spinner />
+</div>
+
+<surfcaptain-header icon="road"></surfcaptain-header>
+
+<div class="container deployments-view dark">
+	<div class="row">
+		<div class="col-xs-12 text-center">
+			<h1>Deployments</h1>
+
+			<table class="table table-striped">
+				<thead>
+					<tr>
+						<th>Date</th>
+						<th>RepositoryURL</th>
+						<th>Reference Name</th>
+						<th>Status</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr data-ng-repeat="deployment in deployments">
+						<td><a data-ng-href="#/deployments/{{deployment.__identity}}">{{deployment.date | date:'medium'}}</a></td>
+						<td>{{deployment.repositoryUrl}}</td>
+						<td>{{deployment.referenceName}}</td>
+						<td><span class="label {{deployment.status}}">{{deployment.status}}</span></td>
+					</tr>
+				</tbody>
+			</table>
+
+
+		</div>
+	</div>
+</div>

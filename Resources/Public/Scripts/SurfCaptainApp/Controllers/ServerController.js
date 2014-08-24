@@ -7,16 +7,26 @@
 surfCaptain.controller('ServerController', [
     '$scope',
     '$controller',
-    'ServerRepository',
+    'PresetRepository',
     'ValidationService',
     'SettingsRepository',
     'MarkerService',
     'PresetService',
     'FlashMessageService',
     'SEVERITY',
-    function ($scope, $controller, ServerRepository, ValidationService, SettingsRepository, MarkerService, PresetService, FlashMessageService, SEVERITY) {
+    function ($scope, $controller, PresetRepository, ValidationService, SettingsRepository, MarkerService, PresetService, FlashMessageService, SEVERITY) {
 
-        var self = this, generateNameSuggestions, replaceMarkers;
+        var self = this;
+
+        // Inherit from AbstractSingleProjectController
+        angular.extend(this, $controller('AbstractSingleProjectController', {$scope: $scope}));
+
+        function ServerControllerException(message) {
+            this.name = 'ServerControllerException';
+            this.message = message;
+        }
+        ServerControllerException.prototype = new Error();
+        ServerControllerException.prototype.constructor = ServerControllerException;
 
         $scope.finished = false;
         $scope.currentPreset = {};
@@ -24,7 +34,21 @@ surfCaptain.controller('ServerController', [
         $scope.contexts = [
             'Production', 'Development', 'Staging'
         ];
+        $scope.serverNames = [];
 
+
+        /**
+         * @return void
+         */
+        this.setServerNames = function () {
+            var property;
+            $scope.serverNames = [];
+            for (property in $scope.servers) {
+                if ($scope.servers.hasOwnProperty(property)) {
+                    $scope.serverNames.push(property);
+                }
+            }
+        };
 
         /**
          * Sets all serverNames that are already in use as
@@ -33,20 +57,60 @@ surfCaptain.controller('ServerController', [
          * @return {void}
          */
         this.setTakenServerNamesAsUnavailableSuggestions = function () {
-            var i = 0, numberOfNameSuggestions, serverName, serverNames = [], property;
+            var i = 0, numberOfNameSuggestions, serverName;
 
-            for (property in $scope.servers) {
-                if ($scope.servers.hasOwnProperty(property)) {
-                    serverNames.push(property);
-                }
-            }
-
-            if (serverNames.length) {
+            if ($scope.serverNames.length) {
                 numberOfNameSuggestions = $scope.nameSuggestions.length;
 
                 for (i; i < numberOfNameSuggestions; i++) {
                     serverName = $scope.generateServerName($scope.nameSuggestions[i].suffix);
-                    $scope.nameSuggestions[i].available = !ValidationService.doesArrayContainItem(serverNames, serverName);
+                    $scope.nameSuggestions[i].available = !ValidationService.doesArrayContainItem($scope.serverNames, serverName);
+                }
+            }
+        };
+
+        /**
+         *
+         * @param {object} nameSuggestions
+         * @return {void}
+         */
+        this.generateNameSuggestions = function (nameSuggestions) {
+            var nameSuggestion, item;
+            $scope.nameSuggestions = [];
+            for (nameSuggestion in nameSuggestions) {
+                if (nameSuggestions.hasOwnProperty(nameSuggestion)) {
+                    item = {
+                        suffix: nameSuggestion,
+                        available: true,
+                        context: nameSuggestions[nameSuggestion]
+                    };
+                    $scope.nameSuggestions.push(item);
+                }
+            }
+        };
+
+        /**
+         *
+         * @return {void}
+         */
+        this.handleSettings = function () {
+            var docRoot;
+            if (angular.isUndefined($scope.settings)) {
+                return;
+            }
+            if (angular.isDefined($scope.settings.nameSuggestions)) {
+                self.generateNameSuggestions($scope.settings.nameSuggestions);
+            }
+            if (angular.isDefined($scope.settings.defaultDocumentRoot)) {
+                docRoot = $scope.settings.defaultDocumentRoot;
+                if (ValidationService.doesStringContainSubstring(docRoot, '{{')) {
+                    docRoot = MarkerService.replaceMarkers(docRoot, $scope.project);
+                }
+                if (ValidationService.doesStringContainSubstring(docRoot, '{{')) {
+                    $scope.newPreset.options.documentRoot = MarkerService.getStringBeforeFirstMarker(docRoot);
+                    $scope.newPreset.options.documentRootWithMarkers = docRoot;
+                } else {
+                    $scope.newPreset.options.documentRoot = docRoot;
                 }
             }
         };
@@ -55,11 +119,12 @@ surfCaptain.controller('ServerController', [
          * @return {void}
          */
         $scope.getAllServers = function () {
-            $scope.newPreset.options.repositoryUrl = $scope.project.ssh_url_to_repo;
-            ServerRepository.getServers($scope.project.ssh_url_to_repo).then(
+            $scope.newPreset.options.repositoryUrl = $scope.project.repositoryUrl;
+            PresetRepository.getServers($scope.project.repositoryUrl).then(
                 function (response) {
                     $scope.finished = true;
-                    $scope.servers = response.presets;
+                    $scope.servers = response.repository.presets;
+                    self.setServerNames();
                     if (angular.isDefined($scope.nameSuggestions)) {
                         self.setTakenServerNamesAsUnavailableSuggestions();
                     }
@@ -84,54 +149,13 @@ surfCaptain.controller('ServerController', [
         };
 
         /**
+         * Takes a suffix and tries to replace a {{suffix}} marker
+         * within the document root. Stores the returning string
+         * within the documentRoot property of the newPreset.
          *
+         * @param {string} suffix
          * @return {void}
          */
-        this.handleSettings = function () {
-            var docRoot;
-            if (angular.isUndefined($scope.settings)) {
-                return;
-            }
-            if (angular.isDefined($scope.settings.nameSuggestions)) {
-                generateNameSuggestions($scope.settings.nameSuggestions);
-            }
-            if (angular.isDefined($scope.settings.defaultDocumentRoot)) {
-                docRoot = $scope.settings.defaultDocumentRoot;
-                if (ValidationService.doesStringContainSubstring(docRoot, '{{')) {
-                    docRoot = MarkerService.replaceMarkers(docRoot, $scope.project);
-                }
-                if (ValidationService.doesStringContainSubstring(docRoot, '{{')) {
-                    $scope.newPreset.options.documentRoot = MarkerService.getStringBeforeFirstMarker(docRoot);
-                    $scope.newPreset.options.documentRootWithMarkers = docRoot;
-                } else {
-                    $scope.newPreset.options.documentRoot = docRoot;
-                }
-            }
-        };
-
-        /**
-         *
-         * @param {object} nameSuggestions
-         * @return {void}
-         */
-        generateNameSuggestions = function (nameSuggestions) {
-            var nameSuggestion, item;
-            $scope.nameSuggestions = [];
-            for (nameSuggestion in nameSuggestions) {
-                if (nameSuggestions.hasOwnProperty(nameSuggestion)) {
-                    item = {
-                        suffix: nameSuggestion,
-                        available: true,
-                        context: nameSuggestions[nameSuggestion]
-                    };
-                    $scope.nameSuggestions.push(item);
-                }
-            }
-        };
-
-        // Inherit from AbstractSingleProjectController
-        angular.extend(this, $controller('AbstractSingleProjectController', {$scope: $scope}));
-
         $scope.setDocumentRoot = function (suffix) {
             var docRoot;
             if (angular.isDefined($scope.newPreset.options.documentRootWithMarkers)) {
@@ -144,9 +168,16 @@ surfCaptain.controller('ServerController', [
 
         };
 
+        /**
+         * Adds a Server (preset) to the collection of presets.
+         * Indicates the success or failure with a flashMessage.
+         *
+         * @param {object} server
+         * @return {void}
+         */
         $scope.addServer = function (server) {
             $scope.finished = false;
-            ServerRepository.addServer(server).then(
+            PresetRepository.addServer(server).then(
                 function (response) {
                     $scope.newPreset = PresetService.getNewPreset($scope.settings);
                     $scope.newServerForm.$setPristine();
@@ -159,6 +190,7 @@ surfCaptain.controller('ServerController', [
                     );
                 },
                 function (response) {
+                    $scope.finished = true;
                     $scope.messages = FlashMessageService.addFlashMessage(
                         'Creation failed!',
                         'The Server "' + server.nodes[0].name + '" could not be created.',
@@ -173,8 +205,15 @@ surfCaptain.controller('ServerController', [
          *
          * @param {string} suffix
          * @returns {string}
+         * @throws {ServerControllerException}
          */
         $scope.generateServerName = function (suffix) {
+            if (angular.isUndefined($scope.project)) {
+                throw new ServerControllerException('No project given.');
+            }
+            if (angular.isUndefined($scope.project.name)) {
+                throw new ServerControllerException('Project got no name.');
+            }
             return $scope.project.name + '-' + suffix;
         };
 

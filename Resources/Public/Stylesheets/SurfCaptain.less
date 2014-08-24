@@ -11,6 +11,8 @@ html,body {
 @import "Partials/Project.less";
 @import "Partials/Deploy.less";
 @import "Partials/Server.less";
+@import "Partials/Deployments.less";
+@import "Partials/SingleDeployment.less";
 
 .surfcaptain-container {
 	min-height: 100%;
@@ -45,8 +47,10 @@ div.surfcaptain.about {
 	width: 500px;
 	margin: 150px auto 0;
 	.modal-content {
+		background-color: #cccccc;
 		.modal-header {
 			border: none;
+			color: #000000;
 		}
 		.modal-footer {
 			border: none;
@@ -75,12 +79,29 @@ div.overlay {
 	top: 50%;
 	left: 50%;
 	margin: -40px 0 0 -40px;
-	img {
+	.fa {
+		color: #dddddd;
 		width: 80px;
 		height: 80px;
+		text-align: center;
 	}
 }
 
 .uppercase {
 	text-transform: uppercase;
+}
+
+.label {
+	&.waiting {
+		background-color: @brand-warning;
+	}
+	&.success {
+		background-color: @brand-success;
+	}
+	&.failed {
+		background-color: @brand-danger;
+	}
+	&.running {
+		background-color: @brand-info;
+	}
 }

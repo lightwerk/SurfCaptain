@@ -1,31 +1,97 @@
 .project-deploy {
 	.configure-deployment-row {
 		margin-top: 30px;
-		.configure-deployment {
-			color: @brand-danger;
-			margin-bottom: 20px;
-			padding-top: 15px;
-			&:first-child {
-				border-top: none;
+		margin-bottom: 20px;
+		padding-top: 15px;
+		&:first-child {
+			border-top: none;
+		}
+		select, .chosen-container {
+			margin-bottom: 15px;
+			width: 80%;
+		}
+		label {
+			width: 100%;
+			margin-top: 5px;
+		}
+		h2 {
+			margin-top: 20px;
+		}
+		h3 {
+			margin-top: 0px;
+			font-size: 22px;
+		}
+		.deployment-server {
+			width: 650px;
+			height: 35px;
+			border: solid 2px #000;
+			box-shadow: @shadow;
+			border-radius: 5px;
+			float: left;
+			margin: 3px;
+			cursor: pointer;
+			color: #000;
+			padding: 4px;
+
+			&.disabled {
+				opacity: 0.3;
+				&:hover {
+					opacity: 0.6;
+				}
 			}
-			select, .chosen-container {
-				margin-bottom: 15px;
-				width: 80%;
+			&.Production {
+				background-color: @brand-danger;
 			}
-			label {
-				width: 100%;
-				margin-top: 5px;
+			&.Staging {
+				background-color: @brand-warning;
 			}
-			h2 {
-				margin-top: 10px;
+			&.Development {
+				background-color: @brand-success;
+			}
+			.title {
+				font-size: 110%;
+				text-transform: uppercase;
+				float: left;
+				.fa {
+					margin-right: 8px;
+					font-size: 22px;
+				}
+			}
+			.context-container {
+				float: right;
+				.context {
+					display: block;
+					margin: auto;
+					text-align: center;
+					font-style: italic;
+				}
 			}
 		}
 		.deploy-git-checkout {
-			display: inline-block;
-			font-size: 90%;
-			font-style: italic;
-			margin-top: 5px;
-			color: @main-color-bright;
+			h3 {
+				text-align: center;
+			}
+			.date,
+			.git-link {
+				font-size: 85%;
+				border-bottom: 1px solid;
+				border-top: 1px solid;
+				padding: 4px 0;
+				margin-bottom: 3px;
+				width: 100%;
+				display: inline-block;
+				text-align: center;
+			}
+			.git-link {
+				border-bottom: none;
+			}
+			.message {
+				padding: 6px;
+				display: inline-block;
+			}
+			.fa {
+				margin-right: 5px;
+			}
 		}
 		.deploy-history {
 			color: @main-color-bright;
@@ -42,6 +108,8 @@
 				opacity: 0.5;
 			}
 			table {
+				width: 500px;
+				margin: auto;
 				td,th {
 					padding: 6px;
 					text-align: left;

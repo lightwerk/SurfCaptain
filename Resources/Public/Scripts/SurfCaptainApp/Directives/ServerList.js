@@ -2,7 +2,7 @@
 /*jslint node: true */
 
 'use strict';
-surfCaptain.directive('serverList', ['ServerRepository', 'ValidationService', 'FlashMessageService', 'SEVERITY', function (ServerRepository, ValidationService, FlashMessageService, SEVERITY) {
+surfCaptain.directive('serverList', ['PresetRepository', 'ValidationService', 'FlashMessageService', 'SEVERITY', function (PresetRepository, ValidationService, FlashMessageService, SEVERITY) {
     var linker = function (scope, element, attrs) {
         scope.toggleSpinnerAndOverlay = function () {
             scope.finished = !scope.finished;
@@ -24,14 +24,14 @@ surfCaptain.directive('serverList', ['ServerRepository', 'ValidationService', 'F
         };
 
         /**
-         * Wrapper for ServerRepository.deleteServer(server)
+         * Wrapper for PresetRepository.deleteServer(server)
          *
          * @param {object} server
          * @return void
          */
         scope.deleteServer = function (server) {
             scope.toggleSpinnerAndOverlay();
-            ServerRepository.deleteServer(server).then(
+            PresetRepository.deleteServer(server).then(
                 function (response) {
                     scope.$parent.getAllServers();
                     scope.messages = FlashMessageService.addFlashMessage(
@@ -52,14 +52,14 @@ surfCaptain.directive('serverList', ['ServerRepository', 'ValidationService', 'F
         };
 
         /**
-         * Wrapper for ServerRepository.updateServer(server)
+         * Wrapper for PresetRepository.updateServer(server)
          *
          * @param {object} server
          * @return void
          */
         scope.updateServer = function (server) {
             scope.toggleSpinnerAndOverlay();
-            ServerRepository.updateServer(server.applications[0]).then(
+            PresetRepository.updateServer(server.applications[0]).then(
                 function () {
                     server.changed = false;
                     scope.toggleSpinnerAndOverlay();

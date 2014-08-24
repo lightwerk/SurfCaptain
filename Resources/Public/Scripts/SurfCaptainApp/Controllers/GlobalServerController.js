@@ -4,11 +4,12 @@
 'use strict';
 surfCaptain.controller('GlobalServerController', [
     '$scope',
-    'ServerRepository',
+    'PresetRepository',
     'PresetService',
     'FlashMessageService',
     'SEVERITY',
-    function ($scope, ServerRepository, PresetService, FlashMessageService, SEVERITY) {
+    function ($scope, PresetRepository, PresetService, FlashMessageService, SEVERITY) {
+        var self = this;
 
         $scope.contexts = [
             'Production', 'Development', 'Staging'
@@ -16,15 +17,29 @@ surfCaptain.controller('GlobalServerController', [
         $scope.newPreset = PresetService.getNewPreset();
         $scope.finished = false;
         $scope.messages = [];
+        $scope.serverNames = [];
+
+        /**
+         * @return void
+         */
+        this.setServerNames = function () {
+            var property;
+            for (property in $scope.servers) {
+                if ($scope.servers.hasOwnProperty(property)) {
+                    $scope.serverNames.push(property);
+                }
+            }
+        };
 
         /**
          * @return {void}
          */
         $scope.getAllServers = function () {
-            ServerRepository.getServers('').then(
+            PresetRepository.getGlobalServers('').then(
                 function (response) {
                     $scope.finished = true;
                     $scope.servers = response.presets;
+                    self.setServerNames();
                     if ($scope.servers.length === 0) {
                         $scope.messages = FlashMessageService.addFlashMessage(
                             'FYI!',
@@ -53,7 +68,7 @@ surfCaptain.controller('GlobalServerController', [
          */
         $scope.addServer = function (server) {
             $scope.finished = false;
-            ServerRepository.addServer(server).then(
+            PresetRepository.addServer(server).then(
                 function (response) {
                     $scope.newPreset = PresetService.getNewPreset();
                     $scope.newServerForm.$setPristine();

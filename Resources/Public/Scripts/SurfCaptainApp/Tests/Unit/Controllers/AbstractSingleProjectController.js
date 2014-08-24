@@ -25,7 +25,7 @@ describe('AbstractSingleProjectController', function () {
         projectsDefer.resolve(projects);
 
         spyOn(ProjectRepository, 'getProjects').andReturn(projectsDefer.promise);
-        spyOn(ProjectRepository, 'getProjectByName').andReturn(projects[0]);;
+        spyOn(ProjectRepository, 'getProjectByName').andReturn(projects[0]);
 
         // Create the controller
         ctrl = $controller('AbstractSingleProjectController', {

@@ -3,16 +3,16 @@
 
 'use strict';
 
-surfCaptain.factory('ServerRepository', ['$http', '$q', function ($http, $q) {
-    var serverRepository = {},
-        url = '/api/presets';
+surfCaptain.factory('PresetRepository', ['$http', '$q', function ($http, $q) {
+    var presetRepository = {},
+        url = '/api/preset';
 
-    function ServerRepositoryException(message) {
-        this.name = 'ServerRepositoryException';
+    function PresetRepositoryException(message) {
+        this.name = 'PresetRepositoryException';
         this.message = message;
     }
-    ServerRepositoryException.prototype = new Error();
-    ServerRepositoryException.prototype.constructor = ServerRepositoryException;
+    PresetRepositoryException.prototype = new Error();
+    PresetRepositoryException.prototype.constructor = PresetRepositoryException;
 
     /**
      * Gets all servers from the collection
@@ -20,22 +20,22 @@ surfCaptain.factory('ServerRepository', ['$http', '$q', function ($http, $q) {
      * @param {object} server
      * @returns {string} – json string
      */
-    serverRepository.getFullPresetAsString = function (server) {
+    presetRepository.getFullPresetAsString = function (server) {
         var container = {"applications": []};
         container.applications[0] = server;
-        return JSON.stringify(container);
+        return angular.toJson(container, false);
     };
 
     /**
      *
      * @param {object} server
      * @returns {string}
-     * @throws {ServerRepositoryException}
+     * @throws {PresetRepositoryException}
      */
-    serverRepository.getKeyFromServerConfiguration = function (server) {
+    presetRepository.getKeyFromServerConfiguration = function (server) {
         if (angular.isUndefined(server.nodes[0].name)) {
-            if (angular.isUndefined(server.apllications[0].nodes[0].name)) {
-                throw new ServerRepositoryException('ServerRepository.getKeyFromServerConfiguratio failed. Server configuration contains no key.');
+            if (angular.isUndefined(server.applications[0].nodes[0].name)) {
+                throw new PresetRepositoryException('PresetRepository.getKeyFromServerConfiguration failed. Server configuration contains no key.');
             }
             return server.apllications[0].nodes[0].name;
         }
@@ -47,7 +47,7 @@ surfCaptain.factory('ServerRepository', ['$http', '$q', function ($http, $q) {
      * @param {object} server
      * @return {object}
      */
-    serverRepository.getApplicationContainer = function (server) {
+    presetRepository.getApplicationContainer = function (server) {
         var applicationContainer = {"applications": []};
         applicationContainer.applications[0] = server;
         return applicationContainer;
@@ -59,9 +59,20 @@ surfCaptain.factory('ServerRepository', ['$http', '$q', function ($http, $q) {
      * @param {string} repositoryUrl
      * @returns {Q.promise|promise} – promise object
      */
-    serverRepository.getServers = function (repositoryUrl) {
+    presetRepository.getServers = function (repositoryUrl) {
         var deferred = $q.defer();
-        $http.get(url + '?repositoryUrl=' + repositoryUrl).success(deferred.resolve).error(deferred.reject);
+        $http.get('/api/repository?repositoryUrl=' + repositoryUrl).success(deferred.resolve).error(deferred.reject);
+        return deferred.promise;
+    };
+
+    /**
+     * Gets all servers from the collection
+     *
+     * @returns {Q.promise|promise} – promise object
+     */
+    presetRepository.getGlobalServers = function () {
+        var deferred = $q.defer();
+        $http.get(url + '?globals=1').success(deferred.resolve).error(deferred.reject);
         return deferred.promise;
     };
 
@@ -71,8 +82,8 @@ surfCaptain.factory('ServerRepository', ['$http', '$q', function ($http, $q) {
      * @param {object} preset
      * @returns {Q.promise|promise} – promise object
      */
-    serverRepository.putServer = function (preset) {
-        return this.sendSinglePresetToApi(preset, 'PUT');
+    presetRepository.putServer = function (preset) {
+        return this.sendSinglePresetToApi(preset, 'put');
     };
 
     /**
@@ -81,8 +92,8 @@ surfCaptain.factory('ServerRepository', ['$http', '$q', function ($http, $q) {
      * @param preset {object}
      * @returns {Q.promise|promise} – promise object
      */
-    serverRepository.postServer = function (preset) {
-        return this.sendSinglePresetToApi(preset, 'POST');
+    presetRepository.postServer = function (preset) {
+        return this.sendSinglePresetToApi(preset, 'post');
     };
 
 
@@ -96,13 +107,20 @@ surfCaptain.factory('ServerRepository', ['$http', '$q', function ($http, $q) {
      * @param {string} method
      * @returns {promise|Q.promise}
      */
-    serverRepository.sendSinglePresetToApi = function (preset, method) {
+    presetRepository.sendSinglePresetToApi = function (preset, method) {
         var deferred = $q.defer(),
             configuration = this.getFullPresetAsString(preset);
         $http({
             method: method,
-            url: url + '?key=' + this.getKeyFromServerConfiguration(preset) + '&configuration=' + configuration,
-            headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+            url: url,
+            data: {
+                'key': this.getKeyFromServerConfiguration(preset),
+                'configuration': configuration
+            },
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            }
         }).success(deferred.resolve).error(deferred.reject);
         return deferred.promise;
     };
@@ -113,9 +131,9 @@ surfCaptain.factory('ServerRepository', ['$http', '$q', function ($http, $q) {
      * @param server {object}
      * @returns {Q.promise|promise} – promise object
      */
-    serverRepository.deleteServer = function (server) {
+    presetRepository.deleteServer = function (server) {
         var deferred = $q.defer();
-        $http.delete(url + '?key=' + serverRepository.getKeyFromServerConfiguration(server.applications[0]))
+        $http.delete(url + '?key=' + presetRepository.getKeyFromServerConfiguration(server.applications[0]))
             .success(deferred.resolve)
             .error(deferred.reject);
         return deferred.promise;
@@ -124,16 +142,19 @@ surfCaptain.factory('ServerRepository', ['$http', '$q', function ($http, $q) {
     // Public API
     return {
         getServers: function (repositoryUrl) {
-            return serverRepository.getServers(repositoryUrl);
+            return presetRepository.getServers(repositoryUrl);
+        },
+        getGlobalServers: function () {
+            return presetRepository.getGlobalServers();
         },
         updateServer: function (server) {
-            return serverRepository.putServer(server);
+            return presetRepository.putServer(server);
         },
         addServer: function (server) {
-            return serverRepository.postServer(server);
+            return presetRepository.postServer(server);
         },
         deleteServer: function (server) {
-            return serverRepository.deleteServer(server);
+            return presetRepository.deleteServer(server);
         }
     };
 }]);
