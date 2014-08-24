@@ -63,7 +63,7 @@ Example call with a configuration:
 						"type": "TYPO3\\CMS\\Deploy",
 						"options": {
 							"repositoryUrl": "git@git.lightwerk.com:boilerplate/typo3_cms.git",
-							"documentRoot": "/var/www/projectName/context/",
+							"deploymentPath": "/var/www/projectName/context/",
 							"context": "Development",
 							"tag": "1.2.3"
 						},
@@ -143,7 +143,7 @@ Example call:
 				{
 					"options": {
 						"repositoryUrl": "git@git.lightwerk.com:boilerplate/typo3_cms.git",
-						"documentRoot": "/var/www/projectName/context/",
+						"deploymentPath": "/var/www/projectName/context/",
 						"context": "Development"
 					},
 					"nodes": [
@@ -176,7 +176,7 @@ Example call:
 				{
 					"options": {
 						"repositoryUrl": "git@git.lightwerk.com:boilerplate/typo3_cms.git",
-						"documentRoot": "/var/www/projectName/context/",
+						"deploymentPath": "/var/www/projectName/context/",
 						"context": "Development"
 					},
 					"nodes": [
