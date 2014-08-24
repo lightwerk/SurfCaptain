@@ -12,6 +12,7 @@ use Lightwerk\SurfCaptain\Domain\Model\Tag;
 use Lightwerk\SurfCaptain\Mapper\DataMapper;
 use Lightwerk\SurfCaptain\Utility\GeneralUtility;
 use TYPO3\Flow\Annotations as Flow;
+use TYPO3\Flow\Http\Response;
 
 class GitLabDriver implements DriverInterface {
 
@@ -27,8 +28,10 @@ class GitLabDriver implements DriverInterface {
 	protected $browser;
 
 	/**
+	 * not sure if inject is "cool" (inject only singletons?)
+	 * contains bugfix
 	 * @Flow\Inject
-	 * @var \TYPO3\Flow\Http\Client\CurlEngine
+	 * @var \Lightwerk\SurfCaptain\Http\Client\CurlEngine
 	 */
 	protected $browserRequestEngine;
 
@@ -85,12 +88,18 @@ class GitLabDriver implements DriverInterface {
 	 * @throws \TYPO3\Flow\Http\Exception
 	 */
 	protected function getGitLabApiResponse($command, $method = 'GET', array $parameters = array(), array $content = array()) {
-		$parameters['private_token'] = $this->settings['privateToken'];
 		$url = $this->settings['apiUrl'] . $command . '?' . http_build_query($parameters);
+		// transfer Token in http header
+		$this->browserRequestEngine->setOption(CURLOPT_HTTPHEADER, array('PRIVATE-TOKEN: ' . $this->settings['privateToken']));
+		#$url = $this->settings['apiUrl'] . $command;
+		#$response = $this->browser->request($url, $method, $parameters);
 		// maybe we will throw own exception to give less information (token is outputed)
-		$response = $this->browser->request($url, $method, array(), array(), $this->server, json_encode($content));
+		$response = $this->browser->request($url, $method);
+
+		$this->emitGitLabApiCall($url, $method, $response);
 
 		$statusCode = $response->getStatusCode();
+
 		if ($statusCode < 200 || $statusCode >= 400) {
 			throw new Exception('GitLab request was not successful. Response was: ' . $response->getStatus(), 1408473972);
 		}
@@ -101,6 +110,16 @@ class GitLabDriver implements DriverInterface {
 		}
 		return $content;
 	}
+
+	
+	/**
+	 * @param string $url
+	 * @param string $method
+	 * @param Response $response
+	 * @return void
+	 * @Flow\Signal
+	 */
+	protected function emitGitLabApiCall($url, $method, Response $response) {}
 
 	/**
 	 * @param string $repositoryUrl
