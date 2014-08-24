@@ -30,8 +30,9 @@ class DataMapper {
 				$objects[] = $this->mapOneToObject($objectRow, $objectClass, $settings);
 			}
 			return $objects;
+		} else {
+			return $this->mapOneToObject($objectData, $objectClass, $settings);
 		}
-		return $this->mapOneToObject($objectData, $objectClass, $settings);
 	}
 
 	/**
