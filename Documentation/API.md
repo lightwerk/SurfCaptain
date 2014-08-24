@@ -29,6 +29,8 @@ Example call:
 
 - Methode: GET
 - Path: /api/deployment
+- Parameters:
+	- limit - integer (Default: 100)
 
 Example call to get the deployments of all repositories:
 
@@ -201,3 +203,16 @@ Example call:
 Example call:
 
 	curl -H "Accept: application/json" -v -X DELETE http://surf.flow.lp.lw.loc/api/preset\?key\=sma
+
+### Check SSH login
+
+- Methode: GET
+- Path: /api/checkSshLogin
+- Parameters:
+	- hostname (required) - string
+	- username - string
+	- port - integer
+
+Example call:
+
+	curl -H "Accept: application/json" http://surf.flow.lp.lw.loc/api/checkSshLogin\?hostname\=dev.loc\&username\=lw-lm | jq '.'

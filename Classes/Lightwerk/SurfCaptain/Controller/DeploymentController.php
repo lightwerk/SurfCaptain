@@ -25,10 +25,11 @@ class DeploymentController extends AbstractRestController {
 	protected $resourceArgumentName = 'deployment';
 
 	/**
+	 * @param integer $limit
 	 * @return void
 	 */
-	public function listAction() {
-		$this->view->assign('deployments', $this->deploymentRepository->findAll());
+	public function listAction($limit = 100) {
+		$this->view->assign('deployments', $this->deploymentRepository->findAllWithLimit($limit));
 	}
 
 	/**
