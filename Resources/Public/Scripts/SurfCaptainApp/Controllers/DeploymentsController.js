@@ -25,7 +25,6 @@ surfCaptain.controller('DeploymentsController', [
         this.init = function () {
             DeploymentRepository.getAllDeployments().then(
                 function (response) {
-                    console.log(response);
                     $scope.finished = true;
                     self.setDeployments(response.deployments);
                 },
@@ -41,7 +40,6 @@ surfCaptain.controller('DeploymentsController', [
             );
         };
         this.init();
-
 
         $scope.deployments = [];
         $scope.finished = false;
