@@ -34,9 +34,9 @@ class CopySshKeyController extends AbstractRestController {
 	public function createAction($hostname, $username, $password, $port = NULL) {
 		try {
 			$this->shellService->copyKey($hostname, $username, $password, $port);
-			$this->view->assign('copied', true);
+			$this->view->assign('copied', TRUE);
 		} catch (Exception $e) {
-			$this->view->assign('copied', false);
+			$this->view->assign('copied', FALSE);
 			$this->handleException($e);
 		}
 	}

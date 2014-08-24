@@ -115,9 +115,8 @@ class Deployment {
 		$configuration = $this->getConfiguration();
 		if (!empty($configuration['applications'][0]['type'])) {
 			return $configuration['applications'][0]['type'];
-		} else {
-			return '';
 		}
+		return '';
 	}
 
 	/**
@@ -146,9 +145,8 @@ class Deployment {
 		$configuration = $this->getConfiguration();
 		if (empty($configuration['applications'][0]['options']['context'])) {
 			return '';
-		} else {
-			return $configuration['applications'][0]['options']['context'];
 		}
+		return $configuration['applications'][0]['options']['context'];
 	}
 
 	/**

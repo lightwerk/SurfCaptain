@@ -80,6 +80,7 @@ class GitLabDriver implements DriverInterface {
 	 * @param string $command
 	 * @param string $method
 	 * @param array $parameters
+	 * @param array $content
 	 * @return mixed $data
 	 * @throws Exception
 	 * @throws \TYPO3\Flow\Http\Exception
@@ -218,6 +219,7 @@ class GitLabDriver implements DriverInterface {
 	 * @param string $filePath
 	 * @param string $reference branch name, tag name or hash
 	 * @return string
+	 * @throws Exception
 	 */
 	public function getFileContent($repositoryUrl, $filePath, $reference = 'master') {
 		$response = $this->getGitLabApiResponse(

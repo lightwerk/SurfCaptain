@@ -33,9 +33,9 @@ class CheckSshLoginController extends AbstractRestController {
 	public function showAction($hostname, $username = NULL, $port = NULL) {
 		try {
 			$this->shellService->checkLogin($hostname, $username, $port);
-			$this->view->assign('login', true);
+			$this->view->assign('login', TRUE);
 		} catch (Exception $e) {
-			$this->view->assign('login', false);
+			$this->view->assign('login', FALSE);
 			$this->handleException($e);
 		}
 	}
