@@ -50,7 +50,7 @@
 						<td><span class="wrapper">:
 							<span
 								editable-text="preset.applications.0.options.deploymentPath"
-								onbeforesave="updateDocumentRoot($data)"
+								onbeforesave="updateDeploymentPath($data)"
 								onaftersave="preset.changed=true"
 							>
 								{{preset.applications.0.options.deploymentPath || 'please add'}}

@@ -178,7 +178,7 @@ describe('ServerController', function () {
             };
 
             scope.settings = {
-                defaultDocumentRoot: '{{foo}}',
+                defaultDeploymentPath: '{{foo}}',
                 nameSuggestions: ['a', 'b']
             };
 
@@ -201,7 +201,7 @@ describe('ServerController', function () {
             expect(ctrl.generateNameSuggestions).toHaveBeenCalled();
         });
 
-        it('should not call anything on MarkerService nor ValidationService if $scope.settings.defaultDocumentRoot is undefined.', function () {
+        it('should not call anything on MarkerService nor ValidationService if $scope.settings.defaultDeploymentPath is undefined.', function () {
             scope.settings = {};
             ctrl.handleSettings();
             expect(MarkerService.getStringBeforeFirstMarker).not.toHaveBeenCalled();
@@ -209,12 +209,12 @@ describe('ServerController', function () {
             expect(ValidationService.doesStringContainSubstring).not.toHaveBeenCalled();
         });
 
-        it('should call ValidationService.doesStringContainSubstring twice if $scope.settings.defaultDocumentRoot is defined.', function () {
+        it('should call ValidationService.doesStringContainSubstring twice if $scope.settings.defaultDeploymentPath is defined.', function () {
             ctrl.handleSettings();
             expect(ValidationService.doesStringContainSubstring.callCount).toEqual(2);
         });
 
-        it('should call MarkerService.replaceMarkers if $scope.settings.defaultDocumentRoot contains "{{".', function () {
+        it('should call MarkerService.replaceMarkers if $scope.settings.defaultDeploymentPath contains "{{".', function () {
             ctrl.handleSettings();
             expect(MarkerService.replaceMarkers).toHaveBeenCalled();
         });
@@ -390,14 +390,14 @@ describe('ServerController', function () {
         });
 
         //###########################
-        // $scope->setDocumentRoot()#
+        // $scope->setDeploymentPath()#
         //###########################
 
-        it('should have a method setDocumentRoot.', function () {
-            expect(scope.setDocumentRoot).toBeDefined();
+        it('should have a method setDeploymentPath.', function () {
+            expect(scope.setDeploymentPath).toBeDefined();
         });
 
-        describe('->setDocumentRoot()', function () {
+        describe('->setDeploymentPath()', function () {
             beforeEach(inject(function ($controller, $rootScope, _MarkerService_) {
                 scope = $rootScope.$new();
                 MarkerService = _MarkerService_;
@@ -420,18 +420,18 @@ describe('ServerController', function () {
             });
 
             it('should call MarkerService->replaceMarkers with deploymentPathWithMarkers and the passed suffix.', function () {
-                scope.setDocumentRoot('live');
+                scope.setDeploymentPath('live');
                 expect(MarkerService.replaceMarkers).toHaveBeenCalledWith(scope.newPreset.options.deploymentPathWithMarkers, {suffix: 'live'});
             });
 
             it('should fill the deploymentPath of the newPreset with the return value of MarkerService->replaceMarkers().', function () {
-                scope.setDocumentRoot('live');
+                scope.setDeploymentPath('live');
                 expect(scope.newPreset.options.deploymentPath).toEqual('markerServiceReturn');
             });
 
             it('should leave the deploymentPath in newPreset if deploymentPathWithMarkers is not defined.', function () {
                 delete scope.newPreset.options.deploymentPathWithMarkers;
-                scope.setDocumentRoot('live');
+                scope.setDeploymentPath('live');
                 expect(scope.newPreset.options.deploymentPath).toEqual('foo');
             });
         });

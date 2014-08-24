@@ -37,7 +37,7 @@
 									data-ng-click="
 										$parent.$parent.newPreset.nodes.0.name = generateServerName(nameSuggestion.suffix);
 										$parent.$parent.newPreset.options.context = nameSuggestion.context;
-										$parent.$parent.setDocumentRoot(nameSuggestion.suffix)"
+										$parent.$parent.setDeploymentPath(nameSuggestion.suffix)"
 								>{{nameSuggestion.suffix}}</a>
 								<span data-ng-if="!nameSuggestion.available">{{nameSuggestion.suffix}}</span>
 							</span>
@@ -59,11 +59,11 @@
 							</div>
 						</div>
 
-						<label>DocumentRoot:</label> *
+						<label>DeploymentPath:</label> *
 						<input
 							type="text"
 							data-ng-model="newPreset.options.deploymentPath"
-							placeholder="DocumentRoot"
+							placeholder="DeploymentPath"
 							class="form-control"
 							name="deploymentPath"
 							data-ng-trim
@@ -74,7 +74,7 @@
 						<div class="messages">
 							<div data-ng-messages="newServerForm.deploymentPath.$error" data-ng-if="newServerForm.deploymentPath.$dirty">
 								<span class="error" data-ng-message="last-character-validate">Must end with a '/'!</span>
-								<span class="error" data-ng-message="required">DocumentRoot is required!</span>
+								<span class="error" data-ng-message="required">DeploymentPath is required!</span>
 							</div>
 						</div>
 					</div>

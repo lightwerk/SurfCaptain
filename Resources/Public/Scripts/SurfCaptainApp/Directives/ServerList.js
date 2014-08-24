@@ -91,15 +91,15 @@ surfCaptain.directive('serverList', ['PresetRepository', 'ValidationService', 'F
         };
 
         /**
-         * Validates the updated DocumentRoot string before submitting to Server
+         * Validates the updated DeploymentPath string before submitting to Server
          *
          * @param data
          * @return {string | boolean} ErrorMessage or True if valid
          */
-        scope.updateDocumentRoot = function (data) {
-            var res = ValidationService.hasLength(data, 1, 'DocumentRoot is required!');
+        scope.updateDeploymentPath = function (data) {
+            var res = ValidationService.hasLength(data, 1, 'DeploymentPath is required!');
             if (res === true) {
-                return ValidationService.doesLastCharacterMatch(data, '/', 'DocumentRoot must end with "/"!');
+                return ValidationService.doesLastCharacterMatch(data, '/', 'DeploymentPath must end with "/"!');
             }
             return res;
         };

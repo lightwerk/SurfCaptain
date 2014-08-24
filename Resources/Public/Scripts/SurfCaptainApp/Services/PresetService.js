@@ -26,7 +26,7 @@ surfCaptain.service('PresetService', [function () {
      * properties in configuration are:
      *
      *  - defaultUser (Sets the Username in the first Node)
-     *  - defaultDocumentRoot (Sets the deploymentPath in the options.
+     *  - defaultDeploymentPath (Sets the deploymentPath in the options.
      *    Markers have to be replaced later on!)
      *
      * @param {object} configuration - optional
@@ -38,8 +38,8 @@ surfCaptain.service('PresetService', [function () {
             if (angular.isDefined(configuration.defaultUser)) {
                 preset.nodes[0].username = configuration.defaultUser;
             }
-            if (angular.isDefined(configuration.defaultDocumentRoot)) {
-                preset.options.deploymentPath = configuration.defaultDocumentRoot;
+            if (angular.isDefined(configuration.defaultDeploymentPath)) {
+                preset.options.deploymentPath = configuration.defaultDeploymentPath;
             }
         }
         return preset;

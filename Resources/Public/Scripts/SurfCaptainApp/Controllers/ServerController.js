@@ -101,8 +101,8 @@ surfCaptain.controller('ServerController', [
             if (angular.isDefined($scope.settings.nameSuggestions)) {
                 self.generateNameSuggestions($scope.settings.nameSuggestions);
             }
-            if (angular.isDefined($scope.settings.defaultDocumentRoot)) {
-                docRoot = $scope.settings.defaultDocumentRoot;
+            if (angular.isDefined($scope.settings.defaultDeploymentPath)) {
+                docRoot = $scope.settings.defaultDeploymentPath;
                 if (ValidationService.doesStringContainSubstring(docRoot, '{{')) {
                     docRoot = MarkerService.replaceMarkers(docRoot, $scope.project);
                 }
@@ -156,7 +156,7 @@ surfCaptain.controller('ServerController', [
          * @param {string} suffix
          * @return {void}
          */
-        $scope.setDocumentRoot = function (suffix) {
+        $scope.setDeploymentPath = function (suffix) {
             var docRoot;
             if (angular.isDefined($scope.newPreset.options.deploymentPathWithMarkers)) {
                 docRoot = MarkerService.replaceMarkers(
