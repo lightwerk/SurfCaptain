@@ -38,16 +38,30 @@ var surfCaptain = angular.module('surfCaptain', ['ngRoute', 'xeditable', 'ngAnim
                 templateUrl: templatePath + 'Extensions.html',
                 controller: 'ExtensionsController'
             }).
+            when('/deployments', {
+                templateUrl: templatePath + 'Deployments.html',
+                controller: 'DeploymentsController'
+            }).
+            when('/deployments/:deploymentId', {
+                templateUrl: templatePath + 'SingleDeployment.html',
+                controller: 'SingleDeploymentController'
+            }).
             otherwise({
                 redirectTo: '/'
             });
     }])
-    .value('version', '0.8.4')
+    .value('version', '0.9')
     .constant('SEVERITY', {
         ok: 0,
         info: 1,
         warning: 2,
         error: 3
+    })
+    .constant('CONFIG', {
+        applicationTypes: {
+            deployTYPO3: 'TYPO3\\CMS\\Deploy',
+            syncTYPO3: 'TYPO3\\CMS\\Shared'
+        }
     });
 
 surfCaptain.run(['editableOptions', function (editableOptions) {
@@ -190,10 +204,15 @@ surfCaptain.controller('AbstractSingleProjectController', ['$scope', '$routePara
 surfCaptain.controller('DeployController', [
     '$scope',
     '$controller',
-    'GitRepository',
-    'ServerRepository',
+    'ProjectRepository',
     'HistoryRepository',
-    function ($scope, $controller, GitRepository, ServerRepository, HistoryRepository) {
+    'SEVERITY',
+    'FlashMessageService',
+    'CONFIG',
+    'DeploymentRepository',
+    '$location',
+    '$cacheFactory',
+    function ($scope, $controller, ProjectRepository, HistoryRepository, SEVERITY, FlashMessageService, CONFIG, DeploymentRepository, $location, $cacheFactory) {
 
         var loadingString = 'loading ...';
 
@@ -210,8 +229,95 @@ surfCaptain.controller('DeployController', [
                 group: 'Branches'
             }
         ];
-        $scope.tags = [];
-        $scope.branches = [];
+        $scope.servers = [];
+        $scope.error = false;
+        $scope.finished = false;
+        $scope.currentPreset = {};
+
+        /**
+         *
+         * @param {object} preset
+         * @return {void}
+         */
+        $scope.setCurrentPreset = function (preset) {
+            $scope.currentPreset = preset;
+            if (angular.isDefined($scope.selectedCommit) && $scope.selectedCommit !== '') {
+                $scope.setCommitInCurrentPreset();
+            }
+        };
+
+        $scope.deploy = function (preset) {
+            if (preset === $scope.currentPreset) {
+                $scope.currentPreset.applications[0].type = CONFIG.applicationTypes.deployTYPO3;
+                DeploymentRepository.addDeployment($scope.currentPreset).then(
+                    function (response) {
+                        $scope.messages = FlashMessageService.addFlashMessage(
+                            'OK!',
+                            $scope.currentCommit.type + ' ' + $scope.currentCommit.name + ' will be shortly deployed onto '
+                                + $scope.currentPreset.applications[0].nodes[0].name + '! You can cancel the deployment while it is still waiting.',
+                            SEVERITY.ok
+                        );
+                        if (angular.isUndefined($cacheFactory.get('deploymentCache'))) {
+                            $cacheFactory('deploymentCache');
+                        }
+                        $cacheFactory.get('deploymentCache').put(response.deployment.__identity, response.deployment);
+                        $location.path('deployments/' + response.deployment.__identity);
+                    },
+                    function (response) {
+
+                    }
+                );
+            }
+        };
+
+        /**
+         * @return {void}
+         */
+        $scope.setCommitInCurrentPreset = function () {
+            var commit = $scope.deployableCommits.filter(function (commit) {
+                return commit.identifier === $scope.selectedCommit;
+            }), date;
+            if (angular.isUndefined(commit[0]) || commit === null || commit.length > 1) {
+                FlashMessageService.addFlashMessage(
+                    'Error',
+                    'Something went wrong with the chosen Commit',
+                    SEVERITY.error
+                );
+                $scope.error = true;
+                return;
+            }
+            $scope.currentCommit = commit[0];
+            switch ($scope.currentCommit.type) {
+            case 'Branch':
+                delete $scope.currentPreset.applications[0].options.tag;
+                $scope.currentPreset.applications[0].options.branch = $scope.currentCommit.name;
+                break;
+            case 'Tag':
+                delete $scope.currentPreset.applications[0].options.branch;
+                $scope.currentPreset.applications[0].options.tag = $scope.currentCommit.name;
+                break;
+            default:
+                FlashMessageService.addFlashMessage(
+                    'Error',
+                    'Something went wrong with the chosen Commit',
+                    SEVERITY.error
+                );
+                $scope.error = true;
+                $scope.currentCommit = null;
+                return;
+            }
+        };
+
+        /**
+         * @param {object} preset
+         * @returns {boolean}
+         */
+        $scope.presetDisplay = function (preset) {
+            if (angular.isUndefined($scope.currentPreset.applications)) {
+                return true;
+            }
+            return $scope.currentPreset === preset;
+        };
 
         $scope.unsetLoadingKeyForGroup = function (group) {
             var key;
@@ -230,48 +336,94 @@ surfCaptain.controller('DeployController', [
 
         $scope.$watch('project', function (project) {
             var id;
-            if (angular.isUndefined(project.ssh_url_to_repo)) {
+            if (angular.isUndefined(project.repositoryUrl)) {
                 return;
             }
-            id = project.id;
-            GitRepository.getTagsByProjectId(id.toString()).then(
-                function (response) {
-                    $scope.unsetLoadingKeyForGroup('Tags');
-                    $scope.tags = response.tags;
-                    $scope.deployableCommits = jQuery.merge($scope.tags, $scope.deployableCommits);
-                },
-                function (reason) {
-                    $scope.unsetLoadingKeyForGroup('Tags');
-                }
-            );
-            GitRepository.getBranchesByProjectId(id.toString()).then(
-                function (response) {
-                    $scope.unsetLoadingKeyForGroup('Branches');
-                    $scope.branches = response.branches;
-                    $scope.deployableCommits = jQuery.merge($scope.branches, $scope.deployableCommits);
-                },
-                function (reason) {
-                    $scope.unsetLoadingKeyForGroup('Branches');
-                }
-            );
-//            GitRepository.getRepository(project.ssh_url_to_repo).then(
-//                function (data) {
-//                    console.log(data);
-//                }
-//            );
-            ServerRepository.getServers().then(function (response) {
-                $scope.servers = response.filter(function (entry) {
-                    return entry.project === project.id;
-                });
-            });
 
-            HistoryRepository.getHistoryByProject($scope.project).then(function (response) {
-                $scope.history = response.filter(function (entry) {
-                    return entry.application === 'Deploy';
-                });
-            });
+            ProjectRepository.getFullProjectByRepositoryUrl(project.repositoryUrl).then(
+                function (response) {
+                    var property,
+                        presets = response.repository.presets;
+                    $scope.repositoryUrl = response.repository.webUrl;
+                    $scope.deployableCommits = response.repository.tags;
+                    jQuery.merge($scope.deployableCommits, response.repository.branches);
+
+                    for (property in presets) {
+                        if (presets.hasOwnProperty(property)) {
+                            if (angular.isUndefined(presets[property].applications[0].type) || presets[property].applications[0].type === CONFIG.applicationTypes.deployTYPO3) {
+                                $scope.servers.push(presets[property]);
+                            }
+                        }
+                    }
+                    $scope.finished = true;
+                    if ($scope.servers.length === 0) {
+                        $scope.messages = FlashMessageService.addFlashMessage(
+                            'No Servers yet!',
+                            'FYI: There are no servers for project <span class="uppercase">' + $scope.name  + '</span> yet. Why dont you create one, hmm?',
+                            SEVERITY.info
+                        );
+                    }
+                },
+                function () {
+                    FlashMessageService.addFlashMessage(
+                        'Error',
+                        'API call failed. Deployment not possible.',
+                        SEVERITY.error,
+                        'deployment-project-call-failed'
+                    );
+                }
+            );
         });
     }]);
+/*global surfCaptain, angular*/
+/*jslint node: true */
+
+'use strict';
+surfCaptain.controller('DeploymentsController', [
+    '$scope',
+    'DeploymentRepository',
+    'FlashMessageService',
+    'SEVERITY',
+    function ($scope, DeploymentRepository, FlashMessageService, SEVERITY) {
+
+        var self = this;
+
+        /**
+         * @param deployments
+         * @return {void}
+         */
+        this.setDeployments = function (deployments) {
+            $scope.deployments = deployments;
+        };
+
+        /**
+         * @return {void}
+         */
+        this.init = function () {
+            DeploymentRepository.getAllDeployments().then(
+                function (response) {
+                    console.log(response);
+                    $scope.finished = true;
+                    self.setDeployments(response.deployments);
+                },
+                function () {
+                    $scope.finished = true;
+                    FlashMessageService.addFlashMessage(
+                        'Error!',
+                        'The API call failed. Please try again later.',
+                        SEVERITY.error,
+                        'deployment-list-no-response'
+                    );
+                }
+            );
+        };
+        this.init();
+
+
+        $scope.deployments = [];
+        $scope.finished = false;
+    }
+]);
 /*global surfCaptain, angular*/
 /*jslint node: true */
 
@@ -285,11 +437,12 @@ surfCaptain.controller('ExtensionsController', ['$scope', '$controller', functio
 'use strict';
 surfCaptain.controller('GlobalServerController', [
     '$scope',
-    'ServerRepository',
+    'PresetRepository',
     'PresetService',
     'FlashMessageService',
     'SEVERITY',
-    function ($scope, ServerRepository, PresetService, FlashMessageService, SEVERITY) {
+    function ($scope, PresetRepository, PresetService, FlashMessageService, SEVERITY) {
+        var self = this;
 
         $scope.contexts = [
             'Production', 'Development', 'Staging'
@@ -297,15 +450,29 @@ surfCaptain.controller('GlobalServerController', [
         $scope.newPreset = PresetService.getNewPreset();
         $scope.finished = false;
         $scope.messages = [];
+        $scope.serverNames = [];
+
+        /**
+         * @return void
+         */
+        this.setServerNames = function () {
+            var property;
+            for (property in $scope.servers) {
+                if ($scope.servers.hasOwnProperty(property)) {
+                    $scope.serverNames.push(property);
+                }
+            }
+        };
 
         /**
          * @return {void}
          */
         $scope.getAllServers = function () {
-            ServerRepository.getServers('').then(
+            PresetRepository.getGlobalServers('').then(
                 function (response) {
                     $scope.finished = true;
                     $scope.servers = response.presets;
+                    self.setServerNames();
                     if ($scope.servers.length === 0) {
                         $scope.messages = FlashMessageService.addFlashMessage(
                             'FYI!',
@@ -334,7 +501,7 @@ surfCaptain.controller('GlobalServerController', [
          */
         $scope.addServer = function (server) {
             $scope.finished = false;
-            ServerRepository.addServer(server).then(
+            PresetRepository.addServer(server).then(
                 function (response) {
                     $scope.newPreset = PresetService.getNewPreset();
                     $scope.newServerForm.$setPristine();
@@ -411,12 +578,22 @@ surfCaptain.controller('ProjectsController', [
                 function (response) {
                     $scope.finished = true;
                     $scope.projects = response;
-                    $scope.messages = FlashMessageService.addFlashMessage('At your Service!', 'All Projects have been loaded successfully. Have fun!', SEVERITY.ok, 'projects-loaded-ok');
+                    $scope.messages = FlashMessageService.addFlashMessage(
+                        'At your Service!',
+                        'All Projects have been loaded successfully. Have fun!',
+                        SEVERITY.ok,
+                        'projects-loaded-ok'
+                    );
                 },
                 function () {
                     //an error occurred
                     $scope.finished = true;
-                    $scope.messages = FlashMessageService.addFlashMessage('Error!', 'API call failed. GitLab is currently not available.', SEVERITY.error, 'projects-loaded-error');
+                    $scope.messages = FlashMessageService.addFlashMessage(
+                        'Error!',
+                        'API call failed. GitLab is currently not available.',
+                        SEVERITY.error,
+                        'projects-loaded-error'
+                    );
                 }
             );
             SettingsRepository.getSettings().then(
@@ -437,16 +614,26 @@ surfCaptain.controller('ProjectsController', [
 surfCaptain.controller('ServerController', [
     '$scope',
     '$controller',
-    'ServerRepository',
+    'PresetRepository',
     'ValidationService',
     'SettingsRepository',
     'MarkerService',
     'PresetService',
     'FlashMessageService',
     'SEVERITY',
-    function ($scope, $controller, ServerRepository, ValidationService, SettingsRepository, MarkerService, PresetService, FlashMessageService, SEVERITY) {
+    function ($scope, $controller, PresetRepository, ValidationService, SettingsRepository, MarkerService, PresetService, FlashMessageService, SEVERITY) {
 
-        var self = this, generateNameSuggestions, replaceMarkers;
+        var self = this;
+
+        // Inherit from AbstractSingleProjectController
+        angular.extend(this, $controller('AbstractSingleProjectController', {$scope: $scope}));
+
+        function ServerControllerException(message) {
+            this.name = 'ServerControllerException';
+            this.message = message;
+        }
+        ServerControllerException.prototype = new Error();
+        ServerControllerException.prototype.constructor = ServerControllerException;
 
         $scope.finished = false;
         $scope.currentPreset = {};
@@ -454,7 +641,21 @@ surfCaptain.controller('ServerController', [
         $scope.contexts = [
             'Production', 'Development', 'Staging'
         ];
+        $scope.serverNames = [];
 
+
+        /**
+         * @return void
+         */
+        this.setServerNames = function () {
+            var property;
+            $scope.serverNames = [];
+            for (property in $scope.servers) {
+                if ($scope.servers.hasOwnProperty(property)) {
+                    $scope.serverNames.push(property);
+                }
+            }
+        };
 
         /**
          * Sets all serverNames that are already in use as
@@ -463,20 +664,60 @@ surfCaptain.controller('ServerController', [
          * @return {void}
          */
         this.setTakenServerNamesAsUnavailableSuggestions = function () {
-            var i = 0, numberOfNameSuggestions, serverName, serverNames = [], property;
+            var i = 0, numberOfNameSuggestions, serverName;
 
-            for (property in $scope.servers) {
-                if ($scope.servers.hasOwnProperty(property)) {
-                    serverNames.push(property);
-                }
-            }
-
-            if (serverNames.length) {
+            if ($scope.serverNames.length) {
                 numberOfNameSuggestions = $scope.nameSuggestions.length;
 
                 for (i; i < numberOfNameSuggestions; i++) {
                     serverName = $scope.generateServerName($scope.nameSuggestions[i].suffix);
-                    $scope.nameSuggestions[i].available = !ValidationService.doesArrayContainItem(serverNames, serverName);
+                    $scope.nameSuggestions[i].available = !ValidationService.doesArrayContainItem($scope.serverNames, serverName);
+                }
+            }
+        };
+
+        /**
+         *
+         * @param {object} nameSuggestions
+         * @return {void}
+         */
+        this.generateNameSuggestions = function (nameSuggestions) {
+            var nameSuggestion, item;
+            $scope.nameSuggestions = [];
+            for (nameSuggestion in nameSuggestions) {
+                if (nameSuggestions.hasOwnProperty(nameSuggestion)) {
+                    item = {
+                        suffix: nameSuggestion,
+                        available: true,
+                        context: nameSuggestions[nameSuggestion]
+                    };
+                    $scope.nameSuggestions.push(item);
+                }
+            }
+        };
+
+        /**
+         *
+         * @return {void}
+         */
+        this.handleSettings = function () {
+            var docRoot;
+            if (angular.isUndefined($scope.settings)) {
+                return;
+            }
+            if (angular.isDefined($scope.settings.nameSuggestions)) {
+                self.generateNameSuggestions($scope.settings.nameSuggestions);
+            }
+            if (angular.isDefined($scope.settings.defaultDocumentRoot)) {
+                docRoot = $scope.settings.defaultDocumentRoot;
+                if (ValidationService.doesStringContainSubstring(docRoot, '{{')) {
+                    docRoot = MarkerService.replaceMarkers(docRoot, $scope.project);
+                }
+                if (ValidationService.doesStringContainSubstring(docRoot, '{{')) {
+                    $scope.newPreset.options.documentRoot = MarkerService.getStringBeforeFirstMarker(docRoot);
+                    $scope.newPreset.options.documentRootWithMarkers = docRoot;
+                } else {
+                    $scope.newPreset.options.documentRoot = docRoot;
                 }
             }
         };
@@ -485,11 +726,12 @@ surfCaptain.controller('ServerController', [
          * @return {void}
          */
         $scope.getAllServers = function () {
-            $scope.newPreset.options.repositoryUrl = $scope.project.ssh_url_to_repo;
-            ServerRepository.getServers($scope.project.ssh_url_to_repo).then(
+            $scope.newPreset.options.repositoryUrl = $scope.project.repositoryUrl;
+            PresetRepository.getServers($scope.project.repositoryUrl).then(
                 function (response) {
                     $scope.finished = true;
-                    $scope.servers = response.presets;
+                    $scope.servers = response.repository.presets;
+                    self.setServerNames();
                     if (angular.isDefined($scope.nameSuggestions)) {
                         self.setTakenServerNamesAsUnavailableSuggestions();
                     }
@@ -514,54 +756,13 @@ surfCaptain.controller('ServerController', [
         };
 
         /**
+         * Takes a suffix and tries to replace a {{suffix}} marker
+         * within the document root. Stores the returning string
+         * within the documentRoot property of the newPreset.
          *
+         * @param {string} suffix
          * @return {void}
          */
-        this.handleSettings = function () {
-            var docRoot;
-            if (angular.isUndefined($scope.settings)) {
-                return;
-            }
-            if (angular.isDefined($scope.settings.nameSuggestions)) {
-                generateNameSuggestions($scope.settings.nameSuggestions);
-            }
-            if (angular.isDefined($scope.settings.defaultDocumentRoot)) {
-                docRoot = $scope.settings.defaultDocumentRoot;
-                if (ValidationService.doesStringContainSubstring(docRoot, '{{')) {
-                    docRoot = MarkerService.replaceMarkers(docRoot, $scope.project);
-                }
-                if (ValidationService.doesStringContainSubstring(docRoot, '{{')) {
-                    $scope.newPreset.options.documentRoot = MarkerService.getStringBeforeFirstMarker(docRoot);
-                    $scope.newPreset.options.documentRootWithMarkers = docRoot;
-                } else {
-                    $scope.newPreset.options.documentRoot = docRoot;
-                }
-            }
-        };
-
-        /**
-         *
-         * @param {object} nameSuggestions
-         * @return {void}
-         */
-        generateNameSuggestions = function (nameSuggestions) {
-            var nameSuggestion, item;
-            $scope.nameSuggestions = [];
-            for (nameSuggestion in nameSuggestions) {
-                if (nameSuggestions.hasOwnProperty(nameSuggestion)) {
-                    item = {
-                        suffix: nameSuggestion,
-                        available: true,
-                        context: nameSuggestions[nameSuggestion]
-                    };
-                    $scope.nameSuggestions.push(item);
-                }
-            }
-        };
-
-        // Inherit from AbstractSingleProjectController
-        angular.extend(this, $controller('AbstractSingleProjectController', {$scope: $scope}));
-
         $scope.setDocumentRoot = function (suffix) {
             var docRoot;
             if (angular.isDefined($scope.newPreset.options.documentRootWithMarkers)) {
@@ -574,9 +775,16 @@ surfCaptain.controller('ServerController', [
 
         };
 
+        /**
+         * Adds a Server (preset) to the collection of presets.
+         * Indicates the success or failure with a flashMessage.
+         *
+         * @param {object} server
+         * @return {void}
+         */
         $scope.addServer = function (server) {
             $scope.finished = false;
-            ServerRepository.addServer(server).then(
+            PresetRepository.addServer(server).then(
                 function (response) {
                     $scope.newPreset = PresetService.getNewPreset($scope.settings);
                     $scope.newServerForm.$setPristine();
@@ -589,6 +797,7 @@ surfCaptain.controller('ServerController', [
                     );
                 },
                 function (response) {
+                    $scope.finished = true;
                     $scope.messages = FlashMessageService.addFlashMessage(
                         'Creation failed!',
                         'The Server "' + server.nodes[0].name + '" could not be created.',
@@ -603,8 +812,15 @@ surfCaptain.controller('ServerController', [
          *
          * @param {string} suffix
          * @returns {string}
+         * @throws {ServerControllerException}
          */
         $scope.generateServerName = function (suffix) {
+            if (angular.isUndefined($scope.project)) {
+                throw new ServerControllerException('No project given.');
+            }
+            if (angular.isUndefined($scope.project.name)) {
+                throw new ServerControllerException('Project got no name.');
+            }
             return $scope.project.name + '-' + suffix;
         };
 
@@ -636,6 +852,29 @@ surfCaptain.controller('ServerController', [
 /*jslint node: true */
 
 'use strict';
+surfCaptain.controller('SingleDeploymentController', ['$scope', 'DeploymentRepository', '$routeParams', function ($scope, DeploymentRepository, $routeParams) {
+
+    this.init = function () {
+        DeploymentRepository.getSingleDeployment($routeParams.deploymentId).then(
+            function (response) {
+                $scope.finished = true;
+                $scope.deployment = response.deployment;
+            },
+            function () {
+
+            }
+        );
+    };
+
+    this.init();
+
+    $scope.finished = false;
+
+}]);
+/*global surfCaptain, angular*/
+/*jslint node: true */
+
+'use strict';
 surfCaptain.controller('SyncController', ['$scope', '$controller', function ($scope, $controller) {
 
     // Inherit from AbstractSingleProjectController
@@ -649,7 +888,7 @@ surfCaptain.directive('chosen', function () {
     var linker = function (scope, element, attrs) {
         var list = attrs.chosen;
 
-        scope.$watch(list, function () {
+        scope.$watchCollection(list, function () {
             element.trigger('liszt:updated');
             element.trigger('chosen:updated');
         });
@@ -829,7 +1068,7 @@ surfCaptain.directive('overlay', function () {
 /*jslint node: true */
 
 'use strict';
-surfCaptain.directive('serverList', ['ServerRepository', 'ValidationService', 'FlashMessageService', 'SEVERITY', function (ServerRepository, ValidationService, FlashMessageService, SEVERITY) {
+surfCaptain.directive('serverList', ['PresetRepository', 'ValidationService', 'FlashMessageService', 'SEVERITY', function (PresetRepository, ValidationService, FlashMessageService, SEVERITY) {
     var linker = function (scope, element, attrs) {
         scope.toggleSpinnerAndOverlay = function () {
             scope.finished = !scope.finished;
@@ -851,14 +1090,14 @@ surfCaptain.directive('serverList', ['ServerRepository', 'ValidationService', 'F
         };
 
         /**
-         * Wrapper for ServerRepository.deleteServer(server)
+         * Wrapper for PresetRepository.deleteServer(server)
          *
          * @param {object} server
          * @return void
          */
         scope.deleteServer = function (server) {
             scope.toggleSpinnerAndOverlay();
-            ServerRepository.deleteServer(server).then(
+            PresetRepository.deleteServer(server).then(
                 function (response) {
                     scope.$parent.getAllServers();
                     scope.messages = FlashMessageService.addFlashMessage(
@@ -879,14 +1118,14 @@ surfCaptain.directive('serverList', ['ServerRepository', 'ValidationService', 'F
         };
 
         /**
-         * Wrapper for ServerRepository.updateServer(server)
+         * Wrapper for PresetRepository.updateServer(server)
          *
          * @param {object} server
          * @return void
          */
         scope.updateServer = function (server) {
             scope.toggleSpinnerAndOverlay();
-            ServerRepository.updateServer(server.applications[0]).then(
+            PresetRepository.updateServer(server.applications[0]).then(
                 function () {
                     server.changed = false;
                     scope.toggleSpinnerAndOverlay();
@@ -980,7 +1219,7 @@ surfCaptain.directive('serverNameValidate', function () {
             // add a parser
             ctrl.$parsers.unshift(function (value) {
                 var valid = scope.serverNames === undefined || scope.serverNames.indexOf(value) === -1;
-                ctrl.$setValidity('serverNameValidate', valid);
+                ctrl.$setValidity('server-name-validate', valid);
 
                 // if it's valid, return the value to the model,
                 // otherwise return undefined.
@@ -990,7 +1229,7 @@ surfCaptain.directive('serverNameValidate', function () {
             // add a formatter
             ctrl.$formatters.unshift(function (value) {
                 var valid = scope.serverNames === undefined || scope.serverNames.indexOf(value) === -1;
-                ctrl.$setValidity('serverNameValidate', valid);
+                ctrl.$setValidity('server-name-validate', valid);
 
                 // return the value or nothing will be written to the DOM.
                 return value;
@@ -1009,7 +1248,7 @@ surfCaptain.directive('spinner', function () {
 
     return {
         restrict: 'E',
-        template: '<img src="/_Resources/Static/Packages/Lightwerk.SurfCaptain/Images/spinner.gif" />',
+        template: '<i class="fa fa-spinner fa-spin fa-4x"></i>',
         link: linker
     };
 });
@@ -1065,39 +1304,80 @@ surfCaptain.directive('appVersion', ['version', function (version) {
         element.text(version);
     };
 }]);
+/*global surfCaptain, angular*/
 /*jslint node: true */
-/*global surfCaptain*/
 
 'use strict';
 
-surfCaptain.factory('GitRepository', [ '$http', '$q', function ($http, $q) {
-    var gitRepository = {},
-        tagUrl = '/api/tags?projectId=',
-        branchUrl = '/api/branches?projectId=';
+surfCaptain.factory('DeploymentRepository', [ '$http', '$q', '$cacheFactory', function ($http, $q, $cacheFactory) {
+
+    var deploymentRepository = {},
+        url = '/api/deployment';
+
+    $cacheFactory('deploymentCache');
 
     /**
-     *
-     * @param {string} projectId
-     * @returns {Q.promise|promise} – promise object
+     * @param {object} deployment
+     * @return {Q.promise|promise}
      */
-    gitRepository.getTagsByProjectId = function (projectId) {
-        var deferred = $q.defer();
-        $http.get(tagUrl + projectId).success(deferred.resolve).error(deferred.reject);
+    deploymentRepository.addDeployment = function (deployment) {
+        var deploymentContainer = {
+            "configuration": {}
+        },
+            deferred = $q.defer();
+        deploymentContainer.configuration = deployment;
+
+        $http({
+            method: 'POST',
+            url: url,
+            data: {
+                deployment: deploymentContainer
+            },
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            }
+        }).success(deferred.resolve).error(deferred.reject);
         return deferred.promise;
     };
 
     /**
-     *
-     * @param {string} projectId
-     * @returns {Q.promise|promise} – promise object
+     * @returns {promise|Q.promise}
      */
-    gitRepository.getBranchesByProjectId = function (projectId) {
+    deploymentRepository.getDeployments = function () {
         var deferred = $q.defer();
-        $http.get(branchUrl + projectId).success(deferred.resolve).error(deferred.reject);
+        $http.get(url).success(deferred.resolve).error(deferred.reject);
         return deferred.promise;
     };
 
-    return gitRepository;
+    /**
+     * @param {string} identifier
+     */
+    deploymentRepository.getSingleDeployment = function (identifier) {
+        var deferred = $q.defer();
+        if (angular.isDefined($cacheFactory.get('deploymentCache').get(identifier))) {
+            deferred.resolve({deployment: $cacheFactory.get('deploymentCache').get(identifier)});
+            return deferred.promise;
+        }
+        $http.get(url + '?deployment=' + identifier).success(deferred.resolve).error(deferred.reject);
+        return deferred.promise;
+    };
+
+    // Public API
+    return {
+        addDeployment: function (deployment) {
+            return deploymentRepository.addDeployment(deployment);
+        },
+        cancelDeployment: function () {
+            //TODO
+        },
+        getAllDeployments: function () {
+            return deploymentRepository.getDeployments();
+        },
+        getSingleDeployment: function (identifier) {
+            return deploymentRepository.getSingleDeployment(identifier);
+        }
+    };
 }]);
 /*global surfCaptain*/
 /*jslint node: true */
@@ -1120,6 +1400,166 @@ surfCaptain.factory('HistoryRepository', [ '$http', '$q', function ($http, $q) {
     };
 
     return historyRepository;
+}]);
+/*global surfCaptain, angular*/
+/*jslint node: true */
+
+'use strict';
+
+surfCaptain.factory('PresetRepository', ['$http', '$q', function ($http, $q) {
+    var presetRepository = {},
+        url = '/api/preset';
+
+    function PresetRepositoryException(message) {
+        this.name = 'PresetRepositoryException';
+        this.message = message;
+    }
+    PresetRepositoryException.prototype = new Error();
+    PresetRepositoryException.prototype.constructor = PresetRepositoryException;
+
+    /**
+     * Gets all servers from the collection
+     *
+     * @param {object} server
+     * @returns {string} – json string
+     */
+    presetRepository.getFullPresetAsString = function (server) {
+        var container = {"applications": []};
+        container.applications[0] = server;
+        return angular.toJson(container, false);
+    };
+
+    /**
+     *
+     * @param {object} server
+     * @returns {string}
+     * @throws {PresetRepositoryException}
+     */
+    presetRepository.getKeyFromServerConfiguration = function (server) {
+        if (angular.isUndefined(server.nodes[0].name)) {
+            if (angular.isUndefined(server.applications[0].nodes[0].name)) {
+                throw new PresetRepositoryException('PresetRepository.getKeyFromServerConfiguration failed. Server configuration contains no key.');
+            }
+            return server.apllications[0].nodes[0].name;
+        }
+        return server.nodes[0].name;
+    };
+
+    /**
+     *
+     * @param {object} server
+     * @return {object}
+     */
+    presetRepository.getApplicationContainer = function (server) {
+        var applicationContainer = {"applications": []};
+        applicationContainer.applications[0] = server;
+        return applicationContainer;
+    };
+
+    /**
+     * Gets all servers from the collection
+     *
+     * @param {string} repositoryUrl
+     * @returns {Q.promise|promise} – promise object
+     */
+    presetRepository.getServers = function (repositoryUrl) {
+        var deferred = $q.defer();
+        $http.get('/api/repository?repositoryUrl=' + repositoryUrl).success(deferred.resolve).error(deferred.reject);
+        return deferred.promise;
+    };
+
+    /**
+     * Gets all servers from the collection
+     *
+     * @returns {Q.promise|promise} – promise object
+     */
+    presetRepository.getGlobalServers = function () {
+        var deferred = $q.defer();
+        $http.get(url + '?globals=1').success(deferred.resolve).error(deferred.reject);
+        return deferred.promise;
+    };
+
+    /**
+     * Adds a single server to the server collection
+     *
+     * @param {object} preset
+     * @returns {Q.promise|promise} – promise object
+     */
+    presetRepository.putServer = function (preset) {
+        return this.sendSinglePresetToApi(preset, 'put');
+    };
+
+    /**
+     * Adds a single server to the server collection
+     *
+     * @param preset {object}
+     * @returns {Q.promise|promise} – promise object
+     */
+    presetRepository.postServer = function (preset) {
+        return this.sendSinglePresetToApi(preset, 'post');
+    };
+
+
+    /**
+     * Performs a request to the api with a single preset.
+     * This request can either be POST or PUT which can
+     * be determined with the method argument. Any other
+     * method will result in a failed API call.
+     *
+     * @param {object} preset
+     * @param {string} method
+     * @returns {promise|Q.promise}
+     */
+    presetRepository.sendSinglePresetToApi = function (preset, method) {
+        var deferred = $q.defer(),
+            configuration = this.getFullPresetAsString(preset);
+        $http({
+            method: method,
+            url: url,
+            data: {
+                'key': this.getKeyFromServerConfiguration(preset),
+                'configuration': configuration
+            },
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            }
+        }).success(deferred.resolve).error(deferred.reject);
+        return deferred.promise;
+    };
+
+    /**
+     * Removes a single server from the server collection
+     *
+     * @param server {object}
+     * @returns {Q.promise|promise} – promise object
+     */
+    presetRepository.deleteServer = function (server) {
+        var deferred = $q.defer();
+        $http.delete(url + '?key=' + presetRepository.getKeyFromServerConfiguration(server.applications[0]))
+            .success(deferred.resolve)
+            .error(deferred.reject);
+        return deferred.promise;
+    };
+
+    // Public API
+    return {
+        getServers: function (repositoryUrl) {
+            return presetRepository.getServers(repositoryUrl);
+        },
+        getGlobalServers: function () {
+            return presetRepository.getGlobalServers();
+        },
+        updateServer: function (server) {
+            return presetRepository.putServer(server);
+        },
+        addServer: function (server) {
+            return presetRepository.postServer(server);
+        },
+        deleteServer: function (server) {
+            return presetRepository.deleteServer(server);
+        }
+    };
 }]);
 /*jslint plusplus: true */
 /*jslint node: true */
@@ -1196,7 +1636,7 @@ surfCaptain.factory('ProjectRepository', [ '$http', '$q', '$cacheFactory', funct
      */
     projectRepository.getProjectByName = function (name, projects) {
         var projectCache = $cacheFactory.get('projectCache');
-        if (angular.isDefined(projectCache.get(name))) {
+        if (angular.isUndefined(projectCache.get(name))) {
             projectRepository.populateSingleProjectCache(projects);
         }
         projectCache = $cacheFactory.get('projectCache');
@@ -1206,6 +1646,12 @@ surfCaptain.factory('ProjectRepository', [ '$http', '$q', '$cacheFactory', funct
         return projectCache.get(name);
     };
 
+    projectRepository.getFullProjectByRepositoryUrl = function (repositoryUrl) {
+        var deferred = $q.defer();
+        $http.get(url + '?repositoryUrl=' + repositoryUrl).success(deferred.resolve).error(deferred.reject);
+        return deferred.promise;
+    };
+
     // Public API
     return {
         getProjects: function () {
@@ -1213,145 +1659,9 @@ surfCaptain.factory('ProjectRepository', [ '$http', '$q', '$cacheFactory', funct
         },
         getProjectByName: function (name, projects) {
             return projectRepository.getProjectByName(name, projects);
-        }
-    };
-}]);
-/*global surfCaptain, angular*/
-/*jslint node: true */
-
-'use strict';
-
-surfCaptain.factory('ServerRepository', ['$http', '$q', function ($http, $q) {
-    var serverRepository = {},
-        url = '/api/presets';
-
-    function ServerRepositoryException(message) {
-        this.name = 'ServerRepositoryException';
-        this.message = message;
-    }
-    ServerRepositoryException.prototype = new Error();
-    ServerRepositoryException.prototype.constructor = ServerRepositoryException;
-
-    /**
-     * Gets all servers from the collection
-     *
-     * @param {object} server
-     * @returns {string} – json string
-     */
-    serverRepository.getFullPresetAsString = function (server) {
-        var container = {"applications": []};
-        container.applications[0] = server;
-        return JSON.stringify(container);
-    };
-
-    /**
-     *
-     * @param {object} server
-     * @returns {string}
-     * @throws {ServerRepositoryException}
-     */
-    serverRepository.getKeyFromServerConfiguration = function (server) {
-        if (angular.isUndefined(server.nodes[0].name)) {
-            if (angular.isUndefined(server.apllications[0].nodes[0].name)) {
-                throw new ServerRepositoryException('ServerRepository.getKeyFromServerConfiguratio failed. Server configuration contains no key.');
-            }
-            return server.apllications[0].nodes[0].name;
-        }
-        return server.nodes[0].name;
-    };
-
-    /**
-     *
-     * @param {object} server
-     * @return {object}
-     */
-    serverRepository.getApplicationContainer = function (server) {
-        var applicationContainer = {"applications": []};
-        applicationContainer.applications[0] = server;
-        return applicationContainer;
-    };
-
-    /**
-     * Gets all servers from the collection
-     *
-     * @param {string} repositoryUrl
-     * @returns {Q.promise|promise} – promise object
-     */
-    serverRepository.getServers = function (repositoryUrl) {
-        var deferred = $q.defer();
-        $http.get(url + '?repositoryUrl=' + repositoryUrl).success(deferred.resolve).error(deferred.reject);
-        return deferred.promise;
-    };
-
-    /**
-     * Adds a single server to the server collection
-     *
-     * @param {object} preset
-     * @returns {Q.promise|promise} – promise object
-     */
-    serverRepository.putServer = function (preset) {
-        return this.sendSinglePresetToApi(preset, 'PUT');
-    };
-
-    /**
-     * Adds a single server to the server collection
-     *
-     * @param preset {object}
-     * @returns {Q.promise|promise} – promise object
-     */
-    serverRepository.postServer = function (preset) {
-        return this.sendSinglePresetToApi(preset, 'POST');
-    };
-
-
-    /**
-     * Performs a request to the api with a single preset.
-     * This request can either be POST or PUT which can
-     * be determined with the method argument. Any other
-     * method will result in a failed API call.
-     *
-     * @param {object} preset
-     * @param {string} method
-     * @returns {promise|Q.promise}
-     */
-    serverRepository.sendSinglePresetToApi = function (preset, method) {
-        var deferred = $q.defer(),
-            configuration = this.getFullPresetAsString(preset);
-        $http({
-            method: method,
-            url: url + '?key=' + this.getKeyFromServerConfiguration(preset) + '&configuration=' + configuration,
-            headers: {'Content-Type': 'application/x-www-form-urlencoded'}
-        }).success(deferred.resolve).error(deferred.reject);
-        return deferred.promise;
-    };
-
-    /**
-     * Removes a single server from the server collection
-     *
-     * @param server {object}
-     * @returns {Q.promise|promise} – promise object
-     */
-    serverRepository.deleteServer = function (server) {
-        var deferred = $q.defer();
-        $http.delete(url + '?key=' + serverRepository.getKeyFromServerConfiguration(server.applications[0]))
-            .success(deferred.resolve)
-            .error(deferred.reject);
-        return deferred.promise;
-    };
-
-    // Public API
-    return {
-        getServers: function (repositoryUrl) {
-            return serverRepository.getServers(repositoryUrl);
         },
-        updateServer: function (server) {
-            return serverRepository.putServer(server);
-        },
-        addServer: function (server) {
-            return serverRepository.postServer(server);
-        },
-        deleteServer: function (server) {
-            return serverRepository.deleteServer(server);
+        getFullProjectByRepositoryUrl: function (repositoryUrl) {
+            return projectRepository.getFullProjectByRepositoryUrl(repositoryUrl);
         }
     };
 }]);

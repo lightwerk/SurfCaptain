@@ -12,6 +12,7 @@ html,body {
 @import "Partials/Deploy.less";
 @import "Partials/Server.less";
 @import "Partials/Deployments.less";
+@import "Partials/SingleDeployment.less";
 
 .surfcaptain-container {
 	min-height: 100%;
@@ -88,4 +89,19 @@ div.overlay {
 
 .uppercase {
 	text-transform: uppercase;
+}
+
+.label {
+	&.waiting {
+		background-color: @brand-warning;
+	}
+	&.success {
+		background-color: @brand-success;
+	}
+	&.failed {
+		background-color: @brand-danger;
+	}
+	&.running {
+		background-color: @brand-info;
+	}
 }
