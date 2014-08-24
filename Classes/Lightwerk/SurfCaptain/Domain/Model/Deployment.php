@@ -6,6 +6,7 @@ namespace Lightwerk\SurfCaptain\Domain\Model;
  *                                                                        *
  *                                                                        */
 
+use Lightwerk\SurfCaptain\Service\GitService;
 use TYPO3\Flow\Annotations as Flow;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -35,13 +36,13 @@ class Deployment {
 	/**
 	 * @var string
 	 */
-	protected $type;
+	protected $repositoryIdentifier;
 
 	/**
-	 * @var string
-	 * @ORM\Column(length=80)
+	 * @var Repository
+	 * @Flow\Transient
 	 */
-	protected $referenceName;
+	protected $repository;
 
 	/**
 	 * @var string
@@ -111,32 +112,43 @@ class Deployment {
 	 * @return string
 	 */
 	public function getType() {
-		return $this->type;
-	}
-
-	/**
-	 * @param string $type
-	 * @return Deployment
-	 */
-	public function setType($type) {
-		$this->type = $type;
-		return $this;
+		$configuration = $this->getConfiguration();
+		if (!empty($configuration['applications'][0]['type'])) {
+			return $configuration['applications'][0]['type'];
+		} else {
+			return '';
+		}
 	}
 
 	/**
 	 * @return string
 	 */
 	public function getReferenceName() {
-		return $this->referenceName;
+		$configuration = $this->getConfiguration();
+		if (empty($configuration['applications'][0]['options'])) {
+			return '';
+		}
+		$options = $configuration['applications'][0]['options'];
+		if (!empty($options['sha1'])) {
+			return 'Sha1: ' . $options['ref'];
+		} elseif (!empty($options['tag'])) {
+			return 'Tag: ' . $options['tag'];
+		} elseif (!empty($options['branch'])) {
+			return 'Branch: ' . $options['branch'];
+		}
+		return '';
 	}
 
 	/**
-	 * @param string $referenceName
-	 * @return Deployment
+	 * @return string
 	 */
-	public function setReferenceName($referenceName) {
-		$this->referenceName = $referenceName;
-		return $this;
+	public function getContext() {
+		$configuration = $this->getConfiguration();
+		if (empty($configuration['applications'][0]['options']['context'])) {
+			return '';
+		} else {
+			return $configuration['applications'][0]['options']['context'];
+		}
 	}
 
 	/**
@@ -189,6 +201,22 @@ class Deployment {
 	}
 
 	/**
+	 * @return string
+	 */
+	public function getRepositoryIdentifier() {
+		return $this->repositoryIdentifier;
+	}
+
+	/**
+	 * @param string $repositoryIdentifier
+	 * @return Deployment
+	 */
+	public function setRepositoryIdentifier($repositoryIdentifier) {
+		$this->repositoryIdentifier = $repositoryIdentifier;
+		return $this;
+	}
+
+	/**
 	 * @return array
 	 */
 	public function getConfiguration() {
@@ -200,24 +228,32 @@ class Deployment {
 	 * @return Deployment
 	 */
 	public function setConfiguration($configuration) {
-		if (!empty($configuration['applications'][0]['type'])) {
-			$this->setType($configuration['applications'][0]['type']);
-		}
-		if (!empty($configuration['applications'][0]['options'])) {
-			$options = $configuration['applications'][0]['options'];
-			if (!empty($options['repositoryUrl'])) {
-				$this->setRepositoryUrl($options['repositoryUrl']);
-			}
-			if (!empty($options['sha1'])) {
-				$this->setReferenceName('Sha1: ' . $options['ref']);
-			} elseif (!empty($options['tag'])) {
-				$this->setReferenceName('Tag: ' . $options['tag']);
-			} elseif (!empty($options['branch'])) {
-				$this->setReferenceName('Branch: ' . $options['branch']);
+		if (!empty($configuration['applications'][0]['options']['repositoryUrl'])) {
+			$this->setRepositoryUrl($configuration['applications'][0]['options']['repositoryUrl']);
+
+			$repository = $this->getRepository();
+			if (!empty($repository)) {
+				$this->setRepositoryIdentifier($repository->getIdentifier());
 			}
 		}
 		$this->configuration = $configuration;
 		return $this;
+	}
+
+	/**
+	 * @return Repository|NULL
+	 */
+	public function getRepository() {
+		$repositoryUrl = $this->getRepositoryUrl();
+		if (!empty($repositoryUrl)) {
+			$gitService = new GitService();
+			try {
+				return $gitService->getRepository($repositoryUrl);
+			} catch (\Exception $e) {
+				return NULL;
+			}
+		}
+		return NULL;
 	}
 
 }
