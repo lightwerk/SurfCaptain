@@ -6,9 +6,9 @@ namespace Lightwerk\SurfCaptain\Controller;
  *                                                                        *
  *                                                                        */
 
-use Lightwerk\SurfRunner\Service\ShellService;
-use Lightwerk\SurfRunner\Service\ShellServiceException;
+use Lightwerk\SurfCaptain\Service\ShellService;
 use TYPO3\Flow\Annotations as Flow;
+use Lightwerk\SurfCaptain\Service\Exception;
 
 class CheckSshLoginController extends AbstractRestController {
 
@@ -34,7 +34,7 @@ class CheckSshLoginController extends AbstractRestController {
 		try {
 			$this->shellService->checkLogin($hostname, $username, $port);
 			$this->view->assign('login', true);
-		} catch (ShellServiceException $e) {
+		} catch (Exception $e) {
 			$this->view->assign('login', false);
 			$this->handleException($e);
 		}
