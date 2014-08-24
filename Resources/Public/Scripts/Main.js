@@ -249,6 +249,9 @@ surfCaptain.controller('DeployController', [
         $scope.deploy = function (preset) {
             if (preset === $scope.currentPreset) {
                 $scope.currentPreset.applications[0].type = CONFIG.applicationTypes.deployTYPO3;
+                if (angular.isDefined($scope.currentPreset.applications[0].options.deploymentPathWithMarkers)) {
+                    delete $scope.currentPreset.applications[0].options.deploymentPathWithMarkers;
+                }
                 DeploymentRepository.addDeployment($scope.currentPreset).then(
                     function (response) {
                         $scope.messages = FlashMessageService.addFlashMessage(
@@ -706,16 +709,16 @@ surfCaptain.controller('ServerController', [
             if (angular.isDefined($scope.settings.nameSuggestions)) {
                 self.generateNameSuggestions($scope.settings.nameSuggestions);
             }
-            if (angular.isDefined($scope.settings.defaultDocumentRoot)) {
-                docRoot = $scope.settings.defaultDocumentRoot;
+            if (angular.isDefined($scope.settings.defaultDeploymentPath)) {
+                docRoot = $scope.settings.defaultDeploymentPath;
                 if (ValidationService.doesStringContainSubstring(docRoot, '{{')) {
                     docRoot = MarkerService.replaceMarkers(docRoot, $scope.project);
                 }
                 if (ValidationService.doesStringContainSubstring(docRoot, '{{')) {
-                    $scope.newPreset.options.documentRoot = MarkerService.getStringBeforeFirstMarker(docRoot);
-                    $scope.newPreset.options.documentRootWithMarkers = docRoot;
+                    $scope.newPreset.options.deploymentPath = MarkerService.getStringBeforeFirstMarker(docRoot);
+                    $scope.newPreset.options.deploymentPathWithMarkers = docRoot;
                 } else {
-                    $scope.newPreset.options.documentRoot = docRoot;
+                    $scope.newPreset.options.deploymentPath = docRoot;
                 }
             }
         };
@@ -756,19 +759,19 @@ surfCaptain.controller('ServerController', [
         /**
          * Takes a suffix and tries to replace a {{suffix}} marker
          * within the document root. Stores the returning string
-         * within the documentRoot property of the newPreset.
+         * within the deploymentPath property of the newPreset.
          *
          * @param {string} suffix
          * @return {void}
          */
-        $scope.setDocumentRoot = function (suffix) {
+        $scope.setDeploymentPath = function (suffix) {
             var docRoot;
-            if (angular.isDefined($scope.newPreset.options.documentRootWithMarkers)) {
+            if (angular.isDefined($scope.newPreset.options.deploymentPathWithMarkers)) {
                 docRoot = MarkerService.replaceMarkers(
-                    $scope.newPreset.options.documentRootWithMarkers,
+                    $scope.newPreset.options.deploymentPathWithMarkers,
                     {suffix: suffix}
                 );
-                $scope.newPreset.options.documentRoot = docRoot;
+                $scope.newPreset.options.deploymentPath = docRoot;
             }
 
         };
@@ -782,6 +785,9 @@ surfCaptain.controller('ServerController', [
          */
         $scope.addServer = function (server) {
             $scope.finished = false;
+            if (angular.isDefined(server.options.deploymentPathWithMarkers)) {
+                delete server.options.deploymentPathWithMarkers;
+            }
             PresetRepository.addServer(server).then(
                 function (response) {
                     $scope.newPreset = PresetService.getNewPreset($scope.settings);
@@ -1155,15 +1161,15 @@ surfCaptain.directive('serverList', ['PresetRepository', 'ValidationService', 'F
         };
 
         /**
-         * Validates the updated DocumentRoot string before submitting to Server
+         * Validates the updated DeploymentPath string before submitting to Server
          *
          * @param data
          * @return {string | boolean} ErrorMessage or True if valid
          */
-        scope.updateDocumentRoot = function (data) {
-            var res = ValidationService.hasLength(data, 1, 'DocumentRoot is required!');
+        scope.updateDeploymentPath = function (data) {
+            var res = ValidationService.hasLength(data, 1, 'DeploymentPath is required!');
             if (res === true) {
-                return ValidationService.doesLastCharacterMatch(data, '/', 'DocumentRoot must end with "/"!');
+                return ValidationService.doesLastCharacterMatch(data, '/', 'DeploymentPath must end with "/"!');
             }
             return res;
         };
@@ -1882,7 +1888,7 @@ surfCaptain.service('PresetService', [function () {
     var newPreset = {
         "options": {
             "repositoryUrl": '',
-            "documentRoot": '',
+            "deploymentPath": '',
             "context": ''
         },
         "nodes": [
@@ -1900,7 +1906,7 @@ surfCaptain.service('PresetService', [function () {
      * properties in configuration are:
      *
      *  - defaultUser (Sets the Username in the first Node)
-     *  - defaultDocumentRoot (Sets the documentRoot in the options.
+     *  - defaultDeploymentPath (Sets the deploymentPath in the options.
      *    Markers have to be replaced later on!)
      *
      * @param {object} configuration - optional
@@ -1912,8 +1918,8 @@ surfCaptain.service('PresetService', [function () {
             if (angular.isDefined(configuration.defaultUser)) {
                 preset.nodes[0].username = configuration.defaultUser;
             }
-            if (angular.isDefined(configuration.defaultDocumentRoot)) {
-                preset.options.documentRoot = configuration.defaultDocumentRoot;
+            if (angular.isDefined(configuration.defaultDeploymentPath)) {
+                preset.options.deploymentPath = configuration.defaultDeploymentPath;
             }
         }
         return preset;

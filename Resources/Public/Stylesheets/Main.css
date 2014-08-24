@@ -5698,7 +5698,7 @@ div.project-buttons {
   width: 100%;
 }
 div.project-buttons .fa {
-  font-size: 120%;
+  font-size: 130%;
 }
 div.project-buttons .btn {
   color: #000;
@@ -5709,10 +5709,10 @@ div.project-buttons .btn[disabled] {
 }
 div.project-buttons .project-brand {
   color: #999999;
-  font-size: 30px;
+  font-size: 28px;
   font-weight: 600;
-  line-height: 50px;
-  height: 50px;
+  line-height: 40px;
+  height: 40px;
 }
 .footer {
   background-color: #000000;
@@ -6089,101 +6089,105 @@ div.project-history table tr td {
   margin-top: 30px;
 }
 .project-server .server {
-  width: 840px;
-  height: 120px;
-  border: 1px solid #999999;
-  color: #000000;
-  border-radius: 50px 0 0 50px;
-  margin: 35px auto;
-  padding: 10px 10px 10px 10px;
-}
-.project-server .server .single-server .server-icon {
-  font-size: 50px;
-  float: left;
-  line-height: 100px;
-  padding: 0 10px 0 10px;
-  color: #FFFFFF !important;
-}
-.project-server .server .single-server .server-icon .changed {
-  color: #99cccc !important;
-}
-.project-server .server .single-server .server-data {
-  float: left;
-  width: 700px;
-  padding: 0 0 0 10px;
   text-align: left;
 }
-.project-server .server .single-server .server-data .not-saved-yet {
+.project-server .server .not-saved-yet {
+  position: relative;
+  color: #99cccc;
+  width: 100%;
+  text-align: center;
+  display: inline-block;
+}
+.project-server .server .not-saved-yet span {
+  bottom: -31px;
   display: inline-block;
   position: relative;
-  bottom: -30px;
-  color: #99cccc;
+  -webkit-animation-name: blinker;
+  -webkit-animation-duration: 2s;
+  -webkit-animation-timing-function: linear;
+  -webkit-animation-iteration-count: infinite;
+  -moz-animation-name: blinker;
+  -moz-animation-duration: 2s;
+  -moz-animation-timing-function: linear;
+  -moz-animation-iteration-count: infinite;
+  animation-name: blinker;
+  animation-duration: 2s;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
 }
-.project-server .server .single-server .server-data h3 {
-  margin: -55px;
-  text-align: right;
-  font-size: 40px;
-  color: #999999;
+.project-server .server .single-server {
+  width: 800px;
+  height: auto;
+  border: 2px solid #dfdfdf;
+  border-radius: 10px;
+  margin: 10px auto;
+  padding: 15px 20px;
+  color: #dfdfdf;
 }
-.project-server .server .single-server .server-data h3 .editable-click {
-  color: #FFFFFF !important;
+.project-server .server .single-server.changed {
+  border-color: #99cccc;
 }
-.project-server .server .single-server .server-data .editable-click {
-  border: 1px solid #222222;
-  color: #999999;
-  padding: 2px;
+.project-server .server .single-server.changed .server-data .server-icon {
+  color: #99cccc !important;
 }
-.project-server .server .single-server .server-data .editable-click:hover {
-  border: 1px solid #000000;
+.project-server .server .single-server:hover .server-edit .remove {
+  display: inline-block;
 }
-.project-server .server .single-server .server-data table {
-  width: 100%;
-  margin-top: 38px;
+.project-server .server .single-server:hover .server-edit .update {
+  display: inline-block;
 }
-.project-server .server .single-server .server-data table td {
-  width: 60%;
-  padding: 0px;
-  line-height: 35px;
-  height: 55px;
-  font-size: 20px;
-  vertical-align: top;
-}
-.project-server .server .single-server .server-data table td .editable-input {
-  padding: 2px;
-  height: 28px;
-}
-.project-server .server .single-server .server-data table td .btn {
-  padding: 2px;
-}
-.project-server .server .single-server .server-data table td:last-child {
-  width: 40%;
-}
-.project-server .server .single-server .server-data table td .tooltip-inner {
-  background-color: #000000;
-  color: #000000;
-}
-.project-server .server .single-server .server-data table td .help-block {
-  padding: 0px;
-  margin: 0px;
-  line-height: 20px;
+.project-server .server .single-server .server-edit {
+  position: relative;
+  top: 0;
+  right: 0;
 }
 .project-server .server .single-server .server-edit .remove {
   float: right;
   position: relative;
-  top: 5px;
+  top: -5px;
   display: none;
 }
 .project-server .server .single-server .server-edit .update {
   float: right;
   position: relative;
-  top: 22px;
+  top: -5px;
   display: none;
+  margin-right: 5px;
 }
-.project-server .server:hover .server-edit .remove {
-  display: inline-block;
+.project-server .server .single-server .server-name h3 {
+  margin: 0;
+  font-size: 24px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid #dfdfdf;
+  font-style: italic;
+  font-weight: 300;
+  text-align: left;
 }
-.project-server .server:hover .server-edit .update {
-  display: inline-block;
+.project-server .server .single-server .server-data .server-icon .fa {
+  float: left;
+  padding: 5px 35px 15px 15px;
+}
+.project-server .server .single-server .server-data .server-icon.Staging {
+  color: #f0ad4e;
+}
+.project-server .server .single-server .server-data .server-icon.Development {
+  color: #5cb85c;
+}
+.project-server .server .single-server .server-data .server-icon.Production {
+  color: #d9534f;
+}
+.project-server .server .single-server .server-data .server-details {
+  text-align: left;
+  font-size: 20px;
+  margin-top: 10px;
+}
+.project-server .server .single-server .server-data .server-details .fa {
+  padding: 5px;
+}
+.project-server .server .single-server .editable {
+  text-decoration: none;
+  color: #dfdfdf;
+  border-bottom: none;
 }
 .project-server .new-server-button {
   margin: 20px auto;
@@ -6273,7 +6277,7 @@ div.surfcaptain.about {
   background-color: #99cccc;
 }
 .dark {
-  margin-top: 15px;
+  padding-top: 15px;
   color: #888888;
 }
 .ngview {
@@ -6334,4 +6338,37 @@ div.overlay {
 }
 .label.running {
   background-color: #cc9999;
+}
+@-moz-keyframes blinker {
+  0% {
+    opacity: 1.0;
+  }
+  50% {
+    opacity: 0.0;
+  }
+  100% {
+    opacity: 1.0;
+  }
+}
+@-webkit-keyframes blinker {
+  0% {
+    opacity: 1.0;
+  }
+  50% {
+    opacity: 0.0;
+  }
+  100% {
+    opacity: 1.0;
+  }
+}
+@keyframes blinker {
+  0% {
+    opacity: 1.0;
+  }
+  50% {
+    opacity: 0.0;
+  }
+  100% {
+    opacity: 1.0;
+  }
 }
