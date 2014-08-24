@@ -216,3 +216,17 @@ Example call:
 Example call:
 
 	curl -H "Accept: application/json" http://surf.flow.lp.lw.loc/api/checkSshLogin\?hostname\=dev.loc\&username\=lw-lm | jq '.'
+
+### Copy SSH key
+
+- Methode: POST
+- Path: /api/copySshKey
+- Parameters:
+	- hostname (required) - string
+	- username (required) - string
+	- password (required) - string
+	- port - integer
+
+Example call:
+
+	curl -H "Accept: application/json" -v -X POST http://surf.flow.lp.lw.loc/api/checkSshLogin\?copySshKey\=dev.loc\&username\=lw-lm\&password\=1234 | jq '.'
