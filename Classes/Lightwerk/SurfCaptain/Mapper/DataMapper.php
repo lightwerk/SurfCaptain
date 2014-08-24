@@ -19,6 +19,7 @@ class DataMapper {
 	/**
 	 * @param array $objectData
 	 * @param string $objectClass
+	 * @param array $settings
 	 * @return object
 	 */
 	public function mapToObject(array $objectData, $objectClass, array $settings) {
@@ -39,6 +40,7 @@ class DataMapper {
 	 * @param string $objectClass
 	 * @param array $settings
 	 * @return object
+	 * @throws Exception
 	 */
 	protected function mapOneToObject($objectData, $objectClass, $settings) {
 		if (!is_array($objectData)) {
@@ -60,9 +62,9 @@ class DataMapper {
 	}
 
 	/**
-	 * @param string $propertyName
-	 * @param mixed $value
-	 * @param mixed $object
+	 * @param object $object
+	 * @param string $property
+	 * @param array $objectData
 	 * @param array $settings
 	 * @return mixed
 	 */

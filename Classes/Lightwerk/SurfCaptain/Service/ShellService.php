@@ -40,7 +40,7 @@ class ShellService {
 		if (!empty($exitCode)) {
 			throw new Exception('Exit code: ' . $exitCode . '. Output: ' . $output, 1408904566);
 		}
-		return true;
+		return TRUE;
 	}
 
 	/**
@@ -71,7 +71,7 @@ class ShellService {
 		if (!empty($exitCode)) {
 			throw new Exception('Exit code: ' . $exitCode . '. Output: ' . $output, 1408904566);
 		}
-		return true;
+		return TRUE;
 	}
 
 	/**

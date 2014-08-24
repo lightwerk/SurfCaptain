@@ -15,14 +15,14 @@ class JsonView extends \TYPO3\Flow\Mvc\View\JsonView {
 	 */
 	protected $configuration = array(
 		'deployment' => array(
-			'_exposeObjectIdentifier' => true,
+			'_exposeObjectIdentifier' => TRUE,
 			'_exposeClassName' => 1,
 			'_descend' => array(
 				'date' => array(),
 				'configuration' => array(),
 				'logs' => array(
 					'_descendAll' => array(
-						'_exposeObjectIdentifier' => true,
+						'_exposeObjectIdentifier' => TRUE,
 						'_exposeClassName' => 1,
 						'_descend' => array(
 							'date' => array(),
@@ -33,7 +33,7 @@ class JsonView extends \TYPO3\Flow\Mvc\View\JsonView {
 		),
 		'deployments' => array(
 			'_descendAll' => array(
-				'_exposeObjectIdentifier' => true,
+				'_exposeObjectIdentifier' => TRUE,
 				'_exposeClassName' => 1,
 				'_descend' => array(
 					'date' => array(),
