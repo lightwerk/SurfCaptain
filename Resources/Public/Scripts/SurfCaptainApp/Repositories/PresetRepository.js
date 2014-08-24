@@ -21,9 +21,19 @@ surfCaptain.factory('PresetRepository', ['$http', '$q', function ($http, $q) {
      * @returns {string} – json string
      */
     presetRepository.getFullPresetAsString = function (server) {
+        return angular.toJson(presetRepository.getFullPreset(server), false);
+    };
+
+    /**
+     * Gets all servers from the collection
+     *
+     * @param {object} server
+     * @returns {object}
+     */
+    presetRepository.getFullPreset = function (server) {
         var container = {"applications": []};
         container.applications[0] = server;
-        return angular.toJson(container, false);
+        return container;
     };
 
     /**
@@ -108,17 +118,15 @@ surfCaptain.factory('PresetRepository', ['$http', '$q', function ($http, $q) {
      * @returns {promise|Q.promise}
      */
     presetRepository.sendSinglePresetToApi = function (preset, method) {
-        var deferred = $q.defer(),
-            configuration = this.getFullPresetAsString(preset);
+        var deferred = $q.defer();
         $http({
             method: method,
             url: url,
             data: {
                 'key': this.getKeyFromServerConfiguration(preset),
-                'configuration': configuration
+                'configuration': presetRepository.getFullPreset(preset)
             },
             headers: {
-                'Content-Type': 'application/json',
                 'Accept': 'application/json'
             }
         }).success(deferred.resolve).error(deferred.reject);
