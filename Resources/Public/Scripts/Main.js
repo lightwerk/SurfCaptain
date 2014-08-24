@@ -50,7 +50,7 @@ var surfCaptain = angular.module('surfCaptain', ['ngRoute', 'xeditable', 'ngAnim
                 redirectTo: '/'
             });
     }])
-    .value('version', '0.9')
+    .value('version', '0.10_beta1')
     .constant('SEVERITY', {
         ok: 0,
         info: 1,
