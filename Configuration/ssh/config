@@ -4,3 +4,4 @@ Host *
 	NumberOfPasswordPrompts 1
 	UserKnownHostsFile /dev/null
 	StrictHostKeyChecking no
+	LogLevel ERROR
