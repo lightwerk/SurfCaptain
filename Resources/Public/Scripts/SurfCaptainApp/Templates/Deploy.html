@@ -9,7 +9,7 @@
 
 <surfcaptain-menu></surfcaptain-menu>
 
-<div class="container project-deploy dark">
+<div class="container project-deploy dark inner-container">
 	<div class="row">
 		<div class="col-xs-12 text-center">
 			<h2>Deploy a tag (or branch) from Git</h2>
@@ -88,11 +88,11 @@
 		<div class="col-md-10 col-xs-12">
 			<h3>Override if you must ...</h3>
 			<label>Override DocumentRoot</label>
-			<span editable-text="currentPreset.applications.0.options.documentRoot"
+			<span editable-text="currentPreset.applications.0.options.deploymentPath"
 				  onbeforesave="updateDocumentRoot($data)"
 				  onaftersave="updateDeployment(server)"
 			>
-				{{currentPreset.applications.0.options.documentRoot}}
+				{{currentPreset.applications.0.options.deploymentPath}}
 			</span>
 			<label>Override TYPO3_CONTEXT</label>
 			<span editable-text="currentPreset.applications.0.options.context"

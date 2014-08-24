@@ -107,10 +107,10 @@ surfCaptain.controller('ServerController', [
                     docRoot = MarkerService.replaceMarkers(docRoot, $scope.project);
                 }
                 if (ValidationService.doesStringContainSubstring(docRoot, '{{')) {
-                    $scope.newPreset.options.documentRoot = MarkerService.getStringBeforeFirstMarker(docRoot);
-                    $scope.newPreset.options.documentRootWithMarkers = docRoot;
+                    $scope.newPreset.options.deploymentPath = MarkerService.getStringBeforeFirstMarker(docRoot);
+                    $scope.newPreset.options.deploymentPathWithMarkers = docRoot;
                 } else {
-                    $scope.newPreset.options.documentRoot = docRoot;
+                    $scope.newPreset.options.deploymentPath = docRoot;
                 }
             }
         };
@@ -151,19 +151,19 @@ surfCaptain.controller('ServerController', [
         /**
          * Takes a suffix and tries to replace a {{suffix}} marker
          * within the document root. Stores the returning string
-         * within the documentRoot property of the newPreset.
+         * within the deploymentPath property of the newPreset.
          *
          * @param {string} suffix
          * @return {void}
          */
         $scope.setDocumentRoot = function (suffix) {
             var docRoot;
-            if (angular.isDefined($scope.newPreset.options.documentRootWithMarkers)) {
+            if (angular.isDefined($scope.newPreset.options.deploymentPathWithMarkers)) {
                 docRoot = MarkerService.replaceMarkers(
-                    $scope.newPreset.options.documentRootWithMarkers,
+                    $scope.newPreset.options.deploymentPathWithMarkers,
                     {suffix: suffix}
                 );
-                $scope.newPreset.options.documentRoot = docRoot;
+                $scope.newPreset.options.deploymentPath = docRoot;
             }
 
         };
@@ -177,6 +177,9 @@ surfCaptain.controller('ServerController', [
          */
         $scope.addServer = function (server) {
             $scope.finished = false;
+            if (angular.isDefined(server.options.deploymentPathWithMarkers)) {
+                delete server.options.deploymentPathWithMarkers;
+            }
             PresetRepository.addServer(server).then(
                 function (response) {
                     $scope.newPreset = PresetService.getNewPreset($scope.settings);

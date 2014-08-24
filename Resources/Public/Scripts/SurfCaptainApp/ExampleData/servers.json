@@ -7,7 +7,7 @@
                 "key": "fe2",
                 "host": "www2.sma.de",
                 "username": "blub2",
-                "documentRoot": "/var/www/{projectName}/{context}/",
+                "deploymentPath": "/var/www/{projectName}/{context}/",
                 "context": "Development"
             },
             {
@@ -15,7 +15,7 @@
                 "host": "www.sma.de",
                 "username": "user1",
                 "password": "abcde",
-                "documentRoot": "/var/www/{projectName}/{context}/",
+                "deploymentPath": "/var/www/{projectName}/{context}/",
                 "context": "Development"
             }
         ]
@@ -28,7 +28,7 @@
                 "key": "bma-live",
                 "host": "www.bma-worldwide.com",
                 "username": "blub2",
-                "documentRoot": "/var/www/bma/live/htdocs/",
+                "deploymentPath": "/var/www/bma/live/htdocs/",
                 "context": "Production",
                 "system": "BMA_PRODUCTIVE"
             }
@@ -43,7 +43,7 @@
                 "host": "www.qa.bma-worldwide.com",
                 "username": "user1",
                 "password": "abcde",
-                "documentRoot": "/var/www/bma/qa/htdocs/",
+                "deploymentPath": "/var/www/bma/qa/htdocs/",
                 "context": "Development",
                 "system": "BMA_QA"
             }

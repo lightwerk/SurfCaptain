@@ -1,59 +1,7 @@
 <div class="row text-center" data-ng-repeat="preset in servers">
 	<div class="server">
-		<div class="single-server">
-			<div class="server-icon">
-				<i class="fa fa-hdd-o" data-ng-class="{true:'changed'}[preset.changed]"></i>
-			</div>
-			<div class="server-data">
-				<h3>
-					<span>{{preset.applications.0.nodes.0.name}}</span>
-				</h3>
-				<span class="not-saved-yet">&nbsp;<span data-ng-if="preset.changed">Changes not saved yet</span></span>
-				<table>
-					<tr>
-						<td><span class="wrapper">H:
-											<span
-													editable-text="preset.applications.0.nodes.0.hostname"
-													onbeforesave="updateHost($data)"
-													onaftersave="preset.changed=true"
-													>
-												{{preset.applications.0.nodes.0.hostname || 'please add'}}
-											</span>
-										</span></td>
-						<td><span class="wrapper">C:
-											<span
-													class="context"
-													editable-select="preset.applications.0.options.context"
-													e-ng-options="context for context in contexts"
-													onbeforesave="updateContext($data)"
-													onaftersave="preset.changed=true"
-													>
-												{{preset.applications.0.options.context || 'please add'}}
-											</span>
-									</span></td>
-					</tr>
-					<tr>
-						<td><span class="wrapper">D:
-											<span
-													editable-text="preset.applications.0.options.documentRoot"
-													onbeforesave="updateDocumentRoot($data)"
-													onaftersave="preset.changed=true"
-													>
-												{{preset.applications.0.options.documentRoot || 'please add'}}
-											</span>
-									</span></td>
-						<td><span class="wrapper">U:
-											<span
-													editable-text="preset.applications.0.nodes.0.username"
-													onbeforesave="updateUsername($data)"
-													onaftersave="preset.changed=true"
-													>
-												{{preset.applications.0.nodes.0.username || 'please add'}}
-											</span>
-									</span></td>
-					</tr>
-				</table>
-			</div>
+		<span class="not-saved-yet">&nbsp;<span data-ng-if="preset.changed">Changes not saved yet</span></span>
+		<div class="single-server" data-ng-class="{true: 'changed'}[preset.changed]">
 			<div class="server-edit">
 				<button class="btn btn-danger remove" tooltip data-placement="bottom" title="Delete"
 						data-ng-click="setCurrentPreset(preset)" modal="confirm-deletion">
@@ -65,9 +13,63 @@
 						title="Save changes"
 						data-ng-click="updateServer(preset)"
 						data-ng-if="preset.changed"
-				>
+						>
 					<i class="fa fa-save"></i>
 				</button>
+			</div>
+			<div class="server-name">
+				<h3>
+					<span>{{preset.applications.0.nodes.0.name}} (<span
+						class="context"
+						editable-select="preset.applications.0.options.context"
+						e-ng-options="context for context in contexts"
+						onbeforesave="updateContext($data)"
+						onaftersave="preset.changed=true"
+						>{{preset.applications.0.options.context || 'please add'}}</span></span>)
+				</h3>
+			</div>
+			<div class="server-data">
+				<div class="server-icon {{preset.applications.0.options.context}}">
+					<i class="fa fa-hdd-o fa-5x"></i>
+				</div>
+				<table class="server-details">
+					<tr>
+						<td><i class="fa fa-globe"></i></td>
+						<td><span class="wrapper">:
+							<span
+								editable-text="preset.applications.0.nodes.0.hostname"
+								onbeforesave="updateHost($data)"
+								onaftersave="preset.changed=true"
+							>
+								{{preset.applications.0.nodes.0.hostname || 'please add'}}
+							</span>
+						</span></td>
+					</tr>
+					<tr>
+						<td><i class="fa fa-folder-open"></i></td>
+						<td><span class="wrapper">:
+							<span
+								editable-text="preset.applications.0.options.deploymentPath"
+								onbeforesave="updateDocumentRoot($data)"
+								onaftersave="preset.changed=true"
+							>
+								{{preset.applications.0.options.deploymentPath || 'please add'}}
+							</span>
+						</span></td>
+					</tr>
+					<tr>
+						<td><i class="fa fa-user"></i></td>
+						<td><span class="wrapper">:
+							<span
+								editable-text="preset.applications.0.nodes.0.username"
+								onbeforesave="updateUsername($data)"
+								onaftersave="preset.changed=true"
+							>
+								{{preset.applications.0.nodes.0.username || 'please add'}}
+							</span>
+						</span></td>
+					</tr>
+				</table>
 			</div>
 		</div>
 	</div>
@@ -82,10 +84,10 @@
 				<h4 class="modal-title">Delete Server {{currentPreset.applications.0.nodes.0.name}}?</h4>
 			</div>
 			<div class="modal-footer">
-				<button type="button" class="btn btn-danger" data-ng-click="deleteServer(currentPreset)"
+				<button type="button" class="btn btn-success" data-ng-click="deleteServer(currentPreset)"
 						data-dismiss="modal">OK
 				</button>
-				<button type="button" class="btn btn-primary" data-dismiss="modal">Cancel</button>
+				<button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
 			</div>
 		</div>
 	</div>

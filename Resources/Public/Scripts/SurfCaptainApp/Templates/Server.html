@@ -8,7 +8,7 @@
 <surfcaptain-header icon="hdd-o"></surfcaptain-header>
 
 <surfcaptain-menu></surfcaptain-menu>
-<div class="container project-server dark">
+<div class="container project-server dark inner-container">
 	<div class="row">
 		<div class="col-xs-12 text-center">
 
@@ -62,17 +62,17 @@
 						<label>DocumentRoot:</label> *
 						<input
 							type="text"
-							data-ng-model="newPreset.options.documentRoot"
+							data-ng-model="newPreset.options.deploymentPath"
 							placeholder="DocumentRoot"
 							class="form-control"
-							name="documentRoot"
+							name="deploymentPath"
 							data-ng-trim
 							last-character-validate
 							character="/"
 							required
 						/>
 						<div class="messages">
-							<div data-ng-messages="newServerForm.documentRoot.$error" data-ng-if="newServerForm.documentRoot.$dirty">
+							<div data-ng-messages="newServerForm.deploymentPath.$error" data-ng-if="newServerForm.deploymentPath.$dirty">
 								<span class="error" data-ng-message="last-character-validate">Must end with a '/'!</span>
 								<span class="error" data-ng-message="required">DocumentRoot is required!</span>
 							</div>

@@ -219,16 +219,16 @@ describe('ServerController', function () {
             expect(MarkerService.replaceMarkers).toHaveBeenCalled();
         });
 
-        it('should store return value of MarkerService.replaceMarkers in $scope.newPreset.options.documentRoot if it contains no "{{".', function () {
+        it('should store return value of MarkerService.replaceMarkers in $scope.newPreset.options.deploymentPath if it contains no "{{".', function () {
             returnString = 'foo';
             ctrl.handleSettings();
-            expect(scope.newPreset.options.documentRoot).toEqual('foo');
+            expect(scope.newPreset.options.deploymentPath).toEqual('foo');
         });
 
-        it('should not set $scope.newPreset.options.documentRootWithMarkers if return value of MarkerService.replaceMarkers contains no "{{".', function () {
+        it('should not set $scope.newPreset.options.deploymentPathWithMarkers if return value of MarkerService.replaceMarkers contains no "{{".', function () {
             returnString = 'foo';
             ctrl.handleSettings();
-            expect(scope.newPreset.options.documentRootWithMarker).not.toBeDefined();
+            expect(scope.newPreset.options.deploymentPathWithMarker).not.toBeDefined();
         });
 
         it('should call MarkerService.getStringBeforeFirstMarker if return value of MarkerService.replaceMarkers contains further "{{".', function () {
@@ -237,16 +237,16 @@ describe('ServerController', function () {
             expect(MarkerService.getStringBeforeFirstMarker).toHaveBeenCalledWith('foo/{{suffix}}');
         });
 
-        it('should store the return of MarkerService.getStringBeforeFirstMarker in $scope.newPreset.options.documentRoot.', function () {
+        it('should store the return of MarkerService.getStringBeforeFirstMarker in $scope.newPreset.options.deploymentPath.', function () {
             returnString = 'foo/{{suffix}}';
             ctrl.handleSettings();
-            expect(scope.newPreset.options.documentRoot).toEqual('foo/');
+            expect(scope.newPreset.options.deploymentPath).toEqual('foo/');
         });
 
-        it('should store the return of MarkerService.replaceMarkers in $scope.newPreset.options.documentRootWithMarkers if it contains any "{{".', function () {
+        it('should store the return of MarkerService.replaceMarkers in $scope.newPreset.options.deploymentPathWithMarkers if it contains any "{{".', function () {
             returnString = 'foo/{{suffix}}';
             ctrl.handleSettings();
-            expect(scope.newPreset.options.documentRootWithMarkers).toEqual('foo/{{suffix}}');
+            expect(scope.newPreset.options.deploymentPathWithMarkers).toEqual('foo/{{suffix}}');
         });
 
     });
@@ -411,28 +411,28 @@ describe('ServerController', function () {
             beforeEach(function () {
                 scope.newPreset = {
                     options: {
-                        documentRootWithMarkers: 'bar/{{suffix}}/htdocs',
-                        documentRoot: 'foo'
+                        deploymentPathWithMarkers: 'bar/{{suffix}}/htdocs',
+                        deploymentPath: 'foo'
                     }
                 };
 
                 spyOn(MarkerService, 'replaceMarkers').andReturn('markerServiceReturn');
             });
 
-            it('should call MarkerService->replaceMarkers with documentRootWithMarkers and the passed suffix.', function () {
+            it('should call MarkerService->replaceMarkers with deploymentPathWithMarkers and the passed suffix.', function () {
                 scope.setDocumentRoot('live');
-                expect(MarkerService.replaceMarkers).toHaveBeenCalledWith(scope.newPreset.options.documentRootWithMarkers, {suffix: 'live'});
+                expect(MarkerService.replaceMarkers).toHaveBeenCalledWith(scope.newPreset.options.deploymentPathWithMarkers, {suffix: 'live'});
             });
 
-            it('should fill the documentRoot of the newPreset with the return value of MarkerService->replaceMarkers().', function () {
+            it('should fill the deploymentPath of the newPreset with the return value of MarkerService->replaceMarkers().', function () {
                 scope.setDocumentRoot('live');
-                expect(scope.newPreset.options.documentRoot).toEqual('markerServiceReturn');
+                expect(scope.newPreset.options.deploymentPath).toEqual('markerServiceReturn');
             });
 
-            it('should leave the documentRoot in newPreset if documentRootWithMarkers is not defined.', function () {
-                delete scope.newPreset.options.documentRootWithMarkers;
+            it('should leave the deploymentPath in newPreset if deploymentPathWithMarkers is not defined.', function () {
+                delete scope.newPreset.options.deploymentPathWithMarkers;
                 scope.setDocumentRoot('live');
-                expect(scope.newPreset.options.documentRoot).toEqual('foo');
+                expect(scope.newPreset.options.deploymentPath).toEqual('foo');
             });
         });
 
@@ -457,7 +457,12 @@ describe('ServerController', function () {
                 settings = {a: 'b'};
                 scope.settings = settings;
 
-                server = {success: success};
+                server = {
+                    success: success,
+                    options: {
+                        deploymentPathWithMarkers: 'foo/{{marker}}/'
+                    }
+                };
 
                 ctrl = $controller('ServerController', {
                     $scope: scope,
@@ -478,9 +483,14 @@ describe('ServerController', function () {
                 });
             }));
 
-            it('should set $scope.finished to false', function () {
+            it('should set $scope.finished to false.', function () {
                 scope.addServer(server);
                 expect(scope.finished).toBeFalsy();
+            });
+
+            it('should delete options.deploymentPathWithMarkers on passed server.', function () {
+                scope.addServer(server);
+                expect(server.options.deploymentPathWithMarkers).not.toBeDefined();
             });
 
             it('should call PresetRepository.addServer.', function () {
@@ -547,7 +557,10 @@ describe('ServerController', function () {
             describe('on failure', function () {
 
                 beforeEach(function () {
-                    server = {success: false};
+                    server = {
+                        success: false,
+                        options: {}
+                    };
                     server.nodes = [
                         {name: 'foo'}
                     ];

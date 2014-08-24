@@ -5,7 +5,7 @@ describe('PresetService', function () {
         expectedPresetSkeleton = {
             "options": {
                 "repositoryUrl": '',
-                "documentRoot": '',
+                "deploymentPath": '',
                 "context": ''
             },
             "nodes": [
@@ -52,10 +52,10 @@ describe('PresetService', function () {
             expect(preset).toEqual(expectedPreset);
         });
 
-        it('should return a copy of the preset skeleton with documentRoot set from configuration.', function () {
-            var documentRoot = '/var/www/myProject/live/htdocs/',
-                preset = presetService.getNewPreset({defaultDocumentRoot: documentRoot});
-            expectedPreset.options.documentRoot = documentRoot;
+        it('should return a copy of the preset skeleton with deploymentPath set from configuration.', function () {
+            var deploymentPath = '/var/www/myProject/live/htdocs/',
+                preset = presetService.getNewPreset({defaultDocumentRoot: deploymentPath});
+            expectedPreset.options.deploymentPath = deploymentPath;
             expect(preset).toEqual(expectedPreset);
         });
     });

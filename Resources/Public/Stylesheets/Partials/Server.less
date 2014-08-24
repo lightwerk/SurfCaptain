@@ -1,108 +1,122 @@
 .project-server {
 	.server {
-		width: 840px;
-		height: 120px;
-		border:1px solid #999999;
-		color: @main-color;
-		border-radius: 50px 0 0 50px;
-		margin: 35px auto;
-		padding: 10px 10px 10px 10px;
-		.single-server {
-			.server-icon {
-				font-size: 50px;
-				float: left;
-				line-height: 100px;
-				padding: 0 10px 0 10px;
-				color: #FFFFFF !important;
-				.changed {
-					color: @brand-primary !important;
-				}
-			}
-			.server-data {
-				float: left;
-				width: 700px;
-				padding: 0 0 0 10px;
-				text-align: left;
-				.not-saved-yet {
-					display: inline-block;
-					position: relative;
-					bottom: -30px;
-					color: @brand-primary;
-				}
-				h3 {
-					margin: -55px;
-					text-align: right;
-					font-size: 40px;
-					color: #999999;
-					.editable-click {
-						color: #FFFFFF !important;
-					}
-				}
-				.editable-click {
-					border: 1px solid @body-bg;
-					color: #999999;
-					padding: 2px;
-				}
-				.editable-click:hover {
-					border: 1px solid @main-color;
-				}
-				table {
-					width: 100%;
-					margin-top: 38px;
-					td {
-						width: 60%;
-						padding: 0px;
-						line-height: 35px;
-						height: 55px;
-						font-size: 20px;
-						vertical-align: top;
-						.editable-input {
-							padding: 2px;
-							height: 28px;
-						}
-						.btn {
-							padding: 2px;
-						}
-						&:last-child {
-							width: 40%;
-						}
-						.tooltip-inner {
-							background-color: @main-color;
-							color: #000000;
-						}
-						.help-block {
-							padding: 0px;
-							margin: 0px;
-							line-height: 20px;
-						}
-					}
-				}
-			}
-			.server-edit {
-				.remove {
-					float: right;
-					position: relative;
-					top: 5px;
-					display: none;
-				}
-			}
-			.server-edit {
-				.update {
-					float: right;
-					position: relative;
-					top: 22px;
-					display: none;
-				}
+		text-align: left;
+		.not-saved-yet {
+			position: relative;
+			color:@brand-primary;
+			width: 100%;
+			text-align: center;
+			display: inline-block;
+			span {
+				bottom: -31px;
+				display: inline-block;
+				position: relative;
+
+				-webkit-animation-name: blinker;
+				-webkit-animation-duration: 2s;
+				-webkit-animation-timing-function: linear;
+				-webkit-animation-iteration-count: infinite;
+
+				-moz-animation-name: blinker;
+				-moz-animation-duration: 2s;
+				-moz-animation-timing-function: linear;
+				-moz-animation-iteration-count: infinite;
+
+				animation-name: blinker;
+				animation-duration: 2s;
+				animation-timing-function: linear;
+				animation-iteration-count: infinite;
 			}
 		}
-		&:hover {
+		.single-server {
+			width: 800px;
+			height: auto;
+			border:2px solid #dfdfdf;
+			border-radius: 10px;
+			margin: 10px auto;
+			padding: 15px 20px;
+			color: #dfdfdf;
+			&.changed {
+				border-color: @brand-primary;
+				.server-data {
+					.server-icon {
+						color: @brand-primary !important;
+					}
+				}
+			}
+			&:hover {
+				.server-edit {
+					.remove {
+						display: inline-block;
+					}
+					.update {
+						display: inline-block;
+					}
+				}
+			}
+
 			.server-edit {
+				position: relative;
+				top: 0;
+				right: 0;
 				.remove {
-					display: inline-block;
+					float: right;
+					position: relative;
+					top: -5px;
+					display: none;
 				}
+			}
+			.server-edit {
 				.update {
-					display: inline-block;
+					float: right;
+					position: relative;
+					top: -5px;
+					display: none;
+					margin-right: 5px;
 				}
+			}
+			.server-name {
+				h3 {
+					margin: 0;
+					text-align: left;
+					font-size: 24px;
+					padding-bottom: 15px;
+					border-bottom: 1px solid #dfdfdf;
+					font-style: italic;
+					font-weight: 300;
+					text-align: left;
+				}
+			}
+
+			.server-data {
+				.server-icon {
+					.fa {
+						float: left;
+						padding: 5px 35px 15px 15px;
+					}
+					&.Staging {
+						color: @brand-warning;
+					}
+					&.Development {
+						color: @brand-success;
+					}
+					&.Production {
+						color: @brand-danger;
+					}
+				}
+				.server-details {
+					text-align: left;
+					font-size: 20px;
+					margin-top: 10px;
+					.fa {
+						padding: 5px;
+					}
+				}
+			}
+			.editable {
+				text-decoration: none;
+				color: #dfdfdf;
+				border-bottom: none;
 			}
 		}
 	}

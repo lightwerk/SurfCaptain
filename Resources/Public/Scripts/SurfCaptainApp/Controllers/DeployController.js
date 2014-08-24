@@ -50,6 +50,9 @@ surfCaptain.controller('DeployController', [
         $scope.deploy = function (preset) {
             if (preset === $scope.currentPreset) {
                 $scope.currentPreset.applications[0].type = CONFIG.applicationTypes.deployTYPO3;
+                if (angular.isDefined($scope.currentPreset.applications[0].options.deploymentPathWithMarkers)) {
+                    delete $scope.currentPreset.applications[0].options.deploymentPathWithMarkers;
+                }
                 DeploymentRepository.addDeployment($scope.currentPreset).then(
                     function (response) {
                         $scope.messages = FlashMessageService.addFlashMessage(

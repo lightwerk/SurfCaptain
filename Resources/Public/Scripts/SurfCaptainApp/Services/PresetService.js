@@ -8,7 +8,7 @@ surfCaptain.service('PresetService', [function () {
     var newPreset = {
         "options": {
             "repositoryUrl": '',
-            "documentRoot": '',
+            "deploymentPath": '',
             "context": ''
         },
         "nodes": [
@@ -26,7 +26,7 @@ surfCaptain.service('PresetService', [function () {
      * properties in configuration are:
      *
      *  - defaultUser (Sets the Username in the first Node)
-     *  - defaultDocumentRoot (Sets the documentRoot in the options.
+     *  - defaultDocumentRoot (Sets the deploymentPath in the options.
      *    Markers have to be replaced later on!)
      *
      * @param {object} configuration - optional
@@ -39,7 +39,7 @@ surfCaptain.service('PresetService', [function () {
                 preset.nodes[0].username = configuration.defaultUser;
             }
             if (angular.isDefined(configuration.defaultDocumentRoot)) {
-                preset.options.documentRoot = configuration.defaultDocumentRoot;
+                preset.options.deploymentPath = configuration.defaultDocumentRoot;
             }
         }
         return preset;

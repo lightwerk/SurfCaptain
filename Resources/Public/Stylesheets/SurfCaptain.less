@@ -36,7 +36,7 @@ div.surfcaptain.about {
 }
 
 .dark {
-	margin-top: 15px;
+	padding-top: 15px;
 	color: @main-color-bright;
 }
 .ngview {
@@ -104,4 +104,25 @@ div.overlay {
 	&.running {
 		background-color: @brand-info;
 	}
+}
+
+.inner-container {
+}
+
+@-moz-keyframes blinker {
+	0% { opacity: 1.0; }
+	50% { opacity: 0.0; }
+	100% { opacity: 1.0; }
+}
+
+@-webkit-keyframes blinker {
+	0% { opacity: 1.0; }
+	50% { opacity: 0.0; }
+	100% { opacity: 1.0; }
+}
+
+@keyframes blinker {
+	0% { opacity: 1.0; }
+	50% { opacity: 0.0; }
+	100% { opacity: 1.0; }
 }
