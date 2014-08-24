@@ -22,4 +22,12 @@ class DeploymentRepository extends Repository {
 	protected $defaultOrderings = array(
 		'date' => QueryInterface::ORDER_DESCENDING,
 	);
+
+	/**
+	 * @param integer $limit
+	 * @return \TYPO3\Flow\Persistence\QueryResultInterface The query result
+	 */
+	public function findAllWithLimit($limit) {
+		return $this->createQuery()->setLimit($limit)->execute();
+	}
 }

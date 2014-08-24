@@ -29,6 +29,8 @@ Example call:
 
 - Methode: GET
 - Path: /api/deployment
+- Parameters:
+	- limit - integer (Default: 100)
 
 Example call to get the deployments of all repositories:
 
