@@ -39,7 +39,7 @@ class Deployment {
 	protected $repositoryIdentifier;
 
 	/**
-	 * @var Repository
+	 * @var Repository|boolean
 	 * @Flow\Transient
 	 */
 	protected $repository;

@@ -32,6 +32,7 @@ class Log {
 
 	/**
 	 * @var string
+	 * @ORM\Column(type="text")
 	 */
 	protected $message;
 
