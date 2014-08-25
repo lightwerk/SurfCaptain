@@ -21,6 +21,7 @@ module.exports = {
             'Resources/Public/Components/chosen-build/chosen.jquery.js',
             'Resources/Public/Components/bootstrap/js/tooltip.js',
             'Resources/Public/Components/bootstrap/js/modal.js',
+            'Resources/Public/Components/bootstrap/js/tab.js',
             'Resources/Public/Components/angular/angular.js',
             'Resources/Public/Components/angular-route/angular-route.js',
             'Resources/Public/Components/angular-animate/angular-animate.js',
