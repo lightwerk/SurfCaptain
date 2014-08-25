@@ -7,6 +7,7 @@ namespace Lightwerk\SurfCaptain\Command;
  *                                                                        */
 
 use TYPO3\Flow\Annotations as Flow;
+use TYPO3\Flow\Http\Client\Browser;
 
 abstract class BrowserCommandController extends \TYPO3\Flow\Cli\CommandController {
 
@@ -43,7 +44,21 @@ abstract class BrowserCommandController extends \TYPO3\Flow\Cli\CommandControlle
 		$engine->setOption(CURLOPT_HTTPHEADER, array('Accept: application/json', 'Content-Type: application/json'));
 		$engine->setOption(CURLOPT_SSL_VERIFYPEER, FALSE);
 		$engine->setOption(CURLOPT_SSL_VERIFYHOST, FALSE);
+		$engine->setOption(CURLOPT_TIMEOUT, 10);
 		$browser->setRequestEngine($engine);
+		return $this->extendBrowser($browser);
+	}
+
+	/**
+	 * @return string
+	 */
+	abstract protected function getUrlPrefix();
+
+	/**
+	 * @param Browser $browser 
+	 * @return Browser
+	 */
+	protected function extendBrowser(Browser $browser) {
 		return $browser;
 	}
 
@@ -60,7 +75,7 @@ abstract class BrowserCommandController extends \TYPO3\Flow\Cli\CommandControlle
 			$this->outputLine('unknown command number ' . $command);
 		} else {
 			$browser = $this->getBrowser();
-			$response = $browser->request($this->urls[$command - 1]);
+			$response = $browser->request($this->getUrlPrefix() . $this->urls[$command - 1]);
 			$content = $response->getContent();
 			$this->outputLine($content);
 		}

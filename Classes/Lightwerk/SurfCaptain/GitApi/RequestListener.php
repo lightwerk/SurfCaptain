@@ -15,6 +15,19 @@ use TYPO3\Flow\Http\Response;
 class RequestListener {
 
 	/**
+	 * @var array
+	 */
+	protected $settings;
+
+	/**
+	 * @param array $settings
+	 * @return void
+	 */
+	public function injectSettings(array $settings) {
+		$this->settings = $settings;
+	}
+
+	/**
 	 * @throws \Lightwerk\SurfCaptain\Exception
 	 * @return string
 	 */
@@ -43,9 +56,11 @@ class RequestListener {
 	 * @return void
 	 */
 	public function saveApiCall($url, $method, Response $response) {
-		$directory = $this->getDataDirectory();
-		if ($method === 'GET') {
-			file_put_contents($directory . '/' . urlencode($url), $response->getContent());
+		if ($this->settings['gitApi']['requestListener']['save'] === TRUE) {
+			$directory = $this->getDataDirectory();
+			if ($method === 'GET') {
+				file_put_contents($directory . '/' . urlencode($url), $response->getContent());
+			}
 		}
 	}
 
@@ -56,9 +71,11 @@ class RequestListener {
 	 * @return void
 	 */
 	public function logApiCall($url, $method, Response $response) {
-		$directory = $this->getLogDirectory();
-		file_put_contents($directory . '/SurfCaptain_Request.log', $method . '_' . $url . "\n", FILE_APPEND);
-		file_put_contents($directory . '/SurfCaptain_Request.log', $response->getContent() . "\n", FILE_APPEND);
+		if ($this->settings['gitApi']['requestListener']['log'] === TRUE) {
+			$directory = $this->getLogDirectory();
+			file_put_contents($directory . '/SurfCaptain_Request.log', $method . '_' . $url . "\n", FILE_APPEND);
+			file_put_contents($directory . '/SurfCaptain_Request.log', $response->getContent() . "\n", FILE_APPEND);
+		}
 	}
 
 }

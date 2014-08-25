@@ -91,10 +91,8 @@ class GitLabDriver implements DriverInterface {
 		$url = $this->settings['apiUrl'] . $command . '?' . http_build_query($parameters);
 		// transfer Token in http header
 		$this->browserRequestEngine->setOption(CURLOPT_HTTPHEADER, array('PRIVATE-TOKEN: ' . $this->settings['privateToken']));
-		#$url = $this->settings['apiUrl'] . $command;
-		#$response = $this->browser->request($url, $method, $parameters);
 		// maybe we will throw own exception to give less information (token is outputed)
-		$response = $this->browser->request($url, $method);
+		$response = $this->browser->request($url, $method, array(), array(), $this->server, json_encode($content));
 
 		$this->emitGitLabApiCall($url, $method, $response);
 

@@ -7,6 +7,7 @@ namespace Lightwerk\SurfCaptain\Command;
  *                                                                        */
 
 use TYPO3\Flow\Annotations as Flow;
+use TYPO3\Flow\Http\Client\Browser;
 
 class LwGitCommandController extends BrowserCommandController {
 
@@ -14,36 +15,32 @@ class LwGitCommandController extends BrowserCommandController {
 	 * @var array
 	 */
 	protected $urls = array(
-		'https://localhost:1443/api/v3/groups',
-		'https://localhost:1443/api/v3/groups/10',
-		'https://git.lightwerk.com/api/v3/projects/project%2Fgtinter/repository/branches',
-		'https://localhost:1443/api/v3/projects/lm%2Flightwerk-surfcaptain-settings/repository/files?file_path=Presets.json&ref=master',
-		'https://localhost:1443/api/v3/projects',
-		'https://localhost:1443/api/v3/projects/209',
-		'https://localhost:1443/api/v3/projects/209/repository/branches',
-		'https://localhost:1443/api/v3/projects/209/repository/tags',
+		'/groups',
+		'/groups/10',
+		'/groups/project',
+		'/v3/projects/project%2Fgtinter/repository/branches',
+		'/projects/lm%2Flightwerk-surfcaptain-settings/repository/files?file_path=Presets.json&ref=master',
+		'/projects',
+		'/projects/209',
+		'/projects/209/repository/branches',
+		'/projects/209/repository/tags',
 	);
 
 	/**
 	 * @return void
 	 */
-	public function testCommand() {
-		$url = 'https://localhost:1443/api/v3/projects/lm%2Flightwerk-surfcaptain-settings/repository/files';
-			$browser = $this->getBrowser();
-			#$browser->getRequestEngine()->setOption();
-			$response = $browser->request($url);
-			$content = $response->getContent();
-			$this->outputLine($content);
-	}
-
-	/**
-	 * @return void
-	 */
-	protected function getBrowser() {
-		$browser = parent::getBrowser();
+	protected function extendBrowser(Browser $browser) {
 		$token = $this->settings['sources']['git.lightwerk.com']['privateToken'];
 		$browser->getRequestEngine()->setOption(CURLOPT_HTTPHEADER, array('PRIVATE-TOKEN: ' . $token));
 		return $browser;
+	}
+
+	/**
+	 * @return string
+	 */
+	protected function getUrlPrefix() {
+		$prefix = $this->settings['sources']['git.lightwerk.com']['apiUrl'];
+		return $prefix;
 	}
 
 }

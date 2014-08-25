@@ -14,15 +14,27 @@ class ApiCommandController extends BrowserCommandController {
 	 * @var array
 	 */
 	protected $urls = array(
-		'http://surf/api/repository',
-		'http://surf/api/repository?repositoryUrl=git%40git.lightwerk.com%3Aproject%2Fgtweb.git',
-		'http://surf/api/preset',
-		'http://surf/api/preset?key=test_af',
-		'http://surf/api/preset?key=sma',
-		'http://surf/api/preset?key=foo',
-		'http://surf/api/deployment',
-		'http://surf/api/frontendsetting',
+		'/api/repository',
+		'/api/repository?repositoryUrl=git%40git.lightwerk.com%3Aproject%2Fgtweb.git',
+		'/api/preset',
+		'/api/preset?key=test_af',
+		'/api/preset?key=sma',
+		'/api/preset?key=foo',
+		'/api/deployment',
+		'/api/frontendsetting',
 	);
+
+	/**
+	 * @throws \Lightwerk\SurfCaptain\Exception
+	 * @return string
+	 */
+	protected function getUrlPrefix() {
+		if (isset($_SERVER['HTTP_HOST']) === FALSE) {
+			throw new \Lightwerk\SurfCaptain\Exception('env HTTP_HOST is not set', 1408983560);
+		}
+		return 'http://' . $_SERVER['HTTP_HOST'];
+	}
+
 
 
 }

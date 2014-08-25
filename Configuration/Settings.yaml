@@ -14,6 +14,11 @@ Lightwerk:
       repositoryUrl: git@git.lightwerk.com:lm/lightwerk-surfcaptain-settings.git
       filePath: Presets.json
 
+    gitApi:
+      requestListener:
+        save: FALSE
+        log: FALSE
+
     sources:
       git.lightwerk.com:
         className: \Lightwerk\SurfCaptain\Service\Driver\GitLabDriver
@@ -44,3 +49,8 @@ Lightwerk:
           Commit:
             date: '{{committed_date}}'
             committerName: '{{committer.name}}'
+#      api.github.com:
+#        privateToken: 'Please define this value in root/Configuration/Settings.yaml'
+#        apiUrl: https://api.github.com/
+#        className: \Lightwerk\SurfCaptain\Service\Driver\GitHubDriver
+#        repositories: users/achimfritz/repos

@@ -9,24 +9,26 @@ namespace Lightwerk\SurfCaptain\Command;
 use TYPO3\Flow\Annotations as Flow;
 use TYPO3\Flow\Http\Client\Browser;
 
-class SmaGitCommandController extends BrowserCommandController {
+class GitHubCommandController extends BrowserCommandController {
 
 	/**
 	 * @var array
 	 */
 	protected $urls = array(
-		'/projects',
-		'/projects/2',
-		'/projects/sma-websites%2Frcw-sma-de',
-		'/projects/2/repository/tags',
-		'/projects/2/repository/branches',
+		// list
+		'users/achimfritz/repos',
+		'users/lars85/repos',
+		// show
+		'repos/achimfritz/championship-distribution',
+		'repos/achimfritz/championship-distribution/tags',
+		'repos/achimfritz/championship-distribution/branches',
 	);
 
 	/**
 	 * @return string
 	 */
 	protected function getUrlPrefix() {
-		$prefix = $this->settings['sources']['git.sma.de']['apiUrl'];
+		$prefix = $this->settings['sources']['api.github.com']['apiUrl'];
 		return $prefix;
 	}
 
@@ -34,8 +36,8 @@ class SmaGitCommandController extends BrowserCommandController {
 	 * @return void
 	 */
 	protected function extendBrowser(Browser $browser) {
-		$token = $this->settings['sources']['git.sma.de']['privateToken'];
-		$browser->getRequestEngine()->setOption(CURLOPT_HTTPHEADER, array('PRIVATE-TOKEN: ' . $token));
+		$token = $this->settings['sources']['api.github.com']['privateToken'];
+		$browser->getRequestEngine()->setOption(CURLOPT_HTTPHEADER, array('Authorization: token ' . $token));
 		return $browser;
 	}
 
