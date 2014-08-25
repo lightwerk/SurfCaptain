@@ -20,12 +20,6 @@ surfCaptain.controller('ProjectsController', [
                 function (response) {
                     $scope.finished = true;
                     $scope.projects = response;
-                    $scope.messages = FlashMessageService.addFlashMessage(
-                        'At your Service!',
-                        'All Projects have been loaded successfully. Have fun!',
-                        SEVERITY.ok,
-                        'projects-loaded-ok'
-                    );
                 },
                 function () {
                     //an error occurred
