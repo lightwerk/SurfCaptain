@@ -68,4 +68,19 @@ surfCaptain.service('ValidationService', function () {
         }
         return message || false;
     };
+
+    /**
+     * Validates if a given Substring is found within a given string.
+     *
+     * @param {string} string
+     * @param {string} substring
+     * @param {string} message
+     * @returns {string|boolean}
+     */
+    this.doesStringStartWithSubstring = function (string, substring, message) {
+        if (typeof string === 'string' && string.indexOf(substring) === 0) {
+            return true;
+        }
+        return message || false;
+    };
 });

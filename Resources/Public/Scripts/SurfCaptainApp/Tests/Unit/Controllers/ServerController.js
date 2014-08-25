@@ -190,6 +190,23 @@ describe('ServerController', function () {
             spyOn(MarkerService, 'getStringBeforeFirstMarker').andReturn('foo/');
         }));
 
+        it('should set $scope.contexts to empty string if no contexts are set in settings.', function () {
+            ctrl.handleSettings();
+            expect(scope.contexts).toEqual('');
+        });
+
+        it('should set $scope.contexts to array if settings.contexts contains a value.', function () {
+            scope.settings.contexts = 'Production';
+            ctrl.handleSettings();
+            expect(scope.contexts).toEqual(['Production']);
+        });
+
+        it('should set $scope.contexts to array if settings.contexts contains comma separated values.', function () {
+            scope.settings.contexts = 'Production,Development';
+            ctrl.handleSettings();
+            expect(scope.contexts).toEqual(['Production', 'Development']);
+        });
+
         it('should not call generateNameSuggestions on controller if $scope.settings.nameSuggestions are undefined.', function () {
             scope.settings = {};
             ctrl.handleSettings();

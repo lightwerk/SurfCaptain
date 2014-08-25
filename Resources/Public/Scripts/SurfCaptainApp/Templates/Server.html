@@ -116,17 +116,16 @@
 						</div>
 
 						<label>Context:</label> *
-						<select
+						<input
 							data-ng-model="newPreset.options.context"
 							class="form-control"
-							data-ng-options="context for context in contexts"
 							name="context"
 							required
-						>
-							<option value="">Choose context</option>
-						</select>
+							start-with-validate="contexts"
+						/>
 						<div class="messages">
 							<div data-ng-messages="newServerForm.context.$error" data-ng-if="newServerForm.context.$dirty">
+								<span class="error" data-ng-message="start-with-validate">Context must start with Production, Testing or Development.</span>
 								<span class="error" data-ng-message="required">Context is required!</span>
 							</div>
 						</div>

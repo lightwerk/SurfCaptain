@@ -31,9 +31,6 @@ surfCaptain.controller('ServerController', [
         $scope.finished = false;
         $scope.currentPreset = {};
         $scope.messages = [];
-        $scope.contexts = [
-            'Production', 'Development', 'Staging'
-        ];
         $scope.serverNames = [];
 
 
@@ -97,6 +94,10 @@ surfCaptain.controller('ServerController', [
             var docRoot;
             if (angular.isUndefined($scope.settings)) {
                 return;
+            }
+            $scope.contexts = '';
+            if (angular.isDefined($scope.settings.contexts)) {
+                $scope.contexts = $scope.settings.contexts.split(',');
             }
             if (angular.isDefined($scope.settings.nameSuggestions)) {
                 self.generateNameSuggestions($scope.settings.nameSuggestions);
