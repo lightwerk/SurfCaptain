@@ -212,11 +212,9 @@ surfCaptain.controller('DeployController', [
     'DeploymentRepository',
     '$location',
     '$cacheFactory',
-    'PresetRepository',
-    function ($scope, $controller, ProjectRepository, HistoryRepository, SEVERITY, FlashMessageService, CONFIG, DeploymentRepository, $location, $cacheFactory, PresetRepository) {
+    function ($scope, $controller, ProjectRepository, HistoryRepository, SEVERITY, FlashMessageService, CONFIG, DeploymentRepository, $location, $cacheFactory) {
 
-        var loadingString = 'loading ...',
-            self = this;
+        var loadingString = 'loading ...';
 
         // Inherit from AbstractSingleProjectController
         angular.extend(this, $controller('AbstractSingleProjectController', {$scope: $scope}));
@@ -237,19 +235,6 @@ surfCaptain.controller('DeployController', [
         $scope.currentPreset = {};
 
         /**
-         * @return {void}
-         */
-        this.addFailureFlashMessage = function () {
-            $scope.finished = true;
-            $scope.messages = FlashMessageService.addFlashMessage(
-                'Request failed!',
-                'API call failed. Deployment not possible.',
-                SEVERITY.error,
-                'deployment-project-call-failed'
-            );
-        };
-
-        /**
          *
          * @param {object} preset
          * @return {void}
@@ -266,9 +251,6 @@ surfCaptain.controller('DeployController', [
                 $scope.currentPreset.applications[0].type = CONFIG.applicationTypes.deployTYPO3;
                 if (angular.isDefined($scope.currentPreset.applications[0].options.deploymentPathWithMarkers)) {
                     delete $scope.currentPreset.applications[0].options.deploymentPathWithMarkers;
-                }
-                if (angular.isUndefined($scope.currentPreset.applications[0].options.repositoryUrl) || $scope.currentPreset.applications[0].options.repositoryUrl === '') {
-                    $scope.currentPreset.applications[0].options.repositoryUrl = $scope.project.repositoryUrl;
                 }
                 DeploymentRepository.addDeployment($scope.currentPreset).then(
                     function (response) {
@@ -386,16 +368,12 @@ surfCaptain.controller('DeployController', [
                     }
                 },
                 function () {
-                    self.addFailureFlashMessage();
-                }
-            );
-
-            PresetRepository.getGlobalServers('').then(
-                function (response) {
-                    $scope.globalServers = response.presets;
-                },
-                function (response) {
-                    self.addFailureFlashMessage();
+                    FlashMessageService.addFlashMessage(
+                        'Error',
+                        'API call failed. Deployment not possible.',
+                        SEVERITY.error,
+                        'deployment-project-call-failed'
+                    );
                 }
             );
         });
@@ -1306,18 +1284,6 @@ surfCaptain.directive('surfcaptainMenu', ['$routeParams', '$location', function 
         }
     };
 }]);
-/*global surfCaptain,angular*/
-/*jslint node: true */
-
-'use strict';
-surfCaptain.directive('tab', function () {
-    return function (scope, element, attributes) {
-        element.bind('click', function (e) {
-            e.preventDefault();
-            angular.element(this).tab('show');
-        });
-    };
-});
 /*global surfCaptain*/
 /*jslint node: true */
 
