@@ -10,6 +10,9 @@ use TYPO3\Flow\Annotations as Flow;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
+ * Log
+ *
+ * @package Lightwerk\SurfCaptain
  * @Flow\Entity
  */
 class Log {

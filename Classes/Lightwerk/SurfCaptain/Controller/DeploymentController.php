@@ -10,6 +10,11 @@ use Lightwerk\SurfCaptain\Domain\Model\Deployment;
 use Lightwerk\SurfCaptain\Domain\Repository\DeploymentRepository;
 use TYPO3\Flow\Annotations as Flow;
 
+/**
+ * Deployment Controller
+ *
+ * @package Lightwerk\SurfCaptain
+ */
 class DeploymentController extends AbstractRestController {
 
 	/**

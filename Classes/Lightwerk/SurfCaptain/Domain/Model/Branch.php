@@ -6,6 +6,11 @@ namespace Lightwerk\SurfCaptain\Domain\Model;
  *                                                                        *
  *                                                                        */
 
+/**
+ * Branch
+ *
+ * @package Lightwerk\SurfCaptain
+ */
 class Branch {
 
 	/**

@@ -9,7 +9,10 @@ namespace Lightwerk\SurfCaptain\Service;
 use TYPO3\Flow\Annotations as Flow;
 
 /**
+ * Preset Service
+ *
  * @Flow\Scope("singleton")
+ * @package Lightwerk\SurfCaptain
  */
 class PresetService {
 
@@ -40,6 +43,7 @@ class PresetService {
 
 	/**
 	 * @return array
+	 * @throws Exception
 	 */
 	public function getPresets() {
 		if (!isset($this->presets)) {
@@ -95,11 +99,10 @@ class PresetService {
 	 */
 	public function getPreset($key) {
 		$presets = $this->getPresets();
-		if (!empty($presets[$key])) {
-			return $presets[$key];
-		} else {
+		if (empty($presets[$key])) {
 			throw new Exception('Preset with key "' . $key . '" does not exist!', 1407781243);
 		}
+		return $presets[$key];
 	}
 
 	/**

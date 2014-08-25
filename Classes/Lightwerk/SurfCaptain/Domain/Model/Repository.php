@@ -6,6 +6,11 @@ namespace Lightwerk\SurfCaptain\Domain\Model;
  *                                                                        *
  *                                                                        */
 
+/**
+ * Repository
+ *
+ * @package Lightwerk\SurfCaptain
+ */
 class Repository {
 
 	/**

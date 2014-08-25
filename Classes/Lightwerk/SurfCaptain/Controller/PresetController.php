@@ -10,9 +10,9 @@ use Lightwerk\SurfCaptain\Service\PresetService;
 use TYPO3\Flow\Annotations as Flow;
 
 /**
- * Class ServersController
+ * Servers Controller
  *
- * @package Lightwerk\SurfCaptain\Controller
+ * @package Lightwerk\SurfCaptain
  */
 class PresetController extends AbstractRestController {
 

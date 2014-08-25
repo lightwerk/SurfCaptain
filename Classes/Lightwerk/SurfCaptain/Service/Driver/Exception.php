@@ -6,5 +6,10 @@ namespace Lightwerk\SurfCaptain\Service\Driver;
  *                                                                        *
  *                                                                        */
 
+/**
+ * Exception
+ *
+ * @package Lightwerk\SurfCaptain
+ */
 class Exception extends \Lightwerk\SurfCaptain\Service\Exception {
 }

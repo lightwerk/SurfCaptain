@@ -10,6 +10,11 @@ use TYPO3\Flow\Annotations as Flow;
 use TYPO3\Flow\Mvc\Controller\RestController;
 use TYPO3\Flow\Error\Message;
 
+/**
+ * Abstract Rest Controller
+ *
+ * @package Lightwerk\SurfCaptain
+ */
 abstract class AbstractRestController extends RestController {
 
 	/**
@@ -24,7 +29,9 @@ abstract class AbstractRestController extends RestController {
 	protected $mediaType;
 
 	/**
-	 * json view (do not use defaultViewObjectName, because we can also html (and xml) with TemplateView)
+	 * json view (do not use defaultViewObjectName, because we can also html
+	 * (and xml) with TemplateView).
+	 *
 	 * use own view to
 	 * - render all variables given
 	 * - render flashMessages
@@ -41,10 +48,12 @@ abstract class AbstractRestController extends RestController {
 	 * @param \TYPO3\Flow\Mvc\RequestInterface $request
 	 * @param \TYPO3\Flow\Mvc\ResponseInterface $response
 	 * @throws \TYPO3\Flow\Mvc\Exception\UnsupportedRequestTypeException
+	 * @return void
 	 */
 	protected function initializeController(\TYPO3\Flow\Mvc\RequestInterface $request, \TYPO3\Flow\Mvc\ResponseInterface $response) {
 		parent::initializeController($request, $response);
-		// override request.format with NegotiatedMediaType aka HTTP-Request Content-Type and set Content-Type to response
+		// override request.format with NegotiatedMediaType aka HTTP-Request
+		// Content-Type and set Content-Type to response
 		$this->mediaType = $this->request->getHttpRequest()->getNegotiatedMediaType($this->supportedMediaTypes);
 		if (in_array($this->mediaType, $this->supportedMediaTypes) === FALSE) {
 			$this->throwStatus(406);
@@ -57,7 +66,7 @@ abstract class AbstractRestController extends RestController {
 	}
 
 	/**
-	 * errorAction 
+	 * Error Action
 	 * 
 	 * @return void
 	 */
@@ -72,15 +81,21 @@ abstract class AbstractRestController extends RestController {
 	}
 
 	/**
-	 * handleException
+	 * Handle Exception
 	 * 
-	 * @param \Exception $e
+	 * @param \Exception $exception
 	 * @return void
 	 */
-	protected function handleException(\Exception $e) {
+	protected function handleException(\Exception $exception) {
 		$this->response->setStatus(500);
 		// may be we want also an exceptionHandler e.g. to notify somebody, ...
-		$this->addFlashMessage($e->getMessage(), get_class($e), Message::SEVERITY_ERROR, array(), $e->getCode());
+		$this->addFlashMessage(
+			$exception->getMessage(),
+			get_class($exception),
+			Message::SEVERITY_ERROR,
+			array(),
+			$exception->getCode()
+		);
 	}
 
 	/**
@@ -98,7 +113,8 @@ abstract class AbstractRestController extends RestController {
 	 * @see forward()
 	 * @api
 	 */
-	protected function redirect($actionName, $controllerName = NULL, $packageKey = NULL, array $arguments = NULL, $delay = 0, $statusCode = 303, $format = NULL) {
+	protected function redirect($actionName, $controllerName = NULL, $packageKey = NULL, array $arguments = NULL, $delay = 0,
+								$statusCode = 303, $format = NULL) {
 		if ($this->mediaType === 'application/json') {
 			// render all arguments
 			if (!empty($arguments)) {

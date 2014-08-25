@@ -6,6 +6,11 @@ namespace Lightwerk\SurfCaptain\Mvc\View;
  *                                                                        *
  *                                                                        */
 
+/**
+ * Json View
+ *
+ * @package Lightwerk\SurfCaptain\Mvc\View
+ */
 class JsonView extends \TYPO3\Flow\Mvc\View\JsonView {
 
 	/**

@@ -6,10 +6,15 @@ namespace Lightwerk\SurfCaptain\Controller;
  *                                                                        *
  *                                                                        */
 
+use Lightwerk\SurfCaptain\Service\Exception;
 use Lightwerk\SurfCaptain\Service\ShellService;
 use TYPO3\Flow\Annotations as Flow;
-use Lightwerk\SurfCaptain\Service\Exception;
 
+/**
+ * Check Ssh Login Controller
+ *
+ * @package Lightwerk\SurfCaptain
+ */
 class CheckSshLoginController extends AbstractRestController {
 
 	/**

@@ -11,7 +11,10 @@ use Lightwerk\SurfCaptain\Utility\GeneralUtility;
 use TYPO3\Flow\Annotations as Flow;
 
 /**
+ * Git Service
+ *
  * @Flow\Scope("singleton")
+ * @package Lightwerk\SurfCaptain
  */
 class GitService implements Driver\DriverInterface {
 
@@ -64,6 +67,7 @@ class GitService implements Driver\DriverInterface {
 	/**
 	 * Returns a driver for a defined host
 	 *
+	 * @param string $host
 	 * @return Driver\DriverInterface
 	 * @throws Exception
 	 */
@@ -127,8 +131,7 @@ class GitService implements Driver\DriverInterface {
 	 * @return Repository
 	 */
 	public function getRepository($repositoryUrl) {
-		return $this->getDriverFromRepositoryUrl($repositoryUrl)
-					->getRepository($repositoryUrl);
+		return $this->getDriverFromRepositoryUrl($repositoryUrl)->getRepository($repositoryUrl);
 	}
 
 	/**
@@ -140,8 +143,7 @@ class GitService implements Driver\DriverInterface {
 	 * @return string
 	 */
 	public function getFileContent($repositoryUrl, $filePath, $reference = 'master') {
-		return $this->getDriverFromRepositoryUrl($repositoryUrl)
-					->getFileContent($repositoryUrl, $filePath, $reference);
+		return $this->getDriverFromRepositoryUrl($repositoryUrl)->getFileContent($repositoryUrl, $filePath, $reference);
 	}
 
 	/**
@@ -156,7 +158,7 @@ class GitService implements Driver\DriverInterface {
 	 */
 	public function setFileContent($repositoryUrl, $filePath, $content, $commitMessage, $branchName = 'master') {
 		$this->getDriverFromRepositoryUrl($repositoryUrl)
-			 ->setFileContent($repositoryUrl, $filePath, $content, $commitMessage, $branchName);
+			->setFileContent($repositoryUrl, $filePath, $content, $commitMessage, $branchName);
 	}
 
 	/**
@@ -166,8 +168,7 @@ class GitService implements Driver\DriverInterface {
 	 * @return array
 	 */
 	public function getBranches($repositoryUrl) {
-		return $this->getDriverFromRepositoryUrl($repositoryUrl)
-					->getBranches($repositoryUrl);
+		return $this->getDriverFromRepositoryUrl($repositoryUrl)->getBranches($repositoryUrl);
 	}
 
 	/**
@@ -177,7 +178,6 @@ class GitService implements Driver\DriverInterface {
 	 * @return array
 	 */
 	public function getTags($repositoryUrl) {
-		return $this->getDriverFromRepositoryUrl($repositoryUrl)
-					->getTags($repositoryUrl);
+		return $this->getDriverFromRepositoryUrl($repositoryUrl)->getTags($repositoryUrl);
 	}
 }

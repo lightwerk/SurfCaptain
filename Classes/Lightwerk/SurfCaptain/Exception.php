@@ -6,6 +6,10 @@ namespace Lightwerk\SurfCaptain;
  *                                                                        *
  *                                                                        */
 
+/**
+ * Exception
+ *
+ * @package Lightwerk\SurfCaptain
+ */
 class Exception extends \TYPO3\Flow\Exception {
-
 }

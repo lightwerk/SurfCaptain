@@ -7,8 +7,14 @@ namespace Lightwerk\SurfCaptain\Controller;
  *                                                                        */
 
 use TYPO3\Flow\Annotations as Flow;
+use TYPO3\Flow\Mvc\Controller\ActionController;
 
-class FrontendController extends \TYPO3\Flow\Mvc\Controller\ActionController {
+/**
+ * Frontend Controller
+ *
+ * @package Lightwerk\SurfCaptain
+ */
+class FrontendController extends ActionController {
 
 	/**
 	 * @return void

@@ -13,6 +13,11 @@ use Lightwerk\SurfCaptain\Mapper\DataMapper;
 use Lightwerk\SurfCaptain\Utility\GeneralUtility;
 use TYPO3\Flow\Annotations as Flow;
 
+/**
+ * GitLab Driver
+ *
+ * @package Lightwerk\SurfCaptain
+ */
 class GitLabDriver implements DriverInterface {
 
 	/**
@@ -88,7 +93,8 @@ class GitLabDriver implements DriverInterface {
 	protected function getGitLabApiResponse($command, $method = 'GET', array $parameters = array(), array $content = array()) {
 		$parameters['private_token'] = $this->settings['privateToken'];
 		$url = $this->settings['apiUrl'] . $command . '?' . http_build_query($parameters);
-		// maybe we will throw own exception to give less information (token is outputed)
+		// maybe we will throw own exception to give less information
+		// (token shows up in error message)
 		$response = $this->browser->request($url, $method, array(), array(), $this->server, json_encode($content));
 
 		$statusCode = $response->getStatusCode();
@@ -158,6 +164,7 @@ class GitLabDriver implements DriverInterface {
 
 	/**
 	 * Returns repositories
+	 * ToDo: Simplify
 	 *
 	 * @return array
 	 */

@@ -11,7 +11,7 @@
                 "applications": [
                     {
                         "options": {
-                            "documentRoot": "/var/www/projectName/context/"
+                            "deploymentPath": "/var/www/projectName/context/"
                         },
                         "nodes": [
                             {
@@ -35,7 +35,7 @@
                 "applications": [
                     {
                         "options": {
-                            "documentRoot": "/var/www/projectName/context/",
+                            "deploymentPath": "/var/www/projectName/context/",
                             "context": "Development"
                         },
                         "nodes": [
@@ -63,7 +63,7 @@
                     {
                         "options": {
                             "repositoryUrl": "git@git.lightwerk.com:boilerplate/typo3_cms.git",
-                            "documentRoot": "/var/www/projectName/context/",
+                            "deploymentPath": "/var/www/projectName/context/",
                             "context": "Development"
                         },
                         "nodes": [
@@ -89,7 +89,7 @@
                         "type": "TYPO3\\CMS\\Deploy",
                         "options": {
                             "repositoryUrl": "git@git.lightwerk.com:boilerplate/typo3_cms.git",
-                            "documentRoot": "/var/www/projectName/context/",
+                            "deploymentPath": "/var/www/projectName/context/",
                             "context": "Development"
                         },
                         "nodes": [
@@ -118,11 +118,12 @@
                         "options": {
                             // All options are here and in the nodes section possible (one level with the node "name")
                             "repositoryUrl": "git@git.lightwerk.com:boilerplate/typo3_cms.git",
-                            "documentRoot": "/var/www/projectName/context/",
+                            "deploymentPath": "/var/www/projectName/context/",
                             "context": "Development",
                             "tag": "1.2.3",
                             "branch": "master",
-                            "sha1": "c0db78a19f62a18fe888ee58490c88fea1219213"
+                            "sha1": "c0db78a19f62a18fe888ee58490c88fea1219213",
+                            "frontendUrl": "http://www.domain.de"
                         },
                         "nodes": [
                             {

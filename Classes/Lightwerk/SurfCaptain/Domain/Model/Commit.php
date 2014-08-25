@@ -6,6 +6,11 @@ namespace Lightwerk\SurfCaptain\Domain\Model;
  *                                                                        *
  *                                                                        */
 
+/**
+ * Commit
+ *
+ * @package Lightwerk\SurfCaptain
+ */
 class Commit {
 
 	/**

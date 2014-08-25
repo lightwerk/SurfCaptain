@@ -12,7 +12,10 @@ use TYPO3\Flow\Persistence\QueryInterface;
 use TYPO3\Flow\Persistence\Repository;
 
 /**
+ * Log Repository
+ *
  * @Flow\Scope("singleton")
+ * @package Lightwerk\SurfCaptain
  */
 class LogRepository extends Repository {
 

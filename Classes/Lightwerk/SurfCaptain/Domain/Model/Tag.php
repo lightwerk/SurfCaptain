@@ -6,6 +6,11 @@ namespace Lightwerk\SurfCaptain\Domain\Model;
  *                                                                        *
  *                                                                        */
 
+/**
+ * Tag
+ *
+ * @package Lightwerk\SurfCaptain
+ */
 class Tag {
 
 	/**

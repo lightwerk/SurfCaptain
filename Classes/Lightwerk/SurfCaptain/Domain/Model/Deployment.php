@@ -6,11 +6,16 @@ namespace Lightwerk\SurfCaptain\Domain\Model;
  *                                                                        *
  *                                                                        */
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\ORM\Mapping as ORM;
 use Lightwerk\SurfCaptain\Service\GitService;
 use TYPO3\Flow\Annotations as Flow;
-use Doctrine\ORM\Mapping as ORM;
 
 /**
+ * Deployment
+ *
+ * @package Lightwerk\SurfCaptain
  * @Flow\Entity
  */
 class Deployment {
@@ -22,7 +27,7 @@ class Deployment {
 	const STATUS_FAILED = 'failed';
 
 	/**
-	 * @var \Doctrine\Common\Collections\Collection<\Lightwerk\SurfCaptain\Domain\Model\Log>
+	 * @var Collection<\Lightwerk\SurfCaptain\Domain\Model\Log>
 	 * @ORM\OneToMany(mappedBy="deployment")
 	 * @ORM\OrderBy({"date" = "DESC"})
 	 */
@@ -71,13 +76,13 @@ class Deployment {
 	 * Constructs a new Deployment
 	 */
 	public function __construct() {
-		$this->logs = new \Doctrine\Common\Collections\ArrayCollection();
+		$this->logs = new ArrayCollection();
 		$this->setDate(new \DateTime());
 		$this->setStatus(self::STATUS_WAITING);
 	}
 
 	/**
-	 * @return \Doctrine\Common\Collections\Collection<\Lightwerk\SurfCaptain\Domain\Model\Log>
+	 * @return Collection<\Lightwerk\SurfCaptain\Domain\Model\Log>
 	 */
 	public function getLogs() {
 		return $this->logs;
@@ -115,9 +120,8 @@ class Deployment {
 		$configuration = $this->getConfiguration();
 		if (!empty($configuration['applications'][0]['type'])) {
 			return $configuration['applications'][0]['type'];
-		} else {
-			return '';
 		}
+		return '';
 	}
 
 	/**
@@ -146,9 +150,8 @@ class Deployment {
 		$configuration = $this->getConfiguration();
 		if (empty($configuration['applications'][0]['options']['context'])) {
 			return '';
-		} else {
-			return $configuration['applications'][0]['options']['context'];
 		}
+		return $configuration['applications'][0]['options']['context'];
 	}
 
 	/**

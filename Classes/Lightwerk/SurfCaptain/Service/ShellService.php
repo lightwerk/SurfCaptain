@@ -9,7 +9,10 @@ namespace Lightwerk\SurfCaptain\Service;
 use TYPO3\Flow\Annotations as Flow;
 
 /**
+ * Shell Service
+ *
  * @Flow\Scope("singleton")
+ * @package Lightwerk\SurfCaptain
  */
 class ShellService {
 
@@ -44,47 +47,16 @@ class ShellService {
 	}
 
 	/**
-	 * @param string $hostname
-	 * @param string $username
-	 * @param string $password
-	 * @param integer|null $port
-	 * @return boolean
-	 * @throws Exception
-	 */
-	public function copyKey($hostname, $username, $password, $port = NULL) {
-		$host = '';
-		if (!empty($username)) {
-			$host .= $username . '@';
-		}
-		$host .= $hostname;
-		if (!empty($port)) {
-			$host .= ' -p' . escapeshellarg($port);
-		}
-
-		$command = 'ssh-copy-id -i ' . escapeshellarg($host);
-
-		$surfPackage = $this->packageManager->getPackage('TYPO3.Surf');
-		$passwordSshLoginScriptPathAndFilename = \TYPO3\Flow\Utility\Files::concatenatePaths(array($surfPackage->getResourcesPath(), 'Private/Scripts/PasswordSshLogin.expect'));
-		$command = sprintf('expect %s %s %s', escapeshellarg($passwordSshLoginScriptPathAndFilename), escapeshellarg($password), $command);
-
-		list($exitCode, $output) = $this->executeCommand($command);
-		if (!empty($exitCode)) {
-			throw new Exception('Exit code: ' . $exitCode . '. Output: ' . $output, 1408904566);
-		}
-		return TRUE;
-	}
-
-	/**
 	 * @param $command
 	 * @return array
 	 */
 	protected function executeCommand($command) {
 		$returnedOutput = '';
-		$fp = popen($command, 'r');
-		while (($line = fgets($fp)) !== FALSE) {
+		$resource = popen($command, 'r');
+		while (($line = fgets($resource)) !== FALSE) {
 			$returnedOutput .= $line;
 		}
-		$exitCode = pclose($fp);
+		$exitCode = pclose($resource);
 		return array($exitCode, trim($returnedOutput));
 	}
 }

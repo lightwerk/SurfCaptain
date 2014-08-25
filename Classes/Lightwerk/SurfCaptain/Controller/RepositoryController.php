@@ -11,6 +11,11 @@ use Lightwerk\SurfCaptain\Service\GitService;
 use Lightwerk\SurfCaptain\Service\PresetService;
 use TYPO3\Flow\Annotations as Flow;
 
+/**
+ * Repository Controller
+ *
+ * @package Lightwerk\SurfCaptain
+ */
 class RepositoryController extends AbstractRestController {
 
 	/**

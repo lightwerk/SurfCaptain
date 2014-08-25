@@ -10,6 +10,11 @@ use Lightwerk\SurfCaptain\Domain\Model\Branch;
 use Lightwerk\SurfCaptain\Domain\Model\Repository;
 use Lightwerk\SurfCaptain\Domain\Model\Tag;
 
+/**
+ * Driver Interface
+ *
+ * @package Lightwerk\SurfCaptain
+ */
 interface DriverInterface {
 
 	/**

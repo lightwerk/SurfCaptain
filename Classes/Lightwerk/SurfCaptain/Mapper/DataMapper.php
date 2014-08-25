@@ -12,7 +12,10 @@ use TYPO3\Flow\Annotations as Flow;
 use TYPO3\Flow\Reflection\ObjectAccess;
 
 /**
+ * Data Mapper
+ *
  * @Flow\Scope("singleton")
+ * @package Lightwerk\SurfCaptain
  */
 class DataMapper {
 
@@ -30,9 +33,8 @@ class DataMapper {
 				$objects[] = $this->mapOneToObject($objectRow, $objectClass, $settings);
 			}
 			return $objects;
-		} else {
-			return $this->mapOneToObject($objectData, $objectClass, $settings);
 		}
+		return $this->mapOneToObject($objectData, $objectClass, $settings);
 	}
 
 	/**
@@ -50,7 +52,7 @@ class DataMapper {
 			throw new Exception('Object class "' . $objectClass . '" does not exist!', 1408203711);
 		}
 		$object = new $objectClass();
-		$properties = $propertyNames = ObjectAccess::getSettablePropertyNames($object);
+		$properties = ObjectAccess::getSettablePropertyNames($object);
 		foreach ($properties as $property) {
 			$value = $this->getPropertyValue($object, $property, $objectData, $settings);
 			if (isset($value)) {
@@ -105,7 +107,7 @@ class DataMapper {
 	}
 
 	/**
-	 * @param string $object
+	 * @param mixed $object
 	 * @return string
 	 */
 	protected function getModelName($object) {

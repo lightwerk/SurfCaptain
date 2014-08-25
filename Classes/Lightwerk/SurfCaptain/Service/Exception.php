@@ -6,6 +6,11 @@ namespace Lightwerk\SurfCaptain\Service;
  *                                                                        *
  *                                                                        */
 
+/**
+ * Exception
+ *
+ * @package Lightwerk\SurfCaptain
+ */
 class Exception extends \Lightwerk\SurfCaptain\Exception {
 
 }

@@ -8,6 +8,11 @@ namespace Lightwerk\SurfCaptain\Utility;
 
 use TYPO3\Flow\Annotations as Flow;
 
+/**
+ * Marker Utility
+ *
+ * @package Lightwerk\SurfCaptain
+ */
 class MarkerUtility {
 
 	/**
@@ -22,6 +27,7 @@ class MarkerUtility {
 
 	/**
 	 * @param array $variables
+	 * @param string $prefix
 	 * @return array
 	 */
 	static protected function getMarkers(array $variables, $prefix = '') {

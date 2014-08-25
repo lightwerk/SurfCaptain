@@ -8,6 +8,11 @@ namespace Lightwerk\SurfCaptain\Controller;
 
 use TYPO3\Flow\Annotations as Flow;
 
+/**
+ * Frontend Setting Controller
+ *
+ * @package Lightwerk\SurfCaptain
+ */
 class FrontendSettingController extends AbstractRestController {
 
 	/**

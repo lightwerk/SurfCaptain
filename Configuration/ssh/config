@@ -1,7 +1,4 @@
 Host *
-	ConnectTimeout 3
+	ConnectTimeout 5
 	BatchMode yes
-	NumberOfPasswordPrompts 1
-	UserKnownHostsFile /dev/null
-	StrictHostKeyChecking no
 	LogLevel ERROR
