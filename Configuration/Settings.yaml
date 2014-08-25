@@ -2,7 +2,7 @@ Lightwerk:
   SurfCaptain:
     frontendSettings:
       defaultUser: 'lw-deployment'
-      defaultDeploymentPath: '/var/www/{{project}}/{{suffix}}/htdocs/'
+      defaultDeploymentPath: '/var/www/{{project}}/{{suffix}}/'
       nameSuggestions:
         live: 'Production'
         qa: 'Staging'
