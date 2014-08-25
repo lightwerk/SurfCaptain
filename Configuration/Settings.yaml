@@ -6,8 +6,8 @@ Lightwerk:
       contexts: 'Production,Testing,Development'
       nameSuggestions:
         live: 'Production'
-        qa: 'Production'
-        staging: 'Production'
+        qa: 'Production/Qa'
+        staging: 'Production/Staging'
         test: 'Testing'
         dev: 'Development'
 
