@@ -2882,6 +2882,198 @@ input[type="button"].btn-block {
 .glyphicon-tree-deciduous:before {
   content: "\e200";
 }
+.nav {
+  margin-bottom: 0;
+  padding-left: 0;
+  list-style: none;
+}
+.nav > li {
+  position: relative;
+  display: block;
+}
+.nav > li > a {
+  position: relative;
+  display: block;
+  padding: 10px 15px;
+}
+.nav > li > a:hover,
+.nav > li > a:focus {
+  text-decoration: none;
+  background-color: #eeeeee;
+}
+.nav > li.disabled > a {
+  color: #999999;
+}
+.nav > li.disabled > a:hover,
+.nav > li.disabled > a:focus {
+  color: #999999;
+  text-decoration: none;
+  background-color: transparent;
+  cursor: not-allowed;
+}
+.nav .open > a,
+.nav .open > a:hover,
+.nav .open > a:focus {
+  background-color: #eeeeee;
+  border-color: #99cccc;
+}
+.nav .nav-divider {
+  height: 1px;
+  margin: 10px 0;
+  overflow: hidden;
+  background-color: #e5e5e5;
+}
+.nav > li > a > img {
+  max-width: none;
+}
+.nav-tabs {
+  border-bottom: 1px solid #dddddd;
+}
+.nav-tabs > li {
+  float: left;
+  margin-bottom: -1px;
+}
+.nav-tabs > li > a {
+  margin-right: 2px;
+  line-height: 1.42857143;
+  border: 1px solid transparent;
+  border-radius: 4px 4px 0 0;
+}
+.nav-tabs > li > a:hover {
+  border-color: #eeeeee #eeeeee #dddddd;
+}
+.nav-tabs > li.active > a,
+.nav-tabs > li.active > a:hover,
+.nav-tabs > li.active > a:focus {
+  color: #555555;
+  background-color: #222222;
+  border: 1px solid #dddddd;
+  border-bottom-color: transparent;
+  cursor: default;
+}
+.nav-tabs.nav-justified {
+  width: 100%;
+  border-bottom: 0;
+}
+.nav-tabs.nav-justified > li {
+  float: none;
+}
+.nav-tabs.nav-justified > li > a {
+  text-align: center;
+  margin-bottom: 5px;
+}
+.nav-tabs.nav-justified > .dropdown .dropdown-menu {
+  top: auto;
+  left: auto;
+}
+@media (min-width: 768px) {
+  .nav-tabs.nav-justified > li {
+    display: table-cell;
+    width: 1%;
+  }
+  .nav-tabs.nav-justified > li > a {
+    margin-bottom: 0;
+  }
+}
+.nav-tabs.nav-justified > li > a {
+  margin-right: 0;
+  border-radius: 4px;
+}
+.nav-tabs.nav-justified > .active > a,
+.nav-tabs.nav-justified > .active > a:hover,
+.nav-tabs.nav-justified > .active > a:focus {
+  border: 1px solid #dddddd;
+}
+@media (min-width: 768px) {
+  .nav-tabs.nav-justified > li > a {
+    border-bottom: 1px solid #dddddd;
+    border-radius: 4px 4px 0 0;
+  }
+  .nav-tabs.nav-justified > .active > a,
+  .nav-tabs.nav-justified > .active > a:hover,
+  .nav-tabs.nav-justified > .active > a:focus {
+    border-bottom-color: #222222;
+  }
+}
+.nav-pills > li {
+  float: left;
+}
+.nav-pills > li > a {
+  border-radius: 4px;
+}
+.nav-pills > li + li {
+  margin-left: 2px;
+}
+.nav-pills > li.active > a,
+.nav-pills > li.active > a:hover,
+.nav-pills > li.active > a:focus {
+  color: #ffffff;
+  background-color: #99cccc;
+}
+.nav-stacked > li {
+  float: none;
+}
+.nav-stacked > li + li {
+  margin-top: 2px;
+  margin-left: 0;
+}
+.nav-justified {
+  width: 100%;
+}
+.nav-justified > li {
+  float: none;
+}
+.nav-justified > li > a {
+  text-align: center;
+  margin-bottom: 5px;
+}
+.nav-justified > .dropdown .dropdown-menu {
+  top: auto;
+  left: auto;
+}
+@media (min-width: 768px) {
+  .nav-justified > li {
+    display: table-cell;
+    width: 1%;
+  }
+  .nav-justified > li > a {
+    margin-bottom: 0;
+  }
+}
+.nav-tabs-justified {
+  border-bottom: 0;
+}
+.nav-tabs-justified > li > a {
+  margin-right: 0;
+  border-radius: 4px;
+}
+.nav-tabs-justified > .active > a,
+.nav-tabs-justified > .active > a:hover,
+.nav-tabs-justified > .active > a:focus {
+  border: 1px solid #dddddd;
+}
+@media (min-width: 768px) {
+  .nav-tabs-justified > li > a {
+    border-bottom: 1px solid #dddddd;
+    border-radius: 4px 4px 0 0;
+  }
+  .nav-tabs-justified > .active > a,
+  .nav-tabs-justified > .active > a:hover,
+  .nav-tabs-justified > .active > a:focus {
+    border-bottom-color: #222222;
+  }
+}
+.tab-content > .tab-pane {
+  display: none;
+}
+.tab-content > .active {
+  display: block;
+}
+.nav-tabs .dropdown-menu {
+  margin-top: -1px;
+  border-top-right-radius: 0;
+  border-top-left-radius: 0;
+}
 .label {
   display: inline;
   padding: .2em .6em .3em;
@@ -3383,6 +3575,8 @@ button.close {
 .row:after,
 .form-horizontal .form-group:before,
 .form-horizontal .form-group:after,
+.nav:before,
+.nav:after,
 .modal-footer:before,
 .modal-footer:after {
   content: " ";
@@ -3393,6 +3587,7 @@ button.close {
 .container-fluid:after,
 .row:after,
 .form-horizontal .form-group:after,
+.nav:after,
 .modal-footer:after {
   clear: both;
 }
@@ -5992,46 +6187,54 @@ div.project-history table tr td {
   margin-top: 0px;
   font-size: 22px;
 }
-.project-deploy .configure-deployment-row .deployment-server {
+.project-deploy .configure-deployment-row .nav-tabs li a:hover {
+  background-color: #444;
+}
+.project-deploy .configure-deployment-row .nav-tabs li.active a {
+  color: #888888;
+}
+.project-deploy .configure-deployment-row .tab-content {
+  padding-top: 10px;
+}
+.project-deploy .configure-deployment-row .tab-content .deployment-server {
   width: 650px;
   height: 35px;
   border: solid 2px #000;
   box-shadow: 0px 0px 5px #000000;
   border-radius: 5px;
-  float: left;
-  margin: 3px;
+  margin: 10px;
   cursor: pointer;
   color: #000;
   padding: 4px;
 }
-.project-deploy .configure-deployment-row .deployment-server.disabled {
+.project-deploy .configure-deployment-row .tab-content .deployment-server.disabled {
   opacity: 0.3;
 }
-.project-deploy .configure-deployment-row .deployment-server.disabled:hover {
+.project-deploy .configure-deployment-row .tab-content .deployment-server.disabled:hover {
   opacity: 0.6;
 }
-.project-deploy .configure-deployment-row .deployment-server.Production {
+.project-deploy .configure-deployment-row .tab-content .deployment-server.Production {
   background-color: #d9534f;
 }
-.project-deploy .configure-deployment-row .deployment-server.Staging {
+.project-deploy .configure-deployment-row .tab-content .deployment-server.Staging {
   background-color: #f0ad4e;
 }
-.project-deploy .configure-deployment-row .deployment-server.Development {
+.project-deploy .configure-deployment-row .tab-content .deployment-server.Development {
   background-color: #5cb85c;
 }
-.project-deploy .configure-deployment-row .deployment-server .title {
+.project-deploy .configure-deployment-row .tab-content .deployment-server .title {
   font-size: 110%;
   text-transform: uppercase;
   float: left;
 }
-.project-deploy .configure-deployment-row .deployment-server .title .fa {
+.project-deploy .configure-deployment-row .tab-content .deployment-server .title .fa {
   margin-right: 8px;
   font-size: 22px;
 }
-.project-deploy .configure-deployment-row .deployment-server .context-container {
+.project-deploy .configure-deployment-row .tab-content .deployment-server .context-container {
   float: right;
 }
-.project-deploy .configure-deployment-row .deployment-server .context-container .context {
+.project-deploy .configure-deployment-row .tab-content .deployment-server .context-container .context {
   display: block;
   margin: auto;
   text-align: center;
