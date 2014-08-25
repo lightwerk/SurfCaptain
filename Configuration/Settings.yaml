@@ -3,11 +3,12 @@ Lightwerk:
     frontendSettings:
       defaultUser: 'lw-deployment'
       defaultDeploymentPath: '/var/www/{{project}}/{{suffix}}/'
+      contexts: 'Production,Testing,Development'
       nameSuggestions:
         live: 'Production'
-        qa: 'Staging'
-        staging: 'Staging'
-        test: 'Staging'
+        qa: 'Production/Qa'
+        staging: 'Production/Staging'
+        test: 'Testing'
         dev: 'Development'
 
     presets:

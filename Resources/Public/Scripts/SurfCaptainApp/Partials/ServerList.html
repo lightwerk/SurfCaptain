@@ -21,8 +21,7 @@
 				<h3>
 					<span>{{preset.applications.0.nodes.0.name}} (<span
 						class="context"
-						editable-select="preset.applications.0.options.context"
-						e-ng-options="context for context in contexts"
+						editable-text="preset.applications.0.options.context"
 						onbeforesave="updateContext($data)"
 						onaftersave="preset.changed=true"
 						>{{preset.applications.0.options.context || 'please add'}}</span></span>)
