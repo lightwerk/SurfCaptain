@@ -212,9 +212,11 @@ surfCaptain.controller('DeployController', [
     'DeploymentRepository',
     '$location',
     '$cacheFactory',
-    function ($scope, $controller, ProjectRepository, HistoryRepository, SEVERITY, FlashMessageService, CONFIG, DeploymentRepository, $location, $cacheFactory) {
+    'PresetRepository',
+    function ($scope, $controller, ProjectRepository, HistoryRepository, SEVERITY, FlashMessageService, CONFIG, DeploymentRepository, $location, $cacheFactory, PresetRepository) {
 
-        var loadingString = 'loading ...';
+        var loadingString = 'loading ...',
+            self = this;
 
         // Inherit from AbstractSingleProjectController
         angular.extend(this, $controller('AbstractSingleProjectController', {$scope: $scope}));
@@ -235,6 +237,19 @@ surfCaptain.controller('DeployController', [
         $scope.currentPreset = {};
 
         /**
+         * @return {void}
+         */
+        this.addFailureFlashMessage = function () {
+            $scope.finished = true;
+            $scope.messages = FlashMessageService.addFlashMessage(
+                'Request failed!',
+                'API call failed. Deployment not possible.',
+                SEVERITY.error,
+                'deployment-project-call-failed'
+            );
+        };
+
+        /**
          *
          * @param {object} preset
          * @return {void}
@@ -251,6 +266,9 @@ surfCaptain.controller('DeployController', [
                 $scope.currentPreset.applications[0].type = CONFIG.applicationTypes.deployTYPO3;
                 if (angular.isDefined($scope.currentPreset.applications[0].options.deploymentPathWithMarkers)) {
                     delete $scope.currentPreset.applications[0].options.deploymentPathWithMarkers;
+                }
+                if (angular.isUndefined($scope.currentPreset.applications[0].options.repositoryUrl) || $scope.currentPreset.applications[0].options.repositoryUrl === '') {
+                    $scope.currentPreset.applications[0].options.repositoryUrl = $scope.project.repositoryUrl;
                 }
                 DeploymentRepository.addDeployment($scope.currentPreset).then(
                     function (response) {
@@ -368,12 +386,16 @@ surfCaptain.controller('DeployController', [
                     }
                 },
                 function () {
-                    FlashMessageService.addFlashMessage(
-                        'Error',
-                        'API call failed. Deployment not possible.',
-                        SEVERITY.error,
-                        'deployment-project-call-failed'
-                    );
+                    self.addFailureFlashMessage();
+                }
+            );
+
+            PresetRepository.getGlobalServers('').then(
+                function (response) {
+                    $scope.globalServers = response.presets;
+                },
+                function (response) {
+                    self.addFailureFlashMessage();
                 }
             );
         });
@@ -442,12 +464,10 @@ surfCaptain.controller('GlobalServerController', [
     'PresetService',
     'FlashMessageService',
     'SEVERITY',
-    function ($scope, PresetRepository, PresetService, FlashMessageService, SEVERITY) {
+    'SettingsRepository',
+    function ($scope, PresetRepository, PresetService, FlashMessageService, SEVERITY, SettingsRepository) {
         var self = this;
 
-        $scope.contexts = [
-            'Production', 'Development', 'Staging'
-        ];
         $scope.newPreset = PresetService.getNewPreset();
         $scope.finished = false;
         $scope.messages = [];
@@ -463,6 +483,20 @@ surfCaptain.controller('GlobalServerController', [
                     $scope.serverNames.push(property);
                 }
             }
+        };
+
+        /**
+         * @return {void}
+         */
+        this.getSettings = function () {
+            SettingsRepository.getSettings().then(
+                function (response) {
+                    $scope.contexts = '';
+                    if (angular.isDefined(response.contexts)) {
+                        $scope.contexts = response.contexts.split(',');
+                    }
+                }
+            );
         };
 
         /**
@@ -530,6 +564,7 @@ surfCaptain.controller('GlobalServerController', [
          * @return {void}
          */
         this.init = function () {
+            self.getSettings();
             $scope.getAllServers();
         };
         this.init();
@@ -633,9 +668,6 @@ surfCaptain.controller('ServerController', [
         $scope.finished = false;
         $scope.currentPreset = {};
         $scope.messages = [];
-        $scope.contexts = [
-            'Production', 'Development', 'Staging'
-        ];
         $scope.serverNames = [];
 
 
@@ -699,6 +731,10 @@ surfCaptain.controller('ServerController', [
             var docRoot;
             if (angular.isUndefined($scope.settings)) {
                 return;
+            }
+            $scope.contexts = '';
+            if (angular.isDefined($scope.settings.contexts)) {
+                $scope.contexts = $scope.settings.contexts.split(',');
             }
             if (angular.isDefined($scope.settings.nameSuggestions)) {
                 self.generateNameSuggestions($scope.settings.nameSuggestions);
@@ -1062,146 +1098,165 @@ surfCaptain.directive('overlay', function () {
         link: linker
     };
 });
-/*global surfCaptain*/
-/*jslint node: true */
+/*global surfCaptain,angular*/
+/*jslint node: true, plusplus:true */
 
 'use strict';
-surfCaptain.directive('serverList', ['PresetRepository', 'ValidationService', 'FlashMessageService', 'SEVERITY', function (PresetRepository, ValidationService, FlashMessageService, SEVERITY) {
-    var linker = function (scope, element, attrs) {
-        scope.toggleSpinnerAndOverlay = function () {
-            scope.finished = !scope.finished;
-            scope.$parent.finished = !scope.$parent.finished;
-        };
+surfCaptain.directive('serverList', [
+    'PresetRepository',
+    'ValidationService',
+    'FlashMessageService',
+    'SEVERITY',
+    'SettingsRepository',
+    function (PresetRepository, ValidationService, FlashMessageService, SEVERITY, SettingsRepository) {
+        var linker = function (scope, element, attrs) {
+            scope.toggleSpinnerAndOverlay = function () {
+                scope.finished = !scope.finished;
+                scope.$parent.finished = !scope.$parent.finished;
+            };
 
-        scope.contexts = [
-            'Production', 'Development', 'Staging'
-        ];
-
-        /**
-         * Stores a preset object in a scope variable
-         *
-         * @param {object} preset
-         * @return void
-         */
-        scope.setCurrentPreset = function (preset) {
-            scope.currentPreset = preset;
-        };
-
-        /**
-         * Wrapper for PresetRepository.deleteServer(server)
-         *
-         * @param {object} server
-         * @return void
-         */
-        scope.deleteServer = function (server) {
-            scope.toggleSpinnerAndOverlay();
-            PresetRepository.deleteServer(server).then(
+            SettingsRepository.getSettings().then(
                 function (response) {
-                    scope.$parent.getAllServers();
-                    scope.messages = FlashMessageService.addFlashMessage(
-                        'Server deleted!',
-                        'The Server "' + server.applications[0].nodes[0].name + '" was successfully removed.',
-                        SEVERITY.ok
-                    );
-                },
-                function (response) {
-                    scope.toggleSpinnerAndOverlay();
-                    scope.messages = FlashMessageService.addFlashMessage(
-                        'Deletion failed!',
-                        'The Server "' + server.applications[0].nodes[0].name + '" could not be removed.',
-                        SEVERITY.error
-                    );
+                    scope.contexts = '';
+                    if (angular.isDefined(response.contexts)) {
+                        scope.contexts = response.contexts.split(',');
+                    }
                 }
             );
-        };
 
-        /**
-         * Wrapper for PresetRepository.updateServer(server)
-         *
-         * @param {object} server
-         * @return void
-         */
-        scope.updateServer = function (server) {
-            scope.toggleSpinnerAndOverlay();
-            PresetRepository.updateServer(server.applications[0]).then(
-                function () {
-                    server.changed = false;
-                    scope.toggleSpinnerAndOverlay();
-                    scope.messages = FlashMessageService.addFlashMessage(
-                        'Update successful!',
-                        'The Server "' + server.applications[0].nodes[0].name + '" was updated successfully.',
-                        SEVERITY.ok
-                    );
-                },
-                function () {
-                    scope.toggleSpinnerAndOverlay();
-                    scope.messages = FlashMessageService.addFlashMessage(
-                        'Update failed!',
-                        'The Server "' + server.applications[0].nodes[0].name + '" could not be updated.',
-                        SEVERITY.error
-                    );
+            /**
+             * Stores a preset object in a scope variable
+             *
+             * @param {object} preset
+             * @return void
+             */
+            scope.setCurrentPreset = function (preset) {
+                scope.currentPreset = preset;
+            };
+
+            /**
+             * Wrapper for PresetRepository.deleteServer(server)
+             *
+             * @param {object} server
+             * @return void
+             */
+            scope.deleteServer = function (server) {
+                scope.toggleSpinnerAndOverlay();
+                PresetRepository.deleteServer(server).then(
+                    function (response) {
+                        scope.$parent.getAllServers();
+                        scope.messages = FlashMessageService.addFlashMessage(
+                            'Server deleted!',
+                            'The Server "' + server.applications[0].nodes[0].name + '" was successfully removed.',
+                            SEVERITY.ok
+                        );
+                    },
+                    function (response) {
+                        scope.toggleSpinnerAndOverlay();
+                        scope.messages = FlashMessageService.addFlashMessage(
+                            'Deletion failed!',
+                            'The Server "' + server.applications[0].nodes[0].name + '" could not be removed.',
+                            SEVERITY.error
+                        );
+                    }
+                );
+            };
+
+            /**
+             * Wrapper for PresetRepository.updateServer(server)
+             *
+             * @param {object} server
+             * @return void
+             */
+            scope.updateServer = function (server) {
+                scope.toggleSpinnerAndOverlay();
+                PresetRepository.updateServer(server.applications[0]).then(
+                    function () {
+                        server.changed = false;
+                        scope.toggleSpinnerAndOverlay();
+                        scope.messages = FlashMessageService.addFlashMessage(
+                            'Update successful!',
+                            'The Server "' + server.applications[0].nodes[0].name + '" was updated successfully.',
+                            SEVERITY.ok
+                        );
+                    },
+                    function () {
+                        scope.toggleSpinnerAndOverlay();
+                        scope.messages = FlashMessageService.addFlashMessage(
+                            'Update failed!',
+                            'The Server "' + server.applications[0].nodes[0].name + '" could not be updated.',
+                            SEVERITY.error
+                        );
+                    }
+                );
+            };
+
+            /**
+             * Validates the updated Host string before submitting to Server
+             *
+             * @param data
+             * @return {string | boolean} ErrorMessage or True if valid
+             */
+            scope.updateHost = function (data) {
+                return ValidationService.hasLength(data, 1, 'Host must not be empty!');
+            };
+
+            /**
+             * Validates the updated DeploymentPath string before submitting to Server
+             *
+             * @param data
+             * @return {string | boolean} ErrorMessage or True if valid
+             */
+            scope.updateDeploymentPath = function (data) {
+                var res = ValidationService.hasLength(data, 1, 'DeploymentPath is required!');
+                if (res === true) {
+                    return ValidationService.doesLastCharacterMatch(data, '/', 'DeploymentPath must end with "/"!');
                 }
-            );
+                return res;
+            };
+
+            /**
+             * Validates the updated Username string before submitting to Server
+             *
+             * @param data
+             * @return {string | boolean} ErrorMessage or True if valid
+             */
+            scope.updateUsername = function (data) {
+                return ValidationService.hasLength(data, 1, 'User must not be empty!');
+            };
+
+            /**
+             * Validates the updated Context string before submitting to Server
+             *
+             * @param data
+             * @return {string | boolean} ErrorMessage or True if valid
+             */
+            scope.updateContext = function (data) {
+                var i = 0,
+                    length = scope.context.length;
+                for (i; i < length; i++) {
+                    if (ValidationService.doesStringStartWithSubstring(data, scope.contexts[i])) {
+                        return true;
+                    }
+                }
+                return 'Context must start with either Development, Testing or Production!';
+            };
+
         };
 
-        /**
-         * Validates the updated Host string before submitting to Server
-         *
-         * @param data
-         * @return {string | boolean} ErrorMessage or True if valid
-         */
-        scope.updateHost = function (data) {
-            return ValidationService.hasLength(data, 1, 'Host must not be empty!');
+        return {
+            restrict: 'E',
+            templateUrl: '/_Resources/Static/Packages/Lightwerk.SurfCaptain/Scripts/SurfCaptainApp/Partials/ServerList.html',
+            scope: {
+                servers: '=',
+                getAllServers: '&',
+                finished: '=',
+                messages: '='
+            },
+            link: linker
         };
-
-        /**
-         * Validates the updated DeploymentPath string before submitting to Server
-         *
-         * @param data
-         * @return {string | boolean} ErrorMessage or True if valid
-         */
-        scope.updateDeploymentPath = function (data) {
-            var res = ValidationService.hasLength(data, 1, 'DeploymentPath is required!');
-            if (res === true) {
-                return ValidationService.doesLastCharacterMatch(data, '/', 'DeploymentPath must end with "/"!');
-            }
-            return res;
-        };
-
-        /**
-         * Validates the updated Username string before submitting to Server
-         *
-         * @param data
-         * @return {string | boolean} ErrorMessage or True if valid
-         */
-        scope.updateUsername = function (data) {
-            return ValidationService.hasLength(data, 1, 'User must not be empty!');
-        };
-
-        /**
-         * Validates the updated Context string before submitting to Server
-         *
-         * @param data
-         * @return {string | boolean} ErrorMessage or True if valid
-         */
-        scope.updateContext = function (data) {
-            return ValidationService.doesArrayContainItem(scope.contexts, data, 'Context is not valid!');
-        };
-
-    };
-
-    return {
-        restrict: 'E',
-        templateUrl: '/_Resources/Static/Packages/Lightwerk.SurfCaptain/Scripts/SurfCaptainApp/Partials/ServerList.html',
-        scope: {
-            servers: '=',
-            getAllServers: '&',
-            finished: '=',
-            messages: '='
-        },
-        link: linker
-    };
-}]);
+    }
+]);
 /*global surfCaptain*/
 /*jslint node: true */
 
@@ -1250,6 +1305,65 @@ surfCaptain.directive('spinner', function () {
         link: linker
     };
 });
+/*global surfCaptain,angular*/
+/*jslint node: true, plusplus: true */
+
+'use strict';
+surfCaptain.directive('startWithValidate', ['ValidationService', function (ValidationService) {
+    return {
+        restrict: 'A',
+        require: 'ngModel',
+        scope: {
+            startWithValidate: '='
+        },
+        link: function (scope, elem, attr, ctrl) {
+            // add a parser
+            ctrl.$parsers.unshift(function (value) {
+                var i = 0,
+                    length;
+
+                if (angular.isUndefined(scope.startWithValidate)) {
+                    ctrl.$setValidity('start-with-validate', true);
+                    return value;
+                }
+                length = scope.startWithValidate.length;
+
+                for (i; i < length; i++) {
+                    if (ValidationService.doesStringStartWithSubstring(value, scope.startWithValidate[i])) {
+                        ctrl.$setValidity('start-with-validate', true);
+                        return value;
+                    }
+                }
+
+                ctrl.$setValidity('start-with-validate', false);
+                return undefined;
+            });
+
+            // add a formatter
+            ctrl.$formatters.unshift(function (value) {
+                var i = 0,
+                    length;
+
+                if (angular.isUndefined(scope.startWithValidate)) {
+                    ctrl.$setValidity('start-with-validate', true);
+                    return value;
+                }
+                length = scope.startWithValidate.length;
+
+                for (i; i < length; i++) {
+                    if (ValidationService.doesStringStartWithSubstring(value, scope.startWithValidate[i])) {
+                        ctrl.$setValidity('start-with-validate', true);
+                        return value;
+                    }
+                }
+
+                ctrl.$setValidity('start-with-validate', false);
+                return value;
+            });
+
+        }
+    };
+}]);
 /*global surfCaptain*/
 /*jslint node: true */
 
@@ -1284,6 +1398,18 @@ surfCaptain.directive('surfcaptainMenu', ['$routeParams', '$location', function 
         }
     };
 }]);
+/*global surfCaptain,angular*/
+/*jslint node: true */
+
+'use strict';
+surfCaptain.directive('tab', function () {
+    return function (scope, element, attributes) {
+        element.bind('click', function (e) {
+            e.preventDefault();
+            angular.element(this).tab('show');
+        });
+    };
+});
 /*global surfCaptain*/
 /*jslint node: true */
 
@@ -1985,6 +2111,21 @@ surfCaptain.service('ValidationService', function () {
      */
     this.doesStringContainSubstring = function (string, substring, message) {
         if (typeof string === 'string' && string.indexOf(substring) !== -1) {
+            return true;
+        }
+        return message || false;
+    };
+
+    /**
+     * Validates if a given Substring is found within a given string.
+     *
+     * @param {string} string
+     * @param {string} substring
+     * @param {string} message
+     * @returns {string|boolean}
+     */
+    this.doesStringStartWithSubstring = function (string, substring, message) {
+        if (typeof string === 'string' && string.indexOf(substring) === 0) {
             return true;
         }
         return message || false;
