@@ -241,19 +241,21 @@ class Deployment {
 	}
 
 	/**
-	 * @return Repository|NULL
+	 * @return Repository|boolean
 	 */
 	public function getRepository() {
-		$repositoryUrl = $this->getRepositoryUrl();
-		if (!empty($repositoryUrl)) {
-			$gitService = new GitService();
-			try {
-				return $gitService->getRepository($repositoryUrl);
-			} catch (\Exception $e) {
-				return NULL;
+		if ($this->repository === NULL) {
+			$repositoryUrl = $this->getRepositoryUrl();
+			if (!empty($repositoryUrl)) {
+				$gitService = new GitService();
+				try {
+					$this->repository = $gitService->getRepository($repositoryUrl);
+				} catch (\Exception $e) {
+					$this->repository = FALSE;
+				}
 			}
 		}
-		return NULL;
+		return $this->repository;
 	}
 
 }
