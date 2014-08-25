@@ -6366,6 +6366,9 @@ div.project-history table tr td {
   font-weight: 300;
   text-align: left;
 }
+.project-server .server .single-server .server-name .help-block {
+  font-size: 20px;
+}
 .project-server .server .single-server .server-data .server-icon .fa {
   float: left;
   padding: 5px 35px 15px 15px;
