@@ -213,7 +213,9 @@ surfCaptain.controller('DeployController', [
     '$location',
     '$cacheFactory',
     'PresetRepository',
-    function ($scope, $controller, ProjectRepository, HistoryRepository, SEVERITY, FlashMessageService, CONFIG, DeploymentRepository, $location, $cacheFactory, PresetRepository) {
+    'ValidationService',
+    'SettingsRepository',
+    function ($scope, $controller, ProjectRepository, HistoryRepository, SEVERITY, FlashMessageService, CONFIG, DeploymentRepository, $location, $cacheFactory, PresetRepository, ValidationService, SettingsRepository) {
 
         var loadingString = 'loading ...',
             self = this;
@@ -355,6 +357,21 @@ surfCaptain.controller('DeployController', [
             }
         };
 
+        /**
+         * @param {string} context
+         * @returns {string}
+         */
+        $scope.getRootContext = function (context) {
+            var i = 0,
+                length = $scope.contexts.length;
+            for (i; i < length; i++) {
+                if (ValidationService.doesStringStartWithSubstring(context, $scope.contexts[i])) {
+                    return $scope.contexts[i];
+                }
+            }
+            return '';
+        };
+
         $scope.$watch('project', function (project) {
             var id;
             if (angular.isUndefined(project.repositoryUrl)) {
@@ -396,6 +413,15 @@ surfCaptain.controller('DeployController', [
                 },
                 function (response) {
                     self.addFailureFlashMessage();
+                }
+            );
+
+            SettingsRepository.getSettings().then(
+                function (response) {
+                    $scope.contexts = [];
+                    if (angular.isDefined(response.contexts)) {
+                        $scope.contexts = response.contexts.split(',');
+                    }
                 }
             );
         });
@@ -1125,6 +1151,21 @@ surfCaptain.directive('serverList', [
             );
 
             /**
+             * @param {string} context
+             * @returns {string}
+             */
+            scope.getRootContext = function (context) {
+                var i = 0,
+                    length = scope.contexts.length;
+                for (i; i < length; i++) {
+                    if (ValidationService.doesStringStartWithSubstring(context, scope.contexts[i])) {
+                        return scope.contexts[i];
+                    }
+                }
+                return '';
+            };
+
+            /**
              * Stores a preset object in a scope variable
              *
              * @param {object} preset
@@ -1233,7 +1274,7 @@ surfCaptain.directive('serverList', [
              */
             scope.updateContext = function (data) {
                 var i = 0,
-                    length = scope.context.length;
+                    length = scope.contexts.length;
                 for (i; i < length; i++) {
                     if (ValidationService.doesStringStartWithSubstring(data, scope.contexts[i])) {
                         return true;

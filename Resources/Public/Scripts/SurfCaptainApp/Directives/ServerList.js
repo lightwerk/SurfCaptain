@@ -25,6 +25,21 @@ surfCaptain.directive('serverList', [
             );
 
             /**
+             * @param {string} context
+             * @returns {string}
+             */
+            scope.getRootContext = function (context) {
+                var i = 0,
+                    length = scope.contexts.length;
+                for (i; i < length; i++) {
+                    if (ValidationService.doesStringStartWithSubstring(context, scope.contexts[i])) {
+                        return scope.contexts[i];
+                    }
+                }
+                return '';
+            };
+
+            /**
              * Stores a preset object in a scope variable
              *
              * @param {object} preset
@@ -133,7 +148,7 @@ surfCaptain.directive('serverList', [
              */
             scope.updateContext = function (data) {
                 var i = 0,
-                    length = scope.context.length;
+                    length = scope.contexts.length;
                 for (i; i < length; i++) {
                     if (ValidationService.doesStringStartWithSubstring(data, scope.contexts[i])) {
                         return true;

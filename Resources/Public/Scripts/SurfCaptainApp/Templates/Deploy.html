@@ -35,9 +35,9 @@
 					<div class="tab-content">
 						<div class="tab-pane active" id="project">
 							<div
-									class="deployment-server {{server.applications.0.options.context}}"
+									class="deployment-server"
 									data-ng-repeat="server in servers"
-									data-ng-class="{false:'disabled'}[presetDisplay(server)]"
+									data-ng-class="{false:'disabled'}[presetDisplay(server)]; getRootContext(server.applications.0.options.context)"
 									data-ng-click="setCurrentPreset(server)"
 									>
 								<div class="title">
