@@ -143,17 +143,6 @@ class Deployment {
 	/**
 	 * @return string
 	 */
-	public function getContext() {
-		$options = $this->getOptions();
-		if (empty($options['context'])) {
-			return '';
-		}
-		return $options['context'];
-	}
-
-	/**
-	 * @return string
-	 */
 	public function getClientIp() {
 		return $this->clientIp;
 	}
