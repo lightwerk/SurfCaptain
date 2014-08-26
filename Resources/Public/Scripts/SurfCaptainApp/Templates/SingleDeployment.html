@@ -42,4 +42,18 @@
 			</dl>
 		</div>
 	</div>
+	<div class="row">
+		<h3>Log</h3>
+		<table class="table table-striped">
+			<tr
+				data-ng-repeat="logentry in deployment.logs | orderBy:'number'"
+				data-ng-class="{5: 'LOG_NOTICE', 7: 'LOG_DEBUG', 6: 'LOG_INFO', 3: 'LOG_ERR', 4: 'LOG_WARNING'}[logentry.severity]"
+			>
+				<td>{{logentry.date | date:'H:mm:ss'}}</td>
+				<td>{{logentry.severity | logCodeFilter}}</td>
+				<td class="message">{{logentry.message}}</td>
+				<td>{{logentry.number}}</td>
+			</tr>
+		</table>
+	</div>
 </div>

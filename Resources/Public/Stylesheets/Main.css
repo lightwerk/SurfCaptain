@@ -6466,6 +6466,26 @@ div.deployments-view .table-striped tbody > tr:nth-child(odd) > td {
 .single-deployment-view dl dd {
   padding-bottom: 5px;
 }
+.single-deployment-view .table-striped {
+  text-align: left;
+}
+.single-deployment-view .table-striped tbody > tr:nth-child(odd) > td {
+  background-color: #333;
+}
+.single-deployment-view .table-striped tr.LOG_NOTICE {
+  color: #99cccc;
+  font-size: 115%;
+}
+.single-deployment-view .table-striped tr.LOG_INFO .message {
+  color: #5cb85c;
+}
+.single-deployment-view .table-striped tr.LOG_ERR {
+  color: #d9534f;
+  font-size: 115%;
+}
+.single-deployment-view .table-striped tr.LOG_WARNING {
+  color: #f0ad4e;
+}
 .surfcaptain-container {
   min-height: 100%;
   position: relative;
