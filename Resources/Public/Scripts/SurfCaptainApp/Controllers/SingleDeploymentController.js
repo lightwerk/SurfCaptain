@@ -52,6 +52,15 @@ surfCaptain.controller('SingleDeploymentController', ['$scope', 'DeploymentRepos
 
     this.init();
 
+    $scope.cancelDeployment = function () {
+        console.log('ugh');
+        DeploymentRepository.cancelDeployment($routeParams.deploymentId).then(
+            function () {
+                self.getDeployment();
+            }
+        );
+    };
+
     $scope.finished = false;
     $scope.noLog = false;
 

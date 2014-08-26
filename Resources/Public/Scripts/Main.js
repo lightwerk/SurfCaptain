@@ -962,6 +962,15 @@ surfCaptain.controller('SingleDeploymentController', ['$scope', 'DeploymentRepos
 
     this.init();
 
+    $scope.cancelDeployment = function () {
+        console.log('ugh');
+        DeploymentRepository.cancelDeployment($routeParams.deploymentId).then(
+            function () {
+                self.getDeployment();
+            }
+        );
+    };
+
     $scope.finished = false;
     $scope.noLog = false;
 
@@ -1569,7 +1578,7 @@ surfCaptain.factory('DeploymentRepository', [ '$http', '$q', '$cacheFactory', fu
     };
 
     /**
-     * @returns {promise|Q.promise}
+     * @return {promise|Q.promise}
      */
     deploymentRepository.getDeployments = function () {
         var deferred = $q.defer();
@@ -1579,6 +1588,7 @@ surfCaptain.factory('DeploymentRepository', [ '$http', '$q', '$cacheFactory', fu
 
     /**
      * @param {string} identifier
+     * @return {promise|Q.promise}
      */
     deploymentRepository.getSingleDeployment = function (identifier) {
         var deferred = $q.defer();
@@ -1590,13 +1600,32 @@ surfCaptain.factory('DeploymentRepository', [ '$http', '$q', '$cacheFactory', fu
         return deferred.promise;
     };
 
+    /**
+     * @param deploymentId
+     * @return {promise|Q.promise}
+     */
+    deploymentRepository.cancelDeployment = function (deploymentId) {
+        var deferred = $q.defer();
+        $http({
+            'method': 'PUT',
+            'url': url,
+            'data': {
+                'deployment': {
+                    '__identity': deploymentId,
+                    'status': 'cancelled'
+                }
+            }
+        }).success(deferred.resolve).error(deferred.reject);
+        return deferred.promise;
+    };
+
     // Public API
     return {
         addDeployment: function (deployment) {
             return deploymentRepository.addDeployment(deployment);
         },
-        cancelDeployment: function () {
-            //TODO
+        cancelDeployment: function (deploymentId) {
+            return deploymentRepository.cancelDeployment(deploymentId);
         },
         getAllDeployments: function () {
             return deploymentRepository.getDeployments();
