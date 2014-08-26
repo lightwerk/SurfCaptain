@@ -65,6 +65,7 @@ class GitHubDriver implements DriverInterface {
 	public function initializeObject() {
 		$this->browserRequestEngine->setOption(CURLOPT_SSL_VERIFYPEER, FALSE);
 		$this->browserRequestEngine->setOption(CURLOPT_SSL_VERIFYHOST, FALSE);
+		$this->browserRequestEngine->setOption(CURLOPT_TIMEOUT, 10);
 		$this->browser->setRequestEngine($this->browserRequestEngine);
 	}
 
@@ -125,8 +126,12 @@ class GitHubDriver implements DriverInterface {
 	 * @return array
 	 */
 	public function getRepositories() {
-		$repositories = $this->getGitHubApiResponse($this->settings['repositories']);
-		return $repositories;
+		$datas = $this->getGitHubApiResponse($this->settings['repositories']);
+		return $this->dataMapper->mapToObject(
+			$datas,
+			'\\Lightwerk\\SurfCaptain\\Domain\\Model\\Repository[]',
+			$this->settings['mapping']
+		);
 	}
 
 	/**
@@ -136,7 +141,14 @@ class GitHubDriver implements DriverInterface {
 	 * @return Repository
 	 */
 	public function getRepository($repositoryUrl) {
-		throw new \Lightwerk\SurfCaptain\Exception('not implemented', 1408989277);
+		$data = $this->getGitHubApiResponse($this->settings['repository'] . $this->getId($repositoryUrl));
+		#$data = $this->getGitHubApiResponse('repos/achimfritz/championship-distribution');
+		return $this->dataMapper->mapToObject(
+			$data,
+			'\\Lightwerk\\SurfCaptain\\Domain\\Model\\Repository',
+			$this->settings['mapping']
+		);
+		#throw new \Lightwerk\SurfCaptain\Exception('not implemented', 1408989277);
 	}
 
 	/**
@@ -172,6 +184,7 @@ class GitHubDriver implements DriverInterface {
 	 * @return Branch[]
 	 */
 	public function getBranches($repositoryUrl) {
+		return array();
 		throw new \Lightwerk\SurfCaptain\Exception('not implemented', 1408989282);
 	}
 
@@ -182,6 +195,7 @@ class GitHubDriver implements DriverInterface {
 	 * @return Tag[]
 	 */
 	public function getTags($repositoryUrl) {
+		return array();
 		throw new \Lightwerk\SurfCaptain\Exception('not implemented', 1408989283);
 	}
 }

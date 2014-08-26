@@ -49,8 +49,3 @@ Lightwerk:
           Commit:
             date: '{{committed_date}}'
             committerName: '{{committer.name}}'
-#      api.github.com:
-#        privateToken: 'Please define this value in root/Configuration/Settings.yaml'
-#        apiUrl: https://api.github.com/
-#        className: \Lightwerk\SurfCaptain\Service\Driver\GitHubDriver
-#        repositories: users/achimfritz/repos

@@ -44,7 +44,7 @@ abstract class BrowserCommandController extends \TYPO3\Flow\Cli\CommandControlle
 		$engine->setOption(CURLOPT_HTTPHEADER, array('Accept: application/json', 'Content-Type: application/json'));
 		$engine->setOption(CURLOPT_SSL_VERIFYPEER, FALSE);
 		$engine->setOption(CURLOPT_SSL_VERIFYHOST, FALSE);
-		$engine->setOption(CURLOPT_TIMEOUT, 10);
+		$engine->setOption(CURLOPT_TIMEOUT, 20);
 		$browser->setRequestEngine($engine);
 		return $this->extendBrowser($browser);
 	}
