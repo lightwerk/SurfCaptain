@@ -7,4 +7,30 @@
 			padding-bottom: 5px;
 		}
 	}
+	.table-striped {
+		text-align: left;
+		tbody>tr:nth-child(odd)>td {
+			background-color: #333;
+		}
+		tr {
+			&.LOG_NOTICE {
+				color:@brand-primary;
+				font-size: 115%;
+			}
+			&.LOG_DEBUG {
+			}
+			&.LOG_INFO {
+				.message {
+					color:@brand-success;
+				}
+			}
+			&.LOG_ERR {
+				color: @brand-danger;
+				font-size: 115%;
+			}
+			&.LOG_WARNING {
+				color: @brand-warning;
+			}
+		}
+	}
 }

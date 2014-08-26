@@ -4,20 +4,58 @@
 'use strict';
 surfCaptain.controller('SingleDeploymentController', ['$scope', 'DeploymentRepository', '$routeParams', function ($scope, DeploymentRepository, $routeParams) {
 
-    this.init = function () {
+    var self = this;
+
+    /**
+     * @return {void}
+     */
+    this.initLiveLog = function () {
+        if ($scope.noLog) {
+            return;
+        }
+        switch ($scope.deployment.status) {
+        case 'success':
+            return;
+        case 'failed':
+            return;
+        case 'waiting':
+            setTimeout(self.getDeployment, 2000);
+            break;
+        case 'running':
+            setTimeout(self.getDeployment, 2000);
+            break;
+        default:
+            return;
+        }
+    };
+
+    /**
+     * @return {void}
+     */
+    this.getDeployment = function () {
         DeploymentRepository.getSingleDeployment($routeParams.deploymentId).then(
             function (response) {
                 $scope.finished = true;
                 $scope.deployment = response.deployment;
+                self.initLiveLog();
             },
             function () {
-
+                $scope.finished = true;
+                $scope.noLog = true;
             }
         );
+    };
+
+    /**
+     * @return {void}
+     */
+    this.init = function () {
+        this.getDeployment();
     };
 
     this.init();
 
     $scope.finished = false;
+    $scope.noLog = false;
 
 }]);
