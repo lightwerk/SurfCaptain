@@ -16,7 +16,7 @@
 				<thead>
 					<tr>
 						<th>Date</th>
-						<th>RepositoryURL</th>
+						<th>Target</th>
 						<th>Reference Name</th>
 						<th>Project</th>
 						<th>Status</th>
@@ -25,7 +25,7 @@
 				<tbody>
 					<tr data-ng-repeat="deployment in deployments">
 						<td><a data-ng-href="#/deployments/{{deployment.__identity}}">{{deployment.date | date:'medium'}}</a></td>
-						<td>{{deployment.repositoryUrl}}</td>
+						<td>{{deployment.options.name}}</td>
 						<td>{{deployment.referenceName}}</td>
 						<td><a data-ng-href="#/project/{{deployment.repositoryIdentifier}}">{{deployment.repositoryIdentifier | uppercase}}</a></td>
 						<td><span class="label {{deployment.status}}">{{deployment.status}}</span></td>

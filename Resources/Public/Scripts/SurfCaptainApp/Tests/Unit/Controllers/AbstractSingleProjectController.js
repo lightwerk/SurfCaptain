@@ -35,34 +35,42 @@ describe('AbstractSingleProjectController', function () {
         });
     }));
 
-    it('should initialize scope.project with an empty object', function () {
-        expect(scope.project).toEqual({});
+    describe('Initialization', function () {
+        it('should get the name from the $routeParams', function () {
+            expect(scope.name).toEqual('foo');
+        });
+
+        it('should initialize $scope.project with an empty object', function () {
+            expect(scope.project).toEqual({});
+        });
+
+        it('should initialize $scope.messages with an empty object', function () {
+            expect(scope.messages).toEqual({});
+        });
     });
 
-    it('should get the name from the $routeParams', function () {
-        expect(scope.name).toEqual('foo');
-    });
+    describe('->init()', function () {
+        it('should call getProjects on ProjectRepository', function () {
+            ctrl.init();
+            expect(projectRepository.getProjects).toHaveBeenCalled();
+        });
 
-    it('should call getProjects on ProjectRepository', function () {
-        ctrl.init();
-        expect(projectRepository.getProjects).toHaveBeenCalled();
-    });
+        it('should call getProjectByName on ProjectRepository', function () {
+            ctrl.init();
+            scope.$digest();
+            expect(projectRepository.getProjectByName).toHaveBeenCalled();
+        });
 
-    it('should call getProjectByName on ProjectRepository', function () {
-        ctrl.init();
-        scope.$digest();
-        expect(projectRepository.getProjectByName).toHaveBeenCalled();
-    });
+        it('should call getProjectByName on ProjectRepository with response of getProjects and projectName', function () {
+            ctrl.init();
+            scope.$digest();
+            expect(projectRepository.getProjectByName).toHaveBeenCalledWith('foo', projects);
+        });
 
-    it('should call getProjectByName on ProjectRepository with response of getProjects and projectName', function () {
-        ctrl.init();
-        scope.$digest();
-        expect(projectRepository.getProjectByName).toHaveBeenCalledWith('foo', projects);
-    });
-
-    it('should set project to the response of ProjectRepository call', function () {
-        ctrl.init();
-        scope.$digest();
-        expect(scope.project).toEqual(projects[0]);
+        it('should set project to the response of ProjectRepository call', function () {
+            ctrl.init();
+            scope.$digest();
+            expect(scope.project).toEqual(projects[0]);
+        });
     });
 });

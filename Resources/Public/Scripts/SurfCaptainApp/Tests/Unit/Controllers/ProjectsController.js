@@ -24,7 +24,7 @@ describe('ProjectsController', function () {
         settingsRepository = SettingsRepository;
 
         // simulate success or failure of request based on succeedPromise
-        spyOn(ProjectRepository, 'getProjects').andCallFake(function () {
+        spyOn(projectRepository, 'getProjects').andCallFake(function () {
             if (succeedPromise) {
                 return $q.when(projects);
             }
@@ -32,7 +32,7 @@ describe('ProjectsController', function () {
         });
 
         // simulate success or failure of request based on succeedPromise
-        spyOn(SettingsRepository, 'getSettings').andCallFake(function () {
+        spyOn(settingsRepository, 'getSettings').andCallFake(function () {
             return $q.when(settings);
         });
 
@@ -44,24 +44,50 @@ describe('ProjectsController', function () {
             createController();
         });
 
-        it('should initialize scope.ordering with "name"', function () {
+        it('should initialize scope.ordering with "name".', function () {
             expect(scope.ordering).toEqual('name');
         });
 
-        it('should initialize scope.projects with empty array', function () {
+        it('should initialize scope.projects with empty array.', function () {
             expect(scope.projects).toEqual([]);
         });
     });
 
-    it('should store recieved projects records in scope.projects', function () {
-        succeedPromise = true;
-        createController();
-        expect(scope.projects).toEqual(projects);
+    it('should have a method init().', function () {
+        expect(ctrl.init).toBeDefined();
     });
 
-    it('should store received settings in scope.settings', function () {
-        createController();
-        expect(scope.settings).toEqual(settings);
+    describe('->init()', function () {
+
+        it('should call ProjectRepository.getProjects().', function () {
+            createController();
+            expect(projectRepository.getProjects).toHaveBeenCalled();
+        });
+
+        describe('on success', function () {
+            beforeEach(function () {
+                succeedPromise = true;
+                createController();
+            });
+
+            it('should store recieved projects records in scope.projects.', function () {
+                expect(scope.projects).toEqual(projects);
+            });
+
+            it('should set $scope.finished to true.', function () {
+                expect(scope.finished).toBeTruthy();
+            });
+        });
+
+        it('should call SettingsRepository.getSettings().', function () {
+            createController();
+            expect(settingsRepository.getSettings).toHaveBeenCalled();
+        });
+
+        it('should store received settings in scope.settings.', function () {
+            createController();
+            expect(scope.settings).toEqual(settings);
+        });
     });
 
 });
