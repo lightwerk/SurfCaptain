@@ -64,7 +64,17 @@ surfCaptain.factory('DeploymentRepository', [ '$http', '$q', '$cacheFactory', fu
      */
     deploymentRepository.cancelDeployment = function (deploymentId) {
         var deferred = $q.defer();
-        $http.put()
+        $http({
+            'method': 'PUT',
+            'url': url,
+            'data': {
+                'deployment': {
+                    '__identity': deploymentId,
+                    'status': 'cancelled'
+                }
+            }
+        }).success(deferred.resolve).error(deferred.reject);
+        return deferred.promise;
     };
 
     // Public API

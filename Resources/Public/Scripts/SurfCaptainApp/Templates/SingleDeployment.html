@@ -13,7 +13,7 @@
 			<h1>Deployment Details</h1>
 			<h3>{{deployment.repositoryIdentifier}} - {{deployment.referenceName}} onto {{deployment.configuration.applications.0.nodes.0.name}}</h3>
 			<br />
-			<button data-ng-if="deployment.status === 'waiting'" class="btn btn-danger">Cancel</button>
+			<button data-ng-if="deployment.status === 'waiting'" class="btn btn-danger" data-ng-click="cancelDeployment()">Cancel</button>
 			<br /><br /><br />
 			<dl class="dl-horizontal">
 				<dt>Date</dt>

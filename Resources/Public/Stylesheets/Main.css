@@ -6565,6 +6565,9 @@ div.overlay {
 .label.running {
   background-color: #cc9999;
 }
+.label.cancelled {
+  background-color: #d9534f;
+}
 @-moz-keyframes blinker {
   0% {
     opacity: 1.0;

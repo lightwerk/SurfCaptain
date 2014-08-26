@@ -962,6 +962,15 @@ surfCaptain.controller('SingleDeploymentController', ['$scope', 'DeploymentRepos
 
     this.init();
 
+    $scope.cancelDeployment = function () {
+        console.log('ugh');
+        DeploymentRepository.cancelDeployment($routeParams.deploymentId).then(
+            function () {
+                self.getDeployment();
+            }
+        );
+    };
+
     $scope.finished = false;
     $scope.noLog = false;
 
@@ -1597,7 +1606,17 @@ surfCaptain.factory('DeploymentRepository', [ '$http', '$q', '$cacheFactory', fu
      */
     deploymentRepository.cancelDeployment = function (deploymentId) {
         var deferred = $q.defer();
-        $http.put()
+        $http({
+            'method': 'PUT',
+            'url': url,
+            'data': {
+                'deployment': {
+                    '__identity': deploymentId,
+                    'status': 'cancelled'
+                }
+            }
+        }).success(deferred.resolve).error(deferred.reject);
+        return deferred.promise;
     };
 
     // Public API
