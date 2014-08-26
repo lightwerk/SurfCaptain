@@ -1,3 +1,7 @@
+##
+# SurfCaptain routes
+#
+
 - name: 'Frontend'
   uriPattern: ''
   defaults:
@@ -5,7 +9,26 @@
     '@controller': 'Frontend'
     '@action': 'index'
 
+- name: 'Basis Frontend'
+  uriPattern: 'api'
+  defaults:
+    '@package': 'Lightwerk.SurfCaptain'
+    '@controller': 'Repository'
+
 - name: 'API'
   uriPattern: 'api/{@controller}'
   defaults:
     '@package': 'Lightwerk.SurfCaptain'
+
+##
+# Flow subroutes
+#
+
+-
+  name: 'Flow'
+  uriPattern: '<FlowSubroutes>'
+  defaults:
+    '@format': 'html'
+  subRoutes:
+    FlowSubroutes:
+      package: TYPO3.Flow
