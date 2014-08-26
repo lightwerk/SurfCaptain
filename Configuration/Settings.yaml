@@ -15,6 +15,11 @@ Lightwerk:
       repositoryUrl: git@git.lightwerk.com:lm/lightwerk-surfcaptain-settings.git
       filePath: Presets.json
 
+    gitApi:
+      requestListener:
+        save: FALSE
+        log: FALSE
+
     sources:
       git.lightwerk.com:
         className: \Lightwerk\SurfCaptain\Service\Driver\GitLabDriver
