@@ -28,7 +28,7 @@ class GitHubCommandController extends BrowserCommandController {
 	 * @return string
 	 */
 	protected function getUrlPrefix() {
-		$prefix = $this->settings['sources']['api.github.com']['apiUrl'];
+		$prefix = $this->settings['sources']['github.com']['apiUrl'];
 		return $prefix;
 	}
 
@@ -36,7 +36,7 @@ class GitHubCommandController extends BrowserCommandController {
 	 * @return void
 	 */
 	protected function extendBrowser(Browser $browser) {
-		$token = $this->settings['sources']['api.github.com']['privateToken'];
+		$token = $this->settings['sources']['github.com']['privateToken'];
 		$browser->getRequestEngine()->setOption(CURLOPT_HTTPHEADER, array('Authorization: token ' . $token));
 		return $browser;
 	}
