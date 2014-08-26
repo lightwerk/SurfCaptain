@@ -22,7 +22,9 @@ class JsonView extends \TYPO3\Flow\Mvc\View\JsonView {
 		'deployment' => array(
 			'_exposeObjectIdentifier' => TRUE,
 			'_exposeClassName' => 1,
+			'_exclude' => array('repository'),
 			'_descend' => array(
+				'options' => array(),
 				'date' => array(),
 				'configuration' => array(),
 				'logs' => array(
@@ -40,7 +42,9 @@ class JsonView extends \TYPO3\Flow\Mvc\View\JsonView {
 			'_descendAll' => array(
 				'_exposeObjectIdentifier' => TRUE,
 				'_exposeClassName' => 1,
+				'_exclude' => array('repository'),
 				'_descend' => array(
+					'options' => array(),
 					'date' => array(),
 				),
 			),
@@ -71,7 +75,9 @@ class JsonView extends \TYPO3\Flow\Mvc\View\JsonView {
 				'deployments' => array(
 					'_exposeObjectIdentifier' => TRUE,
 					'_exposeClassName' => 1,
+					'_exclude' => array('repository'),
 					'_descendAll' => array(
+						'options' => array(),
 						'date' => array(),
 						'configuration' => array(),
 					),

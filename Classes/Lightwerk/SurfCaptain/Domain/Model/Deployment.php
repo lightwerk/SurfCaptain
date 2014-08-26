@@ -128,11 +128,7 @@ class Deployment {
 	 * @return string
 	 */
 	public function getReferenceName() {
-		$configuration = $this->getConfiguration();
-		if (empty($configuration['applications'][0]['options'])) {
-			return '';
-		}
-		$options = $configuration['applications'][0]['options'];
+		$options = $this->getOptions();
 		if (!empty($options['sha1'])) {
 			return 'Sha1: ' . $options['ref'];
 		} elseif (!empty($options['tag'])) {
@@ -147,11 +143,11 @@ class Deployment {
 	 * @return string
 	 */
 	public function getContext() {
-		$configuration = $this->getConfiguration();
-		if (empty($configuration['applications'][0]['options']['context'])) {
+		$options = $this->getOptions();
+		if (empty($options['context'])) {
 			return '';
 		}
-		return $configuration['applications'][0]['options']['context'];
+		return $options['context'];
 	}
 
 	/**
@@ -231,20 +227,22 @@ class Deployment {
 	 * @return Deployment
 	 */
 	public function setConfiguration($configuration) {
-		if (!empty($configuration['applications'][0]['options']['repositoryUrl'])) {
-			$this->setRepositoryUrl($configuration['applications'][0]['options']['repositoryUrl']);
+		$this->configuration = $configuration;
+		$options = $this->getOptions();
 
+		if (!empty($options['repositoryUrl'])) {
+			$this->setRepositoryUrl($options['repositoryUrl']);
 			$repository = $this->getRepository();
 			if (!empty($repository)) {
 				$this->setRepositoryIdentifier($repository->getIdentifier());
 			}
 		}
-		$this->configuration = $configuration;
+
 		return $this;
 	}
 
 	/**
-	 * @return Repository|boolean
+	 * @return Repository|NULL
 	 */
 	public function getRepository() {
 		if ($this->repository === NULL) {
@@ -258,7 +256,22 @@ class Deployment {
 				}
 			}
 		}
-		return $this->repository;
+		return $this->repository ?: NULL;
+	}
+
+	/**
+	 * @return array
+	 */
+	public function getOptions() {
+		$options = array();
+		$configuration = $this->getConfiguration();
+		if (!empty($configuration['applications'][0]['options'])) {
+			$options = array_merge($options, $configuration['applications'][0]['options']);
+		}
+		if (!empty($configuration['applications'][0]['nodes'][0])) {
+			$options = array_merge($options, $configuration['applications'][0]['nodes'][0]);
+		}
+		return $options;
 	}
 
 }

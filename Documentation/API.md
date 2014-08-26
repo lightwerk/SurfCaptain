@@ -4,7 +4,7 @@
 
 ### List Repositories
 
-- Methode: GET
+- Method: GET
 - Path: /api/repository
 
 Example call:
@@ -13,7 +13,7 @@ Example call:
 
 ### Show Repository
 
-- Methode: GET
+- Method: GET
 - Path: /api/repository
 - Parameters:
 	- repositoryUrl (required) - string
@@ -21,13 +21,13 @@ Example call:
 
 Example call:
 
-    curl -H "Accept: application/json" http://surf.flow.lp.lw.loc/api/repository\?repositoryUrl\=git%40git.lightwerk.com%3Aboilerplate%2Ftypo3_cms.git | jq '.'
+    curl -H "Accept: application/json" http://surf.flow.lp.lw.loc/api/repository\?repositoryUrl\=git%40git.sma.de%3Asma-websites%2Frcw-sma-de.git | jq '.'
 
 ## Deployments
 
 ### List deployments
 
-- Methode: GET
+- Method: GET
 - Path: /api/deployment
 - Parameters:
 	- limit - integer (Default: 100)
@@ -38,7 +38,7 @@ Example call to get the deployments of all repositories:
 
 ### Show deployment
 
-- Methode: GET
+- Method: GET
 - Path: /api/deployment
 - Parameters:
 	- deployment (required) - string
@@ -50,7 +50,7 @@ Example call:
 
 ### Create new deployment
 
-- Methode: POST
+- Method: POST
 - Path: /api/deployment
 - Parameters:
 	- deployment (required) - json
@@ -85,7 +85,7 @@ Example call with a configuration:
 ### Cancel a deployment
 
 - Info: Works just if it has still "waiting" as status
-- Methode: PUT
+- Method: PUT
 - Path: /api/deployment
 - Parameters:
 	- deployment (required) - json
@@ -103,7 +103,7 @@ Example call:
 
 ### List settings
 
-- Methode: GET
+- Method: GET
 - Path: /api/frontendsetting
 
 Example call to list presets of a defined project:
@@ -114,7 +114,7 @@ Example call to list presets of a defined project:
 
 ### List presets
 
-- Methode: GET
+- Method: GET
 - Path: /api/preset
 - Parameters:
 	- global - boolean
@@ -130,7 +130,7 @@ Example call to list all global presets:
 
 ### Add presets
 
-- Methode: POST
+- Method: POST
 - Path: /api/preset
 - Parameters:
 	- key (required) - string
@@ -162,7 +162,7 @@ Example call:
 
 ### Update presets
 
-- Methode: PUT
+- Method: PUT
 - Path: /api/preset
 - Parameters:
 	- key (required) - string
@@ -195,7 +195,7 @@ Example call:
 
 ### Delete preset
 
-- Methode: DELETE
+- Method: DELETE
 - Path: /api/preset
 - Parameters:
 	- key (required) - string
@@ -206,7 +206,7 @@ Example call:
 
 ### Check SSH login
 
-- Methode: GET
+- Method: GET
 - Path: /api/checkSshLogin
 - Parameters:
 	- hostname (required) - string
