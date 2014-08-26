@@ -15,12 +15,9 @@ surfCaptain.controller('SingleDeploymentController', ['$scope', 'DeploymentRepos
         }
         switch ($scope.deployment.status) {
         case 'success':
-            return;
         case 'failed':
             return;
         case 'waiting':
-            setTimeout(self.getDeployment, 2000);
-            break;
         case 'running':
             setTimeout(self.getDeployment, 2000);
             break;
