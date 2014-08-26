@@ -30,6 +30,7 @@ class Deployment {
 	 * @var Collection<\Lightwerk\SurfCaptain\Domain\Model\Log>
 	 * @ORM\OneToMany(mappedBy="deployment")
 	 * @ORM\OrderBy({"date" = "DESC"})
+	 * @Flow\Lazy()
 	 */
 	protected $logs;
 

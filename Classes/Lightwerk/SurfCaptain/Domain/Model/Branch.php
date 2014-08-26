@@ -73,6 +73,6 @@ class Branch {
 	 * @return string
 	 */
 	public function getIdentifier() {
-		return 'branch-' . $this->getCommit()->getId();
+		return 'branch-' . strtolower($this->getName()) . '-' . $this->getCommit()->getId();
 	}
 }

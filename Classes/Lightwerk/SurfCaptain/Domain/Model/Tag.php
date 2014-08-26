@@ -74,7 +74,7 @@ class Tag {
 	 * @return string
 	 */
 	public function getIdentifier() {
-		return 'tag-' . $this->getCommit()->getId();
+		return 'tag-' . strtolower($this->getName()) . '-' . $this->getCommit()->getId();
 	}
 
 }
