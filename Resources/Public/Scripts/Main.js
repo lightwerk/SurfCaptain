@@ -1569,7 +1569,7 @@ surfCaptain.factory('DeploymentRepository', [ '$http', '$q', '$cacheFactory', fu
     };
 
     /**
-     * @returns {promise|Q.promise}
+     * @return {promise|Q.promise}
      */
     deploymentRepository.getDeployments = function () {
         var deferred = $q.defer();
@@ -1579,6 +1579,7 @@ surfCaptain.factory('DeploymentRepository', [ '$http', '$q', '$cacheFactory', fu
 
     /**
      * @param {string} identifier
+     * @return {promise|Q.promise}
      */
     deploymentRepository.getSingleDeployment = function (identifier) {
         var deferred = $q.defer();
@@ -1590,13 +1591,22 @@ surfCaptain.factory('DeploymentRepository', [ '$http', '$q', '$cacheFactory', fu
         return deferred.promise;
     };
 
+    /**
+     * @param deploymentId
+     * @return {promise|Q.promise}
+     */
+    deploymentRepository.cancelDeployment = function (deploymentId) {
+        var deferred = $q.defer();
+        $http.put()
+    };
+
     // Public API
     return {
         addDeployment: function (deployment) {
             return deploymentRepository.addDeployment(deployment);
         },
-        cancelDeployment: function () {
-            //TODO
+        cancelDeployment: function (deploymentId) {
+            return deploymentRepository.cancelDeployment(deploymentId);
         },
         getAllDeployments: function () {
             return deploymentRepository.getDeployments();
