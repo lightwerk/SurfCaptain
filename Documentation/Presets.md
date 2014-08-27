@@ -104,7 +104,38 @@
             }
         ]
     }
-    
+
+## Default configuration just for Shared
+
+    {
+        "sma": [
+            {
+                "applications": [
+                    {
+                        "type": "TYPO3\\CMS\\Shared",
+                        "options": {
+                            "repositoryUrl": "git@git.lightwerk.com:boilerplate/typo3_cms.git",
+                            "deploymentPath": "/var/www/projectName/context/",
+                            "context": "Development",
+                            "sourceNode": {
+                                "name": "Front-End Server 2",
+                                "hostname": "dev.rcw.sma.de",
+                                "username": "lw-lpeipmann"
+                            }
+                        },
+                        "nodes": [
+                            {
+                                "name": "Front-End Server",
+                                "hostname": "www.sma.de",
+                                "username": "user"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+
 ## Full configuration with all possible fields
 
 (has to be continued!)
@@ -123,7 +154,12 @@
                             "tag": "1.2.3",
                             "branch": "master",
                             "sha1": "c0db78a19f62a18fe888ee58490c88fea1219213",
-                            "frontendUrl": "http://www.domain.de"
+                            "frontendUrl": "http://www.domain.de",
+                            "sourceNode": {
+                                "name": "Front-End Server 2",
+                                "hostname": "dev.rcw.sma.de",
+                                "username": "lw-lpeipmann"
+                            }
                         },
                         "nodes": [
                             {
