@@ -47,7 +47,7 @@
 		<table class="table table-striped">
 			<tr
 				data-ng-repeat="logentry in deployment.logs | orderBy:'number'"
-				data-ng-class="{5: 'LOG_NOTICE', 7: 'LOG_DEBUG', 6: 'LOG_INFO', 3: 'LOG_ERR', 4: 'LOG_WARNING'}[logentry.severity]"
+				data-ng-class="{3: 'LOG_ERR', 4: 'LOG_WARNING', 5: 'LOG_NOTICE', 6: 'LOG_INFO', 7: 'LOG_DEBUG'}[logentry.severity];"
 			>
 				<td>{{logentry.date | date:'H:mm:ss'}}</td>
 				<td>{{logentry.severity | logCodeFilter}}</td>
@@ -55,5 +55,6 @@
 				<td>{{logentry.number}}</td>
 			</tr>
 		</table>
+		<span id="bottom"></span>
 	</div>
 </div>

@@ -3,7 +3,7 @@
 
 'use strict';
 
-surfCaptain.factory('SettingsRepository', ['$http', '$q', '$cacheFactory', function ($http, $q, $cacheFactory) {
+angular.module('surfCaptain').factory('SettingsRepository', ['$http', '$q', '$cacheFactory', function ($http, $q, $cacheFactory) {
     var settingsRepository = {},
         url = '/api/frontendSetting';
 

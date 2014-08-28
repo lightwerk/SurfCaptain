@@ -2,7 +2,7 @@
 /*global surfCaptain, angular*/
 
 'use strict';
-surfCaptain.controller('GlobalServerController', [
+angular.module('surfCaptain').controller('GlobalServerController', [
     '$scope',
     'PresetRepository',
     'PresetService',

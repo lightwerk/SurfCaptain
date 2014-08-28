@@ -3,7 +3,7 @@
 
 'use strict';
 
-surfCaptain.factory('DeploymentRepository', [ '$http', '$q', '$cacheFactory', function ($http, $q, $cacheFactory) {
+angular.module('surfCaptain').factory('DeploymentRepository', [ '$http', '$q', '$cacheFactory', function ($http, $q, $cacheFactory) {
 
     var deploymentRepository = {},
         url = '/api/deployment';

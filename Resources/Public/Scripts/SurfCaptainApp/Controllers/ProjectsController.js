@@ -2,7 +2,7 @@
 /*jslint node: true */
 
 'use strict';
-surfCaptain.controller('ProjectsController', [
+angular.module('surfCaptain').controller('ProjectsController', [
     '$scope',
     'ProjectRepository',
     'SettingsRepository',

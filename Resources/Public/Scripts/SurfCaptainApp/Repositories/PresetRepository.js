@@ -3,7 +3,7 @@
 
 'use strict';
 
-surfCaptain.factory('PresetRepository', ['$http', '$q', function ($http, $q) {
+angular.module('surfCaptain').factory('PresetRepository', ['$http', '$q', function ($http, $q) {
     var presetRepository = {},
         url = '/api/preset';
 

@@ -2,7 +2,7 @@
 /*jslint node: true */
 
 'use strict';
-surfCaptain.directive('chosen', function () {
+angular.module('surfCaptain').directive('chosen', function () {
     var linker = function (scope, element, attrs) {
         var list = attrs.chosen;
 

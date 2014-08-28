@@ -4,7 +4,7 @@
 // TODO uinittests
 
 'use strict';
-surfCaptain.controller('ServerController', [
+angular.module('surfCaptain').controller('ServerController', [
     '$scope',
     '$controller',
     'PresetRepository',

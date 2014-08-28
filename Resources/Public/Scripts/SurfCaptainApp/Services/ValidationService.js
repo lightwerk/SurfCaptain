@@ -3,7 +3,7 @@
 
 'use strict';
 
-surfCaptain.service('ValidationService', function () {
+angular.module('surfCaptain').service('ValidationService', function () {
 
     /**
      * Validates if a given string has at least the length of the given

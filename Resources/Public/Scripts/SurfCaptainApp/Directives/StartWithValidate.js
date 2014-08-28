@@ -2,7 +2,7 @@
 /*jslint node: true, plusplus: true */
 
 'use strict';
-surfCaptain.directive('startWithValidate', ['ValidationService', function (ValidationService) {
+angular.module('surfCaptain').directive('startWithValidate', ['ValidationService', function (ValidationService) {
     return {
         restrict: 'A',
         require: 'ngModel',

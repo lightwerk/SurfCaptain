@@ -2,7 +2,7 @@
 /*jslint node: true */
 
 'use strict';
-surfCaptain.directive('modal', function () {
+angular.module('surfCaptain').directive('modal', function () {
     return {
         scope: {
             modal: '@modal'

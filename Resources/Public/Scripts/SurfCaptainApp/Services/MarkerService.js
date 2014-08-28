@@ -3,7 +3,7 @@
 
 'use strict';
 
-surfCaptain.service('MarkerService', function () {
+angular.module('surfCaptain').service('MarkerService', function () {
 
     var localStorage = [],
 

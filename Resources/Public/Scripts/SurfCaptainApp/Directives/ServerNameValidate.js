@@ -2,7 +2,7 @@
 /*jslint node: true */
 
 'use strict';
-surfCaptain.directive('serverNameValidate', function () {
+angular.module('surfCaptain').directive('serverNameValidate', function () {
     return {
         restrict: 'A',
         require: 'ngModel',

@@ -3,7 +3,7 @@
 
 'use strict';
 
-surfCaptain.service('PresetService', [function () {
+angular.module('surfCaptain').service('PresetService', [function () {
 
     var newPreset = {
         "options": {

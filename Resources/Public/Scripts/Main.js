@@ -2,7 +2,7 @@
 /*jslint node: true */
 
 'use strict';
-var surfCaptain = angular.module('surfCaptain', ['ngRoute', 'xeditable', 'ngAnimate', 'ngMessages'])
+angular.module('surfCaptain', ['ngRoute', 'xeditable', 'ngAnimate', 'ngMessages'])
     .config(['$routeProvider', function ($routeProvider) {
         var templatePath = '/_Resources/Static/Packages/Lightwerk.SurfCaptain/Scripts/SurfCaptainApp/Templates/';
         $routeProvider.
@@ -64,14 +64,14 @@ var surfCaptain = angular.module('surfCaptain', ['ngRoute', 'xeditable', 'ngAnim
         }
     });
 
-surfCaptain.run(['editableOptions', function (editableOptions) {
+angular.module('surfCaptain').run(['editableOptions', function (editableOptions) {
     editableOptions.theme = 'bs3';
 }]);
 /*global surfCaptain*/
 /*jslint node: true */
 
 'use strict';
-surfCaptain.controller('AboutController', ['$scope', function ($scope) {
+angular.module('surfCaptain').controller('AboutController', ['$scope', function ($scope) {
     $scope.techs = [
         {
             name: 'angular',
@@ -185,7 +185,7 @@ surfCaptain.controller('AboutController', ['$scope', function ($scope) {
 /*jslint node: true */
 
 'use strict';
-surfCaptain.controller('AbstractSingleProjectController', ['$scope', '$routeParams', 'ProjectRepository', function ($scope, $routeParams, ProjectRepository) {
+angular.module('surfCaptain').controller('AbstractSingleProjectController', ['$scope', '$routeParams', 'ProjectRepository', function ($scope, $routeParams, ProjectRepository) {
     $scope.name = $routeParams.projectName;
     $scope.project = {};
     $scope.messages = {};
@@ -201,7 +201,7 @@ surfCaptain.controller('AbstractSingleProjectController', ['$scope', '$routePara
 /*jslint node: true */
 
 'use strict';
-surfCaptain.controller('DeployController', [
+angular.module('surfCaptain').controller('DeployController', [
     '$scope',
     '$controller',
     'ProjectRepository',
@@ -211,11 +211,10 @@ surfCaptain.controller('DeployController', [
     'CONFIG',
     'DeploymentRepository',
     '$location',
-    '$cacheFactory',
     'PresetRepository',
     'ValidationService',
     'SettingsRepository',
-    function ($scope, $controller, ProjectRepository, HistoryRepository, SEVERITY, FlashMessageService, CONFIG, DeploymentRepository, $location, $cacheFactory, PresetRepository, ValidationService, SettingsRepository) {
+    function ($scope, $controller, ProjectRepository, HistoryRepository, SEVERITY, FlashMessageService, CONFIG, DeploymentRepository, $location, PresetRepository, ValidationService, SettingsRepository) {
 
         var loadingString = 'loading ...',
             self = this;
@@ -280,10 +279,6 @@ surfCaptain.controller('DeployController', [
                                 + $scope.currentPreset.applications[0].nodes[0].name + '! You can cancel the deployment while it is still waiting.',
                             SEVERITY.ok
                         );
-                        if (angular.isUndefined($cacheFactory.get('deploymentCache'))) {
-                            $cacheFactory('deploymentCache');
-                        }
-                        $cacheFactory.get('deploymentCache').put(response.deployment.__identity, response.deployment);
                         $location.path('deployments/' + response.deployment.__identity);
                     },
                     function (response) {
@@ -430,7 +425,7 @@ surfCaptain.controller('DeployController', [
 /*jslint node: true */
 
 'use strict';
-surfCaptain.controller('DeploymentsController', [
+angular.module('surfCaptain').controller('DeploymentsController', [
     '$scope',
     'DeploymentRepository',
     'FlashMessageService',
@@ -477,14 +472,14 @@ surfCaptain.controller('DeploymentsController', [
 /*jslint node: true */
 
 'use strict';
-surfCaptain.controller('ExtensionsController', ['$scope', '$controller', function ($scope) {
+angular.module('surfCaptain').controller('ExtensionsController', ['$scope', '$controller', function ($scope) {
 
 }]);
 /*jslint node: true, plusplus:true */
 /*global surfCaptain, angular*/
 
 'use strict';
-surfCaptain.controller('GlobalServerController', [
+angular.module('surfCaptain').controller('GlobalServerController', [
     '$scope',
     'PresetRepository',
     'PresetService',
@@ -600,7 +595,7 @@ surfCaptain.controller('GlobalServerController', [
 /*jslint node: true */
 
 'use strict';
-surfCaptain.controller('ProjectController', ['$scope', '$controller', 'HistoryRepository', function ($scope, $controller, HistoryRepository) {
+angular.module('surfCaptain').controller('ProjectController', ['$scope', '$controller', 'HistoryRepository', function ($scope, $controller, HistoryRepository) {
 
     // Inherit from AbstractSingleProjectController
     angular.extend(this, $controller('AbstractSingleProjectController', {$scope: $scope}));
@@ -622,7 +617,7 @@ surfCaptain.controller('ProjectController', ['$scope', '$controller', 'HistoryRe
 /*jslint node: true */
 
 'use strict';
-surfCaptain.controller('ProjectsController', [
+angular.module('surfCaptain').controller('ProjectsController', [
     '$scope',
     'ProjectRepository',
     'SettingsRepository',
@@ -667,7 +662,7 @@ surfCaptain.controller('ProjectsController', [
 // TODO uinittests
 
 'use strict';
-surfCaptain.controller('ServerController', [
+angular.module('surfCaptain').controller('ServerController', [
     '$scope',
     '$controller',
     'PresetRepository',
@@ -912,74 +907,102 @@ surfCaptain.controller('ServerController', [
 /*jslint node: true */
 
 'use strict';
-surfCaptain.controller('SingleDeploymentController', ['$scope', 'DeploymentRepository', '$routeParams', function ($scope, DeploymentRepository, $routeParams) {
+angular.module('surfCaptain').controller('SingleDeploymentController', [
+    '$scope',
+    'DeploymentRepository',
+    '$routeParams',
+    '$cacheFactory',
+    '$location',
+    '$anchorScroll',
+    function ($scope, DeploymentRepository, $routeParams, $cacheFactory, $location, $anchorScroll) {
 
-    var self = this;
+        var self = this;
 
-    /**
-     * @return {void}
-     */
-    this.initLiveLog = function () {
-        if ($scope.noLog) {
-            return;
-        }
-        switch ($scope.deployment.status) {
-        case 'success':
-        case 'failed':
-            return;
-        case 'waiting':
-        case 'running':
-            setTimeout(self.getDeployment, 2000);
-            break;
-        default:
-            return;
-        }
-    };
-
-    /**
-     * @return {void}
-     */
-    this.getDeployment = function () {
-        DeploymentRepository.getSingleDeployment($routeParams.deploymentId).then(
-            function (response) {
-                $scope.finished = true;
-                $scope.deployment = response.deployment;
-                self.initLiveLog();
-            },
-            function () {
-                $scope.finished = true;
-                $scope.noLog = true;
+        /**
+         * @return {void}
+         */
+        this.initLiveLog = function () {
+            if ($scope.noLog) {
+                return;
             }
-        );
-    };
-
-    /**
-     * @return {void}
-     */
-    this.init = function () {
-        this.getDeployment();
-    };
-
-    this.init();
-
-    $scope.cancelDeployment = function () {
-        console.log('ugh');
-        DeploymentRepository.cancelDeployment($routeParams.deploymentId).then(
-            function () {
-                self.getDeployment();
+            switch ($scope.deployment.status) {
+            case 'success':
+            case 'failed':
+            case 'cancelled':
+                if (angular.isUndefined($cacheFactory.get('deploymentCache'))) {
+                    $cacheFactory('deploymentCache');
+                }
+                $cacheFactory.get('deploymentCache').put($scope.deployment.__identity, $scope.deployment);
+                return;
+            case 'waiting':
+            case 'running':
+                setTimeout(self.getDeployment, 1000);
+                break;
+            default:
+                return;
             }
-        );
-    };
+        };
 
-    $scope.finished = false;
-    $scope.noLog = false;
+        /**
+         * @return {void}
+         */
+        this.getDeployment = function () {
+            this.scrollToNewLogEntries();
+            DeploymentRepository.getSingleDeployment($routeParams.deploymentId).then(
+                function (response) {
+                    $scope.finished = true;
+                    $scope.deployment = response.deployment;
+                    self.initLiveLog();
+                },
+                function () {
+                    $scope.finished = true;
+                    $scope.noLog = true;
+                }
+            );
+        };
 
-}]);
+        /**
+         * @return void
+         */
+        this.scrollToNewLogEntries = function () {
+            if (angular.isUndefined($scope.deployment)) {
+                return;
+            }
+            if ($scope.deployment.logs.length > $scope.logLength) {
+                $anchorScroll();
+                $scope.logLength = $scope.deployment.logs.length;
+            }
+        };
+
+        /**
+         * @return {void}
+         */
+        this.init = function () {
+            $location.hash('bottom');
+            this.getDeployment();
+        };
+
+        this.init();
+
+        $scope.cancelDeployment = function () {
+            DeploymentRepository.cancelDeployment($routeParams.deploymentId).then(
+                function () {
+                    self.getDeployment();
+                }
+            );
+        };
+
+        $scope.finished = false;
+        $scope.noLog = false;
+        $scope.logLength = 0;
+
+    }
+]);
 /*global surfCaptain, angular*/
 /*jslint node: true */
 
 'use strict';
-surfCaptain.controller('SyncController', ['$scope', '$controller', function ($scope, $controller) {
+angular.module('surfCaptain').controller('SyncController', ['$scope', '$controller', function ($scope, $controller) {
 
     // Inherit from AbstractSingleProjectController
     angular.extend(this, $controller('AbstractSingleProjectController', {$scope: $scope}));
@@ -988,7 +1011,7 @@ surfCaptain.controller('SyncController', ['$scope', '$controller', function ($sc
 /*jslint node: true */
 
 'use strict';
-surfCaptain.directive('chosen', function () {
+angular.module('surfCaptain').directive('chosen', function () {
     var linker = function (scope, element, attrs) {
         var list = attrs.chosen;
 
@@ -1011,7 +1034,7 @@ surfCaptain.directive('chosen', function () {
 /*jslint node: true, plusplus: true */
 
 'use strict';
-surfCaptain.directive('flashMessages', ['SEVERITY', 'FlashMessageService', function (SEVERITY, FlashMessageService) {
+angular.module('surfCaptain').directive('flashMessages', ['SEVERITY', 'FlashMessageService', function (SEVERITY, FlashMessageService) {
     var linker = function (scope, element, attrs) {
 
         /**
@@ -1104,7 +1127,7 @@ surfCaptain.directive('flashMessages', ['SEVERITY', 'FlashMessageService', funct
 /*jslint node: true */
 
 'use strict';
-surfCaptain.directive('lastCharacterValidate', ['ValidationService', function (ValidationService) {
+angular.module('surfCaptain').directive('lastCharacterValidate', ['ValidationService', function (ValidationService) {
     return {
         restrict: 'A',
         require: 'ngModel',
@@ -1139,7 +1162,7 @@ surfCaptain.directive('lastCharacterValidate', ['ValidationService', function (V
 /*jslint node: true */
 
 'use strict';
-surfCaptain.directive('modal', function () {
+angular.module('surfCaptain').directive('modal', function () {
     return {
         scope: {
             modal: '@modal'
@@ -1155,7 +1178,7 @@ surfCaptain.directive('modal', function () {
 /*jslint node: true */
 
 'use strict';
-surfCaptain.directive('overlay', function () {
+angular.module('surfCaptain').directive('overlay', function () {
     var linker = function (scope, element, attrs) {
     };
 
@@ -1172,7 +1195,7 @@ surfCaptain.directive('overlay', function () {
 /*jslint node: true, plusplus:true */
 
 'use strict';
-surfCaptain.directive('serverList', [
+angular.module('surfCaptain').directive('serverList', [
     'PresetRepository',
     'ValidationService',
     'FlashMessageService',
@@ -1346,7 +1369,7 @@ surfCaptain.directive('serverList', [
 /*jslint node: true */
 
 'use strict';
-surfCaptain.directive('serverNameValidate', function () {
+angular.module('surfCaptain').directive('serverNameValidate', function () {
     return {
         restrict: 'A',
         require: 'ngModel',
@@ -1380,7 +1403,7 @@ surfCaptain.directive('serverNameValidate', function () {
 /*jslint node: true */
 
 'use strict';
-surfCaptain.directive('spinner', function () {
+angular.module('surfCaptain').directive('spinner', function () {
     var linker = function (scope, element, attrs) {
     };
 
@@ -1394,7 +1417,7 @@ surfCaptain.directive('spinner', function () {
 /*jslint node: true, plusplus: true */
 
 'use strict';
-surfCaptain.directive('startWithValidate', ['ValidationService', function (ValidationService) {
+angular.module('surfCaptain').directive('startWithValidate', ['ValidationService', function (ValidationService) {
     return {
         restrict: 'A',
         require: 'ngModel',
@@ -1453,7 +1476,7 @@ surfCaptain.directive('startWithValidate', ['ValidationService', function (Valid
 /*jslint node: true */
 
 'use strict';
-surfCaptain.directive('surfcaptainHeader', ['$routeParams', '$location', function ($routeParams, $location) {
+angular.module('surfCaptain').directive('surfcaptainHeader', ['$routeParams', '$location', function ($routeParams, $location) {
     return {
         restrict: 'E',
         templateUrl: '/_Resources/Static/Packages/Lightwerk.SurfCaptain/Scripts/SurfCaptainApp/Partials/Header.html',
@@ -1471,7 +1494,7 @@ surfCaptain.directive('surfcaptainHeader', ['$routeParams', '$location', functio
 /*jslint node: true */
 
 'use strict';
-surfCaptain.directive('surfcaptainMenu', ['$routeParams', '$location', function ($routeParams, $location) {
+angular.module('surfCaptain').directive('surfcaptainMenu', ['$routeParams', '$location', function ($routeParams, $location) {
     return {
         restrict: 'E',
         templateUrl: '/_Resources/Static/Packages/Lightwerk.SurfCaptain/Scripts/SurfCaptainApp/Partials/Menu.html',
@@ -1487,7 +1510,7 @@ surfCaptain.directive('surfcaptainMenu', ['$routeParams', '$location', function 
 /*jslint node: true */
 
 'use strict';
-surfCaptain.directive('tab', function () {
+angular.module('surfCaptain').directive('tab', function () {
     return function (scope, element, attributes) {
         element.bind('click', function (e) {
             e.preventDefault();
@@ -1499,7 +1522,7 @@ surfCaptain.directive('tab', function () {
 /*jslint node: true */
 
 'use strict';
-surfCaptain.directive('tooltip', function () {
+angular.module('surfCaptain').directive('tooltip', function () {
     return function (scope, element, attributes) {
         element.tooltip();
     };
@@ -1508,7 +1531,7 @@ surfCaptain.directive('tooltip', function () {
 /*jslint node: true */
 
 'use strict';
-surfCaptain.directive('appVersion', ['version', function (version) {
+angular.module('surfCaptain').directive('appVersion', ['version', function (version) {
     return function (scope, element, attributes) {
         element.text(version);
     };
@@ -1517,7 +1540,7 @@ surfCaptain.directive('appVersion', ['version', function (version) {
 /*jslint node: true */
 
 'use strict';
-surfCaptain.filter('logCodeFilter', function () {
+angular.module('surfCaptain').filter('logCodeFilter', function () {
     return function (input) {
         switch (input) {
         case 3:
@@ -1545,7 +1568,7 @@ surfCaptain.filter('logCodeFilter', function () {
 
 'use strict';
 
-surfCaptain.factory('DeploymentRepository', [ '$http', '$q', '$cacheFactory', function ($http, $q, $cacheFactory) {
+angular.module('surfCaptain').factory('DeploymentRepository', [ '$http', '$q', '$cacheFactory', function ($http, $q, $cacheFactory) {
 
     var deploymentRepository = {},
         url = '/api/deployment';
@@ -1640,7 +1663,7 @@ surfCaptain.factory('DeploymentRepository', [ '$http', '$q', '$cacheFactory', fu
 
 'use strict';
 
-surfCaptain.factory('HistoryRepository', [ '$http', '$q', function ($http, $q) {
+angular.module('surfCaptain').factory('HistoryRepository', [ '$http', '$q', function ($http, $q) {
     var historyRepository = {},
         url = '/_Resources/Static/Packages/Lightwerk.SurfCaptain/Scripts/SurfCaptainApp/ExampleData/history.json';
 
@@ -1662,7 +1685,7 @@ surfCaptain.factory('HistoryRepository', [ '$http', '$q', function ($http, $q) {
 
 'use strict';
 
-surfCaptain.factory('PresetRepository', ['$http', '$q', function ($http, $q) {
+angular.module('surfCaptain').factory('PresetRepository', ['$http', '$q', function ($http, $q) {
     var presetRepository = {},
         url = '/api/preset';
 
@@ -1831,7 +1854,7 @@ surfCaptain.factory('PresetRepository', ['$http', '$q', function ($http, $q) {
 
 'use strict';
 
-surfCaptain.factory('ProjectRepository', [ '$http', '$q', '$cacheFactory', function ($http, $q, $cacheFactory) {
+angular.module('surfCaptain').factory('ProjectRepository', [ '$http', '$q', '$cacheFactory', function ($http, $q, $cacheFactory) {
     var projectRepository = {},
         url = '/api/repository';
 
@@ -1934,7 +1957,7 @@ surfCaptain.factory('ProjectRepository', [ '$http', '$q', '$cacheFactory', funct
 
 'use strict';
 
-surfCaptain.factory('SettingsRepository', ['$http', '$q', '$cacheFactory', function ($http, $q, $cacheFactory) {
+angular.module('surfCaptain').factory('SettingsRepository', ['$http', '$q', '$cacheFactory', function ($http, $q, $cacheFactory) {
     var settingsRepository = {},
         url = '/api/frontendSetting';
 
@@ -1972,7 +1995,7 @@ surfCaptain.factory('SettingsRepository', ['$http', '$q', '$cacheFactory', funct
 
 'use strict';
 
-surfCaptain.service('FlashMessageService', function () {
+angular.module('surfCaptain').service('FlashMessageService', function () {
 
     var messages = [];
 
@@ -2017,7 +2040,7 @@ surfCaptain.service('FlashMessageService', function () {
 
 'use strict';
 
-surfCaptain.service('MarkerService', function () {
+angular.module('surfCaptain').service('MarkerService', function () {
 
     var localStorage = [],
 
@@ -2135,7 +2158,7 @@ surfCaptain.service('MarkerService', function () {
 
 'use strict';
 
-surfCaptain.service('PresetService', [function () {
+angular.module('surfCaptain').service('PresetService', [function () {
 
     var newPreset = {
         "options": {
@@ -2182,7 +2205,7 @@ surfCaptain.service('PresetService', [function () {
 
 'use strict';
 
-surfCaptain.service('ValidationService', function () {
+angular.module('surfCaptain').service('ValidationService', function () {
 
     /**
      * Validates if a given string has at least the length of the given
