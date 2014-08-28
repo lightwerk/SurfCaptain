@@ -12,11 +12,10 @@ angular.module('surfCaptain').controller('DeployController', [
     'CONFIG',
     'DeploymentRepository',
     '$location',
-    '$cacheFactory',
     'PresetRepository',
     'ValidationService',
     'SettingsRepository',
-    function ($scope, $controller, ProjectRepository, HistoryRepository, SEVERITY, FlashMessageService, CONFIG, DeploymentRepository, $location, $cacheFactory, PresetRepository, ValidationService, SettingsRepository) {
+    function ($scope, $controller, ProjectRepository, HistoryRepository, SEVERITY, FlashMessageService, CONFIG, DeploymentRepository, $location, PresetRepository, ValidationService, SettingsRepository) {
 
         var loadingString = 'loading ...',
             self = this;
@@ -81,10 +80,6 @@ angular.module('surfCaptain').controller('DeployController', [
                                 + $scope.currentPreset.applications[0].nodes[0].name + '! You can cancel the deployment while it is still waiting.',
                             SEVERITY.ok
                         );
-                        if (angular.isUndefined($cacheFactory.get('deploymentCache'))) {
-                            $cacheFactory('deploymentCache');
-                        }
-                        $cacheFactory.get('deploymentCache').put(response.deployment.__identity, response.deployment);
                         $location.path('deployments/' + response.deployment.__identity);
                     },
                     function (response) {
