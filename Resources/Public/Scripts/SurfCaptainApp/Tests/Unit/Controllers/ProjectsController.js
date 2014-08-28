@@ -1,19 +1,20 @@
 /*global describe,beforeEach,module,it,xit,expect,inject,spyOn*/
 
 describe('ProjectsController', function () {
-    var ctrl, scope, projectRepository, q, projects, succeedPromise, controller, settingsRepository, settings,
+    var ctrl, scope, projectRepository, q, projects, succeedPromise, controller, settingsRepository, settings, FlashMessageService,
         createController = function () {
             ctrl = controller('ProjectsController', {
                 $scope: scope,
                 ProjectRepository: projectRepository,
-                SettingsRepository: settingsRepository
+                SettingsRepository: settingsRepository,
+                FlashMessageSerive: FlashMessageService
             });
             scope.$digest();
         };
 
     beforeEach(module('surfCaptain'));
 
-    beforeEach(inject(function ($controller, $rootScope, $q, ProjectRepository, SettingsRepository) {
+    beforeEach(inject(function ($controller, $rootScope, $q, ProjectRepository, SettingsRepository, _FlashMessageService_) {
         scope = $rootScope.$new();
         projects = [
             {"name": "foo", "ssh_url_to_repo": "git@git.example.com:project/foo.git", "id": 1}
@@ -22,6 +23,7 @@ describe('ProjectsController', function () {
         controller = $controller;
         projectRepository = ProjectRepository;
         settingsRepository = SettingsRepository;
+        FlashMessageService = _FlashMessageService_;
 
         // simulate success or failure of request based on succeedPromise
         spyOn(projectRepository, 'getProjects').andCallFake(function () {
@@ -36,6 +38,7 @@ describe('ProjectsController', function () {
             return $q.when(settings);
         });
 
+        spyOn(FlashMessageService, 'addFlashMessage');
     }));
 
     describe('Initialization', function () {
@@ -77,6 +80,23 @@ describe('ProjectsController', function () {
             it('should set $scope.finished to true.', function () {
                 expect(scope.finished).toBeTruthy();
             });
+        });
+
+        describe('on failure', function () {
+
+            beforeEach(function () {
+                succeedPromise = false;
+                createController();
+            });
+
+            it('should set $scope.finished to true.', function () {
+                expect(scope.finished).toBeTruthy();
+            });
+
+            it('should call FlashMessageService.addFlashMessage().', function () {
+                expect(FlashMessageService.addFlashMessage).toHaveBeenCalled();
+            });
+
         });
 
         it('should call SettingsRepository.getSettings().', function () {
