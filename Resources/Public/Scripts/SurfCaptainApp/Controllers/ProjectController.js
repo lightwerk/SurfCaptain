@@ -2,7 +2,7 @@
 /*jslint node: true */
 
 'use strict';
-surfCaptain.controller('ProjectController', ['$scope', '$controller', 'HistoryRepository', function ($scope, $controller, HistoryRepository) {
+angular.module('surfCaptain').controller('ProjectController', ['$scope', '$controller', 'HistoryRepository', function ($scope, $controller, HistoryRepository) {
 
     // Inherit from AbstractSingleProjectController
     angular.extend(this, $controller('AbstractSingleProjectController', {$scope: $scope}));

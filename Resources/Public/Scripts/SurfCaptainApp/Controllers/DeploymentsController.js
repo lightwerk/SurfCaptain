@@ -2,7 +2,7 @@
 /*jslint node: true */
 
 'use strict';
-surfCaptain.controller('DeploymentsController', [
+angular.module('surfCaptain').controller('DeploymentsController', [
     '$scope',
     'DeploymentRepository',
     'FlashMessageService',

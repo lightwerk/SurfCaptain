@@ -2,7 +2,7 @@
 /*jslint node: true */
 
 'use strict';
-surfCaptain.filter('logCodeFilter', function () {
+angular.module('surfCaptain').filter('logCodeFilter', function () {
     return function (input) {
         switch (input) {
         case 3:

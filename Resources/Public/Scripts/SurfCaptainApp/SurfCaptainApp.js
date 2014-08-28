@@ -2,7 +2,7 @@
 /*jslint node: true */
 
 'use strict';
-var surfCaptain = angular.module('surfCaptain', ['ngRoute', 'xeditable', 'ngAnimate', 'ngMessages'])
+angular.module('surfCaptain', ['ngRoute', 'xeditable', 'ngAnimate', 'ngMessages'])
     .config(['$routeProvider', function ($routeProvider) {
         var templatePath = '/_Resources/Static/Packages/Lightwerk.SurfCaptain/Scripts/SurfCaptainApp/Templates/';
         $routeProvider.
@@ -64,6 +64,6 @@ var surfCaptain = angular.module('surfCaptain', ['ngRoute', 'xeditable', 'ngAnim
         }
     });
 
-surfCaptain.run(['editableOptions', function (editableOptions) {
+angular.module('surfCaptain').run(['editableOptions', function (editableOptions) {
     editableOptions.theme = 'bs3';
 }]);

@@ -2,7 +2,7 @@
 /*jslint node: true */
 
 'use strict';
-surfCaptain.controller('DeployController', [
+angular.module('surfCaptain').controller('DeployController', [
     '$scope',
     '$controller',
     'ProjectRepository',

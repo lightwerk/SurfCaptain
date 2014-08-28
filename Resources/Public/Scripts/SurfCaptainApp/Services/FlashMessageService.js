@@ -3,7 +3,7 @@
 
 'use strict';
 
-surfCaptain.service('FlashMessageService', function () {
+angular.module('surfCaptain').service('FlashMessageService', function () {
 
     var messages = [];
 

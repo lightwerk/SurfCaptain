@@ -2,7 +2,7 @@
 /*jslint node: true */
 
 'use strict';
-surfCaptain.directive('overlay', function () {
+angular.module('surfCaptain').directive('overlay', function () {
     var linker = function (scope, element, attrs) {
     };
 

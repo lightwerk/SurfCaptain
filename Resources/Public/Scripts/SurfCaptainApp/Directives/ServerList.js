@@ -2,7 +2,7 @@
 /*jslint node: true, plusplus:true */
 
 'use strict';
-surfCaptain.directive('serverList', [
+angular.module('surfCaptain').directive('serverList', [
     'PresetRepository',
     'ValidationService',
     'FlashMessageService',

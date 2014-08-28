@@ -3,7 +3,7 @@
 
 'use strict';
 
-surfCaptain.factory('HistoryRepository', [ '$http', '$q', function ($http, $q) {
+angular.module('surfCaptain').factory('HistoryRepository', [ '$http', '$q', function ($http, $q) {
     var historyRepository = {},
         url = '/_Resources/Static/Packages/Lightwerk.SurfCaptain/Scripts/SurfCaptainApp/ExampleData/history.json';
 

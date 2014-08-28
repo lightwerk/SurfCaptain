@@ -2,7 +2,7 @@
 /*jslint node: true, plusplus: true */
 
 'use strict';
-surfCaptain.directive('flashMessages', ['SEVERITY', 'FlashMessageService', function (SEVERITY, FlashMessageService) {
+angular.module('surfCaptain').directive('flashMessages', ['SEVERITY', 'FlashMessageService', function (SEVERITY, FlashMessageService) {
     var linker = function (scope, element, attrs) {
 
         /**

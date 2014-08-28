@@ -2,7 +2,7 @@
 /*jslint node: true */
 
 'use strict';
-surfCaptain.directive('lastCharacterValidate', ['ValidationService', function (ValidationService) {
+angular.module('surfCaptain').directive('lastCharacterValidate', ['ValidationService', function (ValidationService) {
     return {
         restrict: 'A',
         require: 'ngModel',

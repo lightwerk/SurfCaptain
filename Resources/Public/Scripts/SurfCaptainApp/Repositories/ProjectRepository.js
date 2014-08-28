@@ -4,7 +4,7 @@
 
 'use strict';
 
-surfCaptain.factory('ProjectRepository', [ '$http', '$q', '$cacheFactory', function ($http, $q, $cacheFactory) {
+angular.module('surfCaptain').factory('ProjectRepository', [ '$http', '$q', '$cacheFactory', function ($http, $q, $cacheFactory) {
     var projectRepository = {},
         url = '/api/repository';
 

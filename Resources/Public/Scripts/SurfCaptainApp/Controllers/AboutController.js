@@ -2,7 +2,7 @@
 /*jslint node: true */
 
 'use strict';
-surfCaptain.controller('AboutController', ['$scope', function ($scope) {
+angular.module('surfCaptain').controller('AboutController', ['$scope', function ($scope) {
     $scope.techs = [
         {
             name: 'angular',

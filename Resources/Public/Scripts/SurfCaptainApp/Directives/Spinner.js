@@ -2,7 +2,7 @@
 /*jslint node: true */
 
 'use strict';
-surfCaptain.directive('spinner', function () {
+angular.module('surfCaptain').directive('spinner', function () {
     var linker = function (scope, element, attrs) {
     };
 
