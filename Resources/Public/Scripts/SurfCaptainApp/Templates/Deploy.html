@@ -58,19 +58,21 @@
 						</div>
 
 						<div class="tab-pane" id="global">
-							<div
+							<div class="deployment-server-container" data-ng-repeat="server in globalServers">
+								<div
 									class="deployment-server {{server.applications.0.options.context}}"
-									data-ng-repeat="server in globalServers"
 									data-ng-class="{false:'disabled'}[presetDisplay(server)]"
 									data-ng-click="setCurrentPreset(server)"
-									>
-								<div class="title">
-									<i class="fa fa-hdd-o"></i>{{server.applications.0.nodes.0.name}}
-								</div>
-								<div class="context-container">
-									<span class="context">({{server.applications.0.options.context}})</span>
+								>
+									<div class="title">
+										<i class="fa fa-hdd-o"></i>{{server.applications.0.nodes.0.name}}
+									</div>
+									<div class="context-container">
+										<span class="context">({{server.applications.0.options.context}})</span>
+									</div>
 								</div>
 							</div>
+
 							<div
 									data-ng-if="finished && globalServers.length === 0">
 								<p><i>There are no global servers configured yet. You can add servers
