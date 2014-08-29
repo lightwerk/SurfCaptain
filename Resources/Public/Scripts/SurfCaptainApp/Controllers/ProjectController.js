@@ -10,7 +10,8 @@ angular.module('surfCaptain').controller('ProjectController', [
     'SEVERITY',
     'PresetService',
     'SettingsRepository',
-    function ($scope, $controller, FlashMessageService, ProjectRepository, SEVERITY, PresetService, SettingsRepository) {
+    'UtilityService',
+    function ($scope, $controller, FlashMessageService, ProjectRepository, SEVERITY, PresetService, SettingsRepository, UtilityService) {
 
         // Inherit from AbstractSingleProjectController
         angular.extend(this, $controller('AbstractSingleProjectController', {$scope: $scope}));
@@ -33,24 +34,7 @@ angular.module('surfCaptain').controller('ProjectController', [
          * @return {string}
          */
         $scope.getDeployedTag = function (name) {
-            var length = $scope.tags.length,
-                i = 0,
-                commit;
-            for (i; i < length; i++) {
-                if ($scope.tags[i].name === 'server-' + name) {
-                    commit = $scope.tags[i].commit;
-                }
-            }
-            if (angular.isUndefined(commit)) {
-                return 'No deployed tag found.';
-            }
-            i = 0;
-            for (i; i < length; i++) {
-                if ($scope.tags[i].commit.id === commit.id && $scope.tags[i].name !== 'server-' + name) {
-                    return $scope.tags[i].type + ' ' + $scope.tags[i].name + ' - ' + commit.committerName + ': "' + commit.message + '"';
-                }
-            }
-            return commit.id + ' - ' + commit.committerName + ': "' + commit.message + '"';
+            return UtilityService.getDeployedTag(name, $scope.tags);
         };
 
         $scope.$watch('project', function (project) {

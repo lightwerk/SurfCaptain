@@ -34,18 +34,20 @@
 
 					<div class="tab-content">
 						<div class="tab-pane active" id="project">
-							<div
+							<div data-ng-repeat="server in servers" class="deployment-server-container">
+								<div
 									class="deployment-server"
-									data-ng-repeat="server in servers"
 									data-ng-class="{false:'disabled'}[presetDisplay(server)]; getRootContext(server.applications.0.options.context)"
 									data-ng-click="setCurrentPreset(server)"
-									>
-								<div class="title">
-									<i class="fa fa-hdd-o"></i>{{server.applications.0.nodes.0.name}}
+								>
+									<div class="title">
+										<i class="fa fa-hdd-o"></i>{{server.applications.0.nodes.0.name}}
+									</div>
+									<div class="context-container">
+										<span class="context">({{server.applications.0.options.context}})</span>
+									</div>
 								</div>
-								<div class="context-container">
-									<span class="context">({{server.applications.0.options.context}})</span>
-								</div>
+								<span class="deployed-commit">{{getDeployedTag(server.applications.0.nodes.0.name)}}</span>
 							</div>
 							<div
 									data-ng-if="finished && servers.length === 0">

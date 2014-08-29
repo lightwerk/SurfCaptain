@@ -15,7 +15,8 @@ angular.module('surfCaptain').controller('DeployController', [
     'ValidationService',
     'SettingsRepository',
     'PresetService',
-    function ($scope, $controller, ProjectRepository, SEVERITY, FlashMessageService, CONFIG, DeploymentRepository, $location, PresetRepository, ValidationService, SettingsRepository, PresetService) {
+    'UtilityService',
+    function ($scope, $controller, ProjectRepository, SEVERITY, FlashMessageService, CONFIG, DeploymentRepository, $location, PresetRepository, ValidationService, SettingsRepository, PresetService, UtilityService) {
 
         var loadingString = 'loading ...',
             self = this;
@@ -37,6 +38,7 @@ angular.module('surfCaptain').controller('DeployController', [
         $scope.error = false;
         $scope.finished = false;
         $scope.currentPreset = {};
+        $scope.tags = [];
 
         /**
          * @return {void}
@@ -161,6 +163,14 @@ angular.module('surfCaptain').controller('DeployController', [
             return PresetService.getRootContext(context, $scope.contexts);
         };
 
+        /**
+         * @param {string} name
+         * @return {string}
+         */
+        $scope.getDeployedTag = function (name) {
+            return UtilityService.getDeployedTag(name, $scope.tags);
+        };
+
         $scope.$watch('project', function (project) {
             if (angular.isUndefined(project.repositoryUrl)) {
                 return;
@@ -171,6 +181,7 @@ angular.module('surfCaptain').controller('DeployController', [
                     var property,
                         presets = response.repository.presets;
                     $scope.repositoryUrl = response.repository.webUrl;
+                    $scope.tags = response.repository.tags;
                     $scope.deployableCommits = response.repository.tags;
                     jQuery.merge($scope.deployableCommits, response.repository.branches);
 
