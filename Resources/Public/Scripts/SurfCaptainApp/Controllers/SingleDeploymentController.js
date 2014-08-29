@@ -42,7 +42,7 @@ angular.module('surfCaptain').controller('SingleDeploymentController', [
          * @return {void}
          */
         this.getDeployment = function () {
-            this.scrollToNewLogEntries();
+            self.scrollToNewLogEntries();
             DeploymentRepository.getSingleDeployment($routeParams.deploymentId).then(
                 function (response) {
                     $scope.finished = true;
