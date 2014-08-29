@@ -1,12 +1,11 @@
 /*global surfCaptain, angular, jQuery*/
-/*jslint node: true */
+/*jslint node: true, plusplus:true */
 
 'use strict';
 angular.module('surfCaptain').controller('DeployController', [
     '$scope',
     '$controller',
     'ProjectRepository',
-    'HistoryRepository',
     'SEVERITY',
     'FlashMessageService',
     'CONFIG',
@@ -15,7 +14,9 @@ angular.module('surfCaptain').controller('DeployController', [
     'PresetRepository',
     'ValidationService',
     'SettingsRepository',
-    function ($scope, $controller, ProjectRepository, HistoryRepository, SEVERITY, FlashMessageService, CONFIG, DeploymentRepository, $location, PresetRepository, ValidationService, SettingsRepository) {
+    'PresetService',
+    'UtilityService',
+    function ($scope, $controller, ProjectRepository, SEVERITY, FlashMessageService, CONFIG, DeploymentRepository, $location, PresetRepository, ValidationService, SettingsRepository, PresetService, UtilityService) {
 
         var loadingString = 'loading ...',
             self = this;
@@ -37,6 +38,7 @@ angular.module('surfCaptain').controller('DeployController', [
         $scope.error = false;
         $scope.finished = false;
         $scope.currentPreset = {};
+        $scope.tags = [];
 
         /**
          * @return {void}
@@ -158,18 +160,18 @@ angular.module('surfCaptain').controller('DeployController', [
          * @returns {string}
          */
         $scope.getRootContext = function (context) {
-            var i = 0,
-                length = $scope.contexts.length;
-            for (i; i < length; i++) {
-                if (ValidationService.doesStringStartWithSubstring(context, $scope.contexts[i])) {
-                    return $scope.contexts[i];
-                }
-            }
-            return '';
+            return PresetService.getRootContext(context, $scope.contexts);
+        };
+
+        /**
+         * @param {string} name
+         * @return {string}
+         */
+        $scope.getDeployedTag = function (name) {
+            return UtilityService.getDeployedTag(name, $scope.tags);
         };
 
         $scope.$watch('project', function (project) {
-            var id;
             if (angular.isUndefined(project.repositoryUrl)) {
                 return;
             }
@@ -179,6 +181,7 @@ angular.module('surfCaptain').controller('DeployController', [
                     var property,
                         presets = response.repository.presets;
                     $scope.repositoryUrl = response.repository.webUrl;
+                    $scope.tags = response.repository.tags;
                     $scope.deployableCommits = response.repository.tags;
                     jQuery.merge($scope.deployableCommits, response.repository.branches);
 

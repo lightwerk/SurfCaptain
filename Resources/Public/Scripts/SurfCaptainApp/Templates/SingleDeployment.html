@@ -1,8 +1,8 @@
-<flash-messages messages="messages" />
+<flash-messages messages="messages"></flash-messages>
 
-<overlay finished="finished" />
+<overlay finished="finished"></overlay>
 <div data-ng-if="!finished" class="spinner">
-	<spinner />
+	<spinner></spinner>
 </div>
 
 <surfcaptain-header icon="road"></surfcaptain-header>
@@ -11,11 +11,13 @@
 	<div class="row">
 		<div class="col-xs-12 col-md-8 col-md-offset-2 text-center">
 			<h1>Deployment Details</h1>
-			<h3>{{deployment.repositoryIdentifier}} - {{deployment.referenceName}} onto {{deployment.configuration.applications.0.nodes.0.name}}</h3>
+			<h3><a data-ng-href="#/project/{{deployment.repositoryIdentifier}}" >{{deployment.repositoryIdentifier}}</a> - {{deployment.referenceName}} onto {{deployment.configuration.applications.0.nodes.0.name}}</h3>
 			<br />
 			<button data-ng-if="deployment.status === 'waiting'" class="btn btn-danger" data-ng-click="cancelDeployment()">Cancel</button>
 			<br /><br /><br />
 			<dl class="dl-horizontal">
+				<dt>Project</dt>
+				<dd><a data-ng-href="#/project/{{deployment.repositoryIdentifier}}" >{{deployment.repositoryIdentifier}}</a></dd>
 				<dt>Date</dt>
 				<dd>{{deployment.date|date:'medium'}}</dd>
 				<dt>Target</dt>
