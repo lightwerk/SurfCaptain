@@ -1,24 +1,21 @@
 div.project-history {
-	margin-top: 15px;
+	margin-top: 5px;
 	background-color: @body-bg !important;
-	color:  @brand-primary;
 
-	table {
-		text-align: left;
-		width: 80%;
-		margin: 15px auto;
+	.no-activities {
+		font-style: italic;
+		font-size: 120%;
+		display: inline-block;
+		width: 100%;
+		text-align: center;
+	}
+	.deployment-server {
+		float: none;
+		margin: 10px auto;
+		cursor: default;
+	}
 
-		thead tr {
-			border-bottom: 2px solid @brand-primary;
-		}
-
-		tr {
-			&.odd {
-				background-color: @main-color;
-			}
-			td {
-				padding: 3px 2px;
-			}
-		}
+	.history {
+		margin-top: 20px;
 	}
 }

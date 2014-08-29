@@ -1,56 +1,75 @@
+<flash-messages messages="messages"></flash-messages>
+
+<overlay finished="finished"></overlay>
+<div data-ng-if="!finished" class="spinner">
+	<spinner></spinner>
+</div>
+
 <surfcaptain-header icon="history"></surfcaptain-header>
 
 <surfcaptain-menu></surfcaptain-menu>
 
-<div class="project-history container inner-container">
+<div class="project-history container inner-container dark">
 	<div class="row">
+		<div class="col-xs-12 text-center">
+			<h2><span class="project-name">Server</span></h2>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-xs-12 text-center">
+			<div
+				class="deployment-server-container"
+				data-ng-repeat="server in presets"
+			>
+				<div class="deployment-server"
+					 data-ng-class="{false:'disabled'}[presetDisplay(server)]; getRootContext(server.applications.0.options.context)"
+				>
+					<div class="title">
+						<i class="fa fa-hdd-o"></i>{{server.applications.0.nodes.0.name}}
+					</div>
+					<div class="context-container">
+						<span class="context">({{server.applications.0.options.context}})</span>
+					</div>
+				</div>
+				<span>{{getDeployedTag(server.applications.0.nodes.0.name)}}</span>
+			</div>
+			<span data-ng-if="finished && presets.length === 0" class="no-activities">No servers in project {{name | uppercase}} yet!
+				<a data-ng-href="#/project/{{name}}/server">Create one</a>!
+			</span>
+		</div>
+	</div>
+	<div class="row history">
 		<div class="col-xs-12 text-center">
 			<h2><span class="project-name">History</span></h2>
 		</div>
 	</div>
 	<div class="row">
-		<div class="col-xs-12 col-md-8 col-md-push-2 text-center project-selector">
-			<div class="checkboxes">
-				<input type="checkbox"
-					id="constraint"
-					value=""
-					data-ng-true-value="'dummy'"
-					data-ng-false-value="'Sync'"
-					data-ng-model="constraint"
-				/>
-				<label for="constraint">Include Sync</label>
-			</div>
-
-			<table>
+		<div class="col-xs-12 col-md-8 col-md-push-2 text-center">
+			<table class="table table-striped">
 				<thead>
 					<tr>
-						<th>Application</th>
+						<th>Type</th>
+						<th>Status</th>
 						<th>Date</th>
-						<th>Server</th>
-						<th>Branch/Tag</th>
+						<th>Source</th>
+						<th>Target</th>
+						<th>Action</th>
 					</tr>
 				</thead>
 				<tbody>
-					<tr data-ng-class-odd="'odd'" data-ng-repeat="item in history | orderBy:ordering:1" data-ng-show="item.application !== constraint">
+					<tr data-ng-repeat="deployment in deployments | orderBy:ordering">
 						<td>
-							{{item.application | uppercase }}
+							{{deployment.type | DeploymentTypeFilter }}
 						</td>
-						<td>
-							{{item.date | date:'dd.M.yyyy' }}
-						</td>
-						<td>
-							{{item.server}}
-						</td>
-						<td>
-							<span data-ng-show="item.commit">
-								<a href="{{project.web_url}}/commit/{{item.commit}}">
-									{{item.gitcheckout}}
-								</a>
-							</span>
-						</td>
+						<td><span class="label {{deployment.status}}">{{deployment.status}}</span></td>
+						<td>{{deployment.date | date:'MMM d, y HH:mm:ss'}}</td>
+						<td>{{deployment.referenceName}}</td>
+						<td>{{deployment.options.name}}</td>
+						<td><a data-ng-href="#/deployments/{{deployment.__identity}}" class="btn-xs btn-primary btn">Details</a></td>
 					</tr>
 				</tbody>
 			</table>
+			<span data-ng-if="finished && deployments.length === 0" class="no-activities">No activities in project {{name | uppercase}} yet!</span>
 		</div>
 	</div>
 </div>

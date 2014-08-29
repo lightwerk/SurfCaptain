@@ -1,7 +1,7 @@
-/*global describe,beforeEach,module,it,expect,inject, angular*/
+/*global describe,beforeEach,module,it,expect,inject,angular,spyOn*/
 
 describe('PresetService', function () {
-    var presetService, configuration, expectedPreset,
+    var presetService, configuration, expectedPreset, SettingsRepository, ValidationService, contexts
         expectedPresetSkeleton = {
             "options": {
                 "repositoryUrl": '',
@@ -20,9 +20,13 @@ describe('PresetService', function () {
     // Load the module
     beforeEach(function () {
         module('surfCaptain');
-        inject(function (_PresetService_) {
+        inject(function (_PresetService_, _SettingsRepository_, _ValidationService_) {
             presetService = _PresetService_;
+            SettingsRepository = _SettingsRepository_;
+            ValidationService = _ValidationService_;
         });
+        spyOn(presetService, 'setContexts');
+        spyOn(ValidationService, 'doesStringStartWithSubstring').andCallThrough();
     });
 
     it('should have a method getNewPreset.', function () {
@@ -57,6 +61,36 @@ describe('PresetService', function () {
                 preset = presetService.getNewPreset({defaultDeploymentPath: deploymentPath});
             expectedPreset.options.deploymentPath = deploymentPath;
             expect(preset).toEqual(expectedPreset);
+        });
+    });
+
+    it('should have a method getRootContext.', function () {
+        expect(presetService.getRootContext).toBeDefined();
+    });
+
+    describe('->getRootContext()', function () {
+        beforeEach(function () {
+            contexts = ['Production', 'Development'];
+        });
+
+        it('should call setContexts() on self.', function () {
+            presetService.getRootContext('', contexts);
+            expect(presetService.setContexts).toHaveBeenCalled();
+        });
+
+        it('should call ValidationService.doesStringStartWithSubstring as often as contexts are stored if passed string is no valid rootContext.', function () {
+            presetService.getRootContext('Staging', contexts);
+            expect(ValidationService.doesStringStartWithSubstring.callCount).toEqual(2);
+        });
+
+        it('should return empty string if passed string is no valid rootContext.', function () {
+            var rootContext = presetService.getRootContext('Staging', contexts);
+            expect(rootContext).toEqual('');
+        });
+
+        it('should return correct ootContext if passed string is valid rootContext.', function () {
+            var rootContext = presetService.getRootContext('Production/Staging', contexts);
+            expect(rootContext).toEqual('Production');
         });
     });
 

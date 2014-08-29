@@ -1,9 +1,9 @@
-/*jslint node: true */
+/*jslint node: true, plusplus: true */
 /*global surfCaptain, angular*/
 
 'use strict';
 
-angular.module('surfCaptain').service('PresetService', [function () {
+angular.module('surfCaptain').service('PresetService', ['SettingsRepository', 'ValidationService', function (SettingsRepository, ValidationService) {
 
     var newPreset = {
         "options": {
@@ -18,7 +18,27 @@ angular.module('surfCaptain').service('PresetService', [function () {
                 "username": ''
             }
         ]
+    },
+        self = this;
+
+    this.contexts = [];
+
+    /**
+     * @return {void}
+     */
+    this.setContexts = function () {
+        if (self.contexts.length === 0) {
+            SettingsRepository.getSettings().then(
+                function (response) {
+                    self.contexts = [];
+                    if (angular.isDefined(response.contexts)) {
+                        self.contexts = response.contexts.split(',');
+                    }
+                }
+            );
+        }
     };
+
 
     /**
      * A new preset skeleton is returned with options from an optional
@@ -43,5 +63,22 @@ angular.module('surfCaptain').service('PresetService', [function () {
             }
         }
         return preset;
+    };
+
+    /**
+     * @param {string} context
+     * @param {array} contexts
+     * @returns {string}
+     */
+    this.getRootContext = function (context, contexts) {
+        this.setContexts();
+        var i = 0,
+            length = contexts.length;
+        for (i; i < length; i++) {
+            if (ValidationService.doesStringStartWithSubstring(context, contexts[i])) {
+                return contexts[i];
+            }
+        }
+        return '';
     };
 }]);
