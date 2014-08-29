@@ -5813,29 +5813,24 @@ html,
 body {
   height: 100%;
 }
-div.surfcaptain,
-div.project-history {
+div.surfcaptain-header {
   min-height: 150px;
   background-color: #99cccc;
   width: 100%;
 }
-div.surfcaptain .fa,
-div.project-history .fa {
+div.surfcaptain-header .fa {
   font-size: 110px;
   display: inline-block;
   width: 100%;
 }
-div.surfcaptain .project-name,
-div.project-history .project-name {
+div.surfcaptain-header .project-name {
   display: inline-block;
   margin-top: 10px;
 }
-div.surfcaptain .sub-header,
-div.project-history .sub-header {
+div.surfcaptain-header .sub-header {
   font-size: 75%;
 }
-div.surfcaptain .btn,
-div.project-history .btn {
+div.surfcaptain-header .btn {
   position: absolute;
   color: #000000;
   background-color: transparent;
@@ -5850,39 +5845,30 @@ div.project-history .btn {
   transition: width 0.2s ease-in-out;
   z-index: 49;
 }
-div.surfcaptain .btn:hover,
-div.project-history .btn:hover {
+div.surfcaptain-header .btn:hover {
   width: 200px;
 }
-div.surfcaptain .btn.home-button,
-div.project-history .btn.home-button {
+div.surfcaptain-header .btn.home-button {
   top: 15px;
   left: 30px;
 }
-div.surfcaptain .btn.server-button,
-div.project-history .btn.server-button {
+div.surfcaptain-header .btn.server-button {
   top: 80px;
   left: 30px;
 }
-div.surfcaptain .btn.extensions-button,
-div.project-history .btn.extensions-button,
-div.surfcaptain .btn.about-button,
-div.project-history .btn.about-button {
+div.surfcaptain-header .btn.extensions-button,
+div.surfcaptain-header .btn.about-button {
   right: 30px;
   top: 15px;
 }
-div.surfcaptain .btn.extensions-button:hover,
-div.project-history .btn.extensions-button:hover,
-div.surfcaptain .btn.about-button:hover,
-div.project-history .btn.about-button:hover {
+div.surfcaptain-header .btn.extensions-button:hover,
+div.surfcaptain-header .btn.about-button:hover {
   width: 250px;
 }
-div.surfcaptain .btn.about-button,
-div.project-history .btn.about-button {
+div.surfcaptain-header .btn.about-button {
   top: 80px;
 }
-div.surfcaptain .btn .fa,
-div.project-history .btn .fa {
+div.surfcaptain-header .btn .fa {
   font-size: 22px;
   width: 30px;
   padding-right: 34px;
@@ -6145,23 +6131,23 @@ div.project-selection .error p {
   color: red;
 }
 div.project-history {
-  margin-top: 15px;
+  margin-top: 5px;
   background-color: #222222 !important;
-  color: #99cccc;
 }
-div.project-history table {
-  text-align: left;
-  width: 80%;
-  margin: 15px auto;
+div.project-history .no-activities {
+  font-style: italic;
+  font-size: 120%;
+  display: inline-block;
+  width: 100%;
+  text-align: center;
 }
-div.project-history table thead tr {
-  border-bottom: 2px solid #99cccc;
+div.project-history .deployment-server {
+  float: none;
+  margin: 10px auto;
+  cursor: default;
 }
-div.project-history table tr.odd {
-  background-color: #000000;
-}
-div.project-history table tr td {
-  padding: 3px 2px;
+div.project-history .history {
+  margin-top: 20px;
 }
 .project-deploy .configure-deployment-row {
   margin-top: 30px;
@@ -6195,50 +6181,6 @@ div.project-history table tr td {
 }
 .project-deploy .configure-deployment-row .tab-content {
   padding-top: 10px;
-}
-.project-deploy .configure-deployment-row .tab-content .deployment-server {
-  width: 650px;
-  height: 35px;
-  border: solid 2px #000;
-  box-shadow: 0px 0px 5px #000000;
-  border-radius: 5px;
-  margin: 10px;
-  cursor: pointer;
-  color: #000;
-  padding: 4px;
-}
-.project-deploy .configure-deployment-row .tab-content .deployment-server.disabled {
-  opacity: 0.3;
-}
-.project-deploy .configure-deployment-row .tab-content .deployment-server.disabled:hover {
-  opacity: 0.6;
-}
-.project-deploy .configure-deployment-row .tab-content .deployment-server.Production {
-  background-color: #d9534f;
-}
-.project-deploy .configure-deployment-row .tab-content .deployment-server.Testing {
-  background-color: #f0ad4e;
-}
-.project-deploy .configure-deployment-row .tab-content .deployment-server.Development {
-  background-color: #5cb85c;
-}
-.project-deploy .configure-deployment-row .tab-content .deployment-server .title {
-  font-size: 110%;
-  text-transform: uppercase;
-  float: left;
-}
-.project-deploy .configure-deployment-row .tab-content .deployment-server .title .fa {
-  margin-right: 8px;
-  font-size: 22px;
-}
-.project-deploy .configure-deployment-row .tab-content .deployment-server .context-container {
-  float: right;
-}
-.project-deploy .configure-deployment-row .tab-content .deployment-server .context-container .context {
-  display: block;
-  margin: auto;
-  text-align: center;
-  font-style: italic;
 }
 .project-deploy .configure-deployment-row .deploy-git-checkout h3 {
   text-align: center;
@@ -6290,6 +6232,53 @@ div.project-history table tr td {
 }
 .project-deploy .configure-deployment-row .submit-deployment {
   margin-top: 30px;
+}
+.deployment-server-container .deployment-server {
+  width: 650px;
+  height: 35px;
+  border: solid 2px #000;
+  box-shadow: 0px 0px 5px #000000;
+  border-radius: 5px;
+  margin: 10px;
+  cursor: pointer;
+  color: #000;
+  padding: 4px;
+}
+.deployment-server-container .deployment-server.disabled {
+  opacity: 0.3;
+}
+.deployment-server-container .deployment-server.disabled:hover {
+  opacity: 0.6;
+}
+.deployment-server-container .deployment-server.Production {
+  background-color: #d9534f;
+}
+.deployment-server-container .deployment-server.Testing {
+  background-color: #f0ad4e;
+}
+.deployment-server-container .deployment-server.Development {
+  background-color: #5cb85c;
+}
+.deployment-server-container .deployment-server .title {
+  font-size: 110%;
+  text-transform: uppercase;
+  float: left;
+}
+.deployment-server-container .deployment-server .title .fa {
+  margin-right: 8px;
+  font-size: 22px;
+}
+.deployment-server-container .deployment-server .context-container {
+  float: right;
+}
+.deployment-server-container .deployment-server .context-container .context {
+  display: block;
+  margin: auto;
+  text-align: center;
+  font-style: italic;
+}
+.deployment-server-container span.deployed-commit {
+  margin-left: 15px;
 }
 .project-server .server {
   text-align: left;
@@ -6453,12 +6442,6 @@ div.project-history table tr td {
 .project-server .animate.ng-hide-remove.ng-hide-remove-active {
   opacity: 1;
 }
-div.deployments-view .table-striped {
-  text-align: left;
-}
-div.deployments-view .table-striped tbody > tr:nth-child(odd) > td {
-  background-color: #333;
-}
 .single-deployment-view dl dd {
   text-align: left;
 }
@@ -6600,4 +6583,10 @@ div.overlay {
   100% {
     opacity: 1.0;
   }
+}
+.table-striped {
+  text-align: left;
+}
+.table-striped tbody > tr:nth-child(odd) > td {
+  background-color: #333;
 }

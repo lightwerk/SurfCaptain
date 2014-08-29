@@ -198,14 +198,13 @@ angular.module('surfCaptain').controller('AbstractSingleProjectController', ['$s
     this.init();
 }]);
 /*global surfCaptain, angular, jQuery*/
-/*jslint node: true */
+/*jslint node: true, plusplus:true */
 
 'use strict';
 angular.module('surfCaptain').controller('DeployController', [
     '$scope',
     '$controller',
     'ProjectRepository',
-    'HistoryRepository',
     'SEVERITY',
     'FlashMessageService',
     'CONFIG',
@@ -214,7 +213,9 @@ angular.module('surfCaptain').controller('DeployController', [
     'PresetRepository',
     'ValidationService',
     'SettingsRepository',
-    function ($scope, $controller, ProjectRepository, HistoryRepository, SEVERITY, FlashMessageService, CONFIG, DeploymentRepository, $location, PresetRepository, ValidationService, SettingsRepository) {
+    'PresetService',
+    'UtilityService',
+    function ($scope, $controller, ProjectRepository, SEVERITY, FlashMessageService, CONFIG, DeploymentRepository, $location, PresetRepository, ValidationService, SettingsRepository, PresetService, UtilityService) {
 
         var loadingString = 'loading ...',
             self = this;
@@ -236,6 +237,7 @@ angular.module('surfCaptain').controller('DeployController', [
         $scope.error = false;
         $scope.finished = false;
         $scope.currentPreset = {};
+        $scope.tags = [];
 
         /**
          * @return {void}
@@ -357,18 +359,18 @@ angular.module('surfCaptain').controller('DeployController', [
          * @returns {string}
          */
         $scope.getRootContext = function (context) {
-            var i = 0,
-                length = $scope.contexts.length;
-            for (i; i < length; i++) {
-                if (ValidationService.doesStringStartWithSubstring(context, $scope.contexts[i])) {
-                    return $scope.contexts[i];
-                }
-            }
-            return '';
+            return PresetService.getRootContext(context, $scope.contexts);
+        };
+
+        /**
+         * @param {string} name
+         * @return {string}
+         */
+        $scope.getDeployedTag = function (name) {
+            return UtilityService.getDeployedTag(name, $scope.tags);
         };
 
         $scope.$watch('project', function (project) {
-            var id;
             if (angular.isUndefined(project.repositoryUrl)) {
                 return;
             }
@@ -378,6 +380,7 @@ angular.module('surfCaptain').controller('DeployController', [
                     var property,
                         presets = response.repository.presets;
                     $scope.repositoryUrl = response.repository.webUrl;
+                    $scope.tags = response.repository.tags;
                     $scope.deployableCommits = response.repository.tags;
                     jQuery.merge($scope.deployableCommits, response.repository.branches);
 
@@ -595,24 +598,69 @@ angular.module('surfCaptain').controller('GlobalServerController', [
 /*jslint node: true */
 
 'use strict';
-angular.module('surfCaptain').controller('ProjectController', ['$scope', '$controller', 'HistoryRepository', function ($scope, $controller, HistoryRepository) {
+angular.module('surfCaptain').controller('ProjectController', [
+    '$scope',
+    '$controller',
+    'FlashMessageService',
+    'ProjectRepository',
+    'SEVERITY',
+    'PresetService',
+    'SettingsRepository',
+    'UtilityService',
+    function ($scope, $controller, FlashMessageService, ProjectRepository, SEVERITY, PresetService, SettingsRepository, UtilityService) {
 
-    // Inherit from AbstractSingleProjectController
-    angular.extend(this, $controller('AbstractSingleProjectController', {$scope: $scope}));
+        // Inherit from AbstractSingleProjectController
+        angular.extend(this, $controller('AbstractSingleProjectController', {$scope: $scope}));
 
-    $scope.ordering = 'date';
-    $scope.constraint = 'dummy';
+        $scope.ordering = 'date';
+        $scope.finished = false;
+        $scope.tags = [];
 
-    $scope.$watch('project', function (newValue, oldValue) {
-        if (newValue === undefined || newValue.name === undefined) {
-            return;
-        }
+        /**
+         *  @param {string} context
+         * @returns {string}
+         */
+        $scope.getRootContext = function (context) {
+            return PresetService.getRootContext(context, $scope.contexts);
+        };
 
-        HistoryRepository.getHistoryByProject($scope.project).then(function (response) {
-            $scope.history = response;
+        /**
+         *
+         * @param {string} name
+         * @return {string}
+         */
+        $scope.getDeployedTag = function (name) {
+            return UtilityService.getDeployedTag(name, $scope.tags);
+        };
+
+        $scope.$watch('project', function (project) {
+            if (angular.isUndefined(project.repositoryUrl)) {
+                return;
+            }
+
+            ProjectRepository.getFullProjectByRepositoryUrl(project.repositoryUrl).then(
+                function (response) {
+                    $scope.finished = true;
+                    $scope.deployments = response.repository.deployments;
+                    $scope.presets = response.repository.presets;
+                    $scope.tags = response.repository.tags;
+                },
+                function () {
+                    $scope.finished = true;
+                }
+            );
+
+            SettingsRepository.getSettings().then(
+                function (response) {
+                    $scope.contexts = [];
+                    if (angular.isDefined(response.contexts)) {
+                        $scope.contexts = response.contexts.split(',');
+                    }
+                }
+            );
         });
-    });
-}]);
+    }
+]);
 /*global surfCaptain, angular*/
 /*jslint node: true */
 
@@ -1540,6 +1588,24 @@ angular.module('surfCaptain').directive('appVersion', ['version', function (vers
 /*jslint node: true */
 
 'use strict';
+angular.module('surfCaptain').filter('DeploymentTypeFilter', function () {
+    return function (input) {
+        switch (input) {
+        case 'TYPO3\CMS\Deploy':
+        case 'TYPO3\\CMS\\Deploy':
+            return 'Deployment';
+        case 'TYPO3\CMS\Sync':
+        case 'TYPO3\\CMS\\Sync':
+            return 'Sync';
+        default:
+            return input;
+        }
+    };
+});
+/*global surfCaptain*/
+/*jslint node: true */
+
+'use strict';
 angular.module('surfCaptain').filter('logCodeFilter', function () {
     return function (input) {
         switch (input) {
@@ -1657,28 +1723,6 @@ angular.module('surfCaptain').factory('DeploymentRepository', [ '$http', '$q', '
             return deploymentRepository.getSingleDeployment(identifier);
         }
     };
-}]);
-/*global surfCaptain*/
-/*jslint node: true */
-
-'use strict';
-
-angular.module('surfCaptain').factory('HistoryRepository', [ '$http', '$q', function ($http, $q) {
-    var historyRepository = {},
-        url = '/_Resources/Static/Packages/Lightwerk.SurfCaptain/Scripts/SurfCaptainApp/ExampleData/history.json';
-
-    /**
-     *
-     * @param project {string}
-     * @returns {Promise} – promise object
-     */
-    historyRepository.getHistoryByProject = function (project) {
-        var deferred = $q.defer();
-        $http.get(url).success(deferred.resolve).error(deferred.reject);
-        return deferred.promise;
-    };
-
-    return historyRepository;
 }]);
 /*global surfCaptain, angular*/
 /*jslint node: true */
@@ -2153,12 +2197,12 @@ angular.module('surfCaptain').service('MarkerService', function () {
         return string.substring(0, index);
     };
 });
-/*jslint node: true */
+/*jslint node: true, plusplus: true */
 /*global surfCaptain, angular*/
 
 'use strict';
 
-angular.module('surfCaptain').service('PresetService', [function () {
+angular.module('surfCaptain').service('PresetService', ['SettingsRepository', 'ValidationService', function (SettingsRepository, ValidationService) {
 
     var newPreset = {
         "options": {
@@ -2173,7 +2217,27 @@ angular.module('surfCaptain').service('PresetService', [function () {
                 "username": ''
             }
         ]
+    },
+        self = this;
+
+    this.contexts = [];
+
+    /**
+     * @return {void}
+     */
+    this.setContexts = function () {
+        if (self.contexts.length === 0) {
+            SettingsRepository.getSettings().then(
+                function (response) {
+                    self.contexts = [];
+                    if (angular.isDefined(response.contexts)) {
+                        self.contexts = response.contexts.split(',');
+                    }
+                }
+            );
+        }
     };
+
 
     /**
      * A new preset skeleton is returned with options from an optional
@@ -2199,7 +2263,59 @@ angular.module('surfCaptain').service('PresetService', [function () {
         }
         return preset;
     };
+
+    /**
+     * @param {string} context
+     * @param {array} contexts
+     * @returns {string}
+     */
+    this.getRootContext = function (context, contexts) {
+        this.setContexts();
+        var i = 0,
+            length = contexts.length;
+        for (i; i < length; i++) {
+            if (ValidationService.doesStringStartWithSubstring(context, contexts[i])) {
+                return contexts[i];
+            }
+        }
+        return '';
+    };
 }]);
+/*jslint node: true, plusplus: true */
+/*global surfCaptain,angular*/
+
+'use strict';
+
+angular.module('surfCaptain').service('UtilityService', function () {
+
+    /**
+     *
+     * @param {string} name
+     * @param {array} tags
+     * @returns {string}
+     */
+    this.getDeployedTag = function (name, tags) {
+        var length = tags.length,
+            i = 0,
+            commit;
+        for (i; i < length; i++) {
+            if (tags[i].name === 'server-' + name) {
+                commit = tags[i].commit;
+            }
+        }
+        if (angular.isUndefined(commit)) {
+            return 'No deployed tag found.';
+        }
+        i = 0;
+        for (i; i < length; i++) {
+            if (tags[i].commit.id === commit.id && tags[i].name !== 'server-' + name) {
+                return tags[i].type + ' ' + tags[i].name + ' - ' + commit.committerName + ': "' + commit.message + '"';
+            }
+        }
+        return commit.id + ' - ' + commit.committerName + ': "' + commit.message + '"';
+    };
+});
+
 /*jslint node: true */
 /*global surfCaptain*/
 
