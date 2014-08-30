@@ -14,7 +14,8 @@ angular.module('surfCaptain').controller('ServerController', [
     'PresetService',
     'FlashMessageService',
     'SEVERITY',
-    function ($scope, $controller, PresetRepository, ValidationService, SettingsRepository, MarkerService, PresetService, FlashMessageService, SEVERITY) {
+    'ProjectRepository',
+    function ($scope, $controller, PresetRepository, ValidationService, SettingsRepository, MarkerService, PresetService, FlashMessageService, SEVERITY, ProjectRepository) {
 
         var self = this;
 
@@ -121,7 +122,7 @@ angular.module('surfCaptain').controller('ServerController', [
          */
         $scope.getAllServers = function () {
             $scope.newPreset.options.repositoryUrl = $scope.project.repositoryUrl;
-            PresetRepository.getServers($scope.project.repositoryUrl).then(
+            ProjectRepository.getFullProjectByRepositoryUrl($scope.project.repositoryUrl).then(
                 function (response) {
                     $scope.finished = true;
                     $scope.servers = response.repository.presets;
@@ -133,7 +134,8 @@ angular.module('surfCaptain').controller('ServerController', [
                         $scope.messages = FlashMessageService.addFlashMessage(
                             'No Servers yet!',
                             'FYI: There are no servers for project <span class="uppercase">' + $scope.name  + '</span> yet. Why dont you create one, hmm?',
-                            SEVERITY.info
+                            SEVERITY.info,
+                            $scope.name + '-no-servers'
                         );
                     }
                 },

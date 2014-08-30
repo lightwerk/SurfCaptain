@@ -197,7 +197,8 @@ angular.module('surfCaptain').controller('DeployController', [
                         $scope.messages = FlashMessageService.addFlashMessage(
                             'No Servers yet!',
                             'FYI: There are no servers for project <span class="uppercase">' + $scope.name  + '</span> yet. Why dont you create one, hmm?',
-                            SEVERITY.info
+                            SEVERITY.info,
+                            $scope.name + '-no-servers'
                         );
                     }
                 },

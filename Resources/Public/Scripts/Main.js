@@ -396,7 +396,8 @@ angular.module('surfCaptain').controller('DeployController', [
                         $scope.messages = FlashMessageService.addFlashMessage(
                             'No Servers yet!',
                             'FYI: There are no servers for project <span class="uppercase">' + $scope.name  + '</span> yet. Why dont you create one, hmm?',
-                            SEVERITY.info
+                            SEVERITY.info,
+                            $scope.name + '-no-servers'
                         );
                     }
                 },
@@ -720,7 +721,8 @@ angular.module('surfCaptain').controller('ServerController', [
     'PresetService',
     'FlashMessageService',
     'SEVERITY',
-    function ($scope, $controller, PresetRepository, ValidationService, SettingsRepository, MarkerService, PresetService, FlashMessageService, SEVERITY) {
+    'ProjectRepository',
+    function ($scope, $controller, PresetRepository, ValidationService, SettingsRepository, MarkerService, PresetService, FlashMessageService, SEVERITY, ProjectRepository) {
 
         var self = this;
 
@@ -827,7 +829,7 @@ angular.module('surfCaptain').controller('ServerController', [
          */
         $scope.getAllServers = function () {
             $scope.newPreset.options.repositoryUrl = $scope.project.repositoryUrl;
-            PresetRepository.getServers($scope.project.repositoryUrl).then(
+            ProjectRepository.getFullProjectByRepositoryUrl($scope.project.repositoryUrl).then(
                 function (response) {
                     $scope.finished = true;
                     $scope.servers = response.repository.presets;
@@ -839,7 +841,8 @@ angular.module('surfCaptain').controller('ServerController', [
                         $scope.messages = FlashMessageService.addFlashMessage(
                             'No Servers yet!',
                             'FYI: There are no servers for project <span class="uppercase">' + $scope.name  + '</span> yet. Why dont you create one, hmm?',
-                            SEVERITY.info
+                            SEVERITY.info,
+                            $scope.name + '-no-servers'
                         );
                     }
                 },
@@ -1792,18 +1795,6 @@ angular.module('surfCaptain').factory('PresetRepository', ['$http', '$q', functi
     /**
      * Gets all servers from the collection
      *
-     * @param {string} repositoryUrl
-     * @returns {Q.promise|promise} – promise object
-     */
-    presetRepository.getServers = function (repositoryUrl) {
-        var deferred = $q.defer();
-        $http.get('/api/repository?repositoryUrl=' + repositoryUrl).success(deferred.resolve).error(deferred.reject);
-        return deferred.promise;
-    };
-
-    /**
-     * Gets all servers from the collection
-     *
      * @returns {Q.promise|promise} – promise object
      */
     presetRepository.getGlobalServers = function () {
@@ -1875,9 +1866,6 @@ angular.module('surfCaptain').factory('PresetRepository', ['$http', '$q', functi
 
     // Public API
     return {
-        getServers: function (repositoryUrl) {
-            return presetRepository.getServers(repositoryUrl);
-        },
         getGlobalServers: function () {
             return presetRepository.getGlobalServers();
         },
@@ -1900,10 +1888,10 @@ angular.module('surfCaptain').factory('PresetRepository', ['$http', '$q', functi
 
 angular.module('surfCaptain').factory('ProjectRepository', [ '$http', '$q', '$cacheFactory', function ($http, $q, $cacheFactory) {
     var projectRepository = {},
-        url = '/api/repository';
-
-    $cacheFactory('projectCache');
-    $cacheFactory('projectsCache');
+        url = '/api/repository',
+        projectCache = $cacheFactory('projectCache'),
+        projectsCache = $cacheFactory('projectsCache'),
+        repositoryCache = $cacheFactory('repositoryCache');
 
     function ProjectRepositoryException(message) {
         this.name = 'ProjectRepositoryException';
@@ -1920,8 +1908,7 @@ angular.module('surfCaptain').factory('ProjectRepository', [ '$http', '$q', '$ca
      * @returns {void}
      */
     projectRepository.populateSingleProjectCache = function (projects) {
-        var projectCache = $cacheFactory.get('projectCache'),
-            length = angular.isDefined(projects) ? projects.length : 0,
+        var length = angular.isDefined(projects) ? projects.length : 0,
             i = 0;
         if (length) {
             for (i; i < length; i++) {
@@ -1938,8 +1925,7 @@ angular.module('surfCaptain').factory('ProjectRepository', [ '$http', '$q', '$ca
      * @returns {Q.promise|promise} – promise object
      */
     projectRepository.getProjects = function () {
-        var deferred = $q.defer(),
-            projectsCache = $cacheFactory.get('projectsCache');
+        var deferred = $q.defer();
         if (angular.isDefined(projectsCache.get('allProjects'))) {
             deferred.resolve(projectsCache.get('allProjects'));
             return deferred.promise;
@@ -1966,7 +1952,6 @@ angular.module('surfCaptain').factory('ProjectRepository', [ '$http', '$q', '$ca
      * @throws {ProjectRepositoryException}
      */
     projectRepository.getProjectByName = function (name, projects) {
-        var projectCache = $cacheFactory.get('projectCache');
         if (angular.isUndefined(projectCache.get(name))) {
             projectRepository.populateSingleProjectCache(projects);
         }
@@ -1977,10 +1962,34 @@ angular.module('surfCaptain').factory('ProjectRepository', [ '$http', '$q', '$ca
         return projectCache.get(name);
     };
 
+    /**
+     * @param {string} repositoryUrl
+     * @returns {promise|Q.promise}
+     */
     projectRepository.getFullProjectByRepositoryUrl = function (repositoryUrl) {
         var deferred = $q.defer();
-        $http.get(url + '?repositoryUrl=' + repositoryUrl).success(deferred.resolve).error(deferred.reject);
+        if (angular.isDefined(repositoryCache.get(repositoryUrl))) {
+            deferred.resolve(repositoryCache.get(repositoryUrl));
+            projectRepository.updateFullProjectInCache(repositoryUrl);
+        } else {
+            $http.get(url + '?repositoryUrl=' + repositoryUrl)
+                .success(
+                    function (response) {
+                        repositoryCache.put(repositoryUrl, response);
+                        deferred.resolve(response);
+                    }
+                )
+                .error(deferred.reject);
+        }
         return deferred.promise;
+    };
+
+    projectRepository.updateFullProjectInCache = function (repositoryUrl) {
+        $http.get(url + '?repositoryUrl=' + repositoryUrl).success(
+            function (response) {
+                repositoryCache.put(repositoryUrl, response);
+            }
+        );
     };
 
     // Public API
