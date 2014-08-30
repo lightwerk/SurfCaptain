@@ -102,6 +102,23 @@ angular.module('surfCaptain').factory('ProjectRepository', [ '$http', '$q', '$ca
         return deferred.promise;
     };
 
+    /**
+     * @param {string} repositoryUrl
+     * @returns {promise|Q.promise}
+     */
+    projectRepository.getFullProjectByRepositoryUrlFromServer = function (repositoryUrl) {
+        var deferred = $q.defer();
+        $http.get(url + '?repositoryUrl=' + repositoryUrl)
+            .success(
+                function (response) {
+                    repositoryCache.put(repositoryUrl, response);
+                    deferred.resolve(response);
+                }
+            )
+            .error(deferred.reject);
+        return deferred.promise;
+    };
+
     projectRepository.updateFullProjectInCache = function (repositoryUrl) {
         $http.get(url + '?repositoryUrl=' + repositoryUrl).success(
             function (response) {
@@ -120,6 +137,12 @@ angular.module('surfCaptain').factory('ProjectRepository', [ '$http', '$q', '$ca
         },
         getFullProjectByRepositoryUrl: function (repositoryUrl) {
             return projectRepository.getFullProjectByRepositoryUrl(repositoryUrl);
+        },
+        updateFullProjectInCache: function (repositoryUrl) {
+            projectRepository.updateFullProjectInCache(repositoryUrl);
+        },
+        getFullProjectByRepositoryUrlFromServer: function (repositoryUrl) {
+            return projectRepository.getFullProjectByRepositoryUrlFromServer(repositoryUrl);
         }
     };
 }]);

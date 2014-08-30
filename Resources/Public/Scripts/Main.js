@@ -828,38 +828,49 @@ angular.module('surfCaptain').controller('ServerController', [
             }
         };
 
+        this.successCallback = function (response) {
+            $scope.finished = true;
+            $scope.servers = response.repository.presets;
+            self.setServerNames();
+            if (angular.isDefined($scope.nameSuggestions)) {
+                self.setTakenServerNamesAsUnavailableSuggestions();
+            }
+            if ($scope.servers.length === 0) {
+                $scope.messages = FlashMessageService.addFlashMessage(
+                    'No Servers yet!',
+                    'FYI: There are no servers for project <span class="uppercase">' + $scope.name  + '</span> yet. Why dont you create one, hmm?',
+                    SEVERITY.info,
+                    $scope.name + '-no-servers'
+                );
+            }
+        };
+
+        this.failureCallback = function (response) {
+            $scope.finished = true;
+            $scope.messages = FlashMessageService.addFlashMessage(
+                'Request failed!',
+                'The servers could not be received. Please try again later..',
+                SEVERITY.error,
+                'server-request-failed'
+            );
+        };
+
         /**
          * @return {void}
          */
-        $scope.getAllServers = function () {
+        $scope.getAllServers = function (cache) {
             $scope.newPreset.options.repositoryUrl = $scope.project.repositoryUrl;
-            ProjectRepository.getFullProjectByRepositoryUrl($scope.project.repositoryUrl).then(
-                function (response) {
-                    $scope.finished = true;
-                    $scope.servers = response.repository.presets;
-                    self.setServerNames();
-                    if (angular.isDefined($scope.nameSuggestions)) {
-                        self.setTakenServerNamesAsUnavailableSuggestions();
-                    }
-                    if ($scope.servers.length === 0) {
-                        $scope.messages = FlashMessageService.addFlashMessage(
-                            'No Servers yet!',
-                            'FYI: There are no servers for project <span class="uppercase">' + $scope.name  + '</span> yet. Why dont you create one, hmm?',
-                            SEVERITY.info,
-                            $scope.name + '-no-servers'
-                        );
-                    }
-                },
-                function (response) {
-                    $scope.finished = true;
-                    $scope.messages = FlashMessageService.addFlashMessage(
-                        'Request failed!',
-                        'The servers could not be received. Please try again later..',
-                        SEVERITY.error,
-                        'server-request-failed'
-                    );
-                }
-            );
+            if (cache === false) {
+                ProjectRepository.getFullProjectByRepositoryUrlFromServer($scope.project.repositoryUrl).then(
+                    self.successCallback,
+                    self.failureCallback
+                );
+            } else {
+                ProjectRepository.getFullProjectByRepositoryUrl($scope.project.repositoryUrl).then(
+                    self.successCallback,
+                    self.failureCallback
+                );
+            }
         };
 
         /**
@@ -899,7 +910,7 @@ angular.module('surfCaptain').controller('ServerController', [
                     $scope.newPreset = PresetService.getNewPreset($scope.settings);
                     $scope.newServerForm.$setPristine();
                     self.handleSettings();
-                    $scope.getAllServers();
+                    $scope.getAllServers(false);
                     $scope.messages = FlashMessageService.addFlashMessage(
                         'Server created!',
                         'The Server "' + server.nodes[0].name + '" was successfully created.',
@@ -1279,7 +1290,8 @@ angular.module('surfCaptain').directive('serverList', [
     'FlashMessageService',
     'SEVERITY',
     'SettingsRepository',
-    function (PresetRepository, ValidationService, FlashMessageService, SEVERITY, SettingsRepository) {
+    'ProjectRepository',
+    function (PresetRepository, ValidationService, FlashMessageService, SEVERITY, SettingsRepository, ProjectRepository) {
         var linker = function (scope, element, attrs) {
             scope.toggleSpinnerAndOverlay = function () {
                 scope.finished = !scope.finished;
@@ -1330,7 +1342,7 @@ angular.module('surfCaptain').directive('serverList', [
                 scope.toggleSpinnerAndOverlay();
                 PresetRepository.deleteServer(server).then(
                     function (response) {
-                        scope.$parent.getAllServers();
+                        scope.$parent.getAllServers(false);
                         scope.messages = FlashMessageService.addFlashMessage(
                             'Server deleted!',
                             'The Server "' + server.applications[0].nodes[0].name + '" was successfully removed.',
@@ -1360,6 +1372,9 @@ angular.module('surfCaptain').directive('serverList', [
                     function () {
                         server.changed = false;
                         scope.toggleSpinnerAndOverlay();
+                        if (angular.isDefined(scope.project)) {
+                            ProjectRepository.updateFullProjectInCache(scope.project.repositoryUrl);
+                        }
                         scope.messages = FlashMessageService.addFlashMessage(
                             'Update successful!',
                             'The Server "' + server.applications[0].nodes[0].name + '" was updated successfully.',
@@ -1437,7 +1452,8 @@ angular.module('surfCaptain').directive('serverList', [
                 servers: '=',
                 getAllServers: '&',
                 finished: '=',
-                messages: '='
+                messages: '=',
+                project: '='
             },
             link: linker
         };
@@ -2011,6 +2027,23 @@ angular.module('surfCaptain').factory('ProjectRepository', [ '$http', '$q', '$ca
         return deferred.promise;
     };
 
+    /**
+     * @param {string} repositoryUrl
+     * @returns {promise|Q.promise}
+     */
+    projectRepository.getFullProjectByRepositoryUrlFromServer = function (repositoryUrl) {
+        var deferred = $q.defer();
+        $http.get(url + '?repositoryUrl=' + repositoryUrl)
+            .success(
+                function (response) {
+                    repositoryCache.put(repositoryUrl, response);
+                    deferred.resolve(response);
+                }
+            )
+            .error(deferred.reject);
+        return deferred.promise;
+    };
+
     projectRepository.updateFullProjectInCache = function (repositoryUrl) {
         $http.get(url + '?repositoryUrl=' + repositoryUrl).success(
             function (response) {
@@ -2029,6 +2062,12 @@ angular.module('surfCaptain').factory('ProjectRepository', [ '$http', '$q', '$ca
         },
         getFullProjectByRepositoryUrl: function (repositoryUrl) {
             return projectRepository.getFullProjectByRepositoryUrl(repositoryUrl);
+        },
+        updateFullProjectInCache: function (repositoryUrl) {
+            projectRepository.updateFullProjectInCache(repositoryUrl);
+        },
+        getFullProjectByRepositoryUrlFromServer: function (repositoryUrl) {
+            return projectRepository.getFullProjectByRepositoryUrlFromServer(repositoryUrl);
         }
     };
 }]);
