@@ -36,7 +36,12 @@ describe('ProjectRepository', function () {
         expect(cacheFactory.get('projectsCache').info().size).toEqual(0);
     });
 
-    it('should have a method "getProjects"', function () {
+    it('should init an empty repositoryCache in angulars cacheFactory.', function () {
+        expect(cacheFactory.get('repositoryCache')).toBeDefined();
+        expect(cacheFactory.get('repositoryCache').info().size).toEqual(0);
+    });
+
+    it('should have a method "getProjects".', function () {
         expect(projectRepository.getProjects).toBeDefined();
     });
 
@@ -85,7 +90,7 @@ describe('ProjectRepository', function () {
 
     });
 
-    it('should have a method "getProjectByName"', function () {
+    it('should have a method "getProjectByName".', function () {
         expect(projectRepository.getProjectByName).toBeDefined();
     });
 
@@ -111,5 +116,54 @@ describe('ProjectRepository', function () {
             }
             expect(errorFunctionWrapper).toThrow();
         });
+    });
+
+    it('should have a method "getFullProjectByRepositoryUrl".', function () {
+        expect(projectRepository.getFullProjectByRepositoryUrl).toBeDefined();
+    });
+
+    describe('->getFullProjectByRepositoryUrl()', function () {
+
+        beforeEach(function () {
+            $http.when(
+                'GET',
+                url + '?repositoryUrl=repositoryUrl'
+            ).respond(true);
+        });
+
+        it('should return object from cache if it is there.', function () {
+            var expectation = {name: 'bar'},
+                result;
+            cacheFactory.get('repositoryCache').put('repositoryUrl', expectation);
+            $http.expectGET(url + '?repositoryUrl=repositoryUrl');
+            projectRepository.getFullProjectByRepositoryUrl('repositoryUrl').then(
+                function (response) {
+                    result = response;
+                }
+            );
+            $http.flush();
+            expect(result).toEqual(expectation);
+        });
+
+        it('should make a request if no entry is found in cache.', function () {
+            $http.expectGET(url + '?repositoryUrl=repositoryUrl');
+            projectRepository.getFullProjectByRepositoryUrl('repositoryUrl');
+            $http.flush();
+        });
+
+        it('should store response in repositoryCache if no entry is found in cache.', function () {
+            $http.expectGET(url + '?repositoryUrl=repositoryUrl');
+            projectRepository.getFullProjectByRepositoryUrl('repositoryUrl');
+            $http.flush();
+            expect(cacheFactory.get('repositoryCache').get('repositoryUrl')).toEqual(true);
+        });
+    });
+
+    it('should have a method "getFullProjectByRepositoryUrlFromServer".', function () {
+        expect(projectRepository.getFullProjectByRepositoryUrlFromServer).toBeDefined();
+    });
+
+    it('should have a method "updateFullProjectInCache".', function () {
+        expect(projectRepository.updateFullProjectInCache).toBeDefined();
     });
 });

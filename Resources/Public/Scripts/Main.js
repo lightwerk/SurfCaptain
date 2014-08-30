@@ -2044,6 +2044,11 @@ angular.module('surfCaptain').factory('ProjectRepository', [ '$http', '$q', '$ca
         return deferred.promise;
     };
 
+    /**
+     *
+     * @param {string} repositoryUrl
+     * @return {void}
+     */
     projectRepository.updateFullProjectInCache = function (repositoryUrl) {
         $http.get(url + '?repositoryUrl=' + repositoryUrl).success(
             function (response) {
