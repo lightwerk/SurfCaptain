@@ -90,8 +90,8 @@ angular.module('surfCaptain').directive('serverList', [
                     function () {
                         server.changed = false;
                         scope.toggleSpinnerAndOverlay();
-                        if (angular.isDefined(scope.project)) {
-                            ProjectRepository.updateFullProjectInCache(scope.project.repositoryUrl);
+                        if (angular.isDefined(scope.$parent.project)) {
+                            ProjectRepository.updateFullProjectInCache(scope.$parent.project.repositoryUrl);
                         }
                         scope.messages = FlashMessageService.addFlashMessage(
                             'Update successful!',
