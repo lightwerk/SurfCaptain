@@ -85,7 +85,11 @@ angular.module('surfCaptain').controller('DeployController', [
                         $location.path('deployments/' + response.deployment.__identity);
                     },
                     function (response) {
-
+                        $scope.messages = FlashMessageService.addFlashMessage(
+                            'Error!',
+                            'Deployment configuration could not be submitted successfully. Try again later.',
+                            SEVERITY.error
+                        );
                     }
                 );
             }

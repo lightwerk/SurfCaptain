@@ -284,7 +284,11 @@ angular.module('surfCaptain').controller('DeployController', [
                         $location.path('deployments/' + response.deployment.__identity);
                     },
                     function (response) {
-
+                        $scope.messages = FlashMessageService.addFlashMessage(
+                            'Error!',
+                            'Deployment configuration could not be submitted successfully. Try again later.',
+                            SEVERITY.error
+                        );
                     }
                 );
             }
@@ -965,7 +969,9 @@ angular.module('surfCaptain').controller('SingleDeploymentController', [
     '$cacheFactory',
     '$location',
     '$anchorScroll',
-    function ($scope, DeploymentRepository, $routeParams, $cacheFactory, $location, $anchorScroll) {
+    'FlashMessageService',
+    'SEVERITY',
+    function ($scope, DeploymentRepository, $routeParams, $cacheFactory, $location, $anchorScroll, FlashMessageService, SEVERITY) {
 
         var self = this;
 
@@ -1039,6 +1045,27 @@ angular.module('surfCaptain').controller('SingleDeploymentController', [
             DeploymentRepository.cancelDeployment($routeParams.deploymentId).then(
                 function () {
                     self.getDeployment();
+                }
+            );
+        };
+
+        $scope.deployConfigurationAgain = function () {
+            DeploymentRepository.addDeployment($scope.deployment.configuration).then(
+                function (response) {
+                    $scope.messages = FlashMessageService.addFlashMessage(
+                        'OK!',
+                        $scope.deployment.referenceName + ' will be shortly deployed onto '
+                            + $scope.deployment.configuration.applications[0].nodes[0].name + '! You can cancel the deployment while it is still waiting.',
+                        SEVERITY.ok
+                    );
+                    $location.path('deployments/' + response.deployment.__identity);
+                },
+                function () {
+                    $scope.messages = FlashMessageService.addFlashMessage(
+                        'Error!',
+                        'Deployment configuration could not be submitted successfully. Try again later.',
+                        SEVERITY.error
+                    );
                 }
             );
         };
