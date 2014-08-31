@@ -1,3 +1,10 @@
+<flash-messages messages="messages"></flash-messages>
+
+<overlay finished="finished"></overlay>
+<div data-ng-if="!finished" class="spinner">
+	<spinner></spinner>
+</div>
+
 <surfcaptain-header icon="refresh"></surfcaptain-header>
 
 <surfcaptain-menu></surfcaptain-menu>
@@ -6,6 +13,93 @@
 	<div class="row">
 		<div class="col-xs-12 text-center">
 			<h2>Synchronize shared folders and database</h2>
+		</div>
+	</div>
+
+	<div class="row configure-deployment-row">
+		<div class="col-xs-12">
+			<!-- ################
+				#### STEP 1 #####
+				################# -->
+			<div class="col-md-2 col-xs-12 text-center">
+				<h2>Step 1</h2>
+			</div>
+			<div class="col-md-9 col-xs-12">
+				<h3>Choose a Source</h3>
+
+				<div data-ng-repeat="server in servers" class="deployment-server-container">
+					<div
+							class="deployment-server"
+							data-ng-class="[sourceDisplay(server), getRootContext(server.applications.0.options.context)]"
+							data-ng-click="setCurrentSource(server)"
+							>
+						<div class="title">
+							<i class="fa fa-hdd-o"></i>{{server.applications.0.nodes.0.name}}
+						</div>
+						<div class="context-container">
+							<span class="context">({{server.applications.0.options.context}})</span>
+						</div>
+					</div>
+				</div>
+				<div
+						data-ng-if="finished && servers.length === 0">
+					<p><i>There are no project servers configured yet. You can add servers
+						<a data-ng-href="#/project/{{project.identifier}}/server">here</a>. Anyway you can deploy onto
+						a global server.</i></p>
+				</div>
+
+			</div>
+		</div>
+	</div>
+
+	<div class="row configure-deployment-row" data-ng-show="currentSource.applications">
+		<div class="col-md-2 col-xs-12 text-center">
+			<h2>Step 2</h2>
+		</div>
+		<div class="col-md-9 col-xs-12">
+			<h3>Choose a target</h3>
+
+			<div data-ng-repeat="globalServer in globalServers" class="deployment-server-container">
+				<div
+						class="deployment-server"
+						data-ng-class="[getRootContext(globalServer.applications.0.options.context), targetDisplay(globalServer)]"
+						data-ng-click="setCurrentTarget(globalServer)"
+						>
+					<div class="title">
+						<i class="fa fa-hdd-o"></i>{{globalServer.applications.0.nodes.0.name}}
+					</div>
+					<div class="context-container">
+						<span class="context">({{globalServer.applications.0.options.context}})</span>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="row submit-deployment configure-deployment-row" data-ng-if="currentTarget.applications">
+		<div class="col-xs-12 text-center">
+			<button class="btn btn-lg btn-warning" data-ng-disabled="error"  modal="confirm-shared">Sync!</button>
+		</div>
+	</div>
+
+</div>
+
+<div class="modal fade confirm-shared">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span
+						class="sr-only">Close</span></button>
+				<h4 class="modal-title">{{currentSource.applications.0.nodes.0.name}} Sync</h4>
+				You are going to sync shared folders and database from {{currentSource.applications.0.nodes.0.name}}
+				onto {{currentTarget.applications.0.nodes.0.name}}.
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-success" data-ng-click="sync(currentSource, currentTarget)"
+						data-dismiss="modal">Continue
+				</button>
+				<button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+			</div>
 		</div>
 	</div>
 </div>

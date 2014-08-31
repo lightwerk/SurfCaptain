@@ -37,7 +37,7 @@
 							<div data-ng-repeat="server in servers" class="deployment-server-container">
 								<div
 									class="deployment-server"
-									data-ng-class="{false:'disabled'}[presetDisplay(server)]; getRootContext(server.applications.0.options.context)"
+									data-ng-class="[presetDisplay(server), getRootContext(server.applications.0.options.context)]"
 									data-ng-click="setCurrentPreset(server)"
 								>
 									<div class="title">
@@ -60,8 +60,8 @@
 						<div class="tab-pane" id="global">
 							<div class="deployment-server-container" data-ng-repeat="server in globalServers">
 								<div
-									class="deployment-server {{server.applications.0.options.context}}"
-									data-ng-class="{false:'disabled'}[presetDisplay(server)]"
+									class="deployment-server"
+									data-ng-class="[presetDisplay(server), getRootContext(server.applications.0.options.context)]"
 									data-ng-click="setCurrentPreset(server)"
 								>
 									<div class="title">

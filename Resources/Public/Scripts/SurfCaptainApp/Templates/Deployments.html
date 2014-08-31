@@ -15,18 +15,22 @@
 			<table class="table table-striped">
 				<thead>
 					<tr>
+						<th>Type</th>
 						<th>Date</th>
+						<th>Source</th>
 						<th>Target</th>
-						<th>Reference Name</th>
 						<th>Project</th>
 						<th>Status</th>
 					</tr>
 				</thead>
 				<tbody>
 					<tr data-ng-repeat="deployment in deployments">
+						<td>
+							{{deployment.type | DeploymentTypeFilter }}
+						</td>
 						<td><a data-ng-href="#/deployments/{{deployment.__identity}}">{{deployment.date | date:'medium'}}</a></td>
+						<td>{{deployment.referenceName}}{{deployment.options.sourceNode.name}}</td>
 						<td>{{deployment.options.name}}</td>
-						<td>{{deployment.referenceName}}</td>
 						<td><a data-ng-href="#/project/{{deployment.repositoryIdentifier}}">{{deployment.repositoryIdentifier | uppercase}}</a></td>
 						<td><span class="label {{deployment.status}}">{{deployment.status}}</span></td>
 					</tr>
