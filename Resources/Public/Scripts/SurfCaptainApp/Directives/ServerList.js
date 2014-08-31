@@ -8,7 +8,8 @@ angular.module('surfCaptain').directive('serverList', [
     'FlashMessageService',
     'SEVERITY',
     'SettingsRepository',
-    function (PresetRepository, ValidationService, FlashMessageService, SEVERITY, SettingsRepository) {
+    'ProjectRepository',
+    function (PresetRepository, ValidationService, FlashMessageService, SEVERITY, SettingsRepository, ProjectRepository) {
         var linker = function (scope, element, attrs) {
             scope.toggleSpinnerAndOverlay = function () {
                 scope.finished = !scope.finished;
@@ -59,7 +60,7 @@ angular.module('surfCaptain').directive('serverList', [
                 scope.toggleSpinnerAndOverlay();
                 PresetRepository.deleteServer(server).then(
                     function (response) {
-                        scope.$parent.getAllServers();
+                        scope.$parent.getAllServers(false);
                         scope.messages = FlashMessageService.addFlashMessage(
                             'Server deleted!',
                             'The Server "' + server.applications[0].nodes[0].name + '" was successfully removed.',
@@ -89,6 +90,9 @@ angular.module('surfCaptain').directive('serverList', [
                     function () {
                         server.changed = false;
                         scope.toggleSpinnerAndOverlay();
+                        if (angular.isDefined(scope.$parent.project)) {
+                            ProjectRepository.updateFullProjectInCache(scope.$parent.project.repositoryUrl);
+                        }
                         scope.messages = FlashMessageService.addFlashMessage(
                             'Update successful!',
                             'The Server "' + server.applications[0].nodes[0].name + '" was updated successfully.',
@@ -166,7 +170,8 @@ angular.module('surfCaptain').directive('serverList', [
                 servers: '=',
                 getAllServers: '&',
                 finished: '=',
-                messages: '='
+                messages: '=',
+                project: '='
             },
             link: linker
         };

@@ -306,9 +306,9 @@ describe('ServerController', function () {
         });
 
         describe('->getAllServers()', function () {
-            beforeEach(inject(function ($controller, $rootScope, _PresetRepository_,_FlashMessageService_, $q, _$httpBackend_) {
+            beforeEach(inject(function ($controller, $rootScope, _ProjectRepository_,_FlashMessageService_, $q, _$httpBackend_) {
                 scope = $rootScope.$new();
-                PresetRepository = _PresetRepository_;
+                ProjectRepository = _ProjectRepository_;
                 FlashMessageService = _FlashMessageService_;
                 q = $q;
                 $http = _$httpBackend_;
@@ -316,7 +316,7 @@ describe('ServerController', function () {
 
                 ctrl = $controller('ServerController', {
                     $scope: scope,
-                    PresetRepository: PresetRepository,
+                    ProjectRepository: ProjectRepository,
                     FlashMessageService: FlashMessageService
                 });
 
@@ -330,7 +330,7 @@ describe('ServerController', function () {
 
                 scope.nameSuggestions = nameSuggestions;
 
-                spyOn(PresetRepository, 'getServers').andCallFake(function () {
+                spyOn(ProjectRepository, 'getFullProjectByRepositoryUrl').andCallFake(function () {
                     if (success) {
                         return $q.when({repository: {
                             presets: ['a', 'b']
@@ -353,7 +353,7 @@ describe('ServerController', function () {
 
             it('should call PresetRepository.getServers().', function () {
                 scope.getAllServers();
-                expect(PresetRepository.getServers).toHaveBeenCalled();
+                expect(ProjectRepository.getFullProjectByRepositoryUrl).toHaveBeenCalled();
             });
 
             describe('on success', function () {

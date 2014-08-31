@@ -85,7 +85,11 @@ angular.module('surfCaptain').controller('DeployController', [
                         $location.path('deployments/' + response.deployment.__identity);
                     },
                     function (response) {
-
+                        $scope.messages = FlashMessageService.addFlashMessage(
+                            'Error!',
+                            'Deployment configuration could not be submitted successfully. Try again later.',
+                            SEVERITY.error
+                        );
                     }
                 );
             }
@@ -197,7 +201,8 @@ angular.module('surfCaptain').controller('DeployController', [
                         $scope.messages = FlashMessageService.addFlashMessage(
                             'No Servers yet!',
                             'FYI: There are no servers for project <span class="uppercase">' + $scope.name  + '</span> yet. Why dont you create one, hmm?',
-                            SEVERITY.info
+                            SEVERITY.info,
+                            $scope.name + '-no-servers'
                         );
                     }
                 },

@@ -14,6 +14,7 @@
 			<h3><a data-ng-href="#/project/{{deployment.repositoryIdentifier}}" >{{deployment.repositoryIdentifier}}</a> - {{deployment.referenceName}} onto {{deployment.configuration.applications.0.nodes.0.name}}</h3>
 			<br />
 			<button data-ng-if="deployment.status === 'waiting'" class="btn btn-danger" data-ng-click="cancelDeployment()">Cancel</button>
+			<button data-ng-if="deployment.status === 'failed'" class="btn btn-danger" data-ng-click="deployConfigurationAgain()">Deploy again</button>
 			<br /><br /><br />
 			<dl class="dl-horizontal">
 				<dt>Project</dt>

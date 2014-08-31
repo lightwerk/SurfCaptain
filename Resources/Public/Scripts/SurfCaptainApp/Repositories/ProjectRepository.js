@@ -6,10 +6,10 @@
 
 angular.module('surfCaptain').factory('ProjectRepository', [ '$http', '$q', '$cacheFactory', function ($http, $q, $cacheFactory) {
     var projectRepository = {},
-        url = '/api/repository';
-
-    $cacheFactory('projectCache');
-    $cacheFactory('projectsCache');
+        url = '/api/repository',
+        projectCache = $cacheFactory('projectCache'),
+        projectsCache = $cacheFactory('projectsCache'),
+        repositoryCache = $cacheFactory('repositoryCache');
 
     function ProjectRepositoryException(message) {
         this.name = 'ProjectRepositoryException';
@@ -26,8 +26,7 @@ angular.module('surfCaptain').factory('ProjectRepository', [ '$http', '$q', '$ca
      * @returns {void}
      */
     projectRepository.populateSingleProjectCache = function (projects) {
-        var projectCache = $cacheFactory.get('projectCache'),
-            length = angular.isDefined(projects) ? projects.length : 0,
+        var length = angular.isDefined(projects) ? projects.length : 0,
             i = 0;
         if (length) {
             for (i; i < length; i++) {
@@ -44,8 +43,7 @@ angular.module('surfCaptain').factory('ProjectRepository', [ '$http', '$q', '$ca
      * @returns {Q.promise|promise} – promise object
      */
     projectRepository.getProjects = function () {
-        var deferred = $q.defer(),
-            projectsCache = $cacheFactory.get('projectsCache');
+        var deferred = $q.defer();
         if (angular.isDefined(projectsCache.get('allProjects'))) {
             deferred.resolve(projectsCache.get('allProjects'));
             return deferred.promise;
@@ -72,7 +70,6 @@ angular.module('surfCaptain').factory('ProjectRepository', [ '$http', '$q', '$ca
      * @throws {ProjectRepositoryException}
      */
     projectRepository.getProjectByName = function (name, projects) {
-        var projectCache = $cacheFactory.get('projectCache');
         if (angular.isUndefined(projectCache.get(name))) {
             projectRepository.populateSingleProjectCache(projects);
         }
@@ -83,10 +80,56 @@ angular.module('surfCaptain').factory('ProjectRepository', [ '$http', '$q', '$ca
         return projectCache.get(name);
     };
 
+    /**
+     * @param {string} repositoryUrl
+     * @returns {promise|Q.promise}
+     */
     projectRepository.getFullProjectByRepositoryUrl = function (repositoryUrl) {
         var deferred = $q.defer();
-        $http.get(url + '?repositoryUrl=' + repositoryUrl).success(deferred.resolve).error(deferred.reject);
+        if (angular.isDefined(repositoryCache.get(repositoryUrl))) {
+            deferred.resolve(repositoryCache.get(repositoryUrl));
+            projectRepository.updateFullProjectInCache(repositoryUrl);
+        } else {
+            $http.get(url + '?repositoryUrl=' + repositoryUrl)
+                .success(
+                    function (response) {
+                        repositoryCache.put(repositoryUrl, response);
+                        deferred.resolve(response);
+                    }
+                )
+                .error(deferred.reject);
+        }
         return deferred.promise;
+    };
+
+    /**
+     * @param {string} repositoryUrl
+     * @returns {promise|Q.promise}
+     */
+    projectRepository.getFullProjectByRepositoryUrlFromServer = function (repositoryUrl) {
+        var deferred = $q.defer();
+        $http.get(url + '?repositoryUrl=' + repositoryUrl)
+            .success(
+                function (response) {
+                    repositoryCache.put(repositoryUrl, response);
+                    deferred.resolve(response);
+                }
+            )
+            .error(deferred.reject);
+        return deferred.promise;
+    };
+
+    /**
+     *
+     * @param {string} repositoryUrl
+     * @return {void}
+     */
+    projectRepository.updateFullProjectInCache = function (repositoryUrl) {
+        $http.get(url + '?repositoryUrl=' + repositoryUrl).success(
+            function (response) {
+                repositoryCache.put(repositoryUrl, response);
+            }
+        );
     };
 
     // Public API
@@ -99,6 +142,12 @@ angular.module('surfCaptain').factory('ProjectRepository', [ '$http', '$q', '$ca
         },
         getFullProjectByRepositoryUrl: function (repositoryUrl) {
             return projectRepository.getFullProjectByRepositoryUrl(repositoryUrl);
+        },
+        updateFullProjectInCache: function (repositoryUrl) {
+            projectRepository.updateFullProjectInCache(repositoryUrl);
+        },
+        getFullProjectByRepositoryUrlFromServer: function (repositoryUrl) {
+            return projectRepository.getFullProjectByRepositoryUrlFromServer(repositoryUrl);
         }
     };
 }]);

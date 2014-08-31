@@ -66,18 +66,6 @@ angular.module('surfCaptain').factory('PresetRepository', ['$http', '$q', functi
     /**
      * Gets all servers from the collection
      *
-     * @param {string} repositoryUrl
-     * @returns {Q.promise|promise} – promise object
-     */
-    presetRepository.getServers = function (repositoryUrl) {
-        var deferred = $q.defer();
-        $http.get('/api/repository?repositoryUrl=' + repositoryUrl).success(deferred.resolve).error(deferred.reject);
-        return deferred.promise;
-    };
-
-    /**
-     * Gets all servers from the collection
-     *
      * @returns {Q.promise|promise} – promise object
      */
     presetRepository.getGlobalServers = function () {
@@ -149,9 +137,6 @@ angular.module('surfCaptain').factory('PresetRepository', ['$http', '$q', functi
 
     // Public API
     return {
-        getServers: function (repositoryUrl) {
-            return presetRepository.getServers(repositoryUrl);
-        },
         getGlobalServers: function () {
             return presetRepository.getGlobalServers();
         },
