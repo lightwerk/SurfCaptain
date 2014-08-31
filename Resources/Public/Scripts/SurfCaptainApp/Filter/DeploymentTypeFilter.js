@@ -8,8 +8,8 @@ angular.module('surfCaptain').filter('DeploymentTypeFilter', function () {
         case 'TYPO3\CMS\Deploy':
         case 'TYPO3\\CMS\\Deploy':
             return 'Deployment';
-        case 'TYPO3\CMS\Sync':
-        case 'TYPO3\\CMS\\Sync':
+        case 'TYPO3\CMS\Shared':
+        case 'TYPO3\\CMS\\Shared':
             return 'Sync';
         default:
             return input;

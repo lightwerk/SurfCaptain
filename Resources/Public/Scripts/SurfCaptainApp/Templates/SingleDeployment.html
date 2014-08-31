@@ -5,13 +5,13 @@
 	<spinner></spinner>
 </div>
 
-<surfcaptain-header icon="road"></surfcaptain-header>
+<surfcaptain-header icon="eye"></surfcaptain-header>
 
 <div class="container single-deployment-view dark inner-container">
 	<div class="row">
 		<div class="col-xs-12 col-md-8 col-md-offset-2 text-center">
-			<h1>Deployment Details</h1>
-			<h3><a data-ng-href="#/project/{{deployment.repositoryIdentifier}}" >{{deployment.repositoryIdentifier}}</a> - {{deployment.referenceName}} onto {{deployment.configuration.applications.0.nodes.0.name}}</h3>
+			<h1>{{deployment.type | DeploymentTypeFilter}} Details</h1>
+			<h3><a data-ng-href="#/project/{{deployment.repositoryIdentifier}}" >{{deployment.repositoryIdentifier}}</a> - {{deployment.referenceName}}{{deployment.options.sourceNode.name}} onto {{deployment.configuration.applications.0.nodes.0.name}}</h3>
 			<br />
 			<button data-ng-if="deployment.status === 'waiting'" class="btn btn-danger" data-ng-click="cancelDeployment()">Cancel</button>
 			<button data-ng-if="deployment.status === 'failed'" class="btn btn-danger" data-ng-click="deployConfigurationAgain()">Deploy again</button>
@@ -23,12 +23,14 @@
 				<dd>{{deployment.date|date:'medium'}}</dd>
 				<dt>Target</dt>
 				<dd>{{deployment.options.name}}</dd>
+				<dt data-ng-if="deployment.options.sourceNode">Source</dt>
+				<dd data-ng-if="deployment.options.sourceNode">{{deployment.options.sourceNode.name}}</dd>
 				<dt>Status</dt>
 				<dd><span class="label {{deployment.status}}">{{deployment.status}}</span></dd>
 				<dt>Repository URL</dt>
 				<dd>{{deployment.repositoryUrl}}</dd>
-				<dt>Reference name</dt>
-				<dd>{{deployment.referenceName}}</dd>
+				<dt data-ng-if="deployment.referenceName">Reference name</dt>
+				<dd data-ng-if="deployment.referenceName">{{deployment.referenceName}}</dd>
 				<dt>Client IP</dt>
 				<dd>{{deployment.clientIp}}</dd>
 				<dt>Configuration</dt>

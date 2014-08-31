@@ -54,7 +54,6 @@ angular.module('surfCaptain').controller('DeployController', [
         };
 
         /**
-         *
          * @param {object} preset
          * @return {void}
          */
@@ -82,6 +81,7 @@ angular.module('surfCaptain').controller('DeployController', [
                                 + $scope.currentPreset.applications[0].nodes[0].name + '! You can cancel the deployment while it is still waiting.',
                             SEVERITY.ok
                         );
+                        ProjectRepository.updateFullProjectInCache($scope.project.repositoryUrl);
                         $location.path('deployments/' + response.deployment.__identity);
                     },
                     function (response) {
@@ -135,15 +135,22 @@ angular.module('surfCaptain').controller('DeployController', [
 
         /**
          * @param {object} preset
-         * @returns {boolean}
+         * @returns {string}
          */
         $scope.presetDisplay = function (preset) {
             if (angular.isUndefined($scope.currentPreset.applications)) {
-                return true;
+                return '';
             }
-            return $scope.currentPreset === preset;
+            if ($scope.currentPreset === preset) {
+                return '';
+            }
+            return 'disabled';
         };
 
+        /**
+         * @param {string} group
+         * @return void
+         */
         $scope.unsetLoadingKeyForGroup = function (group) {
             var key;
             for (key in $scope.deployableCommits) {
