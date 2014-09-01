@@ -60,6 +60,8 @@
 				<td>{{logentry.number}}</td>
 			</tr>
 		</table>
-		<span id="bottom"></span>
+		<span id="bottom">
+			<span class="label {{deployment.status}}" data-ng-if="deployment.logs.length">{{deployment.status}}</span>
+		</span>
 	</div>
 </div>
