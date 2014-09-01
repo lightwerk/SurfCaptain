@@ -2,7 +2,7 @@
     "name": "lightwerk/surfcaptain",
     "type": "typo3-flow-package",
     "description": "SurfCaptain is a web front-end for TYPO3 Surf.",
-    "license": "GPL-3.0+",
+    "license": ["GPL-3.0+"],
     "homepage": "https://bitbucket.org/lightwerk/surfcaptain",
     "keywords": [
         "TYPO3 Surf",
