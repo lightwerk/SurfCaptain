@@ -1043,6 +1043,9 @@ angular.module('surfCaptain').controller('SingleDeploymentController', [
             if (angular.isUndefined($scope.deployment)) {
                 return;
             }
+            if ($scope.logLength === 0) {
+                $location.hash('bottom');
+            }
             if ($scope.deployment.logs.length > $scope.logLength) {
                 $anchorScroll();
                 $scope.logLength = $scope.deployment.logs.length;
@@ -1053,7 +1056,6 @@ angular.module('surfCaptain').controller('SingleDeploymentController', [
          * @return {void}
          */
         this.init = function () {
-            $location.hash('bottom');
             this.getDeployment();
         };
 
