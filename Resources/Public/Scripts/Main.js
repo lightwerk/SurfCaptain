@@ -629,7 +629,7 @@ angular.module('surfCaptain').controller('ProjectController', [
         $scope.tags = [];
 
         /**
-         *  @param {string} context
+         * @param {string} context
          * @returns {string}
          */
         $scope.getRootContext = function (context) {
@@ -650,24 +650,23 @@ angular.module('surfCaptain').controller('ProjectController', [
                 return;
             }
 
-            ProjectRepository.getFullProjectByRepositoryUrl(project.repositoryUrl).then(
-                function (response) {
-                    $scope.finished = true;
-                    $scope.deployments = response.repository.deployments;
-                    $scope.presets = response.repository.presets;
-                    $scope.tags = response.repository.tags;
-                },
-                function () {
-                    $scope.finished = true;
-                }
-            );
-
             SettingsRepository.getSettings().then(
                 function (response) {
                     $scope.contexts = [];
                     if (angular.isDefined(response.contexts)) {
                         $scope.contexts = response.contexts.split(',');
                     }
+                    ProjectRepository.getFullProjectByRepositoryUrl(project.repositoryUrl).then(
+                        function (response) {
+                            $scope.finished = true;
+                            $scope.deployments = response.repository.deployments;
+                            $scope.presets = response.repository.presets;
+                            $scope.tags = response.repository.tags;
+                        },
+                        function () {
+                            $scope.finished = true;
+                        }
+                    );
                 }
             );
         });
@@ -989,7 +988,8 @@ angular.module('surfCaptain').controller('SingleDeploymentController', [
     '$anchorScroll',
     'FlashMessageService',
     'SEVERITY',
-    function ($scope, DeploymentRepository, $routeParams, $cacheFactory, $location, $anchorScroll, FlashMessageService, SEVERITY) {
+    'ProjectRepository',
+    function ($scope, DeploymentRepository, $routeParams, $cacheFactory, $location, $anchorScroll, FlashMessageService, SEVERITY, ProjectRepository) {
 
         var self = this;
 
@@ -1008,6 +1008,7 @@ angular.module('surfCaptain').controller('SingleDeploymentController', [
                     $cacheFactory('deploymentCache');
                 }
                 $cacheFactory.get('deploymentCache').put($scope.deployment.__identity, $scope.deployment);
+                ProjectRepository.updateFullProjectInCache($scope.deployment.repositoryUrl);
                 return;
             case 'waiting':
             case 'running':

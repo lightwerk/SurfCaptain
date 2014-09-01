@@ -11,7 +11,8 @@ angular.module('surfCaptain').controller('SingleDeploymentController', [
     '$anchorScroll',
     'FlashMessageService',
     'SEVERITY',
-    function ($scope, DeploymentRepository, $routeParams, $cacheFactory, $location, $anchorScroll, FlashMessageService, SEVERITY) {
+    'ProjectRepository',
+    function ($scope, DeploymentRepository, $routeParams, $cacheFactory, $location, $anchorScroll, FlashMessageService, SEVERITY, ProjectRepository) {
 
         var self = this;
 
@@ -30,6 +31,7 @@ angular.module('surfCaptain').controller('SingleDeploymentController', [
                     $cacheFactory('deploymentCache');
                 }
                 $cacheFactory.get('deploymentCache').put($scope.deployment.__identity, $scope.deployment);
+                ProjectRepository.updateFullProjectInCache($scope.deployment.repositoryUrl);
                 return;
             case 'waiting':
             case 'running':
