@@ -1241,6 +1241,7 @@ angular.module('surfCaptain').controller('SyncController', [
         $scope.sync = function (source, target) {
             target.applications[0].type = CONFIG.applicationTypes.syncTYPO3;
             target.applications[0].options.sourceNode = source.applications[0].nodes[0];
+            target.applications[0].options.sourceNode.deploymentPath = source.applications[0].options.deploymentPath;
             target.applications[0].options.repositoryUrl = $scope.project.repositoryUrl;
             DeploymentRepository.addDeployment(target).then(
                 function (response) {
