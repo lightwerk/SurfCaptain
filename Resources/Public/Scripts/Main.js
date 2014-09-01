@@ -946,10 +946,10 @@ angular.module('surfCaptain').controller('ServerController', [
             if (angular.isUndefined($scope.project)) {
                 throw new ServerControllerException('No project given.');
             }
-            if (angular.isUndefined($scope.project.name)) {
-                throw new ServerControllerException('Project got no name.');
+            if (angular.isUndefined($scope.project.identifier)) {
+                throw new ServerControllerException('Project got no identifier.');
             }
-            return $scope.project.name + '-' + suffix;
+            return $scope.project.identifier + '-' + suffix;
         };
 
         /**
@@ -2155,7 +2155,7 @@ angular.module('surfCaptain').factory('ProjectRepository', [ '$http', '$q', '$ca
         if (length) {
             for (i; i < length; i++) {
                 projectCache.put(
-                    projects[i].name,
+                    projects[i].identifier,
                     projects[i]
                 );
             }

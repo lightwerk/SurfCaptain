@@ -228,10 +228,10 @@ angular.module('surfCaptain').controller('ServerController', [
             if (angular.isUndefined($scope.project)) {
                 throw new ServerControllerException('No project given.');
             }
-            if (angular.isUndefined($scope.project.name)) {
-                throw new ServerControllerException('Project got no name.');
+            if (angular.isUndefined($scope.project.identifier)) {
+                throw new ServerControllerException('Project got no identifier.');
             }
-            return $scope.project.name + '-' + suffix;
+            return $scope.project.identifier + '-' + suffix;
         };
 
         /**

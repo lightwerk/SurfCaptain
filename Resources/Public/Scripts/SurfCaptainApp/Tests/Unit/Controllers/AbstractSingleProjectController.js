@@ -15,7 +15,7 @@ describe('AbstractSingleProjectController', function () {
         };
         projectRepository = ProjectRepository;
         projects = [{
-            "name": "foo",
+            "identifier": "foo",
             "ssh_url_to_repo": "git@git.example.com:project/foo.git",
             "id": 1
         }];

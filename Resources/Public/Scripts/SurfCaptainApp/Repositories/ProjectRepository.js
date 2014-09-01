@@ -31,7 +31,7 @@ angular.module('surfCaptain').factory('ProjectRepository', [ '$http', '$q', '$ca
         if (length) {
             for (i; i < length; i++) {
                 projectCache.put(
-                    projects[i].name,
+                    projects[i].identifier,
                     projects[i]
                 );
             }
