@@ -51,7 +51,7 @@ abstract class AbstractRestController extends RestController {
 	 * @return void
 	 */
 	protected function initializeController(\TYPO3\Flow\Mvc\RequestInterface $request, \TYPO3\Flow\Mvc\ResponseInterface $response) {
-		parent::initializeController($request, $response);
+		$this->parentInitializeController($request, $response);
 		// override request.format with NegotiatedMediaType aka HTTP-Request
 		// Content-Type and set Content-Type to response
 		$this->mediaType = $this->request->getHttpRequest()->getNegotiatedMediaType($this->supportedMediaTypes);
@@ -59,10 +59,20 @@ abstract class AbstractRestController extends RestController {
 			$this->throwStatus(406);
 		} else {
 			// convert negotiatedMediaType to Flow format
-			$request->setFormat(preg_replace('/.*\/(.*)/', '$1', $this->mediaType));
+			$this->request->setFormat(preg_replace('/.*\/(.*)/', '$1', $this->mediaType));
 			// sets the Content-Type to the response
-			$this->response->setHeader('Content-Type', $this->mediaType, TRUE);
+			$this->response->setHeader('Content-Type', $this->mediaType . '; charset=UTF-8', TRUE);
 		}
+	}
+
+	/**
+	 * @param \TYPO3\Flow\Mvc\RequestInterface $request
+	 * @param \TYPO3\Flow\Mvc\ResponseInterface $response
+	 * @throws \TYPO3\Flow\Mvc\Exception\UnsupportedRequestTypeException
+	 * @return void
+	 */
+	protected function parentInitializeController(\TYPO3\Flow\Mvc\RequestInterface $request, \TYPO3\Flow\Mvc\ResponseInterface $response) {
+		parent::initializeController($request, $response);
 	}
 
 	/**
