@@ -8,10 +8,10 @@ describe('ProjectRepository', function () {
         response = {
             repositories: [
                 {
-                    name: 'bar'
+                    identifier: 'bar'
                 },
                 {
-                    name: 'foo'
+                    identifier: 'foo'
                 }
             ]
         };

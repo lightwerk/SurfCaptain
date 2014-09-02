@@ -607,7 +607,7 @@ describe('ServerController', function () {
 
             it('should prepend the current $scope.projectName with a passed suffix', function () {
                 scope.project = {
-                    name: 'foo'
+                    identifier: 'foo'
                 };
                 expect(scope.generateServerName('bar')).toEqual('foo-bar');
             });

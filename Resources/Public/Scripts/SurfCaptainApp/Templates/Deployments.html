@@ -16,11 +16,12 @@
 				<thead>
 					<tr>
 						<th>Type</th>
+						<th>Project</th>
+						<th>Status</th>
 						<th>Date</th>
 						<th>Source</th>
 						<th>Target</th>
-						<th>Project</th>
-						<th>Status</th>
+						<th>Action</th>
 					</tr>
 				</thead>
 				<tbody>
@@ -28,11 +29,12 @@
 						<td>
 							{{deployment.type | DeploymentTypeFilter }}
 						</td>
-						<td><a data-ng-href="#/deployments/{{deployment.__identity}}">{{deployment.date | date:'medium'}}</a></td>
-						<td>{{deployment.referenceName}}{{deployment.options.sourceNode.name}}</td>
-						<td>{{deployment.options.name}}</td>
 						<td><a data-ng-href="#/project/{{deployment.repositoryIdentifier}}">{{deployment.repositoryIdentifier | uppercase}}</a></td>
 						<td><span class="label {{deployment.status}}">{{deployment.status}}</span></td>
+						<td>{{deployment.date | date:'MMM d, y HH:mm:ss'}}</td>
+						<td>{{deployment.referenceName}}{{deployment.options.sourceNode.name}}</td>
+						<td>{{deployment.options.name}}</td>
+						<td><a data-ng-href="#/deployments/{{deployment.__identity}}" class="btn-xs btn-primary btn">Details</a></td>
 					</tr>
 				</tbody>
 			</table>

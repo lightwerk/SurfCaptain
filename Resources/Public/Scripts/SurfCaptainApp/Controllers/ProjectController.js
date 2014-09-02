@@ -21,7 +21,7 @@ angular.module('surfCaptain').controller('ProjectController', [
         $scope.tags = [];
 
         /**
-         *  @param {string} context
+         * @param {string} context
          * @returns {string}
          */
         $scope.getRootContext = function (context) {
@@ -42,24 +42,23 @@ angular.module('surfCaptain').controller('ProjectController', [
                 return;
             }
 
-            ProjectRepository.getFullProjectByRepositoryUrl(project.repositoryUrl).then(
-                function (response) {
-                    $scope.finished = true;
-                    $scope.deployments = response.repository.deployments;
-                    $scope.presets = response.repository.presets;
-                    $scope.tags = response.repository.tags;
-                },
-                function () {
-                    $scope.finished = true;
-                }
-            );
-
             SettingsRepository.getSettings().then(
                 function (response) {
                     $scope.contexts = [];
                     if (angular.isDefined(response.contexts)) {
                         $scope.contexts = response.contexts.split(',');
                     }
+                    ProjectRepository.getFullProjectByRepositoryUrl(project.repositoryUrl).then(
+                        function (response) {
+                            $scope.finished = true;
+                            $scope.deployments = response.repository.deployments;
+                            $scope.presets = response.repository.presets;
+                            $scope.tags = response.repository.tags;
+                        },
+                        function () {
+                            $scope.finished = true;
+                        }
+                    );
                 }
             );
         });

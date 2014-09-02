@@ -11,7 +11,8 @@ angular.module('surfCaptain').controller('SingleDeploymentController', [
     '$anchorScroll',
     'FlashMessageService',
     'SEVERITY',
-    function ($scope, DeploymentRepository, $routeParams, $cacheFactory, $location, $anchorScroll, FlashMessageService, SEVERITY) {
+    'ProjectRepository',
+    function ($scope, DeploymentRepository, $routeParams, $cacheFactory, $location, $anchorScroll, FlashMessageService, SEVERITY, ProjectRepository) {
 
         var self = this;
 
@@ -30,6 +31,7 @@ angular.module('surfCaptain').controller('SingleDeploymentController', [
                     $cacheFactory('deploymentCache');
                 }
                 $cacheFactory.get('deploymentCache').put($scope.deployment.__identity, $scope.deployment);
+                ProjectRepository.updateFullProjectInCache($scope.deployment.repositoryUrl);
                 return;
             case 'waiting':
             case 'running':
@@ -65,6 +67,9 @@ angular.module('surfCaptain').controller('SingleDeploymentController', [
             if (angular.isUndefined($scope.deployment)) {
                 return;
             }
+            if ($scope.logLength === 0) {
+                $location.hash('bottom');
+            }
             if ($scope.deployment.logs.length > $scope.logLength) {
                 $anchorScroll();
                 $scope.logLength = $scope.deployment.logs.length;
@@ -75,7 +80,6 @@ angular.module('surfCaptain').controller('SingleDeploymentController', [
          * @return {void}
          */
         this.init = function () {
-            $location.hash('bottom');
             this.getDeployment();
         };
 

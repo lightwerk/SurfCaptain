@@ -50,7 +50,7 @@ angular.module('surfCaptain', ['ngRoute', 'xeditable', 'ngAnimate', 'ngMessages'
                 redirectTo: '/'
             });
     }])
-    .value('version', '0.14_beta2')
+    .value('version', '0.15_beta2')
     .constant('SEVERITY', {
         ok: 0,
         info: 1,
@@ -629,7 +629,7 @@ angular.module('surfCaptain').controller('ProjectController', [
         $scope.tags = [];
 
         /**
-         *  @param {string} context
+         * @param {string} context
          * @returns {string}
          */
         $scope.getRootContext = function (context) {
@@ -650,24 +650,23 @@ angular.module('surfCaptain').controller('ProjectController', [
                 return;
             }
 
-            ProjectRepository.getFullProjectByRepositoryUrl(project.repositoryUrl).then(
-                function (response) {
-                    $scope.finished = true;
-                    $scope.deployments = response.repository.deployments;
-                    $scope.presets = response.repository.presets;
-                    $scope.tags = response.repository.tags;
-                },
-                function () {
-                    $scope.finished = true;
-                }
-            );
-
             SettingsRepository.getSettings().then(
                 function (response) {
                     $scope.contexts = [];
                     if (angular.isDefined(response.contexts)) {
                         $scope.contexts = response.contexts.split(',');
                     }
+                    ProjectRepository.getFullProjectByRepositoryUrl(project.repositoryUrl).then(
+                        function (response) {
+                            $scope.finished = true;
+                            $scope.deployments = response.repository.deployments;
+                            $scope.presets = response.repository.presets;
+                            $scope.tags = response.repository.tags;
+                        },
+                        function () {
+                            $scope.finished = true;
+                        }
+                    );
                 }
             );
         });
@@ -946,10 +945,10 @@ angular.module('surfCaptain').controller('ServerController', [
             if (angular.isUndefined($scope.project)) {
                 throw new ServerControllerException('No project given.');
             }
-            if (angular.isUndefined($scope.project.name)) {
-                throw new ServerControllerException('Project got no name.');
+            if (angular.isUndefined($scope.project.identifier)) {
+                throw new ServerControllerException('Project got no identifier.');
             }
-            return $scope.project.name + '-' + suffix;
+            return $scope.project.identifier + '-' + suffix;
         };
 
         /**
@@ -989,7 +988,8 @@ angular.module('surfCaptain').controller('SingleDeploymentController', [
     '$anchorScroll',
     'FlashMessageService',
     'SEVERITY',
-    function ($scope, DeploymentRepository, $routeParams, $cacheFactory, $location, $anchorScroll, FlashMessageService, SEVERITY) {
+    'ProjectRepository',
+    function ($scope, DeploymentRepository, $routeParams, $cacheFactory, $location, $anchorScroll, FlashMessageService, SEVERITY, ProjectRepository) {
 
         var self = this;
 
@@ -1008,6 +1008,7 @@ angular.module('surfCaptain').controller('SingleDeploymentController', [
                     $cacheFactory('deploymentCache');
                 }
                 $cacheFactory.get('deploymentCache').put($scope.deployment.__identity, $scope.deployment);
+                ProjectRepository.updateFullProjectInCache($scope.deployment.repositoryUrl);
                 return;
             case 'waiting':
             case 'running':
@@ -1043,6 +1044,9 @@ angular.module('surfCaptain').controller('SingleDeploymentController', [
             if (angular.isUndefined($scope.deployment)) {
                 return;
             }
+            if ($scope.logLength === 0) {
+                $location.hash('bottom');
+            }
             if ($scope.deployment.logs.length > $scope.logLength) {
                 $anchorScroll();
                 $scope.logLength = $scope.deployment.logs.length;
@@ -1053,7 +1057,6 @@ angular.module('surfCaptain').controller('SingleDeploymentController', [
          * @return {void}
          */
         this.init = function () {
-            $location.hash('bottom');
             this.getDeployment();
         };
 
@@ -1241,6 +1244,7 @@ angular.module('surfCaptain').controller('SyncController', [
         $scope.sync = function (source, target) {
             target.applications[0].type = CONFIG.applicationTypes.syncTYPO3;
             target.applications[0].options.sourceNode = source.applications[0].nodes[0];
+            target.applications[0].options.sourceNode.deploymentPath = source.applications[0].options.deploymentPath;
             target.applications[0].options.repositoryUrl = $scope.project.repositoryUrl;
             DeploymentRepository.addDeployment(target).then(
                 function (response) {
@@ -2154,7 +2158,7 @@ angular.module('surfCaptain').factory('ProjectRepository', [ '$http', '$q', '$ca
         if (length) {
             for (i; i < length; i++) {
                 projectCache.put(
-                    projects[i].name,
+                    projects[i].identifier,
                     projects[i]
                 );
             }

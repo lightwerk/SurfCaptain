@@ -6469,6 +6469,11 @@ div.project-history .history {
 .single-deployment-view .table-striped tr.LOG_WARNING {
   color: #f0ad4e;
 }
+.single-deployment-view #bottom {
+  width: 100%;
+  text-align: center;
+  display: inline-block;
+}
 .surfcaptain-container {
   min-height: 100%;
   position: relative;
