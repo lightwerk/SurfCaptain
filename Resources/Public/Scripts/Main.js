@@ -392,6 +392,9 @@ angular.module('surfCaptain').controller('DeployController', [
                     var property,
                         presets = response.repository.presets;
                     $scope.repositoryUrl = response.repository.webUrl;
+                    console.log(response.repository.tags);
+                    response.repository.tags.sort(UtilityService.byCommitDate);
+                    response.repository.branches.sort(UtilityService.byCommitDate);
                     $scope.tags = response.repository.tags;
                     $scope.deployableCommits = response.repository.tags;
                     jQuery.merge($scope.deployableCommits, response.repository.branches);
@@ -2597,6 +2600,23 @@ angular.module('surfCaptain').service('UtilityService', function () {
         }
         return commit.id + ' - ' + commit.committerName + ': "' + commit.message + '"';
     };
+
+    /**
+     * Sort function to show most recent commits at the
+     * start of the array. Use this as compareFunction
+     * in an array.sort().
+     *
+     * @param {object} a
+     * @param {object} b
+     * @returns {number}
+     */
+    this.byCommitDate = function (a, b) {
+        if (a.commit.date < b.commit.date) {
+            return 1;
+        }
+        return -1;
+    };
+
 });
 
 /*jslint node: true */
