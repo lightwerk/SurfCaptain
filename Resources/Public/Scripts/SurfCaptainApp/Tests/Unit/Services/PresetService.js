@@ -83,9 +83,9 @@ describe('PresetService', function () {
             expect(ValidationService.doesStringStartWithSubstring.callCount).toEqual(2);
         });
 
-        it('should return empty string if passed string is no valid rootContext.', function () {
+        it('should return "unknown-context" string if passed string is no valid rootContext.', function () {
             var rootContext = presetService.getRootContext('Staging', contexts);
-            expect(rootContext).toEqual('');
+            expect(rootContext).toEqual('unknown-context');
         });
 
         it('should return correct ootContext if passed string is valid rootContext.', function () {

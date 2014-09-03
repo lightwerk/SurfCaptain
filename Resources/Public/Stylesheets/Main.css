@@ -6259,6 +6259,9 @@ div.project-history .history {
 .deployment-server-container .deployment-server.Development {
   background-color: #5cb85c;
 }
+.deployment-server-container .deployment-server.unknown-context {
+  background-color: #99cccc;
+}
 .deployment-server-container .deployment-server .title {
   font-size: 110%;
   text-transform: uppercase;
