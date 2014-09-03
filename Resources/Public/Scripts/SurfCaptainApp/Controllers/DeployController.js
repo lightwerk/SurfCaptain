@@ -131,6 +131,7 @@ angular.module('surfCaptain').controller('DeployController', [
                 $scope.currentCommit = null;
                 return;
             }
+            $scope.currentPreset.applications[0].options.sha1 = $scope.currentCommit.commit.id;
         };
 
         /**
