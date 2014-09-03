@@ -40,6 +40,7 @@ class OfflineRequest implements ApiRequestInterface {
 	 */
 	public function call($command, $method = 'GET', array $parameters = array(), array $content = array()) {
 		$directory = FLOW_PATH_DATA . 'SurfCaptainRequests';
+		$url = $this->apiUrl . $command . '?' . http_build_query($parameters);
 		if ($method !== 'GET') {
 			throw new Exception('only GET implemented', 1111);
 			file_put_contents($directory . '/' . urlencode($url), $response->getContent());

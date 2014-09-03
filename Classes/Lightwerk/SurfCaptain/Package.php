@@ -26,6 +26,14 @@ class Package extends BasePackage {
 			'Lightwerk\SurfCaptain\Service\Driver\GitLabDriver', 'gitLabApiCall',
 			'Lightwerk\SurfCaptain\GitApi\RequestListener', 'logApiCall'
 		);
+		$dispatcher->connect(
+			'Lightwerk\SurfCaptain\GitApi\ApiRequest', 'apiCall',
+			'Lightwerk\SurfCaptain\GitApi\RequestListener', 'saveApiCall'
+		);
+		$dispatcher->connect(
+			'Lightwerk\SurfCaptain\GitApi\ApiRequest', 'apiCall',
+			'Lightwerk\SurfCaptain\GitApi\RequestListener', 'logApiCall'
+		);
 	}
 
 }

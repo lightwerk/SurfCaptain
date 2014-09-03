@@ -6,48 +6,34 @@ namespace Lightwerk\SurfCaptain\GitApi;
  *                                                                        *
  *                                                                        */
 
-use Lightwerk\SurfCaptain\Domain\Model\Branch;
-use Lightwerk\SurfCaptain\Domain\Model\Repository;
-use Lightwerk\SurfCaptain\Domain\Model\Tag;
 
-interface RepositoryDriverInterface {
+/**
+ * Driver Interface
+ *
+ * @package Lightwerk\SurfCaptain
+ */
+interface DriverInterface {
 
 	/**
-	 * Sets the settings
-	 *
 	 * @param array $settings
 	 * @return void
 	 */
 	public function setSettings(array $settings);
 
 	/**
-	 * Returns repositories
-	 *
 	 * @return Repository[]
 	 */
 	public function getRepositories();
 
 	/**
-	 * Returns repository
-	 *
 	 * @param string $repositoryUrl
 	 * @return Repository
 	 */
 	public function getRepository($repositoryUrl);
 
 	/**
-	 * Returns branches of a repository
-	 *
 	 * @param string $repositoryUrl
-	 * @return Branch[]
+	 * @return boolean
 	 */
-	public function getBranches($repositoryUrl);
-
-	/**
-	 * Returns tags of a repository
-	 *
-	 * @param string $repositoryUrl
-	 * @return Tag[]
-	 */
-	public function getTags($repositoryUrl);
+	public function hasRepository($repositoryUrl);
 }
