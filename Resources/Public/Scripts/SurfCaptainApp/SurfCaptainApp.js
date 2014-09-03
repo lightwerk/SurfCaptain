@@ -2,7 +2,7 @@
 /*jslint node: true */
 
 'use strict';
-angular.module('surfCaptain', ['ngRoute', 'xeditable', 'ngAnimate', 'ngMessages'])
+angular.module('surfCaptain', ['ngRoute', 'xeditable', 'ngAnimate', 'ngMessages', 'ngCookies'])
     .config(['$routeProvider', function ($routeProvider) {
         var templatePath = '/_Resources/Static/Packages/Lightwerk.SurfCaptain/Scripts/SurfCaptainApp/Templates/';
         $routeProvider.

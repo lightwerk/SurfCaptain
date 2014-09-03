@@ -31,4 +31,21 @@ angular.module('surfCaptain').service('UtilityService', function () {
         }
         return commit.id + ' - ' + commit.committerName + ': "' + commit.message + '"';
     };
+
+    /**
+     * Sort function to show most recent commits at the
+     * start of the array. Use this as compareFunction
+     * in an array.sort().
+     *
+     * @param {object} a
+     * @param {object} b
+     * @returns {number}
+     */
+    this.byCommitDate = function (a, b) {
+        if (a.commit.date < b.commit.date) {
+            return 1;
+        }
+        return -1;
+    };
+
 });

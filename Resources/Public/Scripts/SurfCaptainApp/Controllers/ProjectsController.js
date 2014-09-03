@@ -8,7 +8,8 @@ angular.module('surfCaptain').controller('ProjectsController', [
     'SettingsRepository',
     'SEVERITY',
     'FlashMessageService',
-    function ($scope, ProjectRepository, SettingsRepository, SEVERITY, FlashMessageService) {
+    'FavorService',
+    function ($scope, ProjectRepository, SettingsRepository, SEVERITY, FlashMessageService, FavorService) {
         $scope.settings = {};
         $scope.ordering = 'name';
         $scope.projects = [];

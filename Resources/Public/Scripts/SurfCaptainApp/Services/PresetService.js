@@ -79,6 +79,6 @@ angular.module('surfCaptain').service('PresetService', ['SettingsRepository', 'V
                 return contexts[i];
             }
         }
-        return '';
+        return 'unknown-context';
     };
 }]);

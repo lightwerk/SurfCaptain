@@ -5818,8 +5818,11 @@ div.surfcaptain-header {
   background-color: #99cccc;
   width: 100%;
 }
-div.surfcaptain-header .fa {
-  font-size: 110px;
+div.surfcaptain-header h1 {
+  margin-top: 33px;
+}
+div.surfcaptain-header h1 .fa {
+  font-size: 105px;
   display: inline-block;
   width: 100%;
 }
@@ -5872,6 +5875,55 @@ div.surfcaptain-header .btn .fa {
   font-size: 22px;
   width: 30px;
   padding-right: 34px;
+}
+div.surfcaptain-header .favorites-container {
+  background-color: #222222;
+  border-radius: 0 0 30px 30px;
+  height: auto;
+  left: 50%;
+  line-height: 25px;
+  margin-left: -250px;
+  padding-bottom: 10px;
+  position: absolute;
+  top: -30px;
+  width: 500px;
+  transition: top 0.5s ease 0s, opacity 0.5s ease 0s;
+  -webkit-transition: top 0.5s ease 0s, opacity 0.5s ease 0s;
+  text-align: center;
+  opacity: 0.8;
+}
+div.surfcaptain-header .favorites-container:hover {
+  top: 0px;
+  opacity: 1;
+}
+div.surfcaptain-header .favorites-container:hover .favorites-label {
+  color: #222222;
+}
+div.surfcaptain-header .favorites-container:hover .favorite a {
+  color: #99cccc;
+}
+div.surfcaptain-header .favorites-container p {
+  margin: 0px;
+}
+div.surfcaptain-header .favorites-container p span {
+  padding: 5px 10px;
+}
+div.surfcaptain-header .favorites-container p span.favorite a {
+  position: relative;
+  top: 15px;
+  color: #222222;
+  font-size: 18px;
+  font-weight: 600;
+  transition: color 0.5s ease 0s;
+  -webkit-transition: color 0.5s;
+  z-index: 99999;
+}
+div.surfcaptain-header .favorites-container p .favorites-label {
+  color: #99cccc;
+  top: 5px;
+  position: relative;
+  transition: color 0.5s ease 0s;
+  -webkit-transition: color 0.5s;
 }
 div.project-buttons {
   padding: 10px 0;
@@ -6258,6 +6310,9 @@ div.project-history .history {
 }
 .deployment-server-container .deployment-server.Development {
   background-color: #5cb85c;
+}
+.deployment-server-container .deployment-server.unknown-context {
+  background-color: #99cccc;
 }
 .deployment-server-container .deployment-server .title {
   font-size: 110%;
