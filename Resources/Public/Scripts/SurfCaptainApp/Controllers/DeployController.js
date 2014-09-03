@@ -193,7 +193,6 @@ angular.module('surfCaptain').controller('DeployController', [
                     var property,
                         presets = response.repository.presets;
                     $scope.repositoryUrl = response.repository.webUrl;
-                    console.log(response.repository.tags);
                     response.repository.tags.sort(UtilityService.byCommitDate);
                     response.repository.branches.sort(UtilityService.byCommitDate);
                     $scope.tags = response.repository.tags;
