@@ -126,16 +126,20 @@ class Deployment {
 	}
 
 	/**
+	 * Since sha1 is always shipped with branch and tag
+	 * configuration, we consider it for referenceName
+	 * only if neither tag nor branch was set.
+	 *
 	 * @return string
 	 */
 	public function getReferenceName() {
 		$options = $this->getOptions();
-		if (!empty($options['sha1'])) {
-			return 'Sha1: ' . $options['ref'];
-		} elseif (!empty($options['tag'])) {
+		if (!empty($options['tag'])) {
 			return 'Tag: ' . $options['tag'];
 		} elseif (!empty($options['branch'])) {
 			return 'Branch: ' . $options['branch'];
+		} elseif (!empty($options['sha1'])) {
+			return 'Sha1: ' . $options['sha1'];
 		}
 		return '';
 	}
