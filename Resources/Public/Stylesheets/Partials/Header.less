@@ -2,10 +2,13 @@ div.surfcaptain-header {
 	min-height: 150px;
 	background-color: @brand-primary;
 	width: 100%;
-	.fa {
-		font-size: 110px;
-		display: inline-block;
-		width: 100%;
+	h1 {
+		margin-top: 33px;
+		.fa {
+			font-size: 105px;
+			display: inline-block;
+			width: 100%;
+		}
 	}
 	.project-name {
 		display: inline-block;
@@ -54,5 +57,55 @@ div.surfcaptain-header {
 			width: 30px;
 			padding-right: 34px;
 		}
+	}
+	.favorites-container {
+		background-color: @body-bg;
+		border-radius: 0 0 30px 30px;
+		height: auto;
+		left: 50%;
+		line-height: 25px;
+		margin-left: -250px;
+		padding-bottom: 10px;
+		position: absolute;
+		top: -30px;
+		width: 500px;
+		transition: top 0.5s ease 0s, opacity 0.5s ease 0s;
+		-webkit-transition: top 0.5s ease 0s, opacity 0.5s ease 0s;
+		text-align: center;
+		opacity: 0.8;
+		&:hover {
+			top: 0px;
+			opacity: 1;
+			.favorites-label {
+				color: @body-bg;
+			}
+			.favorite a {
+				color: @brand-primary;
+			}
+		}
+		p {
+			margin: 0px;
+			span {
+				padding: 5px 10px;
+				&.favorite a {
+					position: relative;
+					top: 15px;
+					color: @body-bg;
+					font-size: 18px;
+					font-weight: 600;
+					transition: color 0.5s ease 0s;
+					-webkit-transition: color 0.5s;
+					z-index: 99999;
+				}
+			}
+			.favorites-label {
+				color: @brand-primary;
+				top: 5px;
+				position: relative;
+				transition: color 0.5s ease 0s;
+				-webkit-transition: color 0.5s;
+			}
+		}
+
 	}
 }

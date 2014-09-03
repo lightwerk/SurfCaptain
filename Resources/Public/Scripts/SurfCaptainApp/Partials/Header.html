@@ -22,6 +22,18 @@
 	<div class="container">
 		<div class="row">
 			<div class="col-xs-12 text-center">
+				<div class="favorites-container" data-ng-if="favorites.length">
+					<p>
+						<span data-ng-repeat="favorite in favorites" class="favorite">
+							<a data-ng-href="#/project/{{favorite.identifier}}">{{favorite.identifier}}</a>
+						</span>
+					</p>
+					<p>
+						<span class="favorites-label">
+							<i class="fa fa-history"></i> Last Projects
+						</span>
+					</p>
+				</div>
 				<h1><span class="fa fa-{{icon}}"></span></h1>
 			</div>
 		</div>

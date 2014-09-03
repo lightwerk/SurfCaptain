@@ -2,7 +2,7 @@
 /*jslint node: true */
 
 'use strict';
-angular.module('surfCaptain', ['ngRoute', 'xeditable', 'ngAnimate', 'ngMessages'])
+angular.module('surfCaptain', ['ngRoute', 'xeditable', 'ngAnimate', 'ngMessages', 'ngCookies'])
     .config(['$routeProvider', function ($routeProvider) {
         var templatePath = '/_Resources/Static/Packages/Lightwerk.SurfCaptain/Scripts/SurfCaptainApp/Templates/';
         $routeProvider.
@@ -185,18 +185,25 @@ angular.module('surfCaptain').controller('AboutController', ['$scope', function 
 /*jslint node: true */
 
 'use strict';
-angular.module('surfCaptain').controller('AbstractSingleProjectController', ['$scope', '$routeParams', 'ProjectRepository', function ($scope, $routeParams, ProjectRepository) {
-    $scope.name = $routeParams.projectName;
-    $scope.project = {};
-    $scope.messages = {};
+angular.module('surfCaptain').controller('AbstractSingleProjectController', [
+    '$scope',
+    '$routeParams',
+    'ProjectRepository',
+    'FavorService',
+    function ($scope, $routeParams, ProjectRepository, FavorService) {
+        $scope.name = $routeParams.projectName;
+        $scope.project = {};
+        $scope.messages = {};
 
-    this.init = function () {
-        ProjectRepository.getProjects().then(function (projects) {
-            $scope.project = ProjectRepository.getProjectByName($scope.name, projects);
-        });
-    };
-    this.init();
-}]);
+        this.init = function () {
+            ProjectRepository.getProjects().then(function (projects) {
+                $scope.project = ProjectRepository.getProjectByName($scope.name, projects);
+                FavorService.addFavoriteProject($scope.project);
+            });
+        };
+        this.init();
+    }
+]);
 /*global surfCaptain, angular, jQuery*/
 /*jslint node: true, plusplus:true */
 
@@ -686,7 +693,8 @@ angular.module('surfCaptain').controller('ProjectsController', [
     'SettingsRepository',
     'SEVERITY',
     'FlashMessageService',
-    function ($scope, ProjectRepository, SettingsRepository, SEVERITY, FlashMessageService) {
+    'FavorService',
+    function ($scope, ProjectRepository, SettingsRepository, SEVERITY, FlashMessageService, FavorService) {
         $scope.settings = {};
         $scope.ordering = 'name';
         $scope.projects = [];
@@ -1776,7 +1784,7 @@ angular.module('surfCaptain').directive('startWithValidate', ['ValidationService
 /*jslint node: true */
 
 'use strict';
-angular.module('surfCaptain').directive('surfcaptainHeader', ['$routeParams', '$location', function ($routeParams, $location) {
+angular.module('surfCaptain').directive('surfcaptainHeader', ['$routeParams', '$location', 'FavorService', function ($routeParams, $location, FavorService) {
     return {
         restrict: 'E',
         templateUrl: '/_Resources/Static/Packages/Lightwerk.SurfCaptain/Scripts/SurfCaptainApp/Partials/Header.html',
@@ -1787,6 +1795,7 @@ angular.module('surfCaptain').directive('surfcaptainHeader', ['$routeParams', '$
             var lastUrlPart = $location.path().split('/').pop();
             scope.project = $routeParams.itemName;
             scope.context = lastUrlPart === scope.project ? '' : lastUrlPart;
+            scope.favorites = FavorService.getFavoriteProjects();
         }
     };
 }]);
@@ -2319,6 +2328,65 @@ angular.module('surfCaptain').factory('SettingsRepository', ['$http', '$q', '$ca
             return settingsRepository.getFrontendSettings();
         }
     };
+}]);
+/*jslint node: true, plusplus: true */
+/*global surfCaptain, angular*/
+
+'use strict';
+
+angular.module('surfCaptain').service('FavorService', ['$cookieStore', 'ProjectRepository', function ($cookieStore, ProjectRepository) {
+
+    var self = this,
+        init;
+
+    /**
+     * @param {string} project
+     * @return {void}
+     */
+    this.addFavoriteProject = function (project) {
+        var favoriteProjects = self.getFavoriteProjects(),
+            length = favoriteProjects.length,
+            i = 0;
+        if (length) {
+            for (i; i < length; i++) {
+                if (favoriteProjects[i].identifier === project.identifier) {
+                    return;
+                }
+            }
+            if (length > 2) {
+                favoriteProjects = favoriteProjects.slice(1, 3);
+            }
+        }
+        favoriteProjects.push(project);
+        $cookieStore.put('favoriteProjects', favoriteProjects);
+    };
+
+    /**
+     * @return {Array}
+     */
+    this.getFavoriteProjects = function () {
+        var favoriteProjects = [];
+        if (angular.isDefined($cookieStore.get('favoriteProjects'))) {
+            favoriteProjects = $cookieStore.get('favoriteProjects');
+        }
+        return favoriteProjects;
+    };
+
+    init = function () {
+        var favorites = self.getFavoriteProjects(),
+            length = favorites.length,
+            i = 0;
+
+        // Populate project cache
+        ProjectRepository.getProjects();
+
+        // Load full projects of favorites into cache
+        for (i; i < length; i++) {
+            ProjectRepository.updateFullProjectInCache(favorites[i].repositoryUrl);
+        }
+    };
+    init();
+
 }]);
 /*jslint node: true, plusplus: true */
 /*global surfCaptain, angular*/

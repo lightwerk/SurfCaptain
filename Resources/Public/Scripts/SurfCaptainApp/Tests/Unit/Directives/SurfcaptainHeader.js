@@ -1,7 +1,7 @@
 /*global describe,beforeEach,module,it,jasmine,expect,inject,angular,spyOn*/
 
 describe('surfcaptainHeader', function () {
-    var element, scope, setUp,
+    var element, scope, setUp, $httpBackend,
         LocationMock = function () {
             var pathStr = '/project/bar';
             this.path = function () {
@@ -21,9 +21,13 @@ describe('surfcaptainHeader', function () {
             });
         });
 
-        inject(function ($routeParams, $location, $rootScope, $compile) {
+        inject(function ($routeParams, $location, $rootScope, $compile, _$httpBackend_) {
             element = angular.element('<surfcaptain-header icon="foo"></surfcaptain-header>');
             scope = $rootScope;
+            $httpBackend = _$httpBackend_;
+
+            $httpBackend.when('GET', '/api/repository').respond(true);
+            $httpBackend.expect('GET', '/api/repository');
 
             $compile(element)(scope);
             scope.$digest();
