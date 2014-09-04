@@ -85,9 +85,29 @@
 					font-style: italic;
 					font-weight: 300;
 					text-align: left;
+					.editable:hover {
+						.fa-pencil {
+							opacity: 1;
+						}
+					}
 				}
 				.help-block {
 					font-size: 20px;
+				}
+			}
+			.fa-pencil {
+				color: @brand-primary;
+				opacity: 0;
+				-webkit-transition: opacity linear 0.75s;
+				-moz-transition: opacity linear 0.75s;
+				-o-transition: opacity linear 0.75s;
+				transition: opacity linear 0.75s;
+			}
+			table {
+				td:hover {
+					.fa-pencil {
+						opacity: 1;
+					}
 				}
 			}
 
