@@ -1,3 +1,4 @@
+@import url(http://fonts.googleapis.com/css?family=Open+Sans);
 /*! normalize.css v3.0.0 | MIT License | git.io/normalize */
 html {
   font-family: sans-serif;
@@ -5859,14 +5860,13 @@ div.surfcaptain-header .btn.server-button {
   top: 80px;
   left: 30px;
 }
+div.surfcaptain-header .btn.server-button.active {
+  color: #5cb85c;
+}
 div.surfcaptain-header .btn.extensions-button,
 div.surfcaptain-header .btn.about-button {
   right: 30px;
   top: 15px;
-}
-div.surfcaptain-header .btn.extensions-button:hover,
-div.surfcaptain-header .btn.about-button:hover {
-  width: 250px;
 }
 div.surfcaptain-header .btn.about-button {
   top: 80px;
@@ -6680,4 +6680,7 @@ div.overlay {
 }
 .table-striped tbody > tr:nth-child(odd) > td {
   background-color: #333;
+}
+body * {
+  font-family: 'Open Sans', sans-serif;
 }
