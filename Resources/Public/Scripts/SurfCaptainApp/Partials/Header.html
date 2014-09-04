@@ -1,20 +1,20 @@
 <div class="surfcaptain surfcaptain-header {{context}}">
-	<a href="#/" class="btn btn-lg btn-primary home-button">
+	<a href="#/" class="btn btn-lg btn-primary home-button" data-ng-class="{true:'active'}[context === '']">
 		<i class="fa fa-list"></i>
 		All Projects
 	</a>
 
-	<a href="#/server" class="btn btn-lg btn-primary server-button">
+	<a href="#/globalserver" class="btn btn-lg btn-primary server-button" data-ng-class="{true:'active'}[context === 'globalserver']">
 		<i class="fa fa-hdd-o"></i>
 		Global Server
 	</a>
 
-	<a href="#/extensions" class="btn btn-lg btn-primary extensions-button">
+	<a href="#/extensions" class="btn btn-lg btn-primary extensions-button" data-ng-class="{true:'active'}[context === 'extensions']">
 		<i class="fa fa-th"></i>
 		Extensions & Module
 	</a>
 
-	<a href="#/deployments" class="btn btn-lg btn-primary about-button">
+	<a href="#/deployments" class="btn btn-lg btn-primary about-button" data-ng-class="{true:'active'}[context === 'deployments']">
 		<i class="fa fa-road"></i>
 		Last Activities
 	</a>

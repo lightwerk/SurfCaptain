@@ -30,7 +30,7 @@ angular.module('surfCaptain', ['ngRoute', 'xeditable', 'ngAnimate', 'ngMessages'
                 templateUrl: templatePath + 'About.html',
                 controller: 'AboutController'
             }).
-            when('/server', {
+            when('/globalserver', {
                 templateUrl: templatePath + 'GlobalServer.html',
                 controller: 'GlobalServerController'
             }).
