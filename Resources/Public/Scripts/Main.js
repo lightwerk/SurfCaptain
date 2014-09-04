@@ -2,7 +2,7 @@
 /*jslint node: true */
 
 'use strict';
-angular.module('surfCaptain', ['ngRoute', 'xeditable', 'ngAnimate', 'ngMessages', 'ngCookies'])
+angular.module('surfCaptain', ['ngRoute', 'xeditable', 'ngAnimate', 'ngMessages', 'ngBiscuit'])
     .config(['$routeProvider', function ($routeProvider) {
         var templatePath = '/_Resources/Static/Packages/Lightwerk.SurfCaptain/Scripts/SurfCaptainApp/Templates/';
         $routeProvider.
@@ -2333,7 +2333,7 @@ angular.module('surfCaptain').factory('SettingsRepository', ['$http', '$q', '$ca
 
 'use strict';
 
-angular.module('surfCaptain').service('FavorService', ['$cookieStore', 'ProjectRepository', function ($cookieStore, ProjectRepository) {
+angular.module('surfCaptain').service('FavorService', ['cookieStore', 'ProjectRepository', function (cookieStore, ProjectRepository) {
 
     var self = this,
         init;
@@ -2357,7 +2357,7 @@ angular.module('surfCaptain').service('FavorService', ['$cookieStore', 'ProjectR
             }
         }
         favoriteProjects.push(project);
-        $cookieStore.put('favoriteProjects', favoriteProjects);
+        cookieStore.put('favoriteProjects', angular.toJson(favoriteProjects), {end: Infinity});
     };
 
     /**
@@ -2365,8 +2365,8 @@ angular.module('surfCaptain').service('FavorService', ['$cookieStore', 'ProjectR
      */
     this.getFavoriteProjects = function () {
         var favoriteProjects = [];
-        if (angular.isDefined($cookieStore.get('favoriteProjects'))) {
-            favoriteProjects = $cookieStore.get('favoriteProjects');
+        if (angular.isDefined(cookieStore.get('favoriteProjects')) && cookieStore.get('favoriteProjects') !== null ) {
+            favoriteProjects = angular.fromJson(cookieStore.get('favoriteProjects'));
         }
         return favoriteProjects;
     };
@@ -2381,7 +2381,9 @@ angular.module('surfCaptain').service('FavorService', ['$cookieStore', 'ProjectR
 
         // Load full projects of favorites into cache
         for (i; i < length; i++) {
-            ProjectRepository.updateFullProjectInCache(favorites[i].repositoryUrl);
+            if (angular.isDefined(favorites[i].repositoryUrl)) {
+                ProjectRepository.updateFullProjectInCache(favorites[i].repositoryUrl);
+            }
         }
     };
     init();
