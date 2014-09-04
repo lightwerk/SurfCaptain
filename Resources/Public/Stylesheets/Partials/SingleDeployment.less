@@ -9,8 +9,16 @@
 	}
 	.table-striped {
 		text-align: left;
-		tbody>tr:nth-child(odd)>td {
+		tbody > tr:nth-child(odd) > td {
 			background-color: #333;
+		}
+		tbody > tr:nth-child(2n+1) > th {
+			background-color: transparent;
+			border-bottom: #ddd solid 3px;
+			border-top: none;
+			text-align: center;
+			font-size: 120%;
+			font-weight: 600;
 		}
 		tr {
 			&.LOG_NOTICE {
@@ -37,5 +45,9 @@
 		width: 100%;
 		text-align: center;
 		display: inline-block;
+	}
+	h2 {
+		text-align: center;
+		margin-bottom: 30px;
 	}
 }

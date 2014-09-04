@@ -2,7 +2,7 @@
 /*jslint node: true */
 
 'use strict';
-angular.module('surfCaptain', ['ngRoute', 'xeditable', 'ngAnimate', 'ngMessages', 'ngCookies'])
+angular.module('surfCaptain', ['ngRoute', 'xeditable', 'ngAnimate', 'ngMessages', 'ngBiscuit'])
     .config(['$routeProvider', function ($routeProvider) {
         var templatePath = '/_Resources/Static/Packages/Lightwerk.SurfCaptain/Scripts/SurfCaptainApp/Templates/';
         $routeProvider.
@@ -30,7 +30,7 @@ angular.module('surfCaptain', ['ngRoute', 'xeditable', 'ngAnimate', 'ngMessages'
                 templateUrl: templatePath + 'About.html',
                 controller: 'AboutController'
             }).
-            when('/server', {
+            when('/globalserver', {
                 templateUrl: templatePath + 'GlobalServer.html',
                 controller: 'GlobalServerController'
             }).
@@ -42,7 +42,7 @@ angular.module('surfCaptain', ['ngRoute', 'xeditable', 'ngAnimate', 'ngMessages'
                 templateUrl: templatePath + 'Deployments.html',
                 controller: 'DeploymentsController'
             }).
-            when('/deployments/:deploymentId', {
+            when('/project/:projectName/deployment/:deploymentId', {
                 templateUrl: templatePath + 'SingleDeployment.html',
                 controller: 'SingleDeploymentController'
             }).
@@ -288,7 +288,7 @@ angular.module('surfCaptain').controller('DeployController', [
                             SEVERITY.ok
                         );
                         ProjectRepository.updateFullProjectInCache($scope.project.repositoryUrl);
-                        $location.path('deployments/' + response.deployment.__identity);
+                        $location.path('project/' + $scope.name + '/deployment/' + response.deployment.__identity);
                     },
                     function (response) {
                         $scope.messages = FlashMessageService.addFlashMessage(
@@ -996,11 +996,10 @@ angular.module('surfCaptain').controller('SingleDeploymentController', [
     '$routeParams',
     '$cacheFactory',
     '$location',
-    '$anchorScroll',
     'FlashMessageService',
     'SEVERITY',
     'ProjectRepository',
-    function ($scope, DeploymentRepository, $routeParams, $cacheFactory, $location, $anchorScroll, FlashMessageService, SEVERITY, ProjectRepository) {
+    function ($scope, DeploymentRepository, $routeParams, $cacheFactory, $location, FlashMessageService, SEVERITY, ProjectRepository) {
 
         var self = this;
 
@@ -1034,7 +1033,6 @@ angular.module('surfCaptain').controller('SingleDeploymentController', [
          * @return {void}
          */
         this.getDeployment = function () {
-            self.scrollToNewLogEntries();
             DeploymentRepository.getSingleDeployment($routeParams.deploymentId).then(
                 function (response) {
                     $scope.finished = true;
@@ -1046,22 +1044,6 @@ angular.module('surfCaptain').controller('SingleDeploymentController', [
                     $scope.noLog = true;
                 }
             );
-        };
-
-        /**
-         * @return void
-         */
-        this.scrollToNewLogEntries = function () {
-            if (angular.isUndefined($scope.deployment)) {
-                return;
-            }
-            if ($scope.logLength === 0) {
-                $location.hash('bottom');
-            }
-            if ($scope.deployment.logs.length > $scope.logLength) {
-                $anchorScroll();
-                $scope.logLength = $scope.deployment.logs.length;
-            }
         };
 
         /**
@@ -1090,7 +1072,7 @@ angular.module('surfCaptain').controller('SingleDeploymentController', [
                             + $scope.deployment.configuration.applications[0].nodes[0].name + '! You can cancel the deployment while it is still waiting.',
                         SEVERITY.ok
                     );
-                    $location.path('deployments/' + response.deployment.__identity);
+                    $location.path('project/' + $scope.name + '/deployment/' + response.deployment.__identity);
                 },
                 function () {
                     $scope.messages = FlashMessageService.addFlashMessage(
@@ -1104,7 +1086,6 @@ angular.module('surfCaptain').controller('SingleDeploymentController', [
 
         $scope.finished = false;
         $scope.noLog = false;
-        $scope.logLength = 0;
 
     }
 ]);
@@ -1266,7 +1247,7 @@ angular.module('surfCaptain').controller('SyncController', [
                         SEVERITY.ok
                     );
                     ProjectRepository.updateFullProjectInCache($scope.project.repositoryUrl);
-                    $location.path('deployments/' + response.deployment.__identity);
+                    $location.path('project/' + $scope.name + '/deployment/' + response.deployment.__identity);
                 },
                 self.addFailureFlashMessage
             );
@@ -2333,7 +2314,7 @@ angular.module('surfCaptain').factory('SettingsRepository', ['$http', '$q', '$ca
 
 'use strict';
 
-angular.module('surfCaptain').service('FavorService', ['$cookieStore', 'ProjectRepository', function ($cookieStore, ProjectRepository) {
+angular.module('surfCaptain').service('FavorService', ['cookieStore', 'ProjectRepository', function (cookieStore, ProjectRepository) {
 
     var self = this,
         init;
@@ -2357,7 +2338,7 @@ angular.module('surfCaptain').service('FavorService', ['$cookieStore', 'ProjectR
             }
         }
         favoriteProjects.push(project);
-        $cookieStore.put('favoriteProjects', favoriteProjects);
+        cookieStore.put('favoriteProjects', angular.toJson(favoriteProjects), {end: Infinity});
     };
 
     /**
@@ -2365,8 +2346,8 @@ angular.module('surfCaptain').service('FavorService', ['$cookieStore', 'ProjectR
      */
     this.getFavoriteProjects = function () {
         var favoriteProjects = [];
-        if (angular.isDefined($cookieStore.get('favoriteProjects'))) {
-            favoriteProjects = $cookieStore.get('favoriteProjects');
+        if (angular.isDefined(cookieStore.get('favoriteProjects')) && cookieStore.get('favoriteProjects') !== null ) {
+            favoriteProjects = angular.fromJson(cookieStore.get('favoriteProjects'));
         }
         return favoriteProjects;
     };
@@ -2381,7 +2362,9 @@ angular.module('surfCaptain').service('FavorService', ['$cookieStore', 'ProjectR
 
         // Load full projects of favorites into cache
         for (i; i < length; i++) {
-            ProjectRepository.updateFullProjectInCache(favorites[i].repositoryUrl);
+            if (angular.isDefined(favorites[i].repositoryUrl)) {
+                ProjectRepository.updateFullProjectInCache(favorites[i].repositoryUrl);
+            }
         }
     };
     init();

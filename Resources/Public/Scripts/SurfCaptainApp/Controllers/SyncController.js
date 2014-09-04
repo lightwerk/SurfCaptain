@@ -156,7 +156,7 @@ angular.module('surfCaptain').controller('SyncController', [
                         SEVERITY.ok
                     );
                     ProjectRepository.updateFullProjectInCache($scope.project.repositoryUrl);
-                    $location.path('deployments/' + response.deployment.__identity);
+                    $location.path('project/' + $scope.name + '/deployment/' + response.deployment.__identity);
                 },
                 self.addFailureFlashMessage
             );

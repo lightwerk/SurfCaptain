@@ -24,7 +24,7 @@
 						editable-text="preset.applications.0.options.context"
 						onbeforesave="updateContext($data)"
 						onaftersave="preset.changed=true"
-						>{{preset.applications.0.options.context || 'please add'}}</span></span>)
+						>{{preset.applications.0.options.context || 'please add'}}) <i class="fa fa-pencil"></i></span></span>
 				</h3>
 			</div>
 			<div class="server-data">
@@ -40,7 +40,7 @@
 								onbeforesave="updateHost($data)"
 								onaftersave="preset.changed=true"
 							>
-								{{preset.applications.0.nodes.0.hostname || 'please add'}}
+								{{preset.applications.0.nodes.0.hostname || 'please add'}} <i class="fa fa-pencil"></i>
 							</span>
 						</span></td>
 					</tr>
@@ -52,7 +52,7 @@
 								onbeforesave="updateDeploymentPath($data)"
 								onaftersave="preset.changed=true"
 							>
-								{{preset.applications.0.options.deploymentPath || 'please add'}}
+								{{preset.applications.0.options.deploymentPath || 'please add'}} <i class="fa fa-pencil"></i>
 							</span>
 						</span></td>
 					</tr>
@@ -64,7 +64,7 @@
 								onbeforesave="updateUsername($data)"
 								onaftersave="preset.changed=true"
 							>
-								{{preset.applications.0.nodes.0.username || 'please add'}}
+								{{preset.applications.0.nodes.0.username || 'please add'}} <i class="fa fa-pencil"></i>
 							</span>
 						</span></td>
 					</tr>

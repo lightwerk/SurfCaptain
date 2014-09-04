@@ -8,11 +8,10 @@ angular.module('surfCaptain').controller('SingleDeploymentController', [
     '$routeParams',
     '$cacheFactory',
     '$location',
-    '$anchorScroll',
     'FlashMessageService',
     'SEVERITY',
     'ProjectRepository',
-    function ($scope, DeploymentRepository, $routeParams, $cacheFactory, $location, $anchorScroll, FlashMessageService, SEVERITY, ProjectRepository) {
+    function ($scope, DeploymentRepository, $routeParams, $cacheFactory, $location, FlashMessageService, SEVERITY, ProjectRepository) {
 
         var self = this;
 
@@ -46,7 +45,6 @@ angular.module('surfCaptain').controller('SingleDeploymentController', [
          * @return {void}
          */
         this.getDeployment = function () {
-            self.scrollToNewLogEntries();
             DeploymentRepository.getSingleDeployment($routeParams.deploymentId).then(
                 function (response) {
                     $scope.finished = true;
@@ -58,22 +56,6 @@ angular.module('surfCaptain').controller('SingleDeploymentController', [
                     $scope.noLog = true;
                 }
             );
-        };
-
-        /**
-         * @return void
-         */
-        this.scrollToNewLogEntries = function () {
-            if (angular.isUndefined($scope.deployment)) {
-                return;
-            }
-            if ($scope.logLength === 0) {
-                $location.hash('bottom');
-            }
-            if ($scope.deployment.logs.length > $scope.logLength) {
-                $anchorScroll();
-                $scope.logLength = $scope.deployment.logs.length;
-            }
         };
 
         /**
@@ -102,7 +84,7 @@ angular.module('surfCaptain').controller('SingleDeploymentController', [
                             + $scope.deployment.configuration.applications[0].nodes[0].name + '! You can cancel the deployment while it is still waiting.',
                         SEVERITY.ok
                     );
-                    $location.path('deployments/' + response.deployment.__identity);
+                    $location.path('project/' + $scope.name + '/deployment/' + response.deployment.__identity);
                 },
                 function () {
                     $scope.messages = FlashMessageService.addFlashMessage(
@@ -116,7 +98,6 @@ angular.module('surfCaptain').controller('SingleDeploymentController', [
 
         $scope.finished = false;
         $scope.noLog = false;
-        $scope.logLength = 0;
 
     }
 ]);

@@ -10,7 +10,7 @@
 <div class="container deployments-view dark inner-container">
 	<div class="row">
 		<div class="col-xs-12 text-center">
-			<h1>Deployments</h1>
+			<h1>Recent Activities</h1>
 
 			<table class="table table-striped">
 				<thead>
@@ -34,7 +34,7 @@
 						<td>{{deployment.date | date:'MMM d, y HH:mm:ss'}}</td>
 						<td>{{deployment.referenceName}}{{deployment.options.sourceNode.name}}</td>
 						<td>{{deployment.options.name}}</td>
-						<td><a data-ng-href="#/deployments/{{deployment.__identity}}" class="btn-xs btn-primary btn">Details</a></td>
+						<td><a data-ng-href="#/project/{{deployment.repositoryIdentifier}}/deployment/{{deployment.__identity}}" class="btn-xs btn-primary btn">Details</a></td>
 					</tr>
 				</tbody>
 			</table>

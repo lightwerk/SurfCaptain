@@ -2,7 +2,7 @@
 
 describe('SingleDeploymentController', function () {
     'use strict';
-    var ctrl, scope, $location, $anchorScroll, DeploymentRepository, $q, success = true, $routeParams, $cacheFactory, setTimeoutSpy;
+    var ctrl, scope, $location, DeploymentRepository, $q, success = true, $routeParams, $cacheFactory, setTimeoutSpy;
 
     beforeEach(module('surfCaptain'));
 
@@ -15,12 +15,10 @@ describe('SingleDeploymentController', function () {
         $routeParams = {
             deploymentId: 'foo'
         };
-        $anchorScroll = jasmine.createSpy('$anchorScroll');
         setTimeoutSpy = jasmine.createSpy('setTimeout');
         ctrl = $controller('SingleDeploymentController', {
             $scope: scope,
             $location: $location,
-            $anchorScroll: $anchorScroll,
             DeploymentRepository: DeploymentRepository,
             $routeParams: $routeParams,
             $cacheFactory: $cacheFactory
@@ -36,9 +34,6 @@ describe('SingleDeploymentController', function () {
             expect(scope.noLog).toBeFalsy();
         });
 
-        it('should initialize $scope.logLength with 0.', function () {
-            expect(scope.logLength).toEqual(0);
-        });
     });
 
     it('should have a method init().', function () {
@@ -56,60 +51,12 @@ describe('SingleDeploymentController', function () {
         });
     });
 
-    it('should have a method scrollToNewLogEntries().', function () {
-        expect(ctrl.scrollToNewLogEntries).toBeDefined();
-    });
-
-    describe('->scrollToNewLogEntries()', function () {
-        it('should no scroll to bottom if $scope.deployment is undefined.', function () {
-            ctrl.scrollToNewLogEntries();
-            expect($anchorScroll).not.toHaveBeenCalled();
-        });
-
-        it('should no scroll to bottom if $scope.deployment.logs.length is smaller than $scope.logLength.', function () {
-            scope.deployment = {
-                logs: [1, 2]
-            };
-            scope.logLength = 3;
-            ctrl.scrollToNewLogEntries();
-            expect($anchorScroll).not.toHaveBeenCalled();
-        });
-
-        it('should no scroll to bottom if $scope.deployment.logs.length equals $scope.logLength.', function () {
-            scope.deployment = {
-                logs: [1, 2]
-            };
-            scope.logLength = 2;
-            ctrl.scrollToNewLogEntries();
-            expect($anchorScroll).not.toHaveBeenCalled();
-        });
-
-        it('should scroll to bottom if $scope.deployment.logs.length is greater than $scope.logLength.', function () {
-            scope.deployment = {
-                logs: [1, 2]
-            };
-            scope.logLength = 1;
-            ctrl.scrollToNewLogEntries();
-            expect($anchorScroll).toHaveBeenCalled();
-        });
-
-        it('should set $scope.logLength to $scope.deployment.logs.length if the latter is greater than $scope.logLength.', function () {
-            scope.deployment = {
-                logs: [1, 2]
-            };
-            scope.logLength = 1;
-            ctrl.scrollToNewLogEntries();
-            expect(scope.logLength).toEqual(2);
-        });
-    });
-
     it('should have a method getDeployment().', function () {
         expect(ctrl.getDeployment).toBeDefined();
     });
 
     describe('->getDeployment()', function () {
         beforeEach(function () {
-            spyOn(ctrl, 'scrollToNewLogEntries');
             spyOn(ctrl, 'initLiveLog');
             spyOn(ctrl, 'init');
             spyOn(DeploymentRepository, 'getSingleDeployment').andCallFake(
@@ -123,11 +70,6 @@ describe('SingleDeploymentController', function () {
                     return deferred.promise;
                 }
             );
-        });
-
-        it('should call scrollToNewLogEntries() on controller.', function () {
-            ctrl.getDeployment();
-            expect(ctrl.scrollToNewLogEntries).toHaveBeenCalled();
         });
 
         it('should call DeploymentRepository.getSingleDeployment.', function () {

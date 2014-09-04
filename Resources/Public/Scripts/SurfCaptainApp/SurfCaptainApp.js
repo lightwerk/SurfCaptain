@@ -2,7 +2,7 @@
 /*jslint node: true */
 
 'use strict';
-angular.module('surfCaptain', ['ngRoute', 'xeditable', 'ngAnimate', 'ngMessages', 'ngCookies'])
+angular.module('surfCaptain', ['ngRoute', 'xeditable', 'ngAnimate', 'ngMessages', 'ngBiscuit'])
     .config(['$routeProvider', function ($routeProvider) {
         var templatePath = '/_Resources/Static/Packages/Lightwerk.SurfCaptain/Scripts/SurfCaptainApp/Templates/';
         $routeProvider.
@@ -30,7 +30,7 @@ angular.module('surfCaptain', ['ngRoute', 'xeditable', 'ngAnimate', 'ngMessages'
                 templateUrl: templatePath + 'About.html',
                 controller: 'AboutController'
             }).
-            when('/server', {
+            when('/globalserver', {
                 templateUrl: templatePath + 'GlobalServer.html',
                 controller: 'GlobalServerController'
             }).
@@ -42,7 +42,7 @@ angular.module('surfCaptain', ['ngRoute', 'xeditable', 'ngAnimate', 'ngMessages'
                 templateUrl: templatePath + 'Deployments.html',
                 controller: 'DeploymentsController'
             }).
-            when('/deployments/:deploymentId', {
+            when('/project/:projectName/deployment/:deploymentId', {
                 templateUrl: templatePath + 'SingleDeployment.html',
                 controller: 'SingleDeploymentController'
             }).

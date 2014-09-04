@@ -5871,6 +5871,10 @@ div.surfcaptain-header .btn.about-button:hover {
 div.surfcaptain-header .btn.about-button {
   top: 80px;
 }
+div.surfcaptain-header .btn.active {
+  background-color: #222222;
+  color: #99cccc;
+}
 div.surfcaptain-header .btn .fa {
   font-size: 22px;
   width: 30px;
@@ -6410,8 +6414,22 @@ div.project-history .history {
   font-weight: 300;
   text-align: left;
 }
+.project-server .server .single-server .server-name h3 .editable:hover .fa-pencil {
+  opacity: 1;
+}
 .project-server .server .single-server .server-name .help-block {
   font-size: 20px;
+}
+.project-server .server .single-server .fa-pencil {
+  color: #99cccc;
+  opacity: 0;
+  -webkit-transition: opacity linear 0.75s;
+  -moz-transition: opacity linear 0.75s;
+  -o-transition: opacity linear 0.75s;
+  transition: opacity linear 0.75s;
+}
+.project-server .server .single-server table td:hover .fa-pencil {
+  opacity: 1;
 }
 .project-server .server .single-server .server-data .server-icon .fa {
   float: left;
@@ -6510,6 +6528,14 @@ div.project-history .history {
 .single-deployment-view .table-striped tbody > tr:nth-child(odd) > td {
   background-color: #333;
 }
+.single-deployment-view .table-striped tbody > tr:nth-child(2n+1) > th {
+  background-color: transparent;
+  border-bottom: #ddd solid 3px;
+  border-top: none;
+  text-align: center;
+  font-size: 120%;
+  font-weight: 600;
+}
 .single-deployment-view .table-striped tr.LOG_NOTICE {
   color: #99cccc;
   font-size: 115%;
@@ -6529,6 +6555,10 @@ div.project-history .history {
   text-align: center;
   display: inline-block;
 }
+.single-deployment-view h2 {
+  text-align: center;
+  margin-bottom: 30px;
+}
 .surfcaptain-container {
   min-height: 100%;
   position: relative;
@@ -6539,7 +6569,8 @@ div.surfcaptain.deploy {
 div.surfcaptain.sync {
   background-color: #f0ad4e;
 }
-div.surfcaptain.server {
+div.surfcaptain.server,
+div.surfcaptain.globalserver {
   background-color: #5cb85c;
 }
 div.surfcaptain.about {

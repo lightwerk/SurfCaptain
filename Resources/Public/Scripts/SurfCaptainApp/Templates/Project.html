@@ -65,7 +65,7 @@
 						<td>{{deployment.date | date:'MMM d, y HH:mm:ss'}}</td>
 						<td>{{deployment.referenceName}}{{deployment.options.sourceNode.name}}</td>
 						<td>{{deployment.options.name}}</td>
-						<td><a data-ng-href="#/deployments/{{deployment.__identity}}" class="btn-xs btn-primary btn">Details</a></td>
+						<td><a data-ng-href="#/project/{{name}}/deployment/{{deployment.__identity}}" class="btn-xs btn-primary btn">Details</a></td>
 					</tr>
 				</tbody>
 			</table>
