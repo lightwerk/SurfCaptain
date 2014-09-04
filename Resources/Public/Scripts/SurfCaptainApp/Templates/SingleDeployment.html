@@ -7,6 +7,8 @@
 
 <surfcaptain-header icon="eye"></surfcaptain-header>
 
+<surfcaptain-menu></surfcaptain-menu>
+
 <div class="container single-deployment-view dark inner-container">
 	<div class="row">
 		<div class="col-xs-12 col-md-8 col-md-offset-2 text-center">
@@ -48,10 +50,16 @@
 		</div>
 	</div>
 	<div class="row">
-		<h3>Log</h3>
+		<h2>Log</h2>
 		<table class="table table-striped">
+			<tr>
+				<th>Time</th>
+				<th>Type</th>
+				<th>Message</th>
+				<th>#</th>
+			</tr>
 			<tr
-				data-ng-repeat="logentry in deployment.logs | orderBy:'number'"
+				data-ng-repeat="logentry in deployment.logs | orderBy:'number':1"
 				data-ng-class="{3: 'LOG_ERR', 4: 'LOG_WARNING', 5: 'LOG_NOTICE', 6: 'LOG_INFO', 7: 'LOG_DEBUG'}[logentry.severity];"
 			>
 				<td>{{logentry.date | date:'H:mm:ss'}}</td>

@@ -42,7 +42,7 @@ angular.module('surfCaptain', ['ngRoute', 'xeditable', 'ngAnimate', 'ngMessages'
                 templateUrl: templatePath + 'Deployments.html',
                 controller: 'DeploymentsController'
             }).
-            when('/deployments/:deploymentId', {
+            when('/project/:projectName/deployment/:deploymentId', {
                 templateUrl: templatePath + 'SingleDeployment.html',
                 controller: 'SingleDeploymentController'
             }).
