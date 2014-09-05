@@ -36,24 +36,19 @@ class OfflineRequest implements ApiRequestInterface {
 	 * @param array $parameters
 	 * @return mixed $data
 	 * @throws Exception
-	 * @throws \TYPO3\Flow\Http\Exception
 	 */
 	public function call($command, $method = 'GET', array $parameters = array(), array $content = array()) {
 		$directory = FLOW_PATH_DATA . 'SurfCaptainRequests';
 		$url = $this->apiUrl . $command . '?' . http_build_query($parameters);
-		if ($method !== 'GET') {
-			throw new Exception('only GET implemented', 1111);
-			file_put_contents($directory . '/' . urlencode($url), $response->getContent());
-		}
-		$file = $directory . '/' . urlencode($url);
+		$file = $directory . '/' . $method . '_' . urlencode($url);
 		if (file_exists($file) === FALSE) {
-			throw new Exception('file not exists ' . $file, 1111);
+			throw new Exception('file not exists ' . $file, 1409929475);
 		}
 		$content = file_get_contents($file);
 
 		$content = json_decode($content, TRUE);
 		if ($content === NULL) {
-			throw new Exception('cannot decode content to json', 1111);
+			throw new Exception('cannot decode content to json', 1409929476);
 		}
 		return $content;
 	}

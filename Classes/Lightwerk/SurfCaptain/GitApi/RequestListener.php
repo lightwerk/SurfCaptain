@@ -58,9 +58,19 @@ class RequestListener {
 	public function saveApiCall($url, $method, Response $response) {
 		if ($this->settings['gitApi']['requestListener']['save'] === TRUE) {
 			$directory = $this->getDataDirectory();
-			if ($method === 'GET') {
-				file_put_contents($directory . '/' . urlencode($url), $response->getContent());
-			}
+			file_put_contents($directory . '/' . $method . '_' . urlencode($url), $response->getContent());
+		}
+	}
+
+	/**
+	 * @param string $url 
+	 * @param string $method 
+	 * @return void
+	 */
+	public function logBeforeApiCall($url, $method) {
+		if ($this->settings['gitApi']['requestListener']['log'] === TRUE) {
+			$directory = $this->getLogDirectory();
+			file_put_contents($directory . '/SurfCaptain_Request_Short.log', $method . '_' . $url . "\n", FILE_APPEND);
 		}
 	}
 

@@ -22,6 +22,9 @@ class GitHubCommandController extends BrowserCommandController {
 		'repos/achimfritz/championship-distribution',
 		'repos/achimfritz/championship-distribution/tags',
 		'repos/achimfritz/championship-distribution/branches',
+		'repos/achimfritz/Test',
+		'repos/achimfritz/Test/test.txt',
+		'repos/achimfritz/Test/contents/test.txt',
 	);
 
 	/**

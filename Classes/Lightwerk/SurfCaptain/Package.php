@@ -19,20 +19,16 @@ class Package extends BasePackage {
 	public function boot(\TYPO3\Flow\Core\Bootstrap $bootstrap) {
 		$dispatcher = $bootstrap->getSignalSlotDispatcher();
 		$dispatcher->connect(
-			'Lightwerk\SurfCaptain\Service\Driver\GitLabDriver', 'gitLabApiCall',
-			'Lightwerk\SurfCaptain\GitApi\RequestListener', 'saveApiCall'
-		);
-		$dispatcher->connect(
-			'Lightwerk\SurfCaptain\Service\Driver\GitLabDriver', 'gitLabApiCall',
-			'Lightwerk\SurfCaptain\GitApi\RequestListener', 'logApiCall'
-		);
-		$dispatcher->connect(
 			'Lightwerk\SurfCaptain\GitApi\ApiRequest', 'apiCall',
 			'Lightwerk\SurfCaptain\GitApi\RequestListener', 'saveApiCall'
 		);
 		$dispatcher->connect(
 			'Lightwerk\SurfCaptain\GitApi\ApiRequest', 'apiCall',
 			'Lightwerk\SurfCaptain\GitApi\RequestListener', 'logApiCall'
+		);
+		$dispatcher->connect(
+			'Lightwerk\SurfCaptain\GitApi\ApiRequest', 'beforeApiCall',
+			'Lightwerk\SurfCaptain\GitApi\RequestListener', 'logBeforeApiCall'
 		);
 	}
 

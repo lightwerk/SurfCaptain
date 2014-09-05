@@ -20,6 +20,7 @@ class ApiCommandController extends BrowserCommandController {
 		'/api/preset?key=test_af',
 		'/api/preset?key=sma',
 		'/api/preset?key=foo',
+		'/api/preset',
 		'/api/deployment',
 		'/api/frontendsetting',
 		'/api/repository?repositoryUrl=git@git.sma.de:sma-websites/rcw-sma-de.git',

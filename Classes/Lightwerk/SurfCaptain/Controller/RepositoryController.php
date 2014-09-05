@@ -7,7 +7,6 @@ namespace Lightwerk\SurfCaptain\Controller;
  *                                                                        */
 
 use Lightwerk\SurfCaptain\Domain\Repository\DeploymentRepository;
-use Lightwerk\SurfCaptain\Service\GitService;
 use Lightwerk\SurfCaptain\Service\PresetService;
 use TYPO3\Flow\Annotations as Flow;
 
@@ -19,10 +18,11 @@ use TYPO3\Flow\Annotations as Flow;
 class RepositoryController extends AbstractRestController {
 
 	/**
+	 * TODO should be \Lightwerk\SurfCaptain\GitApi\DriverComposite
+	 * @var \Lightwerk\SurfCaptain\Service\GitServiceInterface
 	 * @Flow\Inject
-	 * @var GitService
 	 */
-	protected $gitService;
+	protected $driverComposite;
 
 	/**
 	 * @Flow\Inject
@@ -47,10 +47,9 @@ class RepositoryController extends AbstractRestController {
 	 * @return void
 	 */
 	public function showAction($repositoryUrl) {
+		// TODO lw_af missing branches/tags
 		try {
-			$repository = $this->gitService->getRepository($repositoryUrl)
-				->setTags($this->gitService->getTags($repositoryUrl))
-				->setBranches($this->gitService->getBranches($repositoryUrl))
+			$repository = $this->driverComposite->getRepository($repositoryUrl)
 				->setDeployments($this->deploymentRepository->findByRepositoryUrl($repositoryUrl))
 				->setPresets($this->presetService->getPresetsByRepositoryUrl($repositoryUrl));
 			$this->view->assign('repository', $repository);
@@ -66,7 +65,7 @@ class RepositoryController extends AbstractRestController {
 	 */
 	public function listAction() {
 		try {
-			$this->view->assign('repositories', $this->gitService->getRepositories());
+			$this->view->assign('repositories', $this->driverComposite->getRepositories());
 		} catch (\Lightwerk\SurfCaptain\Service\Exception $e) {
 			$this->handleException($e);
 		} catch (\TYPO3\Flow\Http\Exception $e) {

@@ -21,12 +21,12 @@ class PresetService {
 	 */
 	protected $settings;
 
-
 	/**
+	 * TODO should be \Lightwerk\SurfCaptain\GitApi\DriverComposite
+	 * @var \Lightwerk\SurfCaptain\Service\GitServiceInterface
 	 * @Flow\Inject
-	 * @var GitService
 	 */
-	protected $gitService;
+	protected $driverComposite;
 
 	/**
 	 * @var array
@@ -49,7 +49,7 @@ class PresetService {
 		if (!isset($this->presets)) {
 			$settings = $this->settings['presets'];
 			$this->presets = json_decode(
-				$this->gitService->getFileContent($settings['repositoryUrl'], $settings['filePath']),
+				$this->driverComposite->getFileContent($settings['repositoryUrl'], $settings['filePath']),
 				TRUE
 			);
 			if (empty($this->presets)) {
@@ -112,7 +112,7 @@ class PresetService {
 	 */
 	public function setPresets($presets, $commitMessage) {
 		$settings = $this->settings['presets'];
-		$this->gitService->setFileContent(
+		$this->driverComposite->setFileContent(
 			$settings['repositoryUrl'],
 			$settings['filePath'],
 			json_encode($presets, JSON_PRETTY_PRINT),

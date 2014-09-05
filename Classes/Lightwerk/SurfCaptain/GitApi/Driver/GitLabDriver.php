@@ -1,24 +1,16 @@
 <?php
-namespace Lightwerk\SurfCaptain\GitApi\GitLab;
+namespace Lightwerk\SurfCaptain\GitApi\Driver;
 
 /*                                                                        *
  * This script belongs to the TYPO3 Flow package "Lightwerk.SurfCaptain". *
  *                                                                        *
  *                                                                        */
 
-use Lightwerk\SurfCaptain\GitApi\DriverInterface;
-use Lightwerk\SurfCaptain\Domain\Model\Branch;
-use Lightwerk\SurfCaptain\Domain\Model\Repository;
-use Lightwerk\SurfCaptain\Domain\Model\Tag;
-use Lightwerk\SurfCaptain\Mapper\DataMapper;
-use Lightwerk\SurfCaptain\Utility\GeneralUtility;
 use TYPO3\Flow\Annotations as Flow;
 
-class Driver extends \Lightwerk\SurfCaptain\GitApi\AbstractDriver {
+class GitLabDriver extends AbstractDriver {
 
 	/**
-	 * Sets the settings
-	 *
 	 * @param array $settings
 	 * @return void
 	 */
@@ -29,24 +21,6 @@ class Driver extends \Lightwerk\SurfCaptain\GitApi\AbstractDriver {
 		$this->apiRequest->setAuthorizationHeader(array('PRIVATE-TOKEN: ' . $this->settings['privateToken']));
 	}
 
-	/**
-	 * @param string $repositoryUrl 
-	 * @return string
-	 */
-	protected function getRepositoryName($repositoryUrl) {
-		$parts = explode(':', $repositoryUrl);
-		return str_replace('.git', '', $parts[1]);
-		
-	}
-
-	/**
-	 * @param string $repositoryUrl 
-	 * @return string
-	 */
-	protected function getRepositoryAccount($repositoryUrl) {
-		$parts = explode(':', $repositoryUrl);
-		return $parts[0];
-	}
 
 	/**
 	 * @param string $repositoryUrl
@@ -60,28 +34,79 @@ class Driver extends \Lightwerk\SurfCaptain\GitApi\AbstractDriver {
 	}
 
 	/**
-	 * Returns repositories
-	 *
 	 * @return array
 	 */
 	public function getRepositories() {
-		$command = $this->settings['repositories'];
-		$response = $this->apiRequest->call($command);
-		if (isset($response['projects']) === FALSE) {
-			$projects = array($response);
-		} else {
-			$projects = $response['projects'];
+		// TODO for "old" configuration
+		unset($this->settings['repositories']['_projectFilter']);
+		unset($this->settings['repositories']['_rcwSmaDeFilter']);
+
+		$repositories = array();
+		foreach ($this->settings['repositories'] as $name => $command) {
+			$response = $this->apiRequest->call($command);
+			if (isset($response['projects']) === FALSE) {
+				$projects = array($response);
+			} else {
+				$projects = $response['projects'];
+			}
+			$repositories = array_merge($repositories, $this->dataMapper->mapToObject(
+				$projects,
+				'\\Lightwerk\\SurfCaptain\\Domain\\Model\\Repository[]',
+				$this->settings['mapping']
+			));
 		}
-		return $this->dataMapper->mapToObject(
-			$projects,
-			'\\Lightwerk\\SurfCaptain\\Domain\\Model\\Repository[]',
-			$this->settings['mapping']
-		);
+		return $repositories;
 	}
 
 	/**
-	 * Returns repository
-	 *
+	 * @param string $repositoryUrl
+	 * @param string $filePath
+	 * @param string $reference branch name, tag name or hash
+	 * @return string
+	 */
+	public function getFileContent($repositoryUrl, $filePath, $reference = 'master') {
+		$response = $this->apiRequest->call(
+			'projects/' . $this->getRepositoryName($repositoryUrl) . '/repository/files',
+			'GET',
+			array(
+				'file_path' => $filePath,
+				'ref' => $reference,
+			)
+		);
+		switch ($response['encoding']) {
+			case 'base64':
+				$content = base64_decode($response['content']);
+				break;
+			default:
+				throw new Exception('Encoding "' . $response['encoding'] . '" is unknown!', 1407793800);
+		}
+		return $content;
+	}
+
+	/**
+	 * @param string $repositoryUrl
+	 * @param string $filePath
+	 * @param string $content
+	 * @param string $commitMessage
+	 * @param string $branchName
+	 * @return void
+	 */
+	public function setFileContent($repositoryUrl, $filePath, $content, $commitMessage, $branchName = 'master') {
+		$this->apiRequest->call(
+			'projects/' . $this->getName($repositoryUrl) . '/repository/files',
+			'PUT',
+			array(),
+			array(
+				'file_path' => $filePath,
+				'branch_name' => $branchName,
+				'commit_message' => $commitMessage,
+				'content' => $content
+			)
+		);
+	}
+
+
+	/**
 	 * @param string $repositoryUrl
 	 * @return Repository
 	 */

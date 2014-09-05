@@ -15,6 +15,7 @@ class SmaGitCommandController extends BrowserCommandController {
 	 * @var array
 	 */
 	protected $urls = array(
+		'/groups',
 		'/projects',
 		'/projects/2',
 		'/projects/sma-websites%2Frcw-sma-de',

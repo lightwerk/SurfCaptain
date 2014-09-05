@@ -16,7 +16,7 @@ use TYPO3\Flow\Annotations as Flow;
  * @Flow\Scope("singleton")
  * @package Lightwerk\SurfCaptain
  */
-class GitService implements Driver\DriverInterface {
+class GitService implements Driver\DriverInterface, GitServiceInterface {
 
 	/**
 	 * @var Driver\DriverInterface[]

@@ -1,18 +1,21 @@
 <?php
-namespace Lightwerk\SurfCaptain\GitApi;
+namespace Lightwerk\SurfCaptain\Service;
 
 /*                                                                        *
  * This script belongs to the TYPO3 Flow package "Lightwerk.SurfCaptain". *
  *                                                                        *
  *                                                                        */
 
+use Lightwerk\SurfCaptain\Domain\Model\Repository;
+use Lightwerk\SurfCaptain\Utility\GeneralUtility;
+use TYPO3\Flow\Annotations as Flow;
 
 /**
- * Driver Interface
+ * Git Service Interface
  *
  * @package Lightwerk\SurfCaptain
  */
-interface DriverInterface {
+interface GitServiceInterface {
 
 	/**
 	 * @param array $settings
@@ -30,12 +33,6 @@ interface DriverInterface {
 	 * @return Repository
 	 */
 	public function getRepository($repositoryUrl);
-
-	/**
-	 * @param string $repositoryUrl
-	 * @return boolean
-	 */
-	public function hasRepository($repositoryUrl);
 
 	/**
 	 * @param string $repositoryUrl

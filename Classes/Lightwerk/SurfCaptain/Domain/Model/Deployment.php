@@ -9,7 +9,6 @@ namespace Lightwerk\SurfCaptain\Domain\Model;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use Lightwerk\SurfCaptain\Service\GitService;
 use TYPO3\Flow\Annotations as Flow;
 
 /**
@@ -239,17 +238,6 @@ class Deployment {
 	 * @return Repository|NULL
 	 */
 	public function getRepository() {
-		if ($this->repository === NULL) {
-			$repositoryUrl = $this->getRepositoryUrl();
-			if (!empty($repositoryUrl)) {
-				$gitService = new GitService();
-				try {
-					$this->repository = $gitService->getRepository($repositoryUrl);
-				} catch (\Exception $e) {
-					$this->repository = FALSE;
-				}
-			}
-		}
 		return $this->repository ?: NULL;
 	}
 

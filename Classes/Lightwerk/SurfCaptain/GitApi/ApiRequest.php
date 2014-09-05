@@ -73,6 +73,7 @@ class ApiRequest implements ApiRequestInterface {
 	 */
 	public function call($command, $method = 'GET', array $parameters = array(), array $content = array()) {
 		$url = $this->apiUrl . $command . '?' . http_build_query($parameters);
+		$this->emitBeforeApiCall($url, $method);
 		// maybe we will throw own exception to give less information (token is outputed)
 		$response = $this->browser->request($url, $method, array(), array(), $this->server, json_encode($content));
 
@@ -99,4 +100,12 @@ class ApiRequest implements ApiRequestInterface {
 	 * @Flow\Signal
 	 */
 	protected function emitApiCall($url, $method, Response $response) {}
+	
+	/**
+	 * @param string $url
+	 * @param string $method
+	 * @return void
+	 * @Flow\Signal
+	 */
+	protected function emitBeforeApiCall($url, $method) {}
 }
