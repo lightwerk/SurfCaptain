@@ -131,7 +131,11 @@ class GitService implements Driver\DriverInterface, GitServiceInterface {
 	 * @return Repository
 	 */
 	public function getRepository($repositoryUrl) {
-		return $this->getDriverFromRepositoryUrl($repositoryUrl)->getRepository($repositoryUrl);
+		// change for RepositoryController
+		$repository = $this->getDriverFromRepositoryUrl($repositoryUrl)->getRepository($repositoryUrl);
+		$repository->setBranches($this->getBranches($repositoryUrl));
+		$repository->setTags($this->getTags($repositoryUrl));
+		return $repository;
 	}
 
 	/**
