@@ -33,4 +33,21 @@ class DeploymentRepository extends Repository {
 	public function findAllWithLimit($limit) {
 		return $this->createQuery()->setLimit($limit)->execute();
 	}
+
+	/**
+	 * @param string $repositoryUrl
+	 * @param string $status
+	 * @return integer
+	 */
+	public function countByRepositoryUrlAndStatus($repositoryUrl, $status) {
+		$query = $this->createQuery();
+		return $query->matching(
+			$query->logicalAnd(
+				array(
+					$query->equals('repositoryUrl', $repositoryUrl),
+					$query->equals('status', $status),
+				)
+			)
+		)->count();
+	}
 }
