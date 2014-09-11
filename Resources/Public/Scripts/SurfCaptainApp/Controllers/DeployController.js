@@ -66,7 +66,9 @@ angular.module('surfCaptain').controller('DeployController', [
 
         $scope.deploy = function (preset) {
             if (preset === $scope.currentPreset) {
-                $scope.currentPreset.applications[0].type = CONFIG.applicationTypes.deployTYPO3;
+                if (angular.isUndefined($scope.currentPreset.applications[0].type)) {
+                    $scope.currentPreset.applications[0].type = CONFIG.applicationTypes.deployTYPO3;
+                }
                 if (angular.isDefined($scope.currentPreset.applications[0].options.deploymentPathWithMarkers)) {
                     delete $scope.currentPreset.applications[0].options.deploymentPathWithMarkers;
                 }
@@ -201,7 +203,7 @@ angular.module('surfCaptain').controller('DeployController', [
 
                     for (property in presets) {
                         if (presets.hasOwnProperty(property)) {
-                            if (angular.isUndefined(presets[property].applications[0].type) || presets[property].applications[0].type === CONFIG.applicationTypes.deployTYPO3) {
+                            if (angular.isUndefined(presets[property].applications[0].type) || presets[property].applications[0].type === CONFIG.applicationTypes.deployTYPO3 || presets[property].applications[0].type === CONFIG.applicationTypes.deploy) {
                                 $scope.servers.push(presets[property]);
                             }
                         }

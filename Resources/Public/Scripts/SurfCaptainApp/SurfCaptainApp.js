@@ -59,6 +59,7 @@ angular.module('surfCaptain', ['ngRoute', 'xeditable', 'ngAnimate', 'ngMessages'
     })
     .constant('CONFIG', {
         applicationTypes: {
+            deploy: 'Deploy',
             deployTYPO3: 'TYPO3\\CMS\\Deploy',
             syncTYPO3: 'TYPO3\\CMS\\Shared'
         }
