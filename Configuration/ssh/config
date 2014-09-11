@@ -1,4 +1,0 @@
-Host *
-	ConnectTimeout 5
-	BatchMode yes
-	LogLevel ERROR
