@@ -73,20 +73,21 @@ class ApiRequest implements ApiRequestInterface {
 	 */
 	public function call($command, $method = 'GET', array $parameters = array(), array $content = array()) {
 		$url = $this->apiUrl . $command . '?' . http_build_query($parameters);
+		$this->emitBeforeApiCall($url, $method);
 		// maybe we will throw own exception to give less information (token is outputed)
 		$response = $this->browser->request($url, $method, array(), array(), $this->server, json_encode($content));
 
-		$this->emitGitLabApiCall($url, $method, $response);
+		$this->emitApiCall($url, $method, $response);
 
 		$statusCode = $response->getStatusCode();
 
 		if ($statusCode < 200 || $statusCode >= 400) {
-			throw new Exception('GitHub request was not successful. Response was: ' . $response->getStatus(), 1408987295);
+			throw new Exception('ApiRequest was not successful for command  ' . $command . ' Response was: ' . $response->getStatus(), 1408987295);
 		}
 
 		$content = json_decode($response->getContent(), TRUE);
 		if ($content === NULL) {
-			throw new Exception('Response from GitHub is not a valid json', 1408987294);
+			throw new Exception('Response from ApiRequest is not a valid json', 1408987294);
 		}
 		return $content;
 	}
@@ -98,5 +99,13 @@ class ApiRequest implements ApiRequestInterface {
 	 * @return void
 	 * @Flow\Signal
 	 */
-	protected function emitGitLabApiCall($url, $method, Response $response) {}
+	protected function emitApiCall($url, $method, Response $response) {}
+	
+	/**
+	 * @param string $url
+	 * @param string $method
+	 * @return void
+	 * @Flow\Signal
+	 */
+	protected function emitBeforeApiCall($url, $method) {}
 }

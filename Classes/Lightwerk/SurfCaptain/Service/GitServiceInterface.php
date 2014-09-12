@@ -1,53 +1,54 @@
 <?php
-namespace Lightwerk\SurfCaptain\GitApi;
+namespace Lightwerk\SurfCaptain\Service;
 
 /*                                                                        *
  * This script belongs to the TYPO3 Flow package "Lightwerk.SurfCaptain". *
  *                                                                        *
  *                                                                        */
 
-use Lightwerk\SurfCaptain\Domain\Model\Branch;
 use Lightwerk\SurfCaptain\Domain\Model\Repository;
-use Lightwerk\SurfCaptain\Domain\Model\Tag;
+use Lightwerk\SurfCaptain\Utility\GeneralUtility;
+use TYPO3\Flow\Annotations as Flow;
 
-interface RepositoryDriverInterface {
+/**
+ * Git Service Interface
+ *
+ * @package Lightwerk\SurfCaptain
+ */
+interface GitServiceInterface {
 
 	/**
-	 * Sets the settings
-	 *
 	 * @param array $settings
 	 * @return void
 	 */
 	public function setSettings(array $settings);
 
 	/**
-	 * Returns repositories
-	 *
 	 * @return Repository[]
 	 */
 	public function getRepositories();
 
 	/**
-	 * Returns repository
-	 *
 	 * @param string $repositoryUrl
 	 * @return Repository
 	 */
 	public function getRepository($repositoryUrl);
 
 	/**
-	 * Returns branches of a repository
-	 *
 	 * @param string $repositoryUrl
-	 * @return Branch[]
+	 * @param string $filePath
+	 * @param string $reference branch name, tag name or hash
+	 * @return string
 	 */
-	public function getBranches($repositoryUrl);
+	public function getFileContent($repositoryUrl, $filePath, $reference = 'master');
 
 	/**
-	 * Returns tags of a repository
-	 *
 	 * @param string $repositoryUrl
-	 * @return Tag[]
+	 * @param string $filePath
+	 * @param string $content
+	 * @param string $commitMessage
+	 * @param string $branchName
+	 * @return void
 	 */
-	public function getTags($repositoryUrl);
+	public function setFileContent($repositoryUrl, $filePath, $content, $commitMessage, $branchName = 'master');
 }

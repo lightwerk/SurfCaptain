@@ -16,7 +16,7 @@ use TYPO3\Flow\Annotations as Flow;
  * @Flow\Scope("singleton")
  * @package Lightwerk\SurfCaptain
  */
-class GitService implements Driver\DriverInterface {
+class GitService implements Driver\DriverInterface, GitServiceInterface {
 
 	/**
 	 * @var Driver\DriverInterface[]
@@ -131,7 +131,11 @@ class GitService implements Driver\DriverInterface {
 	 * @return Repository
 	 */
 	public function getRepository($repositoryUrl) {
-		return $this->getDriverFromRepositoryUrl($repositoryUrl)->getRepository($repositoryUrl);
+		// change for RepositoryController
+		$repository = $this->getDriverFromRepositoryUrl($repositoryUrl)->getRepository($repositoryUrl);
+		$repository->setBranches($this->getBranches($repositoryUrl));
+		$repository->setTags($this->getTags($repositoryUrl));
+		return $repository;
 	}
 
 	/**

@@ -46,7 +46,7 @@ class DataMapper {
 	 */
 	protected function mapOneToObject($objectData, $objectClass, $settings) {
 		if (!is_array($objectData)) {
-			throw new Exception('Object mapping is not possible with given unexpected data: ' . json_encode($objectData), 1408468371);
+			throw new Exception('Object mapping is not possible with given unexpected data for ObjectClass ' . $objectClass . ': ' . json_encode($objectData), 1408468371);
 		}
 		if (!class_exists($objectClass)) {
 			throw new Exception('Object class "' . $objectClass . '" does not exist!', 1408203711);
