@@ -18,6 +18,13 @@ use TYPO3\Flow\Annotations as Flow;
 class DeploymentController extends AbstractRestController {
 
 	/**
+	 * TODO should be \Lightwerk\SurfCaptain\GitApi\DriverComposite
+	 * @var \Lightwerk\SurfCaptain\Service\GitServiceInterface
+	 * @Flow\Inject
+	 */
+	protected $driverComposite;
+
+	/**
 	 * @FLow\Inject
 	 * @var DeploymentRepository
 	 */
@@ -42,6 +49,9 @@ class DeploymentController extends AbstractRestController {
 	 * @return void
 	 */
 	public function showAction(Deployment $deployment) {
+		$repositoryUrl = $deployment->getRepositoryUrl();
+		$repository = $this->driverComposite->getRepository($repositoryUrl);
+		$deployment->setRepository($repository);
 		$this->view->assign('deployment', $deployment);
 	}
 

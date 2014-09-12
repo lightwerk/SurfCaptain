@@ -47,7 +47,6 @@ class RepositoryController extends AbstractRestController {
 	 * @return void
 	 */
 	public function showAction($repositoryUrl) {
-		// TODO lw_af missing branches/tags
 		try {
 			$repository = $this->driverComposite->getRepository($repositoryUrl)
 				->setDeployments($this->deploymentRepository->findByRepositoryUrl($repositoryUrl))
