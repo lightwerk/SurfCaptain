@@ -11,42 +11,7 @@ Lightwerk:
         test: 'Testing'
         dev: 'Development'
 
-    presets:
-      repositoryUrl: git@git.lightwerk.com:lm/lightwerk-surfcaptain-settings.git
-      filePath: Presets.json
-
     gitApi:
       requestListener:
         save: FALSE
         log: FALSE
-
-    sources:
-      git.lightwerk.com:
-        className: \Lightwerk\SurfCaptain\Service\Driver\GitLabDriver
-#        privateToken: 'Please define this value in root/Configuration/Settings.yaml'
-        apiUrl: https://git.lightwerk.com/api/v3/
-        repositories:
-          _projectFilter:
-            groupIds:
-              - 10
-        mapping:
-          Repository:
-            repositoryUrl: '{{ssh_url_to_repo}}'
-          Commit:
-            date: '{{committed_date}}'
-            committerName: '{{committer.name}}'
-      git.sma.de:
-        className: \Lightwerk\SurfCaptain\Service\Driver\GitLabDriver
-#        privateToken: 'Please define this value in root/Configuration/Settings.yaml'
-        apiUrl: http://git.sma.de/api/v3/
-        repositories:
-          _rcwSmaDeFilter:
-            repositoryUrls:
-              - git@git.sma.de:sma-websites/rcw-sma-de.git
-        mapping:
-          Repository:
-            repositoryUrl: 'git@git.sma.de:{{path_with_namespace}}.git'
-            webUrl: 'http://git.sma.de/{{path_with_namespace}}'
-          Commit:
-            date: '{{committed_date}}'
-            committerName: '{{committer.name}}'
