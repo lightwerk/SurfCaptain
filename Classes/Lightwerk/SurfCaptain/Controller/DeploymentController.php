@@ -49,10 +49,14 @@ class DeploymentController extends AbstractRestController {
 	 * @return void
 	 */
 	public function showAction(Deployment $deployment) {
-		$repositoryUrl = $deployment->getRepositoryUrl();
-		$repository = $this->driverComposite->getRepository($repositoryUrl);
-		$deployment->setRepository($repository);
-		$this->view->assign('deployment', $deployment);
+		try {
+			$repositoryUrl = $deployment->getRepositoryUrl();
+			$repository = $this->driverComposite->getRepository($repositoryUrl);
+			$deployment->setRepository($repository);
+			$this->view->assign('deployment', $deployment);
+		} catch (\Lightwerk\SurfCaptain\Service\Exception $e) {
+			$this->handleException($e);
+		}
 	}
 
 	/**
