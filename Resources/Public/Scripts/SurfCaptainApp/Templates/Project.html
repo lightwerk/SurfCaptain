@@ -16,7 +16,7 @@
 		</div>
 	</div>
 	<div class="row">
-		<div class="col-xs-12 text-center">
+		<div class="col-xs-10 col-xs-offset-1">
 			<div
 				class="deployment-server-container"
 				data-ng-repeat="server in presets"
@@ -24,14 +24,14 @@
 				<div class="deployment-server"
 					 data-ng-class="{false:'disabled'}[presetDisplay(server)]; getRootContext(server.applications.0.options.context)"
 				>
+					<div class="pull-right">
+						<div class="context">({{server.applications.0.options.context}})</div>
+					</div>
 					<div class="title">
 						<i class="fa fa-hdd-o"></i>{{server.applications.0.nodes.0.name}}
 					</div>
-					<div class="context-container">
-						<span class="context">({{server.applications.0.options.context}})</span>
-					</div>
+					<div class="deployed-commit">{{getDeployedTag(server.applications.0.nodes.0.name)}}</div>
 				</div>
-				<span>{{getDeployedTag(server.applications.0.nodes.0.name)}}</span>
 			</div>
 			<span data-ng-if="finished && presets.length === 0" class="no-activities">No servers in project {{name | uppercase}} yet!
 				<a data-ng-href="#/project/{{name}}/server">Create one</a>!
@@ -44,7 +44,7 @@
 		</div>
 	</div>
 	<div class="row">
-		<div class="col-xs-12 col-md-10 col-md-push-1 text-center">
+		<div class="col-xs-10 col-xs-offset-1">
 			<table class="table table-striped">
 				<thead>
 					<tr>

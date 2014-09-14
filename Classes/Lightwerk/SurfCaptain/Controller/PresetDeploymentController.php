@@ -8,7 +8,7 @@ namespace Lightwerk\SurfCaptain\Controller;
 
 use Lightwerk\SurfCaptain\Domain\Model\Deployment;
 use Lightwerk\SurfCaptain\Domain\Repository\DeploymentRepository;
-use Lightwerk\SurfCaptain\Service\PresetService;
+use Lightwerk\SurfCaptain\Domain\Repository\Preset\RepositoryInterface as PresetRepositoryInterface;
 use TYPO3\Flow\Annotations as Flow;
 
 /**
@@ -26,9 +26,9 @@ class PresetDeploymentController extends AbstractRestController {
 
 	/**
 	 * @Flow\Inject
-	 * @var PresetService
+	 * @var PresetRepositoryInterface
 	 */
-	protected $presetService;
+	protected $presetRepository;
 
 	/**
 	 * @var string
@@ -42,7 +42,7 @@ class PresetDeploymentController extends AbstractRestController {
 	 * @return void
 	 */
 	public function createAction($key) {
-		$configuration = $this->presetService->getPreset($key);
+		$configuration = $this->presetRepository->findByIdentifier($key);
 		$deployment = new Deployment();
 		$deployment->setConfiguration($configuration);
 		$deployment->setClientIp($this->request->getHttpRequest()->getClientIpAddress());

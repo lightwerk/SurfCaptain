@@ -6,8 +6,14 @@ namespace Lightwerk\SurfCaptain\GitApi\Driver;
  *                                                                        *
  *                                                                        */
 
+use Lightwerk\SurfCaptain\Domain\Model\Repository;
 use TYPO3\Flow\Annotations as Flow;
 
+/**
+ * GitLab Driver
+ *
+ * @package Lightwerk\SurfCaptain
+ */
 class GitLabDriver extends AbstractDriver {
 
 	/**
@@ -27,33 +33,29 @@ class GitLabDriver extends AbstractDriver {
 	 * @return boolean
 	 */
 	public function hasRepository($repositoryUrl) {
-		if ($this->getRepositoryAccount($repositoryUrl) === $this->settings['accountName']) {
-			return TRUE;
-		}
-		return FALSE;
+		return $this->getRepositoryAccount($repositoryUrl) === $this->settings['accountName'];
 	}
 
 	/**
 	 * @return array
 	 */
 	public function getRepositories() {
-		// TODO for "old" configuration
-		unset($this->settings['repositories']['_projectFilter']);
-		unset($this->settings['repositories']['_rcwSmaDeFilter']);
-
 		$repositories = array();
-		foreach ($this->settings['repositories'] as $name => $command) {
+		foreach ($this->settings['repositories'] as $command) {
 			$response = $this->apiRequest->call($command);
 			if (isset($response['projects']) === FALSE) {
 				$projects = array($response);
 			} else {
 				$projects = $response['projects'];
 			}
-			$repositories = array_merge($repositories, $this->dataMapper->mapToObject(
-				$projects,
-				'\\Lightwerk\\SurfCaptain\\Domain\\Model\\Repository[]',
-				$this->settings['mapping']
-			));
+			$repositories = array_merge(
+				$repositories,
+				$this->dataMapper->mapToObject(
+					$projects,
+					'\\Lightwerk\\SurfCaptain\\Domain\\Model\\Repository[]',
+					!empty($this->settings['mapping']) ? $this->settings['mapping'] : array()
+				)
+			);
 		}
 		return $repositories;
 	}
@@ -63,6 +65,7 @@ class GitLabDriver extends AbstractDriver {
 	 * @param string $filePath
 	 * @param string $reference branch name, tag name or hash
 	 * @return string
+	 * @throws Exception
 	 */
 	public function getFileContent($repositoryUrl, $filePath, $reference = 'master') {
 		$response = $this->apiRequest->call(
@@ -92,8 +95,10 @@ class GitLabDriver extends AbstractDriver {
 	 * @return void
 	 */
 	public function setFileContent($repositoryUrl, $filePath, $content, $commitMessage, $branchName = 'master') {
+		$name = $this->getRepositoryName($repositoryUrl);
+		$name = urlencode($name);
 		$this->apiRequest->call(
-			'projects/' . $this->getName($repositoryUrl) . '/repository/files',
+			'projects/' . $name . '/repository/files',
 			'PUT',
 			array(),
 			array(
@@ -104,7 +109,6 @@ class GitLabDriver extends AbstractDriver {
 			)
 		);
 	}
-
 
 	/**
 	 * @param string $repositoryUrl
@@ -120,6 +124,7 @@ class GitLabDriver extends AbstractDriver {
 			'\\Lightwerk\\SurfCaptain\\Domain\\Model\\Repository',
 			$this->settings['mapping']
 		);
+
 		// branches
 		$response = $this->apiRequest->call($command . '/repository/branches');
 		$branches = $this->dataMapper->mapToObject(
@@ -128,6 +133,7 @@ class GitLabDriver extends AbstractDriver {
 			$this->settings['mapping']
 		);
 		$repository->setBranches($branches);
+
 		// tags
 		$response = $this->apiRequest->call($command . '/repository/tags');
 		$tags = $this->dataMapper->mapToObject(
@@ -136,6 +142,7 @@ class GitLabDriver extends AbstractDriver {
 			$this->settings['mapping']
 		);
 		$repository->setTags($tags);
+
 		return $repository;
 	}
 

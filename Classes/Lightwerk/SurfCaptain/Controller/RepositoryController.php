@@ -7,7 +7,7 @@ namespace Lightwerk\SurfCaptain\Controller;
  *                                                                        */
 
 use Lightwerk\SurfCaptain\Domain\Repository\DeploymentRepository;
-use Lightwerk\SurfCaptain\Service\PresetService;
+use Lightwerk\SurfCaptain\Domain\Repository\Preset\RepositoryInterface as PresetRepositoryInterface;
 use TYPO3\Flow\Annotations as Flow;
 
 /**
@@ -18,8 +18,7 @@ use TYPO3\Flow\Annotations as Flow;
 class RepositoryController extends AbstractRestController {
 
 	/**
-	 * TODO should be \Lightwerk\SurfCaptain\GitApi\DriverComposite
-	 * @var \Lightwerk\SurfCaptain\Service\GitServiceInterface
+	 * @var \Lightwerk\SurfCaptain\GitApi\DriverComposite
 	 * @Flow\Inject
 	 */
 	protected $driverComposite;
@@ -32,9 +31,9 @@ class RepositoryController extends AbstractRestController {
 
 	/**
 	 * @Flow\Inject
-	 * @var PresetService
+	 * @var PresetRepositoryInterface
 	 */
-	protected $presetService;
+	protected $presetRepository;
 
 	/**
 	 * @var string
@@ -50,7 +49,7 @@ class RepositoryController extends AbstractRestController {
 		try {
 			$repository = $this->driverComposite->getRepository($repositoryUrl)
 				->setDeployments($this->deploymentRepository->findByRepositoryUrl($repositoryUrl))
-				->setPresets($this->presetService->getPresetsByRepositoryUrl($repositoryUrl));
+				->setPresets($this->presetRepository->findByRepositoryUrl($repositoryUrl));
 			$this->view->assign('repository', $repository);
 		} catch (\Lightwerk\SurfCaptain\Service\Exception $e) {
 			$this->handleException($e);

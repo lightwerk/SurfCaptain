@@ -6,6 +6,7 @@ namespace Lightwerk\SurfCaptain\GitApi;
  *                                                                        *
  *                                                                        */
 
+use Lightwerk\SurfCaptain\Domain\Model\Repository;
 use TYPO3\Flow\Annotations as Flow;
 
 /**
@@ -14,7 +15,7 @@ use TYPO3\Flow\Annotations as Flow;
  * @Flow\Scope("singleton")
  * @package Lightwerk\SurfCaptain
  */
-class DriverComposite implements DriverInterface, \Lightwerk\SurfCaptain\Service\GitServiceInterface {
+class DriverComposite implements DriverInterface {
 
 	/**
 	 * @var DriverInterface[]
@@ -45,6 +46,7 @@ class DriverComposite implements DriverInterface, \Lightwerk\SurfCaptain\Service
 	/**
 	 * @param array $settings 
 	 * @return void
+	 * @throws Exception
 	 */
 	public function setSettings(array $settings) {
 		if (!is_array($settings['sources'])) {
@@ -63,9 +65,9 @@ class DriverComposite implements DriverInterface, \Lightwerk\SurfCaptain\Service
 				$this->drivers[$key] = $driver;
 			} else {
 				throw new Exception(
-						'Class "' . $source['className'] . '" does not implement Lightwerk\SurfCaptain\GitApi\DriverInterface!',
-						1407739781
-						);
+					'Class "' . $source['className'] . '" does not implement Lightwerk\SurfCaptain\GitApi\DriverInterface!',
+					1407739781
+				);
 			}
 		}
 	}
@@ -113,6 +115,7 @@ class DriverComposite implements DriverInterface, \Lightwerk\SurfCaptain\Service
 	 * @param string $filePath
 	 * @param string $reference branch name, tag name or hash
 	 * @return string
+	 * @throws Exception
 	 */
 	public function getFileContent($repositoryUrl, $filePath, $reference = 'master') {
 		foreach ($this->drivers as $driver) {
@@ -130,6 +133,7 @@ class DriverComposite implements DriverInterface, \Lightwerk\SurfCaptain\Service
 	 * @param string $commitMessage
 	 * @param string $branchName
 	 * @return void
+	 * @throws Exception
 	 */
 	public function setFileContent($repositoryUrl, $filePath, $content, $commitMessage, $branchName = 'master') {
 		foreach ($this->drivers as $driver) {

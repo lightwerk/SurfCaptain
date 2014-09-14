@@ -5,6 +5,7 @@ namespace Lightwerk\SurfCaptain\GitApi;
  * This script belongs to the TYPO3 Flow package "Lightwerk.SurfCaptain". *
  *                                                                        *
  *                                                                        */
+use Lightwerk\SurfCaptain\Domain\Model\Repository;
 
 
 /**

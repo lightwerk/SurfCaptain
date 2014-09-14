@@ -1,9 +1,16 @@
 Lightwerk:
   SurfCaptain:
+
+    # Flow passes these settings directly to the angular single page application
     frontendSettings:
+      # Default ssh user for deployments
       defaultUser: 'lw-deployment'
+      # Target path for deployments (without '../htdocs')
       defaultDeploymentPath: '/var/www/{{project}}/{{suffix}}/'
+      # Contexts starting with these main contexts are valid
+      # Further subdivisions are possible with subcontexts (of example: 'Production/Qa')
       contexts: 'Production,Testing,Development'
+      # Offer these contexts as suggestions for new servers
       nameSuggestions:
         live: 'Production'
         qa: 'Production/Qa'
@@ -15,3 +22,17 @@ Lightwerk:
       requestListener:
         save: FALSE
         log: FALSE
+
+    # Configures sources of the git repositories
+    sources:
+      # See Packages/Application/Lightwerk.SurfCaptain/Configuration/Settings.yaml.example
+
+    repository:
+      # Presets are preconfigured deployment configurations (usually on per server).
+      # Default is fileRepository. Change the default in Configuration/Objects.yaml.
+      preset:
+        fileRepository:
+          filePath: 'Configuration/Presets.json'
+        gitRepository:
+          repositoryUrl: 'git@github.com:achimfritz/Test.git'
+          filePath: 'Presets.json'

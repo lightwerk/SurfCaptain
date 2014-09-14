@@ -1,5 +1,5 @@
 <?php
-namespace Lightwerk\SurfCaptain\Service\Driver;
+namespace Lightwerk\SurfCaptain\Domain\Repository;
 
 /*                                                                        *
  * This script belongs to the TYPO3 Flow package "Lightwerk.SurfCaptain". *
@@ -11,5 +11,5 @@ namespace Lightwerk\SurfCaptain\Service\Driver;
  *
  * @package Lightwerk\SurfCaptain
  */
-class Exception extends \Lightwerk\SurfCaptain\Service\Exception {
+class Exception extends \Lightwerk\SurfCaptain\Exception {
 }

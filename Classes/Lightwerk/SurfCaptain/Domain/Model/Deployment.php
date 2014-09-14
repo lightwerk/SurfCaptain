@@ -9,6 +9,7 @@ namespace Lightwerk\SurfCaptain\Domain\Model;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Lightwerk\SurfCaptain\GitApi\DriverComposite;
 use TYPO3\Flow\Annotations as Flow;
 
 /**
@@ -71,6 +72,12 @@ class Deployment {
 	 * @Flow\Validate(type="NotEmpty")
 	 */
 	protected $configuration;
+
+	/**
+	 * @var DriverComposite
+	 * @Flow\Inject
+	 */
+	protected $driverComposite;
 
 	/**
 	 * Constructs a new Deployment
@@ -238,6 +245,17 @@ class Deployment {
 	 * @return Repository|NULL
 	 */
 	public function getRepository() {
+		// ToDo lw-lm: Find better way to do that (Flow/Inject annotation?)
+		if ($this->repository === NULL) {
+			$repositoryUrl = $this->getRepositoryUrl();
+			if (!empty($repositoryUrl)) {
+				try {
+					$this->repository = $this->driverComposite->getRepository($repositoryUrl);
+				} catch (\Exception $e) {
+					$this->repository = FALSE;
+				}
+			}
+		}
 		return $this->repository ?: NULL;
 	}
 

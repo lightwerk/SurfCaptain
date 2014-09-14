@@ -8,6 +8,7 @@ namespace Lightwerk\SurfCaptain\Controller;
 
 use Lightwerk\SurfCaptain\Domain\Model\Deployment;
 use Lightwerk\SurfCaptain\Domain\Repository\DeploymentRepository;
+use Lightwerk\SurfCaptain\Service\Exception;
 use TYPO3\Flow\Annotations as Flow;
 
 /**
@@ -18,8 +19,7 @@ use TYPO3\Flow\Annotations as Flow;
 class DeploymentController extends AbstractRestController {
 
 	/**
-	 * TODO should be \Lightwerk\SurfCaptain\GitApi\DriverComposite
-	 * @var \Lightwerk\SurfCaptain\Service\GitServiceInterface
+	 * @var \Lightwerk\SurfCaptain\GitApi\DriverComposite
 	 * @Flow\Inject
 	 */
 	protected $driverComposite;
@@ -50,11 +50,8 @@ class DeploymentController extends AbstractRestController {
 	 */
 	public function showAction(Deployment $deployment) {
 		try {
-			$repositoryUrl = $deployment->getRepositoryUrl();
-			$repository = $this->driverComposite->getRepository($repositoryUrl);
-			$deployment->setRepository($repository);
 			$this->view->assign('deployment', $deployment);
-		} catch (\Lightwerk\SurfCaptain\Service\Exception $e) {
+		} catch (Exception $e) {
 			$this->handleException($e);
 		}
 	}

@@ -23,7 +23,7 @@ class DataMapper {
 	 * @param array $objectData
 	 * @param string $objectClass
 	 * @param array $settings
-	 * @return object
+	 * @return object|array
 	 */
 	public function mapToObject(array $objectData, $objectClass, array $settings) {
 		if (preg_match('/^(.+)\[\]$/', $objectClass, $matches)) {

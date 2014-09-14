@@ -6,7 +6,7 @@ namespace Lightwerk\SurfCaptain\Controller;
  *                                                                        *
  *                                                                        */
 
-use Lightwerk\SurfCaptain\Service\PresetService;
+use Lightwerk\SurfCaptain\Domain\Repository\Preset\RepositoryInterface as PresetRepositoryInterface;
 use TYPO3\Flow\Annotations as Flow;
 
 /**
@@ -18,9 +18,9 @@ class PresetController extends AbstractRestController {
 
 	/**
 	 * @Flow\Inject
-	 * @var PresetService
+	 * @var PresetRepositoryInterface
 	 */
-	protected $presetService;
+	protected $presetRepository;
 
 	/**
 	 * @var string
@@ -34,8 +34,9 @@ class PresetController extends AbstractRestController {
 	 */
 	public function showAction($key) {
 		try {
-			$this->view->assign('key', $key)
-					   ->assign('configuration', $this->presetService->getPreset($key));
+			$this->view
+				->assign('key', $key)
+				->assign('configuration', $this->presetRepository->findByIdentifier($key));
 		} catch (\Lightwerk\SurfCaptain\Service\Exception $e) {
 			$this->handleException($e);
 		} catch (\TYPO3\Flow\Http\Exception $e) {
@@ -50,9 +51,9 @@ class PresetController extends AbstractRestController {
 	public function listAction($globals = NULL) {
 		try {
 			if (empty($globals)) {
-				$presets = $this->presetService->getPresets();
+				$presets = $this->presetRepository->findAll();
 			} else {
-				$presets = $this->presetService->getGlobalPresets();
+				$presets = $this->presetRepository->findGlobals();
 			}
 			$this->view->assign('presets', $presets);
 		} catch (\Lightwerk\SurfCaptain\Service\Exception $e) {
@@ -67,9 +68,9 @@ class PresetController extends AbstractRestController {
 	 * @param array $configuration
 	 * @return void
 	 */
-	public function createAction($key, $configuration) {
+	public function createAction($key, array $configuration) {
 		try {
-			$this->presetService->addPreset($key, $configuration);
+			$this->presetRepository->add($key, $configuration);
 			$this->addFlashMessage('Created a new preset.');
 			$this->redirect('show', NULL, NULL, array('key' => $key));
 		} catch (\Lightwerk\SurfCaptain\Service\Exception $e) {
@@ -84,9 +85,9 @@ class PresetController extends AbstractRestController {
 	 * @param array $configuration
 	 * @return void
 	 */
-	public function updateAction($key, $configuration) {
+	public function updateAction($key, array $configuration) {
 		try {
-			$this->presetService->updatePreset($key, $configuration);
+			$this->presetRepository->update($key, $configuration);
 			$this->addFlashMessage('Updated a a preset.');
 			$this->redirect('show', NULL, NULL, array('key' => $key));
 		} catch (\Lightwerk\SurfCaptain\Service\Exception $e) {
@@ -102,7 +103,7 @@ class PresetController extends AbstractRestController {
 	 */
 	public function deleteAction($key) {
 		try {
-			$this->presetService->deletePreset($key);
+			$this->presetRepository->remove($key);
 			$this->addFlashMessage('Deleted a preset.');
 			$this->redirect('list');
 		} catch (\Lightwerk\SurfCaptain\Service\Exception $e) {

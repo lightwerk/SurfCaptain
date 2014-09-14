@@ -8,6 +8,11 @@ namespace Lightwerk\SurfCaptain;
 
 use TYPO3\Flow\Package\Package as BasePackage;
 
+/**
+ * Package Class
+ *
+ * @package Lightwerk\SurfCaptain
+ */
 class Package extends BasePackage {
 
 	/**

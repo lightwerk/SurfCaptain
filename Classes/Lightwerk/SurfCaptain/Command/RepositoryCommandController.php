@@ -7,20 +7,22 @@ namespace Lightwerk\SurfCaptain\Command;
  *                                                                        */
 
 use TYPO3\Flow\Annotations as Flow;
-use Lightwerk\SurfCaptain\Domain\Repository\DeploymentRepository;
-use Lightwerk\SurfCaptain\Service\PresetService;
 
+/**
+ * Repository Command Controller
+ *
+ * @package Lightwerk\SurfCaptain
+ */
 class RepositoryCommandController extends \TYPO3\Flow\Cli\CommandController {
 
 	/**
-	 * TODO should be \Lightwerk\SurfCaptain\GitApi\DriverComposite
-	 * @var \Lightwerk\SurfCaptain\Service\GitServiceInterface
+	 * @var \Lightwerk\SurfCaptain\GitApi\DriverComposite
 	 * @Flow\Inject
 	 */
 	protected $driverComposite;
 
 	/**
-	 * listCommand 
+	 * List Command
 	 *
 	 * @return void
 	 */
@@ -32,6 +34,8 @@ class RepositoryCommandController extends \TYPO3\Flow\Cli\CommandController {
 	}
 
 	/**
+	 * Show Command
+	 *
 	 * @param string $url
 	 * @return void
 	 */

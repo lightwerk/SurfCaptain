@@ -9,7 +9,7 @@
 
 Example call:
 
-    curl -H "Accept: application/json" http://surf.flow.lp.lw.loc/api/repositories | jq '.'
+    curl -H "Accept: application/json" http://surf.flow.lp.lw.loc/api/repository | jq '.'
 
 ### Show Repository
 
