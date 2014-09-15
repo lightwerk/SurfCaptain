@@ -69,7 +69,7 @@ class GitLabDriver extends AbstractDriver {
 	 */
 	public function getFileContent($repositoryUrl, $filePath, $reference = 'master') {
 		$response = $this->apiRequest->call(
-			'projects/' . $this->getRepositoryName($repositoryUrl) . '/repository/files',
+			'projects/' . urlencode($this->getRepositoryName($repositoryUrl)) . '/repository/files',
 			'GET',
 			array(
 				'file_path' => $filePath,
@@ -95,10 +95,8 @@ class GitLabDriver extends AbstractDriver {
 	 * @return void
 	 */
 	public function setFileContent($repositoryUrl, $filePath, $content, $commitMessage, $branchName = 'master') {
-		$name = $this->getRepositoryName($repositoryUrl);
-		$name = urlencode($name);
 		$this->apiRequest->call(
-			'projects/' . $name . '/repository/files',
+			'projects/' . urlencode($this->getRepositoryName($repositoryUrl)) . '/repository/files',
 			'PUT',
 			array(),
 			array(
