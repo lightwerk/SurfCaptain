@@ -50,7 +50,7 @@ angular.module('surfCaptain', ['ngRoute', 'xeditable', 'ngAnimate', 'ngMessages'
                 redirectTo: '/'
             });
     }])
-    .value('version', '0.17_beta2')
+    .value('version', '1.0.0')
     .constant('SEVERITY', {
         ok: 0,
         info: 1,
@@ -68,7 +68,7 @@ angular.module('surfCaptain', ['ngRoute', 'xeditable', 'ngAnimate', 'ngMessages'
 angular.module('surfCaptain').run(['editableOptions', function (editableOptions) {
     editableOptions.theme = 'bs3';
 }]);
-/*global surfCaptain*/
+/*global surfCaptain,angular*/
 /*jslint node: true */
 
 'use strict';
@@ -191,16 +191,31 @@ angular.module('surfCaptain').controller('AbstractSingleProjectController', [
     '$routeParams',
     'ProjectRepository',
     'FavorService',
-    function ($scope, $routeParams, ProjectRepository, FavorService) {
+    'FlashMessageService',
+    'SEVERITY',
+    function ($scope, $routeParams, ProjectRepository, FavorService, FlashMessageService, SEVERITY) {
         $scope.name = $routeParams.projectName;
         $scope.project = {};
         $scope.messages = {};
+        $scope.error = false;
 
         this.init = function () {
-            ProjectRepository.getProjects().then(function (projects) {
-                $scope.project = ProjectRepository.getProjectByName($scope.name, projects);
-                FavorService.addFavoriteProject($scope.project);
-            });
+            ProjectRepository.getProjects().then(
+                function (projects) {
+                    $scope.project = ProjectRepository.getProjectByName($scope.name, projects);
+                    FavorService.addFavoriteProject($scope.project);
+                },
+                function () {
+                    $scope.finished = true;
+                    $scope.messages = FlashMessageService.addFlashMessage(
+                        'Error!',
+                        'API call failed. Please try again later.',
+                        SEVERITY.error,
+                        'request-error'
+                    );
+                    $scope.error = true;
+                }
+            );
         };
         this.init();
     }
@@ -228,6 +243,13 @@ angular.module('surfCaptain').controller('DeployController', [
         var loadingString = 'loading ...',
             self = this;
 
+        function DeployControllerException(message) {
+            this.name = 'DeployControllerException';
+            this.message = message;
+        }
+        DeployControllerException.prototype = new Error();
+        DeployControllerException.prototype.constructor = DeployControllerException;
+
         // Inherit from AbstractSingleProjectController
         angular.extend(this, $controller('AbstractSingleProjectController', {$scope: $scope}));
 
@@ -248,16 +270,33 @@ angular.module('surfCaptain').controller('DeployController', [
         $scope.tags = [];
 
         /**
+         * @param {string} message
+         * @param {boolean} unique
          * @return {void}
          */
-        this.addFailureFlashMessage = function () {
+        this.addFailureFlashMessage = function (message, unique) {
             $scope.finished = true;
             $scope.messages = FlashMessageService.addFlashMessage(
-                'Request failed!',
-                'API call failed. Deployment not possible.',
+                'Error!',
+                message,
                 SEVERITY.error,
-                'deployment-project-call-failed'
+                unique ? 'deployment-project-call-failed' : undefined
             );
+            $scope.error = true;
+        };
+
+        /**
+         * @returns {object}
+         * @throws DeployControllerException
+         */
+        this.getCurrentCommit = function () {
+            var commits = $scope.deployableCommits.filter(function (commit) {
+                return commit.identifier === $scope.selectedCommit;
+            });
+            if (angular.isUndefined(commits[0]) || commits === null || commits.length > 1) {
+                throw new DeployControllerException('Something went wrong with the chosen Commit');
+            }
+            return commits[0];
         };
 
         /**
@@ -293,12 +332,8 @@ angular.module('surfCaptain').controller('DeployController', [
                         ProjectRepository.updateFullProjectInCache($scope.project.repositoryUrl);
                         $location.path('project/' + $scope.name + '/deployment/' + response.deployment.__identity);
                     },
-                    function (response) {
-                        $scope.messages = FlashMessageService.addFlashMessage(
-                            'Error!',
-                            'Deployment configuration could not be submitted successfully. Try again later.',
-                            SEVERITY.error
-                        );
+                    function () {
+                        self.addFailureFlashMessage('Deployment configuration could not be submitted successfully. Try again later.', false);
                     }
                 );
             }
@@ -308,39 +343,31 @@ angular.module('surfCaptain').controller('DeployController', [
          * @return {void}
          */
         $scope.setCommitInCurrentPreset = function () {
-            var commit = $scope.deployableCommits.filter(function (commit) {
-                return commit.identifier === $scope.selectedCommit;
-            }), date;
-            if (angular.isUndefined(commit[0]) || commit === null || commit.length > 1) {
-                FlashMessageService.addFlashMessage(
-                    'Error',
-                    'Something went wrong with the chosen Commit',
-                    SEVERITY.error
-                );
-                $scope.error = true;
-                return;
-            }
-            $scope.currentCommit = commit[0];
-            switch ($scope.currentCommit.type) {
-            case 'Branch':
-                delete $scope.currentPreset.applications[0].options.tag;
-                $scope.currentPreset.applications[0].options.branch = $scope.currentCommit.name;
-                break;
-            case 'Tag':
-                delete $scope.currentPreset.applications[0].options.branch;
-                $scope.currentPreset.applications[0].options.tag = $scope.currentCommit.name;
-                break;
-            default:
-                FlashMessageService.addFlashMessage(
-                    'Error',
-                    'Something went wrong with the chosen Commit',
-                    SEVERITY.error
-                );
-                $scope.error = true;
+            try {
+                $scope.currentCommit = self.getCurrentCommit();
+                switch ($scope.currentCommit.type) {
+                case 'Branch':
+                    delete $scope.currentPreset.applications[0].options.tag;
+                    $scope.currentPreset.applications[0].options.branch = $scope.currentCommit.name;
+                    break;
+                case 'Tag':
+                    delete $scope.currentPreset.applications[0].options.branch;
+                    $scope.currentPreset.applications[0].options.tag = $scope.currentCommit.name;
+                    break;
+                default:
+                    self.addFailureFlashMessage(
+                        'Something is wrong with the type of the chosen commit. This should never happen. ' +
+                            'In fact, If you see this message, please go ahaed and punch any of the involved developers in the face.',
+                        false
+                    );
+                    $scope.currentCommit = null;
+                    return;
+                }
+                $scope.currentPreset.applications[0].options.sha1 = $scope.currentCommit.commit.id;
+            } catch (e) {
+                self.addFailureFlashMessage(e.message, false);
                 $scope.currentCommit = null;
-                return;
             }
-            $scope.currentPreset.applications[0].options.sha1 = $scope.currentCommit.commit.id;
         };
 
         /**
@@ -426,7 +453,7 @@ angular.module('surfCaptain').controller('DeployController', [
                     }
                 },
                 function () {
-                    self.addFailureFlashMessage();
+                    self.addFailureFlashMessage('API call failed. Deployment not possible.', true);
                 }
             );
 
@@ -435,7 +462,7 @@ angular.module('surfCaptain').controller('DeployController', [
                     $scope.globalServers = response.presets;
                 },
                 function (response) {
-                    self.addFailureFlashMessage();
+                    self.addFailureFlashMessage('API call failed. Deployment not possible.', true);
                 }
             );
 
@@ -1002,9 +1029,13 @@ angular.module('surfCaptain').controller('SingleDeploymentController', [
     'FlashMessageService',
     'SEVERITY',
     'ProjectRepository',
-    function ($scope, DeploymentRepository, $routeParams, $cacheFactory, $location, FlashMessageService, SEVERITY, ProjectRepository) {
+    '$controller',
+    function ($scope, DeploymentRepository, $routeParams, $cacheFactory, $location, FlashMessageService, SEVERITY, ProjectRepository, $controller) {
 
         var self = this;
+
+        // Inherit from AbstractSingleProjectController
+        angular.extend(this, $controller('AbstractSingleProjectController', {$scope: $scope}));
 
         /**
          * @return {void}
@@ -1354,9 +1385,9 @@ angular.module('surfCaptain').directive('flashMessages', ['SEVERITY', 'FlashMess
              * @returns {string}
              */
             generateFlashMessage = function (message, id) {
-                return '<div class="flash-message" id="'
-                    + id
-                    + '">'
+                var idString = id ? ' id="' + id + '">' : '">';
+                return '<div class="flash-message"'
+                    + idString
                     + '<div class="flash-message-title '
                     + getSeverityClass(message.severity)
                     + '">'
