@@ -36,9 +36,9 @@ angular.module('surfCaptain').directive('flashMessages', ['SEVERITY', 'FlashMess
              * @returns {string}
              */
             generateFlashMessage = function (message, id) {
-                return '<div class="flash-message" id="'
-                    + id
-                    + '">'
+                var idString = id ? ' id="' + id + '">' : '">';
+                return '<div class="flash-message"'
+                    + idString
                     + '<div class="flash-message-title '
                     + getSeverityClass(message.severity)
                     + '">'

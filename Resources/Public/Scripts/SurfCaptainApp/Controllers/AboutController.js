@@ -1,4 +1,4 @@
-/*global surfCaptain*/
+/*global surfCaptain,angular*/
 /*jslint node: true */
 
 'use strict';
