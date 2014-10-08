@@ -50,7 +50,7 @@ angular.module('surfCaptain', ['ngRoute', 'xeditable', 'ngAnimate', 'ngMessages'
                 redirectTo: '/'
             });
     }])
-    .value('version', '0.17_beta2')
+    .value('version', '1.0.0')
     .constant('SEVERITY', {
         ok: 0,
         info: 1,
