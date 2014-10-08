@@ -33,6 +33,8 @@
 				<dd>{{deployment.repositoryUrl}}</dd>
 				<dt data-ng-if="deployment.referenceName">Reference name</dt>
 				<dd data-ng-if="deployment.referenceName">{{deployment.referenceName}}</dd>
+				<dt>Deployed Commit</dt>
+				<dd><a data-ng-href="{{project.webUrl}}/commit/{{deployment.configuration.applications[0].options.sha1}}" target="_blank">{{deployment.configuration.applications[0].options.sha1 | limitTo:10}}</a></dd>
 				<dt>Client IP</dt>
 				<dd>{{deployment.clientIp}}</dd>
 				<dt>Configuration</dt>

@@ -11,9 +11,13 @@ angular.module('surfCaptain').controller('SingleDeploymentController', [
     'FlashMessageService',
     'SEVERITY',
     'ProjectRepository',
-    function ($scope, DeploymentRepository, $routeParams, $cacheFactory, $location, FlashMessageService, SEVERITY, ProjectRepository) {
+    '$controller',
+    function ($scope, DeploymentRepository, $routeParams, $cacheFactory, $location, FlashMessageService, SEVERITY, ProjectRepository, $controller) {
 
         var self = this;
+
+        // Inherit from AbstractSingleProjectController
+        angular.extend(this, $controller('AbstractSingleProjectController', {$scope: $scope}));
 
         /**
          * @return {void}
