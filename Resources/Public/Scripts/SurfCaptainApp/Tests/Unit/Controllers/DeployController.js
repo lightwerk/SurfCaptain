@@ -57,7 +57,8 @@ describe('Deployontroller', function () {
             name: 'fooBar',
             commit: {
                 id: '123'
-            }
+            },
+            identifier: 'abcdefg'
         };
     });
 
@@ -133,6 +134,31 @@ describe('Deployontroller', function () {
         it('should set $scope.error to true.', function () {
             ctrl.addFailureFlashMessage();
             expect(scope.error).toBeTruthy();
+        });
+    });
+
+    describe('->getCurrentCommit()', function () {
+        beforeEach(function () {
+            scope.selectedCommit = commit.identifier;
+        });
+
+        it('should throw an error if $scope.selectedCommit is not found within $scope.deployableCommits.', function () {
+            function errorFunctionWrapper() {
+                ctrl.getCurrentCommit();
+            }
+            expect(errorFunctionWrapper).toThrow();
+        });
+        it('should throw an error if $scope.selectedCommit is found more than once within $scope.deployableCommits.', function () {
+            scope.deployableCommits.push(commit);
+            scope.deployableCommits.push(commit);
+            function errorFunctionWrapper() {
+                ctrl.getCurrentCommit();
+            }
+            expect(errorFunctionWrapper).toThrow();
+        });
+        it('should return the commit object with matching identifier if it is found once in $scope.deployableCommits.', function () {
+            scope.deployableCommits.push(commit);
+            expect(ctrl.getCurrentCommit()).toEqual(commit);
         });
     });
 
