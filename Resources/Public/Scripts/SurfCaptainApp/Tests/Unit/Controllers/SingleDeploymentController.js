@@ -12,15 +12,11 @@ describe('SingleDeploymentController', function () {
         DeploymentRepository = _DeploymentRepository_;
         $q = _$q_;
         $cacheFactory = _$cacheFactory_;
-        $routeParams = {
-            deploymentId: 'foo'
-        };
         setTimeoutSpy = jasmine.createSpy('setTimeout');
         ctrl = $controller('SingleDeploymentController', {
             $scope: scope,
             $location: $location,
             DeploymentRepository: DeploymentRepository,
-            $routeParams: $routeParams,
             $cacheFactory: $cacheFactory
         });
     }));
@@ -124,6 +120,12 @@ describe('SingleDeploymentController', function () {
             ctrl.initLiveLog();
             jasmine.Clock.tick(1000);
             expect(ctrl.getDeployment).toHaveBeenCalled();
+        });
+    });
+
+    describe('inheritance', function () {
+        it('should fill a property "project" on $scope.', function () {
+            expect(scope.project).toBeDefined();
         });
     });
 
