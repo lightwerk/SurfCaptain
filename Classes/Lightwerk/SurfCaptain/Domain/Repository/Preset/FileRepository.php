@@ -30,9 +30,11 @@ class FileRepository extends AbstractRepository implements RepositoryInterface {
 	 * Saves the presets.
 	 *
 	 * @param array $presets
+	 * @param string $logMessage
 	 * @return void
+	 * @SuppressWarnings(PHPMD.UnusedFormalParameter)
 	 */
-	protected function savePresets(array $presets) {
+	protected function savePresets(array $presets, $logMessage) {
 		$this->setDecodedFileContent($presets);
 	}
 

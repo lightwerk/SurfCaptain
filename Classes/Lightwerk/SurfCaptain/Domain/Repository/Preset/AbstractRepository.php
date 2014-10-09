@@ -19,9 +19,10 @@ abstract class AbstractRepository implements RepositoryInterface {
 	 * Saves the presets.
 	 *
 	 * @param array $presets
+	 * @param string $logMessage
 	 * @return void
 	 */
-	abstract protected function savePresets(array $presets);
+	abstract protected function savePresets(array $presets, $logMessage);
 
 	/**
 	 * Load the presets.
@@ -53,7 +54,7 @@ abstract class AbstractRepository implements RepositoryInterface {
 		}
 		$presets[$identifier] = $configuration;
 		ksort($presets);
-		$this->savePresets($presets);
+		$this->savePresets($presets, 'Adds preset with identifier "' . $identifier . '"');
 	}
 
 	/**
@@ -73,7 +74,7 @@ abstract class AbstractRepository implements RepositoryInterface {
 			throw new Exception('Empty configuration is not allowed', 1410595612);
 		}
 		$presets[$identifier] = $configuration;
-		$this->savePresets($presets);
+		$this->savePresets($presets, 'Updates preset with identifier "' . $identifier . '"');
 	}
 
 	/**
@@ -89,7 +90,7 @@ abstract class AbstractRepository implements RepositoryInterface {
 			throw new Exception('Could not find preset', 1410549993);
 		}
 		unset($presets[$identifier]);
-		$this->savePresets($presets);
+		$this->savePresets($presets, 'Removes preset with identifier "' . $identifier . '"');
 	}
 
 	/**

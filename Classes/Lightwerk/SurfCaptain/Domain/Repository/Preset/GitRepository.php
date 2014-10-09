@@ -43,15 +43,15 @@ class GitRepository extends AbstractRepository implements RepositoryInterface {
 	 * Saves the presets.
 	 *
 	 * @param array $presets
+	 * @param string $logMessage
 	 * @return void
 	 */
-	protected function savePresets(array $presets) {
-		$diff = array_diff_assoc($this->presets, $presets);
+	protected function savePresets(array $presets, $logMessage) {
 		$this->driverComposite->setFileContent(
 			$this->settings['repositoryUrl'],
 			$this->settings['filePath'],
 			json_encode($presets, JSON_PRETTY_PRINT),
-			'[SURFCAPTAIN] Adds/updates/removes ' . implode(', ', array_keys($diff))
+			'[SURFCAPTAIN] ' . $logMessage
 		);
 		$this->presets = NULL;
 	}
