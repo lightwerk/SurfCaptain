@@ -3,6 +3,7 @@ test:
 standard:
   - less
   - concat
+  - ngAnnotate
 default:
   - standard
   - uglify

@@ -1,15 +1,13 @@
-/*jslint node: true, plusplus:true */
-/*global surfCaptain, angular*/
+/* global angular */
 
-'use strict';
-angular.module('surfCaptain').controller('GlobalServerController', [
-    '$scope',
-    'PresetRepository',
-    'PresetService',
-    'FlashMessageService',
-    'SEVERITY',
-    'SettingsRepository',
-    function ($scope, PresetRepository, PresetService, FlashMessageService, SEVERITY, SettingsRepository) {
+(function () {
+    'use strict';
+    angular
+        .module('surfCaptain')
+        .controller('GlobalServerController', GlobalServerController);
+
+    /* @ngInject */
+    function GlobalServerController($scope, PresetRepository, PresetService, FlashMessageService, SEVERITY, SettingsRepository) {
         var self = this;
 
         $scope.newPreset = PresetService.getNewPreset();
@@ -61,7 +59,7 @@ angular.module('surfCaptain').controller('GlobalServerController', [
                         );
                     }
                 },
-                function (response) {
+                function () {
                     $scope.finished = true;
                     $scope.messages = FlashMessageService.addFlashMessage(
                         'Request failed!',
@@ -81,7 +79,7 @@ angular.module('surfCaptain').controller('GlobalServerController', [
         $scope.addServer = function (server) {
             $scope.finished = false;
             PresetRepository.addServer(server).then(
-                function (response) {
+                function () {
                     $scope.newPreset = PresetService.getNewPreset();
                     $scope.newServerForm.$setPristine();
                     $scope.getAllServers();
@@ -91,7 +89,7 @@ angular.module('surfCaptain').controller('GlobalServerController', [
                         SEVERITY.ok
                     );
                 },
-                function (response) {
+                function () {
                     $scope.finished = true;
                     $scope.messages = FlashMessageService.addFlashMessage(
                         'Creation failed!',
@@ -113,4 +111,4 @@ angular.module('surfCaptain').controller('GlobalServerController', [
         };
         this.init();
     }
-]);
+}());

@@ -1,7 +1,11 @@
-/*global surfCaptain, angular*/
-/*jslint node: true */
+/* global angular */
 
-'use strict';
-angular.module('surfCaptain').controller('ExtensionsController', ['$scope', '$controller', function ($scope) {
+(function () {
+    'use strict';
+    angular
+        .module('surfCaptain')
+        .controller('ExtensionsController', ExtensionsController);
 
-}]);
+    /* @ngInject */
+    function ExtensionsController() {}
+}());

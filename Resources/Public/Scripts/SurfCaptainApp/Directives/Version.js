@@ -1,9 +1,15 @@
-/*global surfCaptain*/
-/*jslint node: true */
+/* global angular */
 
-'use strict';
-angular.module('surfCaptain').directive('appVersion', ['version', function (version) {
-    return function (scope, element, attributes) {
-        element.text(version);
-    };
-}]);
+(function () {
+    'use strict';
+    angular
+        .module('surfCaptain')
+        .directive('appVersion', appVersion);
+
+    /* @ngInject */
+    function appVersion(version) {
+        return function (scope, element) {
+            element.text(version);
+        };
+    }
+}());

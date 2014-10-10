@@ -1,13 +1,13 @@
-/*global surfCaptain, angular*/
-/*jslint node: true */
+/* global angular */
 
-'use strict';
-angular.module('surfCaptain').controller('DeploymentsController', [
-    '$scope',
-    'DeploymentRepository',
-    'FlashMessageService',
-    'SEVERITY',
-    function ($scope, DeploymentRepository, FlashMessageService, SEVERITY) {
+(function () {
+    'use strict';
+    angular
+        .module('surfCaptain')
+        .controller('DeploymentsController', DeploymentsController);
+
+    /* @ngInject */
+    function DeploymentsController($scope, DeploymentRepository, FlashMessageService, SEVERITY) {
 
         var self = this;
 
@@ -44,4 +44,4 @@ angular.module('surfCaptain').controller('DeploymentsController', [
         $scope.deployments = [];
         $scope.finished = false;
     }
-]);
+}());

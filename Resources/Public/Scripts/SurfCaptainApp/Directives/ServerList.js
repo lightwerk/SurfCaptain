@@ -1,16 +1,14 @@
-/*global surfCaptain,angular*/
-/*jslint node: true, plusplus:true */
+/* global angular */
 
-'use strict';
-angular.module('surfCaptain').directive('serverList', [
-    'PresetRepository',
-    'ValidationService',
-    'FlashMessageService',
-    'SEVERITY',
-    'SettingsRepository',
-    'ProjectRepository',
-    function (PresetRepository, ValidationService, FlashMessageService, SEVERITY, SettingsRepository, ProjectRepository) {
-        var linker = function (scope, element, attrs) {
+(function () {
+    'use strict';
+    angular
+        .module('surfCaptain')
+        .directive('serverList', serverList);
+
+    /* @ngInject */
+    function serverList(PresetRepository, ValidationService, FlashMessageService, SEVERITY, SettingsRepository, ProjectRepository) {
+        var linker = function (scope) {
             scope.toggleSpinnerAndOverlay = function () {
                 scope.finished = !scope.finished;
                 scope.$parent.finished = !scope.$parent.finished;
@@ -59,7 +57,7 @@ angular.module('surfCaptain').directive('serverList', [
             scope.deleteServer = function (server) {
                 scope.toggleSpinnerAndOverlay();
                 PresetRepository.deleteServer(server).then(
-                    function (response) {
+                    function () {
                         scope.$parent.getAllServers(false);
                         scope.messages = FlashMessageService.addFlashMessage(
                             'Server deleted!',
@@ -67,7 +65,7 @@ angular.module('surfCaptain').directive('serverList', [
                             SEVERITY.ok
                         );
                     },
-                    function (response) {
+                    function () {
                         scope.toggleSpinnerAndOverlay();
                         scope.messages = FlashMessageService.addFlashMessage(
                             'Deletion failed!',
@@ -176,4 +174,4 @@ angular.module('surfCaptain').directive('serverList', [
             link: linker
         };
     }
-]);
+}());

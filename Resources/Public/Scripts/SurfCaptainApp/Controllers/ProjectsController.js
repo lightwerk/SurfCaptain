@@ -1,22 +1,19 @@
-/*global surfCaptain, angular*/
-/*jslint node: true */
+/* global angular */
 
-'use strict';
-angular.module('surfCaptain').controller('ProjectsController', [
-    '$scope',
-    'ProjectRepository',
-    'SettingsRepository',
-    'SEVERITY',
-    'FlashMessageService',
-    'FavorService',
-    function ($scope, ProjectRepository, SettingsRepository, SEVERITY, FlashMessageService, FavorService) {
+(function () {
+    'use strict';
+    angular
+        .module('surfCaptain')
+        .controller('ProjectsController', ProjectsController);
+
+    /* @ngInject */
+    function ProjectsController($scope, ProjectRepository, SettingsRepository, SEVERITY, FlashMessageService) {
         $scope.settings = {};
         $scope.ordering = 'name';
         $scope.projects = [];
         $scope.finished = false;
 
         this.init = function () {
-            // Retrieve Projects from Factory
             ProjectRepository.getProjects().then(
                 function (response) {
                     $scope.finished = true;
@@ -41,4 +38,4 @@ angular.module('surfCaptain').controller('ProjectsController', [
         };
         this.init();
     }
-]);
+}());
