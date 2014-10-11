@@ -1,9 +1,15 @@
-/*global surfCaptain*/
-/*jslint node: true */
+/* global angular */
 
-'use strict';
-angular.module('surfCaptain').directive('tooltip', function () {
-    return function (scope, element, attributes) {
-        element.tooltip();
-    };
-});
+(function () {
+    'use strict';
+    angular
+        .module('surfCaptain')
+        .directive('tooltip', tooltip);
+
+    /* @ngInject */
+    function tooltip() {
+        return function (scope, element) {
+            element.tooltip();
+        };
+    }
+}());

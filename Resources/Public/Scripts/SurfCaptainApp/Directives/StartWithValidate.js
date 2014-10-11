@@ -1,59 +1,65 @@
-/*global surfCaptain,angular*/
-/*jslint node: true, plusplus: true */
+/* global angular */
 
-'use strict';
-angular.module('surfCaptain').directive('startWithValidate', ['ValidationService', function (ValidationService) {
-    return {
-        restrict: 'A',
-        require: 'ngModel',
-        scope: {
-            startWithValidate: '='
-        },
-        link: function (scope, elem, attr, ctrl) {
-            // add a parser
-            ctrl.$parsers.unshift(function (value) {
-                var i = 0,
-                    length;
+(function () {
+    'use strict';
+    angular
+        .module('surfCaptain')
+        .directive('startWithValidate', startWithValidate);
 
-                if (angular.isUndefined(scope.startWithValidate)) {
-                    ctrl.$setValidity('start-with-validate', true);
-                    return value;
-                }
-                length = scope.startWithValidate.length;
+    /* @ngInject */
+    function startWithValidate(ValidationService) {
+        return {
+            restrict: 'A',
+            require: 'ngModel',
+            scope: {
+                startWithValidate: '='
+            },
+            link: function (scope, elem, attr, ctrl) {
+                // add a parser
+                ctrl.$parsers.unshift(function (value) {
+                    var i = 0,
+                        length;
 
-                for (i; i < length; i++) {
-                    if (ValidationService.doesStringStartWithSubstring(value, scope.startWithValidate[i])) {
+                    if (angular.isUndefined(scope.startWithValidate)) {
                         ctrl.$setValidity('start-with-validate', true);
                         return value;
                     }
-                }
+                    length = scope.startWithValidate.length;
 
-                ctrl.$setValidity('start-with-validate', false);
-                return undefined;
-            });
+                    for (i; i < length; i++) {
+                        if (ValidationService.doesStringStartWithSubstring(value, scope.startWithValidate[i])) {
+                            ctrl.$setValidity('start-with-validate', true);
+                            return value;
+                        }
+                    }
 
-            // add a formatter
-            ctrl.$formatters.unshift(function (value) {
-                var i = 0,
-                    length;
+                    ctrl.$setValidity('start-with-validate', false);
+                    return undefined;
+                });
 
-                if (angular.isUndefined(scope.startWithValidate)) {
-                    ctrl.$setValidity('start-with-validate', true);
-                    return value;
-                }
-                length = scope.startWithValidate.length;
+                // add a formatter
+                ctrl.$formatters.unshift(function (value) {
+                    var i = 0,
+                        length;
 
-                for (i; i < length; i++) {
-                    if (ValidationService.doesStringStartWithSubstring(value, scope.startWithValidate[i])) {
+                    if (angular.isUndefined(scope.startWithValidate)) {
                         ctrl.$setValidity('start-with-validate', true);
                         return value;
                     }
-                }
+                    length = scope.startWithValidate.length;
 
-                ctrl.$setValidity('start-with-validate', false);
-                return value;
-            });
+                    for (i; i < length; i++) {
+                        if (ValidationService.doesStringStartWithSubstring(value, scope.startWithValidate[i])) {
+                            ctrl.$setValidity('start-with-validate', true);
+                            return value;
+                        }
+                    }
 
-        }
-    };
-}]);
+                    ctrl.$setValidity('start-with-validate', false);
+                    return value;
+                });
+
+            }
+        };
+    }
+}());

@@ -13,7 +13,7 @@ module.exports = {
         files: [
             'Resources/Public/Scripts/SurfCaptainApp/**/*.js'
         ],
-        tasks: ['concat', 'uglify:angular', 'karma:unit:run'],
+        tasks: ['concat', 'ngAnnotate', 'uglify:angular', 'karma:unit:run'],
         options: {
             nospawn: true
         }

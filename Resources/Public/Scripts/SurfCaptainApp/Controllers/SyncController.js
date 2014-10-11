@@ -1,25 +1,26 @@
-/*global surfCaptain, angular*/
-/*jslint node: true */
+/* global angular */
 
-'use strict';
-angular.module('surfCaptain').controller('SyncController', [
-    '$scope',
-    '$controller',
-    'PresetRepository',
-    'CONFIG',
-    'FlashMessageService',
-    'SEVERITY',
-    'ProjectRepository',
-    'PresetService',
-    'SettingsRepository',
-    'DeploymentRepository',
-    '$location',
-    function ($scope, $controller, PresetRepository, CONFIG, FlashMessageService, SEVERITY, ProjectRepository, PresetService, SettingsRepository, DeploymentRepository, $location) {
+(function () {
+    'use strict';
+    angular
+        .module('surfCaptain')
+        .controller('SyncController', SyncController);
 
-        var self = this;
+    /* @ngInject */
+    function SyncController($scope, $controller, PresetRepository, CONFIG, FlashMessageService, SEVERITY, ProjectRepository, SettingsRepository, DeploymentRepository, $location) {
 
         // Inherit from AbstractSingleProjectController
         angular.extend(this, $controller('AbstractSingleProjectController', {$scope: $scope}));
+
+        // Inherit from AbstractApplicationController
+        angular.extend(this, $controller('AbstractApplicationController', {$scope: $scope}));
+
+        var self = this;
+
+        $scope.servers = [];
+        $scope.finished = false;
+        $scope.currentSource = {};
+        $scope.currentTarget = {};
 
         /**
          * @return {void}
@@ -62,7 +63,7 @@ angular.module('surfCaptain').controller('SyncController', [
                 function (response) {
                     $scope.globalServers = response.presets;
                 },
-                function (response) {
+                function () {
                     self.addFailureFlashMessage();
                 }
             );
@@ -75,10 +76,6 @@ angular.module('surfCaptain').controller('SyncController', [
          * @return {void}
          */
         this.init = function () {
-            $scope.servers = [];
-            $scope.finished = false;
-            $scope.currentSource = {};
-            $scope.currentTarget = {};
             self.setContexts();
             self.setGlobalServers();
         };
@@ -114,14 +111,6 @@ angular.module('surfCaptain').controller('SyncController', [
         };
 
         /**
-         * @param {string} context
-         * @returns {string}
-         */
-        $scope.getRootContext = function (context) {
-            return PresetService.getRootContext(context, $scope.contexts);
-        };
-
-        /**
          * @param {object} preset
          * @return {void}
          */
@@ -152,7 +141,7 @@ angular.module('surfCaptain').controller('SyncController', [
                     $scope.messages = FlashMessageService.addFlashMessage(
                         'OK!',
                         target.applications[0].nodes[0].name + ' will be synchronized with ' +
-                            source.applications[0].nodes[0].name + '.',
+                        source.applications[0].nodes[0].name + '.',
                         SEVERITY.ok
                     );
                     ProjectRepository.updateFullProjectInCache($scope.project.repositoryUrl);
@@ -198,4 +187,4 @@ angular.module('surfCaptain').controller('SyncController', [
             );
         });
     }
-]);
+}());
