@@ -9,10 +9,47 @@ div.project-history {
 		width: 100%;
 		text-align: center;
 	}
-	.deployment-server {
-		float: none;
-		margin: 10px auto;
-		cursor: default;
+	.deployment-server-container {
+		position: relative;
+		width: 100%;
+		.deployment-server {
+			float: none;
+			margin: 10px auto;
+			cursor: default;
+		}
+		.server-overlay {
+			width: 40%;
+			height: 100%;
+			position: absolute;
+			border: solid 2px #000;
+			border-left: none;
+			background-color:rgba(0, 0, 0, 0.7);
+			right: 0;
+			top: 0;
+			display: none;
+			.overlay-application {
+				width: 50%;
+				height: 100%;
+				position: relative;
+				float: left;
+				text-align: center;
+				.application {
+					color: @main-color;
+					margin-top: 7px;
+				}
+			}
+			.overlay-deploy {
+				border-right: 2px solid #000;
+			}
+			.overlay-sync {
+				border-radius: 0 5px 5px 0;
+			}
+		}
+		&:hover {
+			.server-overlay {
+				display: block;
+			}
+		}
 	}
 
 	.history {

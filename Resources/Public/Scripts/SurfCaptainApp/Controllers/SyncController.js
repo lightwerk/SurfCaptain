@@ -70,6 +70,49 @@
         };
 
         /**
+         * Takes a set of presets, recieved from the API and fills the
+         * $scope.servers with any preset that have no or one of the
+         * allowed applicationTypes from CONFIG.
+         *
+         * @param {object} presets
+         * @return {void}
+         */
+        this.setServersFromPresets = function (presets) {
+            var property;
+            for (property in presets) {
+                if (presets.hasOwnProperty(property)) {
+                    if (angular.isUndefined(presets[property].applications[0].type) ||
+                        presets[property].applications[0].type === CONFIG.applicationTypes.syncTYPO3) {
+                        $scope.servers.push(presets[property]);
+                    }
+                }
+            }
+            self.setPreconfiguredServer();
+        };
+
+        /**
+         * It is possible to assign a server as sync source
+         * as the GET parameter server. This method checks if
+         * that parameter exists and is a valid server. If
+         * this is the case, setCurrentSource() is called to
+         * trigger step2.
+         *
+         * @return {void}
+         */
+        this.setPreconfiguredServer = function () {
+            var searchObject = $location.search(),
+                preconfiguredPreset;
+            if (angular.isDefined(searchObject.server)) {
+                preconfiguredPreset = $scope.servers.filter(function (preset) {
+                    return preset.applications[0].nodes[0].name.toLowerCase() === searchObject.server.toLowerCase();
+                });
+                if (preconfiguredPreset.length) {
+                    $scope.setCurrentSource(preconfiguredPreset[0]);
+                }
+            }
+        };
+
+        /**
          * Initialization of SyncController. This function is called
          * immediately after creation of the controller.
          *
@@ -162,15 +205,7 @@
 
             ProjectRepository.getFullProjectByRepositoryUrl(project.repositoryUrl).then(
                 function (response) {
-                    var property,
-                        presets = response.repository.presets;
-                    for (property in presets) {
-                        if (presets.hasOwnProperty(property)) {
-                            if (angular.isUndefined(presets[property].applications[0].type) || presets[property].applications[0].type === CONFIG.applicationTypes.syncTYPO3) {
-                                $scope.servers.push(presets[property]);
-                            }
-                        }
-                    }
+                    self.setServersFromPresets(response.repository.presets);
                     $scope.finished = true;
                     if ($scope.servers.length === 0) {
                         $scope.messages = FlashMessageService.addFlashMessage(

@@ -73,6 +73,50 @@
         };
 
         /**
+         * Takes a set of presets, recieved from the API and fills the
+         * $scope.servers with any preset that have no or one of the
+         * allowed applicationTypes from CONFIG.
+         *
+         * @param {object} presets
+         * @return {void}
+         */
+        this.setServersFromPresets = function (presets) {
+            var property;
+            for (property in presets) {
+                if (presets.hasOwnProperty(property)) {
+                    if (angular.isUndefined(presets[property].applications[0].type) ||
+                        presets[property].applications[0].type === CONFIG.applicationTypes.deployTYPO3 ||
+                        presets[property].applications[0].type === CONFIG.applicationTypes.deploy) {
+                        $scope.servers.push(presets[property]);
+                    }
+                }
+            }
+            self.setPreconfiguredServer();
+        };
+
+        /**
+         * It is possible to assign a server as deploy target
+         * as the GET parameter server. This method checks if
+         * that parameter exists and is a valid server. If
+         * this is the case, setCurrentPreset() is called to
+         * trigger step2.
+         *
+         * @return {void}
+         */
+        this.setPreconfiguredServer = function () {
+            var searchObject = $location.search(),
+                preconfiguredPreset;
+            if (angular.isDefined(searchObject.server)) {
+                preconfiguredPreset = $scope.servers.filter(function (preset) {
+                    return preset.applications[0].nodes[0].name.toLowerCase() === searchObject.server.toLowerCase();
+                });
+                if (preconfiguredPreset.length) {
+                    $scope.setCurrentPreset(preconfiguredPreset[0]);
+                }
+            }
+        };
+
+        /**
          * @param {object} preset
          * @return {void}
          */
@@ -191,8 +235,6 @@
 
             ProjectRepository.getFullProjectByRepositoryUrl(project.repositoryUrl).then(
                 function (response) {
-                    var property,
-                        presets = response.repository.presets;
                     $scope.repositoryUrl = response.repository.webUrl;
                     response.repository.tags.sort(UtilityService.byCommitDate);
                     response.repository.branches.sort(UtilityService.byCommitDate);
@@ -200,13 +242,8 @@
                     $scope.deployableCommits = response.repository.tags;
                     jQuery.merge($scope.deployableCommits, response.repository.branches);
 
-                    for (property in presets) {
-                        if (presets.hasOwnProperty(property)) {
-                            if (angular.isUndefined(presets[property].applications[0].type) || presets[property].applications[0].type === CONFIG.applicationTypes.deployTYPO3 || presets[property].applications[0].type === CONFIG.applicationTypes.deploy) {
-                                $scope.servers.push(presets[property]);
-                            }
-                        }
-                    }
+                    self.setServersFromPresets(response.repository.presets);
+
                     $scope.finished = true;
                     if ($scope.servers.length === 0) {
                         $scope.messages = FlashMessageService.addFlashMessage(

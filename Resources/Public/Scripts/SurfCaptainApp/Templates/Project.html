@@ -22,7 +22,7 @@
 				data-ng-repeat="server in presets"
 			>
 				<div class="deployment-server"
-					 data-ng-class="{false:'disabled'}[presetDisplay(server)]; getRootContext(server.applications[0].options.context)"
+					 data-ng-class="getRootContext(server.applications[0].options.context)"
 				>
 					<div class="pull-right">
 						<div class="context">({{server.applications[0].options.context}})</div>
@@ -31,6 +31,20 @@
 						<i class="fa fa-hdd-o"></i>{{server.applications[0].nodes[0].name}}
 					</div>
 					<div class="deployed-commit">{{getDeployedTag(server.applications[0].nodes[0].name)}}</div>
+				</div>
+				<div class="server-overlay">
+					<div class="overlay-deploy overlay-application">
+						<span class="application btn btn-danger" data-ng-click="triggerDeployment(server.applications[0].nodes[0].name)">
+							<i class="fa fa-road"></i>
+							Deploy
+						</span>
+					</div>
+					<div class="overlay-sync overlay-application">
+						<span class="application btn btn-warning" data-ng-click="triggerSync(server.applications[0].nodes[0].name)">
+							<i class="fa fa-refresh"></i>
+							Sync
+						</span>
+					</div>
 				</div>
 			</div>
 			<span data-ng-if="finished && presets.length === 0" class="no-activities">No servers in project {{name | uppercase}} yet!

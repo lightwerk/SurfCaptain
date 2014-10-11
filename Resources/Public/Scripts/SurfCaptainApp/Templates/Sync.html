@@ -33,11 +33,11 @@
 							data-ng-class="[sourceDisplay(server), getRootContext(server.applications[0].options.context)]"
 							data-ng-click="setCurrentSource(server)"
 							>
+						<div class="pull-right">
+							<div class="context">({{server.applications[0].options.context}})</div>
+						</div>
 						<div class="title">
 							<i class="fa fa-hdd-o"></i>{{server.applications[0].nodes[0].name}}
-						</div>
-						<div class="context-container">
-							<span class="context">({{server.applications[0].options.context}})</span>
 						</div>
 					</div>
 				</div>
@@ -65,11 +65,11 @@
 						data-ng-class="[getRootContext(globalServer.applications[0].options.context), targetDisplay(globalServer)]"
 						data-ng-click="setCurrentTarget(globalServer)"
 						>
+					<div class="pull-right">
+						<div class="context">({{globalServer.applications[0].options.context}})</div>
+					</div>
 					<div class="title">
 						<i class="fa fa-hdd-o"></i>{{globalServer.applications[0].nodes[0].name}}
-					</div>
-					<div class="context-container">
-						<span class="context">({{globalServer.applications[0].options.context}})</span>
 					</div>
 				</div>
 			</div>

@@ -7,7 +7,7 @@
         .controller('ProjectController', ProjectController);
 
     /* @ngInject */
-    function ProjectController($scope, $controller, FlashMessageService, ProjectRepository, SEVERITY, PresetService, SettingsRepository, UtilityService) {
+    function ProjectController($scope, $controller, ProjectRepository, PresetService, SettingsRepository, UtilityService, $location) {
 
         // Inherit from AbstractSingleProjectController
         angular.extend(this, $controller('AbstractSingleProjectController', {$scope: $scope}));
@@ -31,6 +31,30 @@
          */
         $scope.getDeployedTag = function (name) {
             return UtilityService.getDeployedTag(name, $scope.tags);
+        };
+
+        /**
+         * Sets the GET Parameter server and redirects to
+         * the deploy view.
+         *
+         * @param {string} serverName
+         * @return {void}
+         */
+        $scope.triggerDeployment = function (serverName) {
+            $location.search('server', serverName);
+            $location.path('project/' + $scope.name + '/deploy');
+        };
+
+        /**
+         * Sets the GET Parameter server and redirects to
+         * the sync view.
+         *
+         * @param {string} serverName
+         * @return {void}
+         */
+        $scope.triggerSync = function (serverName) {
+            $location.search('server', serverName);
+            $location.path('project/' + $scope.name + '/sync');
         };
 
         $scope.$watch('project', function (project) {

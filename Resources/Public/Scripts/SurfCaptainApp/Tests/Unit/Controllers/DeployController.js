@@ -14,6 +14,9 @@ describe('Deployontroller', function () {
         $location = {
             path: function (path) {
                 return path;
+            },
+            search: function () {
+                return {server: 'foobaar'};
             }
         };
         CONFIG = _CONFIG_;
