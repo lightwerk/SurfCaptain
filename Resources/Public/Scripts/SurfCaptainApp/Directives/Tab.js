@@ -1,12 +1,18 @@
-/*global surfCaptain,angular*/
-/*jslint node: true */
+/* global angular */
 
-'use strict';
-angular.module('surfCaptain').directive('tab', function () {
-    return function (scope, element, attributes) {
-        element.bind('click', function (e) {
-            e.preventDefault();
-            angular.element(this).tab('show');
-        });
-    };
-});
+(function () {
+    'use strict';
+    angular
+        .module('surfCaptain')
+        .directive('tab', tab);
+
+    /* @ngInject */
+    function tab() {
+        return function (scope, element) {
+            element.bind('click', function (e) {
+                e.preventDefault();
+                angular.element(this).tab('show');
+            });
+        };
+    }
+}());

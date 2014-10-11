@@ -7,7 +7,7 @@ module.exports = {
             'Resources/Public/Scripts/Main.min.js': ['Resources/Public/Scripts/Main.js']
         },
         options: {
-            mangle: false
+            mangle: true
         }
     },
     libs: {

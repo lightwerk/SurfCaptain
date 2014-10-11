@@ -1,18 +1,13 @@
-/*global surfCaptain, angular*/
-/*jslint node: true */
+/* global angular */
 
-'use strict';
-angular.module('surfCaptain').controller('SingleDeploymentController', [
-    '$scope',
-    'DeploymentRepository',
-    '$routeParams',
-    '$cacheFactory',
-    '$location',
-    'FlashMessageService',
-    'SEVERITY',
-    'ProjectRepository',
-    '$controller',
-    function ($scope, DeploymentRepository, $routeParams, $cacheFactory, $location, FlashMessageService, SEVERITY, ProjectRepository, $controller) {
+(function () {
+    'use strict';
+    angular
+        .module('surfCaptain')
+        .controller('SingleDeploymentController', SingleDeploymentController);
+
+    /* @ngInject */
+    function SingleDeploymentController($scope, DeploymentRepository, $routeParams, $cacheFactory, $location, FlashMessageService, SEVERITY, ProjectRepository, $controller) {
 
         var self = this;
 
@@ -20,6 +15,10 @@ angular.module('surfCaptain').controller('SingleDeploymentController', [
         angular.extend(this, $controller('AbstractSingleProjectController', {$scope: $scope}));
 
         /**
+         * Triggers the request for the Deployment object
+         * after 1 second again if status of deployment
+         * is either "waiting" or "running".
+         *
          * @return {void}
          */
         this.initLiveLog = function () {
@@ -27,21 +26,21 @@ angular.module('surfCaptain').controller('SingleDeploymentController', [
                 return;
             }
             switch ($scope.deployment.status) {
-            case 'success':
-            case 'failed':
-            case 'cancelled':
-                if (angular.isUndefined($cacheFactory.get('deploymentCache'))) {
-                    $cacheFactory('deploymentCache');
-                }
-                $cacheFactory.get('deploymentCache').put($scope.deployment.__identity, $scope.deployment);
-                ProjectRepository.updateFullProjectInCache($scope.deployment.repositoryUrl);
-                return;
-            case 'waiting':
-            case 'running':
-                setTimeout(self.getDeployment, 1000);
-                break;
-            default:
-                return;
+                case 'success':
+                case 'failed':
+                case 'cancelled':
+                    if (angular.isUndefined($cacheFactory.get('deploymentCache'))) {
+                        $cacheFactory('deploymentCache');
+                    }
+                    $cacheFactory.get('deploymentCache').put($scope.deployment.__identity, $scope.deployment);
+                    ProjectRepository.updateFullProjectInCache($scope.deployment.repositoryUrl);
+                    return;
+                case 'waiting':
+                case 'running':
+                    setTimeout(self.getDeployment, 1000);
+                    break;
+                default:
+                    return;
             }
         };
 
@@ -71,6 +70,9 @@ angular.module('surfCaptain').controller('SingleDeploymentController', [
 
         this.init();
 
+        /**
+         * @return {void}
+         */
         $scope.cancelDeployment = function () {
             DeploymentRepository.cancelDeployment($routeParams.deploymentId).then(
                 function () {
@@ -79,13 +81,17 @@ angular.module('surfCaptain').controller('SingleDeploymentController', [
             );
         };
 
+        /**
+         * @return {void}
+         */
         $scope.deployConfigurationAgain = function () {
             DeploymentRepository.addDeployment($scope.deployment.configuration).then(
                 function (response) {
                     $scope.messages = FlashMessageService.addFlashMessage(
                         'OK!',
-                        $scope.deployment.referenceName + ' will be shortly deployed onto '
-                            + $scope.deployment.configuration.applications[0].nodes[0].name + '! You can cancel the deployment while it is still waiting.',
+                        $scope.deployment.referenceName + ' will be shortly deployed onto ' +
+                        $scope.deployment.configuration.applications[0].nodes[0].name +
+                        '! You can cancel the deployment while it is still waiting.',
                         SEVERITY.ok
                     );
                     $location.path('project/' + $scope.name + '/deployment/' + response.deployment.__identity);
@@ -104,4 +110,4 @@ angular.module('surfCaptain').controller('SingleDeploymentController', [
         $scope.noLog = false;
 
     }
-]);
+}());

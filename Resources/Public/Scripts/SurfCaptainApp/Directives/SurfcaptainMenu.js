@@ -1,16 +1,25 @@
-/*global surfCaptain*/
-/*jslint node: true */
+/* global angular */
 
-'use strict';
-angular.module('surfCaptain').directive('surfcaptainMenu', ['$routeParams', '$location', function ($routeParams, $location) {
-    return {
-        restrict: 'E',
-        templateUrl: '/_Resources/Static/Packages/Lightwerk.SurfCaptain/Scripts/SurfCaptainApp/Partials/Menu.html',
-        scope: {},
-        link: function (scope, element, attributes) {
+(function () {
+    'use strict';
+    angular
+        .module('surfCaptain')
+        .directive('surfcaptainMenu', surfcaptainMenu);
+
+    /* @ngInject */
+    function surfcaptainMenu($routeParams, $location) {
+
+        function linker(scope) {
             var lastUrlPart = $location.path().split('/').pop();
             scope.project = $routeParams.projectName;
             scope.context = lastUrlPart === scope.project ? 'history' : lastUrlPart;
         }
-    };
-}]);
+
+        return {
+            restrict: 'E',
+            templateUrl: '/_Resources/Static/Packages/Lightwerk.SurfCaptain/Scripts/SurfCaptainApp/Partials/Menu.html',
+            scope: {},
+            link: linker
+        };
+    }
+}());

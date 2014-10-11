@@ -8,11 +8,12 @@
     "grunt-jslint": "*",
     "grunt-karma": "^0.8.3",
     "grunt-newer": "*",
+    "grunt-ng-annotate": "^0.4.0",
     "karma": "^0.12.16",
-    "karma-ng-html2js-preprocessor": "~0.1",
     "karma-chrome-launcher": "^0.1.4",
     "karma-firefox-launcher": "^0.1.3",
     "karma-jasmine": "^0.1.5",
+    "karma-ng-html2js-preprocessor": "~0.1",
     "load-grunt-config": "*",
     "load-grunt-tasks": "*"
   }

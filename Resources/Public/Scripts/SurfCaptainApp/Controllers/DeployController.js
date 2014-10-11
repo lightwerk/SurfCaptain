@@ -1,22 +1,19 @@
-/*global surfCaptain, angular, jQuery*/
-/*jslint node: true, plusplus:true */
+/* global angular,jQuery */
 
-'use strict';
-angular.module('surfCaptain').controller('DeployController', [
-    '$scope',
-    '$controller',
-    'ProjectRepository',
-    'SEVERITY',
-    'FlashMessageService',
-    'CONFIG',
-    'DeploymentRepository',
-    '$location',
-    'PresetRepository',
-    'ValidationService',
-    'SettingsRepository',
-    'PresetService',
-    'UtilityService',
-    function ($scope, $controller, ProjectRepository, SEVERITY, FlashMessageService, CONFIG, DeploymentRepository, $location, PresetRepository, ValidationService, SettingsRepository, PresetService, UtilityService) {
+(function () {
+    'use strict';
+    angular
+        .module('surfCaptain')
+        .controller('DeployController', DeployController);
+
+    /* @ngInject */
+    function DeployController($scope, $controller, ProjectRepository, SEVERITY, FlashMessageService, CONFIG, DeploymentRepository, $location, PresetRepository, SettingsRepository, UtilityService) {
+
+        // Inherit from AbstractSingleProjectController
+        angular.extend(this, $controller('AbstractSingleProjectController', {$scope: $scope}));
+
+        // Inherit from AbstractApplicationController
+        angular.extend(this, $controller('AbstractApplicationController', {$scope: $scope}));
 
         var loadingString = 'loading ...',
             self = this;
@@ -25,11 +22,9 @@ angular.module('surfCaptain').controller('DeployController', [
             this.name = 'DeployControllerException';
             this.message = message;
         }
+
         DeployControllerException.prototype = new Error();
         DeployControllerException.prototype.constructor = DeployControllerException;
-
-        // Inherit from AbstractSingleProjectController
-        angular.extend(this, $controller('AbstractSingleProjectController', {$scope: $scope}));
 
         $scope.deployableCommits = [
             {
@@ -103,8 +98,8 @@ angular.module('surfCaptain').controller('DeployController', [
                     function (response) {
                         $scope.messages = FlashMessageService.addFlashMessage(
                             'OK!',
-                            $scope.currentCommit.type + ' ' + $scope.currentCommit.name + ' will be shortly deployed onto '
-                                + $scope.currentPreset.applications[0].nodes[0].name + '! You can cancel the deployment while it is still waiting.',
+                            $scope.currentCommit.type + ' ' + $scope.currentCommit.name + ' will be shortly deployed onto ' +
+                            $scope.currentPreset.applications[0].nodes[0].name + '! You can cancel the deployment while it is still waiting.',
                             SEVERITY.ok
                         );
                         ProjectRepository.updateFullProjectInCache($scope.project.repositoryUrl);
@@ -124,22 +119,22 @@ angular.module('surfCaptain').controller('DeployController', [
             try {
                 $scope.currentCommit = self.getCurrentCommit();
                 switch ($scope.currentCommit.type) {
-                case 'Branch':
-                    delete $scope.currentPreset.applications[0].options.tag;
-                    $scope.currentPreset.applications[0].options.branch = $scope.currentCommit.name;
-                    break;
-                case 'Tag':
-                    delete $scope.currentPreset.applications[0].options.branch;
-                    $scope.currentPreset.applications[0].options.tag = $scope.currentCommit.name;
-                    break;
-                default:
-                    self.addFailureFlashMessage(
-                        'Something is wrong with the type of the chosen commit. This should never happen. ' +
+                    case 'Branch':
+                        delete $scope.currentPreset.applications[0].options.tag;
+                        $scope.currentPreset.applications[0].options.branch = $scope.currentCommit.name;
+                        break;
+                    case 'Tag':
+                        delete $scope.currentPreset.applications[0].options.branch;
+                        $scope.currentPreset.applications[0].options.tag = $scope.currentCommit.name;
+                        break;
+                    default:
+                        self.addFailureFlashMessage(
+                            'Something is wrong with the type of the chosen commit. This should never happen. ' +
                             'In fact, If you see this message, please go ahaed and punch any of the involved developers in the face.',
-                        false
-                    );
-                    $scope.currentCommit = null;
-                    return;
+                            false
+                        );
+                        $scope.currentCommit = null;
+                        return;
                 }
                 $scope.currentPreset.applications[0].options.sha1 = $scope.currentCommit.commit.id;
             } catch (e) {
@@ -170,23 +165,15 @@ angular.module('surfCaptain').controller('DeployController', [
             var key;
             for (key in $scope.deployableCommits) {
                 if ($scope.deployableCommits.hasOwnProperty(key)) {
-                    if (angular.isDefined($scope.deployableCommits[key].name)
-                            && angular.isDefined($scope.deployableCommits[key].group)
-                            && $scope.deployableCommits[key].name === loadingString
-                            && $scope.deployableCommits[key].group === group) {
-                        $scope.deployableCommits.splice(key, 1);
-                        break;
+                    if (angular.isDefined($scope.deployableCommits[key].name) &&
+                        angular.isDefined($scope.deployableCommits[key].group) &&
+                        $scope.deployableCommits[key].name === loadingString  &&
+                        $scope.deployableCommits[key].group === group) {
+                            $scope.deployableCommits.splice(key, 1);
+                            break;
                     }
                 }
             }
-        };
-
-        /**
-         * @param {string} context
-         * @returns {string}
-         */
-        $scope.getRootContext = function (context) {
-            return PresetService.getRootContext(context, $scope.contexts);
         };
 
         /**
@@ -224,7 +211,7 @@ angular.module('surfCaptain').controller('DeployController', [
                     if ($scope.servers.length === 0) {
                         $scope.messages = FlashMessageService.addFlashMessage(
                             'No Servers yet!',
-                            'FYI: There are no servers for project <span class="uppercase">' + $scope.name  + '</span> yet. Why dont you create one, hmm?',
+                            'FYI: There are no servers for project <span class="uppercase">' + $scope.name + '</span> yet. Why dont you create one, hmm?',
                             SEVERITY.info,
                             $scope.name + '-no-servers'
                         );
@@ -239,7 +226,7 @@ angular.module('surfCaptain').controller('DeployController', [
                 function (response) {
                     $scope.globalServers = response.presets;
                 },
-                function (response) {
+                function () {
                     self.addFailureFlashMessage('API call failed. Deployment not possible.', true);
                 }
             );
@@ -253,4 +240,5 @@ angular.module('surfCaptain').controller('DeployController', [
                 }
             );
         });
-    }]);
+    }
+}());

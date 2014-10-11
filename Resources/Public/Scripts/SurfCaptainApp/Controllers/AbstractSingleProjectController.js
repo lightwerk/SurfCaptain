@@ -1,15 +1,13 @@
-/*global surfCaptain, angular*/
-/*jslint node: true */
+/* global angular */
 
-'use strict';
-angular.module('surfCaptain').controller('AbstractSingleProjectController', [
-    '$scope',
-    '$routeParams',
-    'ProjectRepository',
-    'FavorService',
-    'FlashMessageService',
-    'SEVERITY',
-    function ($scope, $routeParams, ProjectRepository, FavorService, FlashMessageService, SEVERITY) {
+(function () {
+    'use strict';
+    angular
+        .module('surfCaptain')
+        .controller('AbstractSingleProjectController', AbstractSingleProjectController);
+
+    /* @ngInject */
+    function AbstractSingleProjectController($scope, $routeParams, ProjectRepository, FavorService, FlashMessageService, SEVERITY) {
         $scope.name = $routeParams.projectName;
         $scope.project = {};
         $scope.messages = {};
@@ -35,4 +33,4 @@ angular.module('surfCaptain').controller('AbstractSingleProjectController', [
         };
         this.init();
     }
-]);
+}());

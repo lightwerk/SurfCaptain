@@ -1,23 +1,38 @@
-/*global surfCaptain*/
-/*jslint node: true */
+/* global angular */
 
-'use strict';
-angular.module('surfCaptain').directive('chosen', function () {
-    var linker = function (scope, element, attrs) {
-        var list = attrs.chosen;
+(function () {
+    'use strict';
+    angular
+        .module('surfCaptain')
+        .directive('chosen', chosen);
 
-        scope.$watchCollection(list, function () {
-            element.trigger('liszt:updated');
-            element.trigger('chosen:updated');
-        });
+    /* @ngInject */
+    function chosen($timeout) {
+        var linker = function (scope, element) {
 
-        element.chosen({
-            search_contains: true
-        });
-    };
+            scope.$watchCollection('chosen', function (value, old) {
+                if (angular.isArray(value) && value !== old) {
+                    $timeout(
+                        function () {
+                            element.trigger('liszt:updated');
+                            element.trigger('chosen:updated');
+                        },
+                        1000
+                    );
+                }
+            });
 
-    return {
-        restrict: 'A',
-        link: linker
-    };
-});
+            element.chosen({
+                search_contains: true
+            });
+        };
+
+        return {
+            restrict: 'A',
+            link: linker,
+            scope: {
+                chosen: '='
+            }
+        };
+    }
+}());

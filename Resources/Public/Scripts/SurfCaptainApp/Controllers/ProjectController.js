@@ -1,17 +1,13 @@
-/*global surfCaptain, angular*/
-/*jslint node: true */
+/* global angular */
 
-'use strict';
-angular.module('surfCaptain').controller('ProjectController', [
-    '$scope',
-    '$controller',
-    'FlashMessageService',
-    'ProjectRepository',
-    'SEVERITY',
-    'PresetService',
-    'SettingsRepository',
-    'UtilityService',
-    function ($scope, $controller, FlashMessageService, ProjectRepository, SEVERITY, PresetService, SettingsRepository, UtilityService) {
+(function () {
+    'use strict';
+    angular
+        .module('surfCaptain')
+        .controller('ProjectController', ProjectController);
+
+    /* @ngInject */
+    function ProjectController($scope, $controller, FlashMessageService, ProjectRepository, SEVERITY, PresetService, SettingsRepository, UtilityService) {
 
         // Inherit from AbstractSingleProjectController
         angular.extend(this, $controller('AbstractSingleProjectController', {$scope: $scope}));
@@ -63,4 +59,4 @@ angular.module('surfCaptain').controller('ProjectController', [
             );
         });
     }
-]);
+}());

@@ -68,132 +68,157 @@ angular.module('surfCaptain', ['ngRoute', 'xeditable', 'ngAnimate', 'ngMessages'
 angular.module('surfCaptain').run(['editableOptions', function (editableOptions) {
     editableOptions.theme = 'bs3';
 }]);
-/*global surfCaptain,angular*/
-/*jslint node: true */
+/* global angular */
+(function () {
+    'use strict';
+    angular
+        .module('surfCaptain')
+        .controller('AboutController', AboutController);
 
-'use strict';
-angular.module('surfCaptain').controller('AboutController', ['$scope', function ($scope) {
-    $scope.techs = [
-        {
-            name: 'angular',
-            url: 'https://angularjs.org/',
-            description: {
-                headline: 'AngularJS',
-                span1: 'JavaScript',
-                span2: 'Framework'
+    /* @ngInject */
+    function AboutController($scope) {
+        $scope.techs = [
+            {
+                name: 'angular',
+                url: 'https://angularjs.org/',
+                description: {
+                    headline: 'AngularJS',
+                    span1: 'JavaScript',
+                    span2: 'Framework'
+                }
+            },
+            {
+                name: 'flow',
+                url: 'http://flow.typo3.org/',
+                description: {
+                    headline: 'TYPO3 FLOW',
+                    span1: 'PHP-Application',
+                    span2: 'Framework'
+                }
+            },
+            {
+                name: 'bootstrap',
+                url: 'http://getbootstrap.com/',
+                description: {
+                    headline: 'Bootstrap',
+                    span1: 'CSS',
+                    span2: 'Framework'
+                }
             }
-        },
-        {
-            name: 'flow',
-            url: 'http://flow.typo3.org/',
-            description: {
-                headline: 'TYPO3 FLOW',
-                span1: 'PHP-Application',
-                span2: 'Framework'
+        ];
+        $scope.subtechs = [
+            {
+                name: 'grunt',
+                url: 'http://gruntjs.com/',
+                description: {
+                    headline: 'Grunt'
+                }
+            },
+            {
+                name: 'bower',
+                url: 'http://bower.io/',
+                description: {
+                    headline: 'Bower'
+                }
+            },
+            {
+                name: 'composer',
+                url: 'https://getcomposer.org/',
+                description: {
+                    headline: 'Composer'
+                }
+            },
+            {
+                name: 'karma',
+                url: 'http://karma-runner.github.io',
+                description: {
+                    headline: 'Karma'
+                }
+            },
+            {
+                name: 'jasmine',
+                url: 'http://jasmine.github.io/',
+                description: {
+                    headline: 'Jasmine'
+                }
+            },
+            {
+                name: 'jquery',
+                url: 'http://jquery.com/',
+                description: {
+                    headline: 'jQuery'
+                }
+            },
+            {
+                name: 'css3',
+                url: 'http://en.wikipedia.org/wiki/Cascading_Style_Sheets#CSS_3',
+                description: {
+                    headline: 'CSS 3'
+                }
+            },
+            {
+                name: 'git',
+                url: 'http://git-scm.com/',
+                description: {
+                    headline: 'git'
+                }
+            },
+            {
+                name: 'html5',
+                url: 'http://en.wikipedia.org/wiki/HTML5',
+                description: {
+                    headline: 'HTML 5'
+                }
+            },
+            {
+                name: 'mysql',
+                url: 'http://www.mysql.com/',
+                description: {
+                    headline: 'MySQL'
+                }
+            },
+            {
+                name: 'less',
+                url: 'http://www.lesscss.de/',
+                description: {
+                    headline: 'LESS'
+                }
             }
-        },
-        {
-            name: 'bootstrap',
-            url: 'http://getbootstrap.com/',
-            description: {
-                headline: 'Bootstrap',
-                span1: 'CSS',
-                span2: 'Framework'
-            }
-        }
-    ];
-    $scope.subtechs = [
-        {
-            name: 'grunt',
-            url: 'http://gruntjs.com/',
-            description: {
-                headline: 'Grunt'
-            }
-        },
-        {
-            name: 'bower',
-            url: 'http://bower.io/',
-            description: {
-                headline: 'Bower'
-            }
-        },
-        {
-            name: 'composer',
-            url: 'https://getcomposer.org/',
-            description: {
-                headline: 'Composer'
-            }
-        },
-        {
-            name: 'karma',
-            url: 'http://karma-runner.github.io',
-            description: {
-                headline: 'Karma'
-            }
-        },
-        {
-            name: 'jasmine',
-            url: 'http://jasmine.github.io/',
-            description: {
-                headline: 'Jasmine'
-            }
-        },
-        {
-            name: 'jquery',
-            url: 'http://jquery.com/',
-            description: {
-                headline: 'jQuery'
-            }
-        },
-        {
-            name: 'css3',
-            url: 'http://en.wikipedia.org/wiki/Cascading_Style_Sheets#CSS_3',
-            description: {
-                headline: 'CSS 3'
-            }
-        },
-        {
-            name: 'git',
-            url: 'http://git-scm.com/',
-            description: {
-                headline: 'git'
-            }
-        },
-        {
-            name: 'html5',
-            url: 'http://en.wikipedia.org/wiki/HTML5',
-            description: {
-                headline: 'HTML 5'
-            }
-        },
-        {
-            name: 'mysql',
-            url: 'http://www.mysql.com/',
-            description: {
-                headline: 'MySQL'
-            }
-        },
-        {
-            name: 'less',
-            url: 'http://www.lesscss.de/',
-            description: {
-                headline: 'LESS'
-            }
-        }
-    ];
-}]);
-/*global surfCaptain, angular*/
-/*jslint node: true */
+        ];
+    }
+    AboutController.$inject = ['$scope'];
+}());
+/* global angular */
 
-'use strict';
-angular.module('surfCaptain').controller('AbstractSingleProjectController', [
-    '$scope',
-    '$routeParams',
-    'ProjectRepository',
-    'FavorService',
-    'FlashMessageService',
-    'SEVERITY',
-    function ($scope, $routeParams, ProjectRepository, FavorService, FlashMessageService, SEVERITY) {
+(function () {
+    'use strict';
+    angular
+        .module('surfCaptain')
+        .controller('AbstractApplicationController', AbstractApplicationController);
+
+    /* @ngInject */
+    function AbstractApplicationController($scope, PresetService) {
+
+        /**
+         * @param {string} context
+         * @returns {string}
+         */
+        $scope.getRootContext = function (context) {
+            return PresetService.getRootContext(context, $scope.contexts);
+        };
+    }
+    AbstractApplicationController.$inject = ['$scope', 'PresetService'];
+}());
+/* global angular */
+
+(function () {
+    'use strict';
+    angular
+        .module('surfCaptain')
+        .controller('AbstractSingleProjectController', AbstractSingleProjectController);
+
+    /* @ngInject */
+    function AbstractSingleProjectController($scope, $routeParams, ProjectRepository, FavorService, FlashMessageService, SEVERITY) {
         $scope.name = $routeParams.projectName;
         $scope.project = {};
         $scope.messages = {};
@@ -219,26 +244,24 @@ angular.module('surfCaptain').controller('AbstractSingleProjectController', [
         };
         this.init();
     }
-]);
-/*global surfCaptain, angular, jQuery*/
-/*jslint node: true, plusplus:true */
+    AbstractSingleProjectController.$inject = ['$scope', '$routeParams', 'ProjectRepository', 'FavorService', 'FlashMessageService', 'SEVERITY'];
+}());
+/* global angular,jQuery */
 
-'use strict';
-angular.module('surfCaptain').controller('DeployController', [
-    '$scope',
-    '$controller',
-    'ProjectRepository',
-    'SEVERITY',
-    'FlashMessageService',
-    'CONFIG',
-    'DeploymentRepository',
-    '$location',
-    'PresetRepository',
-    'ValidationService',
-    'SettingsRepository',
-    'PresetService',
-    'UtilityService',
-    function ($scope, $controller, ProjectRepository, SEVERITY, FlashMessageService, CONFIG, DeploymentRepository, $location, PresetRepository, ValidationService, SettingsRepository, PresetService, UtilityService) {
+(function () {
+    'use strict';
+    angular
+        .module('surfCaptain')
+        .controller('DeployController', DeployController);
+
+    /* @ngInject */
+    function DeployController($scope, $controller, ProjectRepository, SEVERITY, FlashMessageService, CONFIG, DeploymentRepository, $location, PresetRepository, SettingsRepository, UtilityService) {
+
+        // Inherit from AbstractSingleProjectController
+        angular.extend(this, $controller('AbstractSingleProjectController', {$scope: $scope}));
+
+        // Inherit from AbstractApplicationController
+        angular.extend(this, $controller('AbstractApplicationController', {$scope: $scope}));
 
         var loadingString = 'loading ...',
             self = this;
@@ -247,11 +270,9 @@ angular.module('surfCaptain').controller('DeployController', [
             this.name = 'DeployControllerException';
             this.message = message;
         }
+
         DeployControllerException.prototype = new Error();
         DeployControllerException.prototype.constructor = DeployControllerException;
-
-        // Inherit from AbstractSingleProjectController
-        angular.extend(this, $controller('AbstractSingleProjectController', {$scope: $scope}));
 
         $scope.deployableCommits = [
             {
@@ -325,8 +346,8 @@ angular.module('surfCaptain').controller('DeployController', [
                     function (response) {
                         $scope.messages = FlashMessageService.addFlashMessage(
                             'OK!',
-                            $scope.currentCommit.type + ' ' + $scope.currentCommit.name + ' will be shortly deployed onto '
-                                + $scope.currentPreset.applications[0].nodes[0].name + '! You can cancel the deployment while it is still waiting.',
+                            $scope.currentCommit.type + ' ' + $scope.currentCommit.name + ' will be shortly deployed onto ' +
+                            $scope.currentPreset.applications[0].nodes[0].name + '! You can cancel the deployment while it is still waiting.',
                             SEVERITY.ok
                         );
                         ProjectRepository.updateFullProjectInCache($scope.project.repositoryUrl);
@@ -346,22 +367,22 @@ angular.module('surfCaptain').controller('DeployController', [
             try {
                 $scope.currentCommit = self.getCurrentCommit();
                 switch ($scope.currentCommit.type) {
-                case 'Branch':
-                    delete $scope.currentPreset.applications[0].options.tag;
-                    $scope.currentPreset.applications[0].options.branch = $scope.currentCommit.name;
-                    break;
-                case 'Tag':
-                    delete $scope.currentPreset.applications[0].options.branch;
-                    $scope.currentPreset.applications[0].options.tag = $scope.currentCommit.name;
-                    break;
-                default:
-                    self.addFailureFlashMessage(
-                        'Something is wrong with the type of the chosen commit. This should never happen. ' +
+                    case 'Branch':
+                        delete $scope.currentPreset.applications[0].options.tag;
+                        $scope.currentPreset.applications[0].options.branch = $scope.currentCommit.name;
+                        break;
+                    case 'Tag':
+                        delete $scope.currentPreset.applications[0].options.branch;
+                        $scope.currentPreset.applications[0].options.tag = $scope.currentCommit.name;
+                        break;
+                    default:
+                        self.addFailureFlashMessage(
+                            'Something is wrong with the type of the chosen commit. This should never happen. ' +
                             'In fact, If you see this message, please go ahaed and punch any of the involved developers in the face.',
-                        false
-                    );
-                    $scope.currentCommit = null;
-                    return;
+                            false
+                        );
+                        $scope.currentCommit = null;
+                        return;
                 }
                 $scope.currentPreset.applications[0].options.sha1 = $scope.currentCommit.commit.id;
             } catch (e) {
@@ -392,23 +413,15 @@ angular.module('surfCaptain').controller('DeployController', [
             var key;
             for (key in $scope.deployableCommits) {
                 if ($scope.deployableCommits.hasOwnProperty(key)) {
-                    if (angular.isDefined($scope.deployableCommits[key].name)
-                            && angular.isDefined($scope.deployableCommits[key].group)
-                            && $scope.deployableCommits[key].name === loadingString
-                            && $scope.deployableCommits[key].group === group) {
-                        $scope.deployableCommits.splice(key, 1);
-                        break;
+                    if (angular.isDefined($scope.deployableCommits[key].name) &&
+                        angular.isDefined($scope.deployableCommits[key].group) &&
+                        $scope.deployableCommits[key].name === loadingString  &&
+                        $scope.deployableCommits[key].group === group) {
+                            $scope.deployableCommits.splice(key, 1);
+                            break;
                     }
                 }
             }
-        };
-
-        /**
-         * @param {string} context
-         * @returns {string}
-         */
-        $scope.getRootContext = function (context) {
-            return PresetService.getRootContext(context, $scope.contexts);
         };
 
         /**
@@ -446,7 +459,7 @@ angular.module('surfCaptain').controller('DeployController', [
                     if ($scope.servers.length === 0) {
                         $scope.messages = FlashMessageService.addFlashMessage(
                             'No Servers yet!',
-                            'FYI: There are no servers for project <span class="uppercase">' + $scope.name  + '</span> yet. Why dont you create one, hmm?',
+                            'FYI: There are no servers for project <span class="uppercase">' + $scope.name + '</span> yet. Why dont you create one, hmm?',
                             SEVERITY.info,
                             $scope.name + '-no-servers'
                         );
@@ -461,7 +474,7 @@ angular.module('surfCaptain').controller('DeployController', [
                 function (response) {
                     $scope.globalServers = response.presets;
                 },
-                function (response) {
+                function () {
                     self.addFailureFlashMessage('API call failed. Deployment not possible.', true);
                 }
             );
@@ -475,17 +488,19 @@ angular.module('surfCaptain').controller('DeployController', [
                 }
             );
         });
-    }]);
-/*global surfCaptain, angular*/
-/*jslint node: true */
+    }
+    DeployController.$inject = ['$scope', '$controller', 'ProjectRepository', 'SEVERITY', 'FlashMessageService', 'CONFIG', 'DeploymentRepository', '$location', 'PresetRepository', 'SettingsRepository', 'UtilityService'];
+}());
+/* global angular */
 
-'use strict';
-angular.module('surfCaptain').controller('DeploymentsController', [
-    '$scope',
-    'DeploymentRepository',
-    'FlashMessageService',
-    'SEVERITY',
-    function ($scope, DeploymentRepository, FlashMessageService, SEVERITY) {
+(function () {
+    'use strict';
+    angular
+        .module('surfCaptain')
+        .controller('DeploymentsController', DeploymentsController);
+
+    /* @ngInject */
+    function DeploymentsController($scope, DeploymentRepository, FlashMessageService, SEVERITY) {
 
         var self = this;
 
@@ -522,26 +537,29 @@ angular.module('surfCaptain').controller('DeploymentsController', [
         $scope.deployments = [];
         $scope.finished = false;
     }
-]);
-/*global surfCaptain, angular*/
-/*jslint node: true */
+    DeploymentsController.$inject = ['$scope', 'DeploymentRepository', 'FlashMessageService', 'SEVERITY'];
+}());
+/* global angular */
 
-'use strict';
-angular.module('surfCaptain').controller('ExtensionsController', ['$scope', '$controller', function ($scope) {
+(function () {
+    'use strict';
+    angular
+        .module('surfCaptain')
+        .controller('ExtensionsController', ExtensionsController);
 
-}]);
-/*jslint node: true, plusplus:true */
-/*global surfCaptain, angular*/
+    /* @ngInject */
+    function ExtensionsController() {}
+}());
+/* global angular */
 
-'use strict';
-angular.module('surfCaptain').controller('GlobalServerController', [
-    '$scope',
-    'PresetRepository',
-    'PresetService',
-    'FlashMessageService',
-    'SEVERITY',
-    'SettingsRepository',
-    function ($scope, PresetRepository, PresetService, FlashMessageService, SEVERITY, SettingsRepository) {
+(function () {
+    'use strict';
+    angular
+        .module('surfCaptain')
+        .controller('GlobalServerController', GlobalServerController);
+
+    /* @ngInject */
+    function GlobalServerController($scope, PresetRepository, PresetService, FlashMessageService, SEVERITY, SettingsRepository) {
         var self = this;
 
         $scope.newPreset = PresetService.getNewPreset();
@@ -593,7 +611,7 @@ angular.module('surfCaptain').controller('GlobalServerController', [
                         );
                     }
                 },
-                function (response) {
+                function () {
                     $scope.finished = true;
                     $scope.messages = FlashMessageService.addFlashMessage(
                         'Request failed!',
@@ -613,7 +631,7 @@ angular.module('surfCaptain').controller('GlobalServerController', [
         $scope.addServer = function (server) {
             $scope.finished = false;
             PresetRepository.addServer(server).then(
-                function (response) {
+                function () {
                     $scope.newPreset = PresetService.getNewPreset();
                     $scope.newServerForm.$setPristine();
                     $scope.getAllServers();
@@ -623,7 +641,7 @@ angular.module('surfCaptain').controller('GlobalServerController', [
                         SEVERITY.ok
                     );
                 },
-                function (response) {
+                function () {
                     $scope.finished = true;
                     $scope.messages = FlashMessageService.addFlashMessage(
                         'Creation failed!',
@@ -645,21 +663,18 @@ angular.module('surfCaptain').controller('GlobalServerController', [
         };
         this.init();
     }
-]);
-/*global surfCaptain, angular*/
-/*jslint node: true */
+    GlobalServerController.$inject = ['$scope', 'PresetRepository', 'PresetService', 'FlashMessageService', 'SEVERITY', 'SettingsRepository'];
+}());
+/* global angular */
 
-'use strict';
-angular.module('surfCaptain').controller('ProjectController', [
-    '$scope',
-    '$controller',
-    'FlashMessageService',
-    'ProjectRepository',
-    'SEVERITY',
-    'PresetService',
-    'SettingsRepository',
-    'UtilityService',
-    function ($scope, $controller, FlashMessageService, ProjectRepository, SEVERITY, PresetService, SettingsRepository, UtilityService) {
+(function () {
+    'use strict';
+    angular
+        .module('surfCaptain')
+        .controller('ProjectController', ProjectController);
+
+    /* @ngInject */
+    function ProjectController($scope, $controller, FlashMessageService, ProjectRepository, SEVERITY, PresetService, SettingsRepository, UtilityService) {
 
         // Inherit from AbstractSingleProjectController
         angular.extend(this, $controller('AbstractSingleProjectController', {$scope: $scope}));
@@ -711,26 +726,24 @@ angular.module('surfCaptain').controller('ProjectController', [
             );
         });
     }
-]);
-/*global surfCaptain, angular*/
-/*jslint node: true */
+    ProjectController.$inject = ['$scope', '$controller', 'FlashMessageService', 'ProjectRepository', 'SEVERITY', 'PresetService', 'SettingsRepository', 'UtilityService'];
+}());
+/* global angular */
 
-'use strict';
-angular.module('surfCaptain').controller('ProjectsController', [
-    '$scope',
-    'ProjectRepository',
-    'SettingsRepository',
-    'SEVERITY',
-    'FlashMessageService',
-    'FavorService',
-    function ($scope, ProjectRepository, SettingsRepository, SEVERITY, FlashMessageService, FavorService) {
+(function () {
+    'use strict';
+    angular
+        .module('surfCaptain')
+        .controller('ProjectsController', ProjectsController);
+
+    /* @ngInject */
+    function ProjectsController($scope, ProjectRepository, SettingsRepository, SEVERITY, FlashMessageService) {
         $scope.settings = {};
         $scope.ordering = 'name';
         $scope.projects = [];
         $scope.finished = false;
 
         this.init = function () {
-            // Retrieve Projects from Factory
             ProjectRepository.getProjects().then(
                 function (response) {
                     $scope.finished = true;
@@ -755,25 +768,18 @@ angular.module('surfCaptain').controller('ProjectsController', [
         };
         this.init();
     }
-]);
-/*jslint node: true, plusplus:true */
-/*global surfCaptain, angular*/
+    ProjectsController.$inject = ['$scope', 'ProjectRepository', 'SettingsRepository', 'SEVERITY', 'FlashMessageService'];
+}());
+/* global angular */
 
-// TODO uinittests
+(function () {
+    'use strict';
+    angular
+        .module('surfCaptain')
+        .controller('ServerController', ServerController);
 
-'use strict';
-angular.module('surfCaptain').controller('ServerController', [
-    '$scope',
-    '$controller',
-    'PresetRepository',
-    'ValidationService',
-    'SettingsRepository',
-    'MarkerService',
-    'PresetService',
-    'FlashMessageService',
-    'SEVERITY',
-    'ProjectRepository',
-    function ($scope, $controller, PresetRepository, ValidationService, SettingsRepository, MarkerService, PresetService, FlashMessageService, SEVERITY, ProjectRepository) {
+    /* @ngInject */
+    function ServerController($scope, $controller, PresetRepository, ValidationService, SettingsRepository, MarkerService, PresetService, FlashMessageService, SEVERITY, ProjectRepository) {
 
         var self = this;
 
@@ -826,6 +832,27 @@ angular.module('surfCaptain').controller('ServerController', [
         };
 
         /**
+         * nameSuggestions are retrieved from the Settings.yaml
+         *
+         * Example configuration:
+         *
+         * Lightwerk:
+         *   SurfCaptain:
+         *     frontendSettings
+         *       nameSuggestions:
+         *         live: 'Production'
+         *         qa: 'Production/Qa'
+         *         staging: 'Production/Staging'
+         *         test: 'Testing'
+         *         dev: 'Development'
+         *
+         * It populates the $scope.nameSuggestions array with objects like
+         *
+         * {
+         *   suffix: live,
+         *   available: true,
+         *   context: 'Production'
+         * }
          *
          * @param {object} nameSuggestions
          * @return {void}
@@ -846,6 +873,15 @@ angular.module('surfCaptain').controller('ServerController', [
         };
 
         /**
+         * Here are FrontendSettings regarding Server Management
+         * taken into account. The settings are retrieved from
+         * Settings.yaml.
+         *
+         * The considered settings are
+         *   * contexts - a comma separated list of allowed TYPO3_CONTEXTs
+         *   * nameSuggestions - @see generateNameSuggestions
+         *   * defaultDeploymentPath - the field deploymentPath of the new server
+         *     server form will be prefilled with this string.
          *
          * @return {void}
          */
@@ -892,7 +928,7 @@ angular.module('surfCaptain').controller('ServerController', [
             }
         };
 
-        this.failureCallback = function (response) {
+        this.failureCallback = function () {
             $scope.finished = true;
             $scope.messages = FlashMessageService.addFlashMessage(
                 'Request failed!',
@@ -923,7 +959,7 @@ angular.module('surfCaptain').controller('ServerController', [
         /**
          * Takes a suffix and tries to replace a {{suffix}} marker
          * within the document root. Stores the returning string
-         * within the deploymentPath property of the newPreset.
+         * in the deploymentPath property of the newPreset.
          *
          * @param {string} suffix
          * @return {void}
@@ -953,7 +989,7 @@ angular.module('surfCaptain').controller('ServerController', [
                 delete server.options.deploymentPathWithMarkers;
             }
             PresetRepository.addServer(server).then(
-                function (response) {
+                function () {
                     $scope.newPreset = PresetService.getNewPreset($scope.settings);
                     $scope.newServerForm.$setPristine();
                     self.handleSettings();
@@ -964,7 +1000,7 @@ angular.module('surfCaptain').controller('ServerController', [
                         SEVERITY.ok
                     );
                 },
-                function (response) {
+                function () {
                     $scope.finished = true;
                     $scope.messages = FlashMessageService.addFlashMessage(
                         'Creation failed!',
@@ -998,7 +1034,7 @@ angular.module('surfCaptain').controller('ServerController', [
          *
          * @return {void}
          */
-        $scope.$watch('project', function (newValue, oldValue) {
+        $scope.$watch('project', function (newValue) {
             if (angular.isDefined(newValue.name)) {
                 SettingsRepository.getSettings().then(
                     function (response) {
@@ -1015,22 +1051,18 @@ angular.module('surfCaptain').controller('ServerController', [
             }
         });
     }
-]);
-/*global surfCaptain, angular*/
-/*jslint node: true */
+    ServerController.$inject = ['$scope', '$controller', 'PresetRepository', 'ValidationService', 'SettingsRepository', 'MarkerService', 'PresetService', 'FlashMessageService', 'SEVERITY', 'ProjectRepository'];
+}());
+/* global angular */
 
-'use strict';
-angular.module('surfCaptain').controller('SingleDeploymentController', [
-    '$scope',
-    'DeploymentRepository',
-    '$routeParams',
-    '$cacheFactory',
-    '$location',
-    'FlashMessageService',
-    'SEVERITY',
-    'ProjectRepository',
-    '$controller',
-    function ($scope, DeploymentRepository, $routeParams, $cacheFactory, $location, FlashMessageService, SEVERITY, ProjectRepository, $controller) {
+(function () {
+    'use strict';
+    angular
+        .module('surfCaptain')
+        .controller('SingleDeploymentController', SingleDeploymentController);
+
+    /* @ngInject */
+    function SingleDeploymentController($scope, DeploymentRepository, $routeParams, $cacheFactory, $location, FlashMessageService, SEVERITY, ProjectRepository, $controller) {
 
         var self = this;
 
@@ -1038,6 +1070,10 @@ angular.module('surfCaptain').controller('SingleDeploymentController', [
         angular.extend(this, $controller('AbstractSingleProjectController', {$scope: $scope}));
 
         /**
+         * Triggers the request for the Deployment object
+         * after 1 second again if status of deployment
+         * is either "waiting" or "running".
+         *
          * @return {void}
          */
         this.initLiveLog = function () {
@@ -1045,21 +1081,21 @@ angular.module('surfCaptain').controller('SingleDeploymentController', [
                 return;
             }
             switch ($scope.deployment.status) {
-            case 'success':
-            case 'failed':
-            case 'cancelled':
-                if (angular.isUndefined($cacheFactory.get('deploymentCache'))) {
-                    $cacheFactory('deploymentCache');
-                }
-                $cacheFactory.get('deploymentCache').put($scope.deployment.__identity, $scope.deployment);
-                ProjectRepository.updateFullProjectInCache($scope.deployment.repositoryUrl);
-                return;
-            case 'waiting':
-            case 'running':
-                setTimeout(self.getDeployment, 1000);
-                break;
-            default:
-                return;
+                case 'success':
+                case 'failed':
+                case 'cancelled':
+                    if (angular.isUndefined($cacheFactory.get('deploymentCache'))) {
+                        $cacheFactory('deploymentCache');
+                    }
+                    $cacheFactory.get('deploymentCache').put($scope.deployment.__identity, $scope.deployment);
+                    ProjectRepository.updateFullProjectInCache($scope.deployment.repositoryUrl);
+                    return;
+                case 'waiting':
+                case 'running':
+                    setTimeout(self.getDeployment, 1000);
+                    break;
+                default:
+                    return;
             }
         };
 
@@ -1089,6 +1125,9 @@ angular.module('surfCaptain').controller('SingleDeploymentController', [
 
         this.init();
 
+        /**
+         * @return {void}
+         */
         $scope.cancelDeployment = function () {
             DeploymentRepository.cancelDeployment($routeParams.deploymentId).then(
                 function () {
@@ -1097,13 +1136,17 @@ angular.module('surfCaptain').controller('SingleDeploymentController', [
             );
         };
 
+        /**
+         * @return {void}
+         */
         $scope.deployConfigurationAgain = function () {
             DeploymentRepository.addDeployment($scope.deployment.configuration).then(
                 function (response) {
                     $scope.messages = FlashMessageService.addFlashMessage(
                         'OK!',
-                        $scope.deployment.referenceName + ' will be shortly deployed onto '
-                            + $scope.deployment.configuration.applications[0].nodes[0].name + '! You can cancel the deployment while it is still waiting.',
+                        $scope.deployment.referenceName + ' will be shortly deployed onto ' +
+                        $scope.deployment.configuration.applications[0].nodes[0].name +
+                        '! You can cancel the deployment while it is still waiting.',
                         SEVERITY.ok
                     );
                     $location.path('project/' + $scope.name + '/deployment/' + response.deployment.__identity);
@@ -1122,29 +1165,31 @@ angular.module('surfCaptain').controller('SingleDeploymentController', [
         $scope.noLog = false;
 
     }
-]);
-/*global surfCaptain, angular*/
-/*jslint node: true */
+    SingleDeploymentController.$inject = ['$scope', 'DeploymentRepository', '$routeParams', '$cacheFactory', '$location', 'FlashMessageService', 'SEVERITY', 'ProjectRepository', '$controller'];
+}());
+/* global angular */
 
-'use strict';
-angular.module('surfCaptain').controller('SyncController', [
-    '$scope',
-    '$controller',
-    'PresetRepository',
-    'CONFIG',
-    'FlashMessageService',
-    'SEVERITY',
-    'ProjectRepository',
-    'PresetService',
-    'SettingsRepository',
-    'DeploymentRepository',
-    '$location',
-    function ($scope, $controller, PresetRepository, CONFIG, FlashMessageService, SEVERITY, ProjectRepository, PresetService, SettingsRepository, DeploymentRepository, $location) {
+(function () {
+    'use strict';
+    angular
+        .module('surfCaptain')
+        .controller('SyncController', SyncController);
 
-        var self = this;
+    /* @ngInject */
+    function SyncController($scope, $controller, PresetRepository, CONFIG, FlashMessageService, SEVERITY, ProjectRepository, SettingsRepository, DeploymentRepository, $location) {
 
         // Inherit from AbstractSingleProjectController
         angular.extend(this, $controller('AbstractSingleProjectController', {$scope: $scope}));
+
+        // Inherit from AbstractApplicationController
+        angular.extend(this, $controller('AbstractApplicationController', {$scope: $scope}));
+
+        var self = this;
+
+        $scope.servers = [];
+        $scope.finished = false;
+        $scope.currentSource = {};
+        $scope.currentTarget = {};
 
         /**
          * @return {void}
@@ -1187,7 +1232,7 @@ angular.module('surfCaptain').controller('SyncController', [
                 function (response) {
                     $scope.globalServers = response.presets;
                 },
-                function (response) {
+                function () {
                     self.addFailureFlashMessage();
                 }
             );
@@ -1200,10 +1245,6 @@ angular.module('surfCaptain').controller('SyncController', [
          * @return {void}
          */
         this.init = function () {
-            $scope.servers = [];
-            $scope.finished = false;
-            $scope.currentSource = {};
-            $scope.currentTarget = {};
             self.setContexts();
             self.setGlobalServers();
         };
@@ -1239,14 +1280,6 @@ angular.module('surfCaptain').controller('SyncController', [
         };
 
         /**
-         * @param {string} context
-         * @returns {string}
-         */
-        $scope.getRootContext = function (context) {
-            return PresetService.getRootContext(context, $scope.contexts);
-        };
-
-        /**
          * @param {object} preset
          * @return {void}
          */
@@ -1277,7 +1310,7 @@ angular.module('surfCaptain').controller('SyncController', [
                     $scope.messages = FlashMessageService.addFlashMessage(
                         'OK!',
                         target.applications[0].nodes[0].name + ' will be synchronized with ' +
-                            source.applications[0].nodes[0].name + '.',
+                        source.applications[0].nodes[0].name + '.',
                         SEVERITY.ok
                     );
                     ProjectRepository.updateFullProjectInCache($scope.project.repositoryUrl);
@@ -1323,30 +1356,47 @@ angular.module('surfCaptain').controller('SyncController', [
             );
         });
     }
-]);
-/*global surfCaptain*/
-/*jslint node: true */
+    SyncController.$inject = ['$scope', '$controller', 'PresetRepository', 'CONFIG', 'FlashMessageService', 'SEVERITY', 'ProjectRepository', 'SettingsRepository', 'DeploymentRepository', '$location'];
+}());
+/* global angular */
 
-'use strict';
-angular.module('surfCaptain').directive('chosen', function () {
-    var linker = function (scope, element, attrs) {
-        var list = attrs.chosen;
+(function () {
+    'use strict';
+    angular
+        .module('surfCaptain')
+        .directive('chosen', chosen);
 
-        scope.$watchCollection(list, function () {
-            element.trigger('liszt:updated');
-            element.trigger('chosen:updated');
-        });
+    /* @ngInject */
+    function chosen($timeout) {
+        var linker = function (scope, element) {
 
-        element.chosen({
-            search_contains: true
-        });
-    };
+            scope.$watchCollection('chosen', function (value, old) {
+                if (angular.isArray(value) && value !== old) {
+                    $timeout(
+                        function () {
+                            element.trigger('liszt:updated');
+                            element.trigger('chosen:updated');
+                        },
+                        1000
+                    );
+                }
+            });
 
-    return {
-        restrict: 'A',
-        link: linker
-    };
-});
+            element.chosen({
+                search_contains: true
+            });
+        };
+
+        return {
+            restrict: 'A',
+            link: linker,
+            scope: {
+                chosen: '='
+            }
+        };
+    }
+    chosen.$inject = ['$timeout'];
+}());
 /*global surfCaptain, angular*/
 /*jslint node: true, plusplus: true */
 
@@ -1508,19 +1558,17 @@ angular.module('surfCaptain').directive('overlay', function () {
         link: linker
     };
 });
-/*global surfCaptain,angular*/
-/*jslint node: true, plusplus:true */
+/* global angular */
 
-'use strict';
-angular.module('surfCaptain').directive('serverList', [
-    'PresetRepository',
-    'ValidationService',
-    'FlashMessageService',
-    'SEVERITY',
-    'SettingsRepository',
-    'ProjectRepository',
-    function (PresetRepository, ValidationService, FlashMessageService, SEVERITY, SettingsRepository, ProjectRepository) {
-        var linker = function (scope, element, attrs) {
+(function () {
+    'use strict';
+    angular
+        .module('surfCaptain')
+        .directive('serverList', serverList);
+
+    /* @ngInject */
+    function serverList(PresetRepository, ValidationService, FlashMessageService, SEVERITY, SettingsRepository, ProjectRepository) {
+        var linker = function (scope) {
             scope.toggleSpinnerAndOverlay = function () {
                 scope.finished = !scope.finished;
                 scope.$parent.finished = !scope.$parent.finished;
@@ -1569,7 +1617,7 @@ angular.module('surfCaptain').directive('serverList', [
             scope.deleteServer = function (server) {
                 scope.toggleSpinnerAndOverlay();
                 PresetRepository.deleteServer(server).then(
-                    function (response) {
+                    function () {
                         scope.$parent.getAllServers(false);
                         scope.messages = FlashMessageService.addFlashMessage(
                             'Server deleted!',
@@ -1577,7 +1625,7 @@ angular.module('surfCaptain').directive('serverList', [
                             SEVERITY.ok
                         );
                     },
-                    function (response) {
+                    function () {
                         scope.toggleSpinnerAndOverlay();
                         scope.messages = FlashMessageService.addFlashMessage(
                             'Deletion failed!',
@@ -1686,1106 +1734,1229 @@ angular.module('surfCaptain').directive('serverList', [
             link: linker
         };
     }
-]);
-/*global surfCaptain*/
-/*jslint node: true */
+    serverList.$inject = ['PresetRepository', 'ValidationService', 'FlashMessageService', 'SEVERITY', 'SettingsRepository', 'ProjectRepository'];
+}());
+/* global angular */
 
-'use strict';
-angular.module('surfCaptain').directive('serverNameValidate', function () {
-    return {
-        restrict: 'A',
-        require: 'ngModel',
-        scope: {
-            serverNames: '='
-        },
-        link: function (scope, elem, attr, ctrl) {
-            // add a parser
-            ctrl.$parsers.unshift(function (value) {
-                var valid = scope.serverNames === undefined || scope.serverNames.indexOf(value) === -1;
-                ctrl.$setValidity('server-name-validate', valid);
+(function () {
+    'use strict';
+    angular
+        .module('surfCaptain')
+        .directive('serverNameValidate', serverNameValidate);
 
-                // if it's valid, return the value to the model,
-                // otherwise return undefined.
-                return valid ? value : undefined;
-            });
+    /* @ngInject */
+    function serverNameValidate() {
+        return {
+            restrict: 'A',
+            require: 'ngModel',
+            scope: {
+                serverNames: '='
+            },
+            link: function (scope, elem, attr, ctrl) {
+                // add a parser
+                ctrl.$parsers.unshift(function (value) {
+                    var valid = scope.serverNames === undefined || scope.serverNames.indexOf(value) === -1;
+                    ctrl.$setValidity('server-name-validate', valid);
 
-            // add a formatter
-            ctrl.$formatters.unshift(function (value) {
-                var valid = scope.serverNames === undefined || scope.serverNames.indexOf(value) === -1;
-                ctrl.$setValidity('server-name-validate', valid);
+                    // if it's valid, return the value to the model,
+                    // otherwise return undefined.
+                    return valid ? value : undefined;
+                });
 
-                // return the value or nothing will be written to the DOM.
-                return value;
-            });
+                // add a formatter
+                ctrl.$formatters.unshift(function (value) {
+                    var valid = scope.serverNames === undefined || scope.serverNames.indexOf(value) === -1;
+                    ctrl.$setValidity('server-name-validate', valid);
 
-        }
-    };
-});
-/*global surfCaptain*/
-/*jslint node: true */
-
-'use strict';
-angular.module('surfCaptain').directive('spinner', function () {
-    var linker = function (scope, element, attrs) {
-    };
-
-    return {
-        restrict: 'E',
-        template: '<i class="fa fa-spinner fa-spin fa-4x"></i>',
-        link: linker
-    };
-});
-/*global surfCaptain,angular*/
-/*jslint node: true, plusplus: true */
-
-'use strict';
-angular.module('surfCaptain').directive('startWithValidate', ['ValidationService', function (ValidationService) {
-    return {
-        restrict: 'A',
-        require: 'ngModel',
-        scope: {
-            startWithValidate: '='
-        },
-        link: function (scope, elem, attr, ctrl) {
-            // add a parser
-            ctrl.$parsers.unshift(function (value) {
-                var i = 0,
-                    length;
-
-                if (angular.isUndefined(scope.startWithValidate)) {
-                    ctrl.$setValidity('start-with-validate', true);
+                    // return the value or nothing will be written to the DOM.
                     return value;
-                }
-                length = scope.startWithValidate.length;
+                });
 
-                for (i; i < length; i++) {
-                    if (ValidationService.doesStringStartWithSubstring(value, scope.startWithValidate[i])) {
+            }
+        };
+    }
+}());
+/* global angular */
+
+(function () {
+    'use strict';
+    angular
+        .module('surfCaptain')
+        .directive('spinner', spinner);
+
+    /* @ngInject */
+    function spinner() {
+        // scope, element, attrs are passed to the linker function but not needed here
+        function linker() {}
+
+        return {
+            restrict: 'E',
+            template: '<i class="fa fa-spinner fa-spin fa-4x"></i>',
+            link: linker
+        };
+    }
+}());
+/* global angular */
+
+(function () {
+    'use strict';
+    angular
+        .module('surfCaptain')
+        .directive('startWithValidate', startWithValidate);
+
+    /* @ngInject */
+    function startWithValidate(ValidationService) {
+        return {
+            restrict: 'A',
+            require: 'ngModel',
+            scope: {
+                startWithValidate: '='
+            },
+            link: function (scope, elem, attr, ctrl) {
+                // add a parser
+                ctrl.$parsers.unshift(function (value) {
+                    var i = 0,
+                        length;
+
+                    if (angular.isUndefined(scope.startWithValidate)) {
                         ctrl.$setValidity('start-with-validate', true);
                         return value;
                     }
-                }
+                    length = scope.startWithValidate.length;
 
-                ctrl.$setValidity('start-with-validate', false);
-                return undefined;
-            });
+                    for (i; i < length; i++) {
+                        if (ValidationService.doesStringStartWithSubstring(value, scope.startWithValidate[i])) {
+                            ctrl.$setValidity('start-with-validate', true);
+                            return value;
+                        }
+                    }
 
-            // add a formatter
-            ctrl.$formatters.unshift(function (value) {
-                var i = 0,
-                    length;
+                    ctrl.$setValidity('start-with-validate', false);
+                    return undefined;
+                });
 
-                if (angular.isUndefined(scope.startWithValidate)) {
-                    ctrl.$setValidity('start-with-validate', true);
-                    return value;
-                }
-                length = scope.startWithValidate.length;
+                // add a formatter
+                ctrl.$formatters.unshift(function (value) {
+                    var i = 0,
+                        length;
 
-                for (i; i < length; i++) {
-                    if (ValidationService.doesStringStartWithSubstring(value, scope.startWithValidate[i])) {
+                    if (angular.isUndefined(scope.startWithValidate)) {
                         ctrl.$setValidity('start-with-validate', true);
                         return value;
                     }
-                }
+                    length = scope.startWithValidate.length;
 
-                ctrl.$setValidity('start-with-validate', false);
-                return value;
-            });
+                    for (i; i < length; i++) {
+                        if (ValidationService.doesStringStartWithSubstring(value, scope.startWithValidate[i])) {
+                            ctrl.$setValidity('start-with-validate', true);
+                            return value;
+                        }
+                    }
 
-        }
-    };
-}]);
-/*global surfCaptain*/
-/*jslint node: true */
+                    ctrl.$setValidity('start-with-validate', false);
+                    return value;
+                });
 
-'use strict';
-angular.module('surfCaptain').directive('surfcaptainHeader', ['$routeParams', '$location', 'FavorService', function ($routeParams, $location, FavorService) {
-    return {
-        restrict: 'E',
-        templateUrl: '/_Resources/Static/Packages/Lightwerk.SurfCaptain/Scripts/SurfCaptainApp/Partials/Header.html',
-        scope: {
-            icon: '@icon'
-        },
-        link: function (scope, element, attributes) {
+            }
+        };
+    }
+    startWithValidate.$inject = ['ValidationService'];
+}());
+/* global angular */
+
+(function () {
+    'use strict';
+    angular
+        .module('surfCaptain')
+        .directive('surfcaptainHeader', surfcaptainHeader);
+
+    /* @ngInject */
+    function surfcaptainHeader($routeParams, $location, FavorService) {
+
+        function linker(scope) {
             var lastUrlPart = $location.path().split('/').pop();
             scope.project = $routeParams.itemName;
             scope.context = lastUrlPart === scope.project ? '' : lastUrlPart;
             scope.favorites = FavorService.getFavoriteProjects();
         }
-    };
-}]);
-/*global surfCaptain*/
-/*jslint node: true */
 
-'use strict';
-angular.module('surfCaptain').directive('surfcaptainMenu', ['$routeParams', '$location', function ($routeParams, $location) {
-    return {
-        restrict: 'E',
-        templateUrl: '/_Resources/Static/Packages/Lightwerk.SurfCaptain/Scripts/SurfCaptainApp/Partials/Menu.html',
-        scope: {},
-        link: function (scope, element, attributes) {
+        return {
+            restrict: 'E',
+            templateUrl: '/_Resources/Static/Packages/Lightwerk.SurfCaptain/Scripts/SurfCaptainApp/Partials/Header.html',
+            scope: {
+                icon: '@icon'
+            },
+            link: linker
+        };
+    }
+    surfcaptainHeader.$inject = ['$routeParams', '$location', 'FavorService'];
+}());
+/* global angular */
+
+(function () {
+    'use strict';
+    angular
+        .module('surfCaptain')
+        .directive('surfcaptainMenu', surfcaptainMenu);
+
+    /* @ngInject */
+    function surfcaptainMenu($routeParams, $location) {
+
+        function linker(scope) {
             var lastUrlPart = $location.path().split('/').pop();
             scope.project = $routeParams.projectName;
             scope.context = lastUrlPart === scope.project ? 'history' : lastUrlPart;
         }
-    };
-}]);
-/*global surfCaptain,angular*/
-/*jslint node: true */
 
-'use strict';
-angular.module('surfCaptain').directive('tab', function () {
-    return function (scope, element, attributes) {
-        element.bind('click', function (e) {
-            e.preventDefault();
-            angular.element(this).tab('show');
-        });
-    };
-});
-/*global surfCaptain*/
-/*jslint node: true */
+        return {
+            restrict: 'E',
+            templateUrl: '/_Resources/Static/Packages/Lightwerk.SurfCaptain/Scripts/SurfCaptainApp/Partials/Menu.html',
+            scope: {},
+            link: linker
+        };
+    }
+    surfcaptainMenu.$inject = ['$routeParams', '$location'];
+}());
+/* global angular */
 
-'use strict';
-angular.module('surfCaptain').directive('tooltip', function () {
-    return function (scope, element, attributes) {
-        element.tooltip();
-    };
-});
-/*global surfCaptain*/
-/*jslint node: true */
+(function () {
+    'use strict';
+    angular
+        .module('surfCaptain')
+        .directive('tab', tab);
 
-'use strict';
-angular.module('surfCaptain').directive('appVersion', ['version', function (version) {
-    return function (scope, element, attributes) {
-        element.text(version);
-    };
-}]);
-/*global surfCaptain*/
-/*jslint node: true */
+    /* @ngInject */
+    function tab() {
+        return function (scope, element) {
+            element.bind('click', function (e) {
+                e.preventDefault();
+                angular.element(this).tab('show');
+            });
+        };
+    }
+}());
+/* global angular */
 
-'use strict';
-angular.module('surfCaptain').filter('DeploymentTypeFilter', function () {
-    return function (input) {
-        switch (input) {
-        case 'TYPO3\CMS\Deploy':
-        case 'TYPO3\\CMS\\Deploy':
-            return 'Deployment';
-        case 'TYPO3\CMS\Shared':
-        case 'TYPO3\\CMS\\Shared':
-            return 'Sync';
-        default:
-            return input;
-        }
-    };
-});
-/*global surfCaptain*/
-/*jslint node: true */
+(function () {
+    'use strict';
+    angular
+        .module('surfCaptain')
+        .directive('tooltip', tooltip);
 
-'use strict';
-angular.module('surfCaptain').filter('logCodeFilter', function () {
-    return function (input) {
-        switch (input) {
-        case 3:
-        case '3':
-            return 'error';
-        case 4:
-        case '4':
-            return 'warning';
-        case 5:
-        case '5':
-            return 'notice';
-        case 6:
-        case '6':
-            return 'info';
-        case 7:
-        case '7':
-            return 'debug';
-        default:
-            return input;
-        }
-    };
-});
-/*global surfCaptain, angular*/
-/*jslint node: true */
+    /* @ngInject */
+    function tooltip() {
+        return function (scope, element) {
+            element.tooltip();
+        };
+    }
+}());
+/* global angular */
 
-'use strict';
+(function () {
+    'use strict';
+    angular
+        .module('surfCaptain')
+        .directive('appVersion', appVersion);
 
-angular.module('surfCaptain').factory('DeploymentRepository', [ '$http', '$q', '$cacheFactory', function ($http, $q, $cacheFactory) {
+    /* @ngInject */
+    function appVersion(version) {
+        return function (scope, element) {
+            element.text(version);
+        };
+    }
+    appVersion.$inject = ['version'];
+}());
+/* global angular */
+/* jshint -W044:true */
 
-    var deploymentRepository = {},
-        url = '/api/deployment';
+(function () {
+    'use strict';
+    angular
+        .module('surfCaptain')
+        .filter('DeploymentTypeFilter', DeploymentTypeFilter);
 
-    $cacheFactory('deploymentCache');
-
-    /**
-     * @param {object} deployment
-     * @return {Q.promise|promise}
-     */
-    deploymentRepository.addDeployment = function (deployment) {
-        var deploymentContainer = {
-            "configuration": {}
-        },
-            deferred = $q.defer();
-        deploymentContainer.configuration = deployment;
-
-        $http({
-            method: 'POST',
-            url: url,
-            data: {
-                deployment: deploymentContainer
-            },
-            headers: {
-                'Content-Type': 'application/json',
-                'Accept': 'application/json'
+    /* @ngInject */
+    function DeploymentTypeFilter() {
+        return function (input) {
+            switch (input) {
+                case 'TYPO3\CMS\Deploy':
+                case 'TYPO3\\CMS\\Deploy':
+                    return 'Deployment';
+                case 'TYPO3\CMS\Shared':
+                case 'TYPO3\\CMS\\Shared':
+                    return 'Sync';
+                default:
+                    return input;
             }
-        }).success(deferred.resolve).error(deferred.reject);
-        return deferred.promise;
-    };
+        };
+    }
+}());
+/* global angular */
 
-    /**
-     * @return {promise|Q.promise}
-     */
-    deploymentRepository.getDeployments = function () {
-        var deferred = $q.defer();
-        $http.get(url).success(deferred.resolve).error(deferred.reject);
-        return deferred.promise;
-    };
+(function () {
+    'use strict';
+    angular
+        .module('surfCaptain')
+        .filter('logCodeFilter', logCodeFilter);
 
-    /**
-     * @param {string} identifier
-     * @return {promise|Q.promise}
-     */
-    deploymentRepository.getSingleDeployment = function (identifier) {
-        var deferred = $q.defer();
-        if (angular.isDefined($cacheFactory.get('deploymentCache').get(identifier))) {
-            deferred.resolve({deployment: $cacheFactory.get('deploymentCache').get(identifier)});
+    /* @ngInject */
+    function logCodeFilter() {
+        return function (input) {
+            switch (input) {
+                case 3:
+                case '3':
+                    return 'error';
+                case 4:
+                case '4':
+                    return 'warning';
+                case 5:
+                case '5':
+                    return 'notice';
+                case 6:
+                case '6':
+                    return 'info';
+                case 7:
+                case '7':
+                    return 'debug';
+                default:
+                    return input;
+            }
+        };
+    }
+}());
+/* global angular */
+
+(function () {
+    'use strict';
+    angular
+        .module('surfCaptain')
+        .factory('DeploymentRepository', DeploymentRepository);
+
+    /* @ngInject */
+    function DeploymentRepository($http, $q, $cacheFactory) {
+
+        var deploymentRepository = {},
+            url = '/api/deployment';
+
+        $cacheFactory('deploymentCache');
+
+        /**
+         * @param {object} deployment
+         * @return {Q.promise|promise}
+         */
+        deploymentRepository.addDeployment = function (deployment) {
+            var deploymentContainer = {
+                    'configuration': {}
+                },
+                deferred = $q.defer();
+            deploymentContainer.configuration = deployment;
+
+            $http({
+                method: 'POST',
+                url: url,
+                data: {
+                    deployment: deploymentContainer
+                },
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                }
+            }).success(deferred.resolve).error(deferred.reject);
             return deferred.promise;
-        }
-        $http.get(url + '?deployment=' + identifier).success(deferred.resolve).error(deferred.reject);
-        return deferred.promise;
-    };
+        };
 
-    /**
-     * @param deploymentId
-     * @return {promise|Q.promise}
-     */
-    deploymentRepository.cancelDeployment = function (deploymentId) {
-        var deferred = $q.defer();
-        $http({
-            'method': 'PUT',
-            'url': url,
-            'data': {
-                'deployment': {
-                    '__identity': deploymentId,
-                    'status': 'cancelled'
+        /**
+         * @return {promise|Q.promise}
+         */
+        deploymentRepository.getDeployments = function () {
+            var deferred = $q.defer();
+            $http.get(url).success(deferred.resolve).error(deferred.reject);
+            return deferred.promise;
+        };
+
+        /**
+         * @param {string} identifier
+         * @return {promise|Q.promise}
+         */
+        deploymentRepository.getSingleDeployment = function (identifier) {
+            var deferred = $q.defer();
+            if (angular.isDefined($cacheFactory.get('deploymentCache').get(identifier))) {
+                deferred.resolve({deployment: $cacheFactory.get('deploymentCache').get(identifier)});
+                return deferred.promise;
+            }
+            $http.get(url + '?deployment=' + identifier).success(deferred.resolve).error(deferred.reject);
+            return deferred.promise;
+        };
+
+        /**
+         * @param deploymentId
+         * @return {promise|Q.promise}
+         */
+        deploymentRepository.cancelDeployment = function (deploymentId) {
+            var deferred = $q.defer();
+            $http({
+                'method': 'PUT',
+                'url': url,
+                'data': {
+                    'deployment': {
+                        '__identity': deploymentId,
+                        'status': 'cancelled'
+                    }
+                }
+            }).success(deferred.resolve).error(deferred.reject);
+            return deferred.promise;
+        };
+
+        // Public API
+        return {
+            addDeployment: function (deployment) {
+                return deploymentRepository.addDeployment(deployment);
+            },
+            cancelDeployment: function (deploymentId) {
+                return deploymentRepository.cancelDeployment(deploymentId);
+            },
+            getAllDeployments: function () {
+                return deploymentRepository.getDeployments();
+            },
+            getSingleDeployment: function (identifier) {
+                return deploymentRepository.getSingleDeployment(identifier);
+            }
+        };
+    }
+    DeploymentRepository.$inject = ['$http', '$q', '$cacheFactory'];
+}());
+/* global angular */
+
+(function () {
+    'use strict';
+    angular
+        .module('surfCaptain')
+        .factory('PresetRepository', PresetRepository);
+
+    /* @ngInject */
+    function PresetRepository($http, $q) {
+        var presetRepository = {},
+            url = '/api/preset';
+
+        function PresetRepositoryException(message) {
+            this.name = 'PresetRepositoryException';
+            this.message = message;
+        }
+        PresetRepositoryException.prototype = new Error();
+        PresetRepositoryException.prototype.constructor = PresetRepositoryException;
+
+        /**
+         * Gets all servers from the collection
+         *
+         * @param {object} server
+         * @returns {string} – json string
+         */
+        presetRepository.getFullPresetAsString = function (server) {
+            return angular.toJson(presetRepository.getFullPreset(server), false);
+        };
+
+        /**
+         * Gets all servers from the collection
+         *
+         * @param {object} server
+         * @returns {object}
+         */
+        presetRepository.getFullPreset = function (server) {
+            var container = {'applications': []};
+            container.applications[0] = server;
+            return container;
+        };
+
+        /**
+         *
+         * @param {object} server
+         * @returns {string}
+         * @throws {PresetRepositoryException}
+         */
+        presetRepository.getKeyFromServerConfiguration = function (server) {
+            if (angular.isUndefined(server.nodes[0].name)) {
+                if (angular.isUndefined(server.applications[0].nodes[0].name)) {
+                    throw new PresetRepositoryException('PresetRepository.getKeyFromServerConfiguration failed. Server configuration contains no key.');
+                }
+                return server.apllications[0].nodes[0].name;
+            }
+            return server.nodes[0].name;
+        };
+
+        /**
+         *
+         * @param {object} server
+         * @return {object}
+         */
+        presetRepository.getApplicationContainer = function (server) {
+            var applicationContainer = {'applications': []};
+            applicationContainer.applications[0] = server;
+            return applicationContainer;
+        };
+
+        /**
+         * Gets all servers from the collection
+         *
+         * @returns {Q.promise|promise} – promise object
+         */
+        presetRepository.getGlobalServers = function () {
+            var deferred = $q.defer();
+            $http.get(url + '?globals=1').success(deferred.resolve).error(deferred.reject);
+            return deferred.promise;
+        };
+
+        /**
+         * Adds a single server to the server collection
+         *
+         * @param {object} preset
+         * @returns {Q.promise|promise} – promise object
+         */
+        presetRepository.putServer = function (preset) {
+            return this.sendSinglePresetToApi(preset, 'put');
+        };
+
+        /**
+         * Adds a single server to the server collection
+         *
+         * @param preset {object}
+         * @returns {Q.promise|promise} – promise object
+         */
+        presetRepository.postServer = function (preset) {
+            return this.sendSinglePresetToApi(preset, 'post');
+        };
+
+
+        /**
+         * Performs a request to the api with a single preset.
+         * This request can either be POST or PUT which can
+         * be determined with the method argument. Any other
+         * method will result in a failed API call.
+         *
+         * @param {object} preset
+         * @param {string} method
+         * @returns {promise|Q.promise}
+         */
+        presetRepository.sendSinglePresetToApi = function (preset, method) {
+            var deferred = $q.defer();
+            $http({
+                method: method,
+                url: url,
+                data: {
+                    'key': this.getKeyFromServerConfiguration(preset),
+                    'configuration': presetRepository.getFullPreset(preset)
+                },
+                headers: {
+                    'Accept': 'application/json'
+                }
+            }).success(deferred.resolve).error(deferred.reject);
+            return deferred.promise;
+        };
+
+        /**
+         * Removes a single server from the server collection
+         *
+         * @param server {object}
+         * @returns {Q.promise|promise} – promise object
+         */
+        presetRepository.deleteServer = function (server) {
+            var deferred = $q.defer();
+            $http.delete(url + '?key=' + presetRepository
+                .getKeyFromServerConfiguration(server.applications[0]))
+                .success(deferred.resolve)
+                .error(deferred.reject);
+            return deferred.promise;
+        };
+
+        // Public API
+        return {
+            getGlobalServers: function () {
+                return presetRepository.getGlobalServers();
+            },
+            updateServer: function (server) {
+                return presetRepository.putServer(server);
+            },
+            addServer: function (server) {
+                return presetRepository.postServer(server);
+            },
+            deleteServer: function (server) {
+                return presetRepository.deleteServer(server);
+            }
+        };
+    }
+    PresetRepository.$inject = ['$http', '$q'];
+}());
+/* global angular */
+
+(function () {
+    'use strict';
+    angular
+        .module('surfCaptain')
+        .factory('ProjectRepository', ProjectRepository);
+
+    /* @ngInject */
+    function ProjectRepository($http, $q, $cacheFactory) {
+        var projectRepository = {},
+            url = '/api/repository',
+            projectCache = $cacheFactory('projectCache'),
+            projectsCache = $cacheFactory('projectsCache'),
+            repositoryCache = $cacheFactory('repositoryCache');
+
+        function ProjectRepositoryException(message) {
+            this.name = 'ProjectRepositoryException';
+            this.message = message;
+        }
+        ProjectRepositoryException.prototype = new Error();
+        ProjectRepositoryException.prototype.constructor = ProjectRepositoryException;
+
+        /**
+         * Loops trough a collection of projects and
+         * stores each one in angulars cache.
+         *
+         * @param {array} projects
+         * @returns {void}
+         */
+        projectRepository.populateSingleProjectCache = function (projects) {
+            var length = angular.isDefined(projects) ? projects.length : 0,
+                i = 0;
+            if (length) {
+                for (i; i < length; i++) {
+                    projectCache.put(
+                        projects[i].identifier,
+                        projects[i]
+                    );
                 }
             }
-        }).success(deferred.resolve).error(deferred.reject);
-        return deferred.promise;
-    };
+        };
 
-    // Public API
-    return {
-        addDeployment: function (deployment) {
-            return deploymentRepository.addDeployment(deployment);
-        },
-        cancelDeployment: function (deploymentId) {
-            return deploymentRepository.cancelDeployment(deploymentId);
-        },
-        getAllDeployments: function () {
-            return deploymentRepository.getDeployments();
-        },
-        getSingleDeployment: function (identifier) {
-            return deploymentRepository.getSingleDeployment(identifier);
-        }
-    };
-}]);
-/*global surfCaptain, angular*/
-/*jslint node: true */
-
-'use strict';
-
-angular.module('surfCaptain').factory('PresetRepository', ['$http', '$q', function ($http, $q) {
-    var presetRepository = {},
-        url = '/api/preset';
-
-    function PresetRepositoryException(message) {
-        this.name = 'PresetRepositoryException';
-        this.message = message;
-    }
-    PresetRepositoryException.prototype = new Error();
-    PresetRepositoryException.prototype.constructor = PresetRepositoryException;
-
-    /**
-     * Gets all servers from the collection
-     *
-     * @param {object} server
-     * @returns {string} – json string
-     */
-    presetRepository.getFullPresetAsString = function (server) {
-        return angular.toJson(presetRepository.getFullPreset(server), false);
-    };
-
-    /**
-     * Gets all servers from the collection
-     *
-     * @param {object} server
-     * @returns {object}
-     */
-    presetRepository.getFullPreset = function (server) {
-        var container = {"applications": []};
-        container.applications[0] = server;
-        return container;
-    };
-
-    /**
-     *
-     * @param {object} server
-     * @returns {string}
-     * @throws {PresetRepositoryException}
-     */
-    presetRepository.getKeyFromServerConfiguration = function (server) {
-        if (angular.isUndefined(server.nodes[0].name)) {
-            if (angular.isUndefined(server.applications[0].nodes[0].name)) {
-                throw new PresetRepositoryException('PresetRepository.getKeyFromServerConfiguration failed. Server configuration contains no key.');
+        /**
+         *
+         * @returns {Q.promise|promise} – promise object
+         */
+        projectRepository.getProjects = function () {
+            var deferred = $q.defer();
+            if (angular.isDefined(projectsCache.get('allProjects'))) {
+                deferred.resolve(projectsCache.get('allProjects'));
+                return deferred.promise;
             }
-            return server.apllications[0].nodes[0].name;
-        }
-        return server.nodes[0].name;
-    };
-
-    /**
-     *
-     * @param {object} server
-     * @return {object}
-     */
-    presetRepository.getApplicationContainer = function (server) {
-        var applicationContainer = {"applications": []};
-        applicationContainer.applications[0] = server;
-        return applicationContainer;
-    };
-
-    /**
-     * Gets all servers from the collection
-     *
-     * @returns {Q.promise|promise} – promise object
-     */
-    presetRepository.getGlobalServers = function () {
-        var deferred = $q.defer();
-        $http.get(url + '?globals=1').success(deferred.resolve).error(deferred.reject);
-        return deferred.promise;
-    };
-
-    /**
-     * Adds a single server to the server collection
-     *
-     * @param {object} preset
-     * @returns {Q.promise|promise} – promise object
-     */
-    presetRepository.putServer = function (preset) {
-        return this.sendSinglePresetToApi(preset, 'put');
-    };
-
-    /**
-     * Adds a single server to the server collection
-     *
-     * @param preset {object}
-     * @returns {Q.promise|promise} – promise object
-     */
-    presetRepository.postServer = function (preset) {
-        return this.sendSinglePresetToApi(preset, 'post');
-    };
-
-
-    /**
-     * Performs a request to the api with a single preset.
-     * This request can either be POST or PUT which can
-     * be determined with the method argument. Any other
-     * method will result in a failed API call.
-     *
-     * @param {object} preset
-     * @param {string} method
-     * @returns {promise|Q.promise}
-     */
-    presetRepository.sendSinglePresetToApi = function (preset, method) {
-        var deferred = $q.defer();
-        $http({
-            method: method,
-            url: url,
-            data: {
-                'key': this.getKeyFromServerConfiguration(preset),
-                'configuration': presetRepository.getFullPreset(preset)
-            },
-            headers: {
-                'Accept': 'application/json'
-            }
-        }).success(deferred.resolve).error(deferred.reject);
-        return deferred.promise;
-    };
-
-    /**
-     * Removes a single server from the server collection
-     *
-     * @param server {object}
-     * @returns {Q.promise|promise} – promise object
-     */
-    presetRepository.deleteServer = function (server) {
-        var deferred = $q.defer();
-        $http.delete(url + '?key=' + presetRepository.getKeyFromServerConfiguration(server.applications[0]))
-            .success(deferred.resolve)
-            .error(deferred.reject);
-        return deferred.promise;
-    };
-
-    // Public API
-    return {
-        getGlobalServers: function () {
-            return presetRepository.getGlobalServers();
-        },
-        updateServer: function (server) {
-            return presetRepository.putServer(server);
-        },
-        addServer: function (server) {
-            return presetRepository.postServer(server);
-        },
-        deleteServer: function (server) {
-            return presetRepository.deleteServer(server);
-        }
-    };
-}]);
-/*jslint plusplus: true */
-/*jslint node: true */
-/*global surfCaptain, angular*/
-
-'use strict';
-
-angular.module('surfCaptain').factory('ProjectRepository', [ '$http', '$q', '$cacheFactory', function ($http, $q, $cacheFactory) {
-    var projectRepository = {},
-        url = '/api/repository',
-        projectCache = $cacheFactory('projectCache'),
-        projectsCache = $cacheFactory('projectsCache'),
-        repositoryCache = $cacheFactory('repositoryCache');
-
-    function ProjectRepositoryException(message) {
-        this.name = 'ProjectRepositoryException';
-        this.message = message;
-    }
-    ProjectRepositoryException.prototype = new Error();
-    ProjectRepositoryException.prototype.constructor = ProjectRepositoryException;
-
-    /**
-     * Loops trough a collection of projects and
-     * stores each one in angulars cache.
-     *
-     * @param {array} projects
-     * @returns {void}
-     */
-    projectRepository.populateSingleProjectCache = function (projects) {
-        var length = angular.isDefined(projects) ? projects.length : 0,
-            i = 0;
-        if (length) {
-            for (i; i < length; i++) {
-                projectCache.put(
-                    projects[i].identifier,
-                    projects[i]
-                );
-            }
-        }
-    };
-
-    /**
-     *
-     * @returns {Q.promise|promise} – promise object
-     */
-    projectRepository.getProjects = function () {
-        var deferred = $q.defer();
-        if (angular.isDefined(projectsCache.get('allProjects'))) {
-            deferred.resolve(projectsCache.get('allProjects'));
+            $http.get(url, {
+                cache: true,
+                headers: {'Accept': 'application/json'}
+            }).success(
+                function (data) {
+                    deferred.resolve(data.repositories);
+                    projectsCache.put('allProjects', data.repositories);
+                    projectRepository.populateSingleProjectCache(data.repositories);
+                }
+            ).error(deferred.reject);
             return deferred.promise;
-        }
-        $http.get(url, {
-            cache: true,
-            headers: {'Accept': 'application/json'}
-        }).success(
-            function (data) {
-                deferred.resolve(data.repositories);
-                projectsCache.put('allProjects', data.repositories);
-                projectRepository.populateSingleProjectCache(data.repositories);
+        };
+
+        /**
+         * Returns a single project from a collection ob projects
+         *
+         * @param {string} name
+         * @param {array} projects
+         * @returns {object} a single project
+         * @throws {ProjectRepositoryException}
+         */
+        projectRepository.getProjectByName = function (name, projects) {
+            if (angular.isUndefined(projectCache.get(name))) {
+                projectRepository.populateSingleProjectCache(projects);
             }
-        ).error(deferred.reject);
-        return deferred.promise;
-    };
+            projectCache = $cacheFactory.get('projectCache');
+            if (angular.isUndefined(projectCache.get(name))) {
+                throw new ProjectRepositoryException('Could not find project');
+            }
+            return projectCache.get(name);
+        };
 
-    /**
-     * Returns a single project from a collection ob projects
-     *
-     * @param {string} name
-     * @param {array} projects
-     * @returns {object} a single project
-     * @throws {ProjectRepositoryException}
-     */
-    projectRepository.getProjectByName = function (name, projects) {
-        if (angular.isUndefined(projectCache.get(name))) {
-            projectRepository.populateSingleProjectCache(projects);
-        }
-        projectCache = $cacheFactory.get('projectCache');
-        if (angular.isUndefined(projectCache.get(name))) {
-            throw new ProjectRepositoryException('Could not find project');
-        }
-        return projectCache.get(name);
-    };
-
-    /**
-     * @param {string} repositoryUrl
-     * @returns {promise|Q.promise}
-     */
-    projectRepository.getFullProjectByRepositoryUrl = function (repositoryUrl) {
-        var deferred = $q.defer();
-        if (angular.isDefined(repositoryCache.get(repositoryUrl))) {
-            deferred.resolve(repositoryCache.get(repositoryUrl));
-            projectRepository.updateFullProjectInCache(repositoryUrl);
-        } else {
-            $http.get(url + '?repositoryUrl=' + repositoryUrl)
-                .success(
+        /**
+         * @param {string} repositoryUrl
+         * @returns {promise|Q.promise}
+         */
+        projectRepository.getFullProjectByRepositoryUrl = function (repositoryUrl) {
+            var deferred = $q.defer();
+            if (angular.isDefined(repositoryCache.get(repositoryUrl))) {
+                deferred.resolve(repositoryCache.get(repositoryUrl));
+                projectRepository.updateFullProjectInCache(repositoryUrl);
+            } else {
+                $http.get(url + '?repositoryUrl=' + repositoryUrl)
+                    .success(
                     function (response) {
                         repositoryCache.put(repositoryUrl, response);
                         deferred.resolve(response);
                     }
                 )
-                .error(deferred.reject);
-        }
-        return deferred.promise;
-    };
+                    .error(deferred.reject);
+            }
+            return deferred.promise;
+        };
 
-    /**
-     * @param {string} repositoryUrl
-     * @returns {promise|Q.promise}
-     */
-    projectRepository.getFullProjectByRepositoryUrlFromServer = function (repositoryUrl) {
-        var deferred = $q.defer();
-        $http.get(url + '?repositoryUrl=' + repositoryUrl)
-            .success(
+        /**
+         * @param {string} repositoryUrl
+         * @returns {promise|Q.promise}
+         */
+        projectRepository.getFullProjectByRepositoryUrlFromServer = function (repositoryUrl) {
+            var deferred = $q.defer();
+            $http.get(url + '?repositoryUrl=' + repositoryUrl)
+                .success(
                 function (response) {
                     repositoryCache.put(repositoryUrl, response);
                     deferred.resolve(response);
                 }
             )
-            .error(deferred.reject);
-        return deferred.promise;
-    };
-
-    /**
-     *
-     * @param {string} repositoryUrl
-     * @return {void}
-     */
-    projectRepository.updateFullProjectInCache = function (repositoryUrl) {
-        $http.get(url + '?repositoryUrl=' + repositoryUrl).success(
-            function (response) {
-                repositoryCache.put(repositoryUrl, response);
-            }
-        );
-    };
-
-    // Public API
-    return {
-        getProjects: function () {
-            return projectRepository.getProjects();
-        },
-        getProjectByName: function (name, projects) {
-            return projectRepository.getProjectByName(name, projects);
-        },
-        getFullProjectByRepositoryUrl: function (repositoryUrl) {
-            return projectRepository.getFullProjectByRepositoryUrl(repositoryUrl);
-        },
-        updateFullProjectInCache: function (repositoryUrl) {
-            projectRepository.updateFullProjectInCache(repositoryUrl);
-        },
-        getFullProjectByRepositoryUrlFromServer: function (repositoryUrl) {
-            return projectRepository.getFullProjectByRepositoryUrlFromServer(repositoryUrl);
-        }
-    };
-}]);
-/*global surfCaptain, angular*/
-/*jslint node: true */
-
-'use strict';
-
-angular.module('surfCaptain').factory('SettingsRepository', ['$http', '$q', '$cacheFactory', function ($http, $q, $cacheFactory) {
-    var settingsRepository = {},
-        url = '/api/frontendSetting';
-
-    $cacheFactory('settingsCache');
-
-    /**
-     *
-     * @returns {Q.promise|promise} – promise object
-     */
-    settingsRepository.getFrontendSettings = function () {
-        var deferred = $q.defer(),
-            settingsCache = $cacheFactory.get('settingsCache');
-        if (angular.isDefined(settingsCache.get('configuration'))) {
-            deferred.resolve(settingsCache.get('configuration'));
+                .error(deferred.reject);
             return deferred.promise;
-        }
-        $http.get(url, {cache: true}).success(
-            function (data) {
-                settingsCache.put('configuration', data.frontendSettings);
-                deferred.resolve(data.frontendSettings);
-            }
-        ).error(deferred.reject);
-        return deferred.promise;
-    };
+        };
 
-    // Public API
-    return {
-        getSettings: function () {
-            return settingsRepository.getFrontendSettings();
-        }
-    };
-}]);
-/*jslint node: true, plusplus: true */
-/*global surfCaptain, angular*/
-
-'use strict';
-
-angular.module('surfCaptain').service('FavorService', ['cookieStore', 'ProjectRepository', function (cookieStore, ProjectRepository) {
-
-    var self = this,
-        init;
-
-    /**
-     * @param {string} project
-     * @return {void}
-     */
-    this.addFavoriteProject = function (project) {
-        var favoriteProjects = self.getFavoriteProjects(),
-            length = favoriteProjects.length,
-            i = 0;
-        if (length) {
-            for (i; i < length; i++) {
-                if (favoriteProjects[i].identifier === project.identifier) {
-                    return;
+        /**
+         *
+         * @param {string} repositoryUrl
+         * @return {void}
+         */
+        projectRepository.updateFullProjectInCache = function (repositoryUrl) {
+            $http.get(url + '?repositoryUrl=' + repositoryUrl).success(
+                function (response) {
+                    repositoryCache.put(repositoryUrl, response);
                 }
+            );
+        };
+
+        // Public API
+        return {
+            getProjects: function () {
+                return projectRepository.getProjects();
+            },
+            getProjectByName: function (name, projects) {
+                return projectRepository.getProjectByName(name, projects);
+            },
+            getFullProjectByRepositoryUrl: function (repositoryUrl) {
+                return projectRepository.getFullProjectByRepositoryUrl(repositoryUrl);
+            },
+            updateFullProjectInCache: function (repositoryUrl) {
+                projectRepository.updateFullProjectInCache(repositoryUrl);
+            },
+            getFullProjectByRepositoryUrlFromServer: function (repositoryUrl) {
+                return projectRepository.getFullProjectByRepositoryUrlFromServer(repositoryUrl);
             }
-            if (length > 2) {
-                favoriteProjects = favoriteProjects.slice(1, 3);
+        };
+    }
+    ProjectRepository.$inject = ['$http', '$q', '$cacheFactory'];
+}());
+/* global angular */
+
+(function () {
+    'use strict';
+    angular
+        .module('surfCaptain')
+        .factory('SettingsRepository', SettingsRepository);
+
+    /* @ngInject */
+    function SettingsRepository($http, $q, $cacheFactory) {
+        var settingsRepository = {},
+            url = '/api/frontendSetting';
+
+        $cacheFactory('settingsCache');
+
+        /**
+         *
+         * @returns {Q.promise|promise} – promise object
+         */
+        settingsRepository.getFrontendSettings = function () {
+            var deferred = $q.defer(),
+                settingsCache = $cacheFactory.get('settingsCache');
+            if (angular.isDefined(settingsCache.get('configuration'))) {
+                deferred.resolve(settingsCache.get('configuration'));
+                return deferred.promise;
             }
-        }
-        favoriteProjects.push(project);
-        cookieStore.put('favoriteProjects', angular.toJson(favoriteProjects), {end: Infinity});
-    };
+            $http.get(url, {cache: true}).success(
+                function (data) {
+                    settingsCache.put('configuration', data.frontendSettings);
+                    deferred.resolve(data.frontendSettings);
+                }
+            ).error(deferred.reject);
+            return deferred.promise;
+        };
 
-    /**
-     * @return {Array}
-     */
-    this.getFavoriteProjects = function () {
-        var favoriteProjects = [];
-        if (angular.isDefined(cookieStore.get('favoriteProjects')) && cookieStore.get('favoriteProjects') !== null ) {
-            favoriteProjects = angular.fromJson(cookieStore.get('favoriteProjects'));
-        }
-        return favoriteProjects;
-    };
-
-    init = function () {
-        var favorites = self.getFavoriteProjects(),
-            length = favorites.length,
-            i = 0;
-
-        // Populate project cache
-        ProjectRepository.getProjects();
-
-        // Load full projects of favorites into cache
-        for (i; i < length; i++) {
-            if (angular.isDefined(favorites[i].repositoryUrl)) {
-                ProjectRepository.updateFullProjectInCache(favorites[i].repositoryUrl);
+        // Public API
+        return {
+            getSettings: function () {
+                return settingsRepository.getFrontendSettings();
             }
-        }
-    };
-    init();
+        };
+    }
+    SettingsRepository.$inject = ['$http', '$q', '$cacheFactory'];
+}());
+/* global angular */
 
-}]);
-/*jslint node: true, plusplus: true */
-/*global surfCaptain, angular*/
+(function () {
+    'use strict';
+    angular
+        .module('surfCaptain')
+        .service('FavorService', FavorService);
 
-'use strict';
+    /* @ngInject */
+    function FavorService(cookieStore, ProjectRepository) {
 
-angular.module('surfCaptain').service('FlashMessageService', function () {
+        var self = this,
+            init;
 
-    var messages = [];
-
-    /**
-     *
-     * @param {string} title
-     * @param {string} message
-     * @param {integer} severity
-     * @param {string} id
-     * @return {Array}
-     */
-    this.addFlashMessage = function (title, message, severity, id) {
-        messages.push({
-            title: title || '',
-            message: message || '',
-            severity: severity,
-            time: new Date(),
-            id: id
-        });
-        return messages;
-    };
-
-    /**
-     * @return {Array}
-     */
-    this.getFlashMessages = function () {
-        return messages;
-    };
-
-    /**
-     * Resets the messages to an empty Array
-     *
-     * @return {void}
-     */
-    this.flush = function () {
-        messages = [];
-    };
-
-});
-/*jslint node: true, plusplus: true */
-/*global surfCaptain, angular*/
-
-'use strict';
-
-angular.module('surfCaptain').service('MarkerService', function () {
-
-    var localStorage = [],
-
-        clearLocalStorage = function () {
-            localStorage = [];
-        },
-
-        addToLocalStorage = function (ind, marker) {
-            localStorage.push([ind, marker]);
-        },
-
-        applyLocalStorage = function (string) {
-            var length = localStorage.length, index, marker, i = length - 1;
+        /**
+         * @param {string} project
+         * @return {void}
+         */
+        this.addFavoriteProject = function (project) {
+            var favoriteProjects = self.getFavoriteProjects(),
+                length = favoriteProjects.length,
+                i = 0;
             if (length) {
-                for (i; i >= 0; i--) {
-                    index = localStorage[i][0];
-                    marker = localStorage[i][1];
-                    string = string.slice(0, index) + marker + string.slice(index);
+                for (i; i < length; i++) {
+                    if (favoriteProjects[i].identifier === project.identifier) {
+                        return;
+                    }
+                }
+                if (length > 2) {
+                    favoriteProjects = favoriteProjects.slice(1, 3);
                 }
             }
-            clearLocalStorage();
+            favoriteProjects.push(project);
+            cookieStore.put('favoriteProjects', angular.toJson(favoriteProjects), {end: Infinity});
+        };
+
+        /**
+         * @return {Array}
+         */
+        this.getFavoriteProjects = function () {
+            var favoriteProjects = [];
+            if (angular.isDefined(cookieStore.get('favoriteProjects')) && cookieStore.get('favoriteProjects') !== null ) {
+                favoriteProjects = angular.fromJson(cookieStore.get('favoriteProjects'));
+            }
+            return favoriteProjects;
+        };
+
+        init = function () {
+            var favorites = self.getFavoriteProjects(),
+                length = favorites.length,
+                i = 0;
+
+            // Populate project cache
+            ProjectRepository.getProjects();
+
+            // Load full projects of favorites into cache
+            for (i; i < length; i++) {
+                if (angular.isDefined(favorites[i].repositoryUrl)) {
+                    ProjectRepository.updateFullProjectInCache(favorites[i].repositoryUrl);
+                }
+            }
+        };
+        init();
+
+    }
+    FavorService.$inject = ['cookieStore', 'ProjectRepository'];
+}());
+/* global angular */
+
+(function () {
+    'use strict';
+    angular
+        .module('surfCaptain')
+        .service('FlashMessageService', FlashMessageService);
+
+    /* @ngInject */
+    function FlashMessageService() {
+        var messages = [];
+
+        /**
+         *
+         * @param {string} title
+         * @param {string} message
+         * @param {integer} severity
+         * @param {string} id
+         * @return {Array}
+         */
+        this.addFlashMessage = function (title, message, severity, id) {
+            messages.push({
+                title: title || '',
+                message: message || '',
+                severity: severity,
+                time: new Date(),
+                id: id
+            });
+            return messages;
+        };
+
+        /**
+         * @return {Array}
+         */
+        this.getFlashMessages = function () {
+            return messages;
+        };
+
+        /**
+         * Resets the messages to an empty Array
+         *
+         * @return {void}
+         */
+        this.flush = function () {
+            messages = [];
+        };
+    }
+}());
+/* global angular */
+
+(function () {
+    'use strict';
+    angular
+        .module('surfCaptain')
+        .service('MarkerService', MarkerService);
+
+    /* @ngInject */
+    function MarkerService() {
+        var localStorage = [],
+
+            clearLocalStorage = function () {
+                localStorage = [];
+            },
+
+            addToLocalStorage = function (ind, marker) {
+                localStorage.push([ind, marker]);
+            },
+
+            applyLocalStorage = function (string) {
+                var length = localStorage.length, index, marker, i = length - 1;
+                if (length) {
+                    for (i; i >= 0; i--) {
+                        index = localStorage[i][0];
+                        marker = localStorage[i][1];
+                        string = string.slice(0, index) + marker + string.slice(index);
+                    }
+                }
+                clearLocalStorage();
+                return string;
+            };
+
+        /**
+         *
+         * @param {string} string
+         * @returns {null|string}
+         */
+        this.getFirstMarker = function (string) {
+            var marker;
+            if (typeof string !== 'string') {
+                return null;
+            }
+            marker = string.match(new RegExp('([{]{2,2})([A-Za-z0-9]*)([}]{2,2})'));
+            if (marker === null) {
+                return null;
+            }
+            return marker[0];
+        };
+
+        /**
+         * Replaces markers in strings. Only substrings inside
+         * double curly braces are replaced.
+         *
+         * @param {string} string
+         * @param {object} configuration
+         * @returns {string}
+         */
+        this.replaceMarkers = function (string, configuration) {
+            var marker, replacement;
+
+            if (angular.isUndefined(configuration)) {
+                return string;
+            }
+
+            marker = this.getFirstMarker(string);
+
+            switch (marker) {
+                case null:
+                    string = applyLocalStorage(string);
+                    return string;
+
+                // These cases expect a property name in the
+                // configuration to be replaced with.
+                case '{{project}}':
+                case '{{projectName}}':
+                case '{{projectname}}':
+                    if (angular.isDefined(configuration.name)) {
+                        replacement = configuration.name;
+                    } else {
+                        addToLocalStorage(string.indexOf(marker), marker);
+                        replacement = '';
+                    }
+                    break;
+                case '{{suffix}}':
+                    if (angular.isDefined(configuration.suffix)) {
+                        replacement = configuration.suffix;
+                    } else {
+                        addToLocalStorage(string.indexOf(marker), marker);
+                        replacement = '';
+                    }
+                    break;
+                // Found an unknown marker:
+                // Remove it but store it to put it back there in the end.
+                default:
+                    addToLocalStorage(string.indexOf(marker), marker);
+                    replacement = '';
+                    break;
+            }
+            string = string.replace(marker, replacement);
+            string = this.replaceMarkers(string, configuration);
             return string;
         };
 
-    /**
-     *
-     * @param {string} string
-     * @returns {null|string}
-     */
-    this.getFirstMarker = function (string) {
-        var marker;
-        if (typeof string !== 'string') {
-            return null;
-        }
-        marker = string.match(new RegExp('([{]{2,2})([A-Za-z0-9]*)([}]{2,2})'));
-        if (marker === null) {
-            return null;
-        }
-        return marker[0];
-    };
-
-    /**
-     * Replaces markers in strings. Only substrings inside
-     * double curly braces are replaced.
-     *
-     * @param {string} string
-     * @param {object} configuration
-     * @returns {string}
-     */
-    this.replaceMarkers = function (string, configuration) {
-        var marker, replacement;
-
-        if (angular.isUndefined(configuration)) {
-            return string;
-        }
-
-        marker = this.getFirstMarker(string);
-
-        switch (marker) {
-        case null:
-            string = applyLocalStorage(string);
-            return string;
-
-        // These cases expect a property name in the
-        // configuration to be replaced with.
-        case '{{project}}':
-        case '{{projectName}}':
-        case '{{projectname}}':
-            if (angular.isDefined(configuration.name)) {
-                replacement = configuration.name;
-            } else {
-                addToLocalStorage(string.indexOf(marker), marker);
-                replacement = '';
+        /**
+         *
+         * @param {string} string
+         * @return {string}
+         */
+        this.getStringBeforeFirstMarker = function (string) {
+            var index;
+            if (typeof string !== 'string') {
+                return '';
             }
-            break;
-        case '{{suffix}}':
-            if (angular.isDefined(configuration.suffix)) {
-                replacement = configuration.suffix;
-            } else {
-                addToLocalStorage(string.indexOf(marker), marker);
-                replacement = '';
+            index = string.indexOf(this.getFirstMarker(string));
+            if (index === -1) {
+                return string;
             }
-            break;
-        // Found an unknown marker:
-        // Remove it but store it to put it back there in the end.
-        default:
-            addToLocalStorage(string.indexOf(marker), marker);
-            replacement = '';
-            break;
-        }
-        string = string.replace(marker, replacement);
-        string = this.replaceMarkers(string, configuration);
-        return string;
-    };
+            return string.substring(0, index);
+        };
+    }
+}());
+/* global angular */
 
-    /**
-     *
-     * @param {string} string
-     * @return {string}
-     */
-    this.getStringBeforeFirstMarker = function (string) {
-        var index;
-        if (typeof string !== 'string') {
-            return '';
-        }
-        index = string.indexOf(this.getFirstMarker(string));
-        if (index === -1) {
-            return string;
-        }
-        return string.substring(0, index);
-    };
-});
-/*jslint node: true, plusplus: true */
-/*global surfCaptain, angular*/
+(function () {
+    'use strict';
+    angular
+        .module('surfCaptain')
+        .service('PresetService', PresetService);
 
-'use strict';
+    /* @ngInject */
+    function PresetService(SettingsRepository, ValidationService) {
 
-angular.module('surfCaptain').service('PresetService', ['SettingsRepository', 'ValidationService', function (SettingsRepository, ValidationService) {
-
-    var newPreset = {
-        "options": {
-            "repositoryUrl": '',
-            "deploymentPath": '',
-            "context": ''
-        },
-        "nodes": [
-            {
-                "name": '',
-                "hostname": '',
-                "username": ''
-            }
-        ]
-    },
-        self = this;
-
-    this.contexts = [];
-
-    /**
-     * @return {void}
-     */
-    this.setContexts = function () {
-        if (self.contexts.length === 0) {
-            SettingsRepository.getSettings().then(
-                function (response) {
-                    self.contexts = [];
-                    if (angular.isDefined(response.contexts)) {
-                        self.contexts = response.contexts.split(',');
+        var newPreset = {
+                'options': {
+                    'repositoryUrl': '',
+                    'deploymentPath': '',
+                    'context': ''
+                },
+                'nodes': [
+                    {
+                        'name': '',
+                        'hostname': '',
+                        'username': ''
                     }
+                ]
+            },
+            self = this;
+
+        this.contexts = [];
+
+        /**
+         * @return {void}
+         */
+        this.setContexts = function () {
+            if (self.contexts.length === 0) {
+                SettingsRepository.getSettings().then(
+                    function (response) {
+                        self.contexts = [];
+                        if (angular.isDefined(response.contexts)) {
+                            self.contexts = response.contexts.split(',');
+                        }
+                    }
+                );
+            }
+        };
+
+
+        /**
+         * A new preset skeleton is returned with options from an optional
+         * passed configuration object (like frontendSettings). Used
+         * properties in configuration are:
+         *
+         *  - defaultUser (Sets the Username in the first Node)
+         *  - defaultDeploymentPath (Sets the deploymentPath in the options.
+         *    Markers have to be replaced later on!)
+         *
+         * @param {object} configuration - optional
+         * @returns {object}}
+         */
+        this.getNewPreset = function (configuration) {
+            var preset = angular.copy(newPreset);
+            if (angular.isDefined(configuration)) {
+                if (angular.isDefined(configuration.defaultUser)) {
+                    preset.nodes[0].username = configuration.defaultUser;
                 }
-            );
-        }
-    };
-
-
-    /**
-     * A new preset skeleton is returned with options from an optional
-     * passed configuration object (like frontendSettings). Used
-     * properties in configuration are:
-     *
-     *  - defaultUser (Sets the Username in the first Node)
-     *  - defaultDeploymentPath (Sets the deploymentPath in the options.
-     *    Markers have to be replaced later on!)
-     *
-     * @param {object} configuration - optional
-     * @returns {object}}
-     */
-    this.getNewPreset = function (configuration) {
-        var preset = angular.copy(newPreset);
-        if (angular.isDefined(configuration)) {
-            if (angular.isDefined(configuration.defaultUser)) {
-                preset.nodes[0].username = configuration.defaultUser;
+                if (angular.isDefined(configuration.defaultDeploymentPath)) {
+                    preset.options.deploymentPath = configuration.defaultDeploymentPath;
+                }
             }
-            if (angular.isDefined(configuration.defaultDeploymentPath)) {
-                preset.options.deploymentPath = configuration.defaultDeploymentPath;
+            return preset;
+        };
+
+        /**
+         * @param {string} context
+         * @param {array} contexts
+         * @returns {string}
+         */
+        this.getRootContext = function (context, contexts) {
+            this.setContexts();
+            var i = 0,
+                length = contexts.length;
+            for (i; i < length; i++) {
+                if (ValidationService.doesStringStartWithSubstring(context, contexts[i])) {
+                    return contexts[i];
+                }
             }
-        }
-        return preset;
-    };
+            return 'unknown-context';
+        };
+    }
+    PresetService.$inject = ['SettingsRepository', 'ValidationService'];
+}());
+/* global angular */
 
-    /**
-     * @param {string} context
-     * @param {array} contexts
-     * @returns {string}
-     */
-    this.getRootContext = function (context, contexts) {
-        this.setContexts();
-        var i = 0,
-            length = contexts.length;
-        for (i; i < length; i++) {
-            if (ValidationService.doesStringStartWithSubstring(context, contexts[i])) {
-                return contexts[i];
+(function () {
+    'use strict';
+    angular
+        .module('surfCaptain')
+        .service('UtilityService', UtilityService);
+
+    /* @ngInject */
+    function UtilityService() {
+
+        /**
+         *
+         * @param {string} name
+         * @param {array} tags
+         * @returns {string}
+         */
+        this.getDeployedTag = function (name, tags) {
+            var length = tags.length,
+                i = 0,
+                commit;
+            for (i; i < length; i++) {
+                if (tags[i].name === 'server-' + name) {
+                    commit = tags[i].commit;
+                }
             }
-        }
-        return 'unknown-context';
-    };
-}]);
-/*jslint node: true, plusplus: true */
-/*global surfCaptain,angular*/
-
-'use strict';
-
-angular.module('surfCaptain').service('UtilityService', function () {
-
-    /**
-     *
-     * @param {string} name
-     * @param {array} tags
-     * @returns {string}
-     */
-    this.getDeployedTag = function (name, tags) {
-        var length = tags.length,
-            i = 0,
-            commit;
-        for (i; i < length; i++) {
-            if (tags[i].name === 'server-' + name) {
-                commit = tags[i].commit;
+            if (angular.isUndefined(commit)) {
+                return 'No deployed tag found.';
             }
-        }
-        if (angular.isUndefined(commit)) {
-            return 'No deployed tag found.';
-        }
-        i = 0;
-        for (i; i < length; i++) {
-            if (tags[i].commit.id === commit.id && tags[i].name !== 'server-' + name) {
-                return tags[i].type + ' ' + tags[i].name + ' - ' + commit.committerName + ': "' + commit.message + '"';
+            i = 0;
+            for (i; i < length; i++) {
+                if (tags[i].commit.id === commit.id && tags[i].name !== 'server-' + name) {
+                    return tags[i].type + ' ' + tags[i].name + ' - ' + commit.committerName + ': "' + commit.message + '"';
+                }
             }
-        }
-        return commit.id + ' - ' + commit.committerName + ': "' + commit.message + '"';
-    };
+            return commit.id + ' - ' + commit.committerName + ': "' + commit.message + '"';
+        };
 
-    /**
-     * Sort function to show most recent commits at the
-     * start of the array. Use this as compareFunction
-     * in an array.sort().
-     *
-     * @param {object} a
-     * @param {object} b
-     * @returns {number}
-     */
-    this.byCommitDate = function (a, b) {
-        if (a.commit.date < b.commit.date) {
-            return 1;
-        }
-        return -1;
-    };
+        /**
+         * Sort function to show most recent commits at the
+         * start of the array. Use this as compareFunction
+         * in an array.sort().
+         *
+         * @param {object} a
+         * @param {object} b
+         * @returns {number}
+         */
+        this.byCommitDate = function (a, b) {
+            if (a.commit.date < b.commit.date) {
+                return 1;
+            }
+            return -1;
+        };
+    }
+}());
 
-});
+/* global angular */
 
-/*jslint node: true */
-/*global surfCaptain*/
+(function () {
+    'use strict';
+    angular
+        .module('surfCaptain')
+        .service('ValidationService', ValidationService);
 
-'use strict';
+    /* @ngInject */
+    function ValidationService() {
+        /**
+         * Validates if a given string has at least the length of the given
+         * minLength. A third parameter is an optional string to be returned
+         * on validation failure.
+         *
+         * @param {string} value
+         * @param {integer} minLength
+         * @param {string} message
+         * @returns {string|boolean}
+         */
+        this.hasLength = function (value, minLength, message) {
+            if (value.length >= minLength) {
+                return true;
+            }
+            return message || false;
+        };
 
-angular.module('surfCaptain').service('ValidationService', function () {
+        /**
+         * Validates if a given string ends with a given character
+         * A third parameter is an optional string to be returned
+         * on validation failure.
+         *
+         * @param {string} value
+         * @param {string} character
+         * @param {string} message
+         * @returns {string|boolean}
+         */
+        this.doesLastCharacterMatch = function (value, character, message) {
+            if (value.charAt(value.length - 1) === character) {
+                return true;
+            }
+            return message || false;
+        };
 
-    /**
-     * Validates if a given string has at least the length of the given
-     * minLength. A third parameter is an optional string to be returned
-     * on validation failure.
-     *
-     * @param {string} value
-     * @param {integer} minLength
-     * @param {string} message
-     * @returns {string|boolean}
-     */
-    this.hasLength = function (value, minLength, message) {
-        if (value.length >= minLength) {
-            return true;
-        }
-        return message || false;
-    };
+        /**
+         * Validates if a given Item is found within a given array.
+         *
+         * @param {array} array
+         * @param {mixed} item
+         * @param {string} message
+         * @returns {string|boolean}
+         */
+        this.doesArrayContainItem = function (array, item, message) {
+            if (array instanceof Array && array.indexOf(item) > -1) {
+                return true;
+            }
+            return message || false;
+        };
 
-    /**
-     * Validates if a given string ends with a given character
-     * A third parameter is an optional string to be returned
-     * on validation failure.
-     *
-     * @param {string} value
-     * @param {string} character
-     * @param {string} message
-     * @returns {string|boolean}
-     */
-    this.doesLastCharacterMatch = function (value, character, message) {
-        if (value.charAt(value.length - 1) === character) {
-            return true;
-        }
-        return message || false;
-    };
+        /**
+         * Validates if a given Substring is found within a given string.
+         *
+         * @param {string} string
+         * @param {string} substring
+         * @param {string} message
+         * @returns {string|boolean}
+         */
+        this.doesStringContainSubstring = function (string, substring, message) {
+            if (typeof string === 'string' && string.indexOf(substring) !== -1) {
+                return true;
+            }
+            return message || false;
+        };
 
-    /**
-     * Validates if a given Item is found within a given array.
-     *
-     * @param {array} array
-     * @param {mixed} item
-     * @param {string} message
-     * @returns {string|boolean}
-     */
-    this.doesArrayContainItem = function (array, item, message) {
-        if (array instanceof Array && array.indexOf(item) > -1) {
-            return true;
-        }
-        return message || false;
-    };
-
-    /**
-     * Validates if a given Substring is found within a given string.
-     *
-     * @param {string} string
-     * @param {string} substring
-     * @param {string} message
-     * @returns {string|boolean}
-     */
-    this.doesStringContainSubstring = function (string, substring, message) {
-        if (typeof string === 'string' && string.indexOf(substring) !== -1) {
-            return true;
-        }
-        return message || false;
-    };
-
-    /**
-     * Validates if a given Substring is found within a given string.
-     *
-     * @param {string} string
-     * @param {string} substring
-     * @param {string} message
-     * @returns {string|boolean}
-     */
-    this.doesStringStartWithSubstring = function (string, substring, message) {
-        if (typeof string === 'string' && string.indexOf(substring) === 0) {
-            return true;
-        }
-        return message || false;
-    };
-});
+        /**
+         * Validates if a given Substring is found within a given string.
+         *
+         * @param {string} string
+         * @param {string} substring
+         * @param {string} message
+         * @returns {string|boolean}
+         */
+        this.doesStringStartWithSubstring = function (string, substring, message) {
+            if (typeof string === 'string' && string.indexOf(substring) === 0) {
+                return true;
+            }
+            return message || false;
+        };
+    }
+}());

@@ -30,14 +30,14 @@
 				<div data-ng-repeat="server in servers" class="deployment-server-container">
 					<div
 							class="deployment-server"
-							data-ng-class="[sourceDisplay(server), getRootContext(server.applications.0.options.context)]"
+							data-ng-class="[sourceDisplay(server), getRootContext(server.applications[0].options.context)]"
 							data-ng-click="setCurrentSource(server)"
 							>
 						<div class="title">
-							<i class="fa fa-hdd-o"></i>{{server.applications.0.nodes.0.name}}
+							<i class="fa fa-hdd-o"></i>{{server.applications[0].nodes[0].name}}
 						</div>
 						<div class="context-container">
-							<span class="context">({{server.applications.0.options.context}})</span>
+							<span class="context">({{server.applications[0].options.context}})</span>
 						</div>
 					</div>
 				</div>
@@ -62,14 +62,14 @@
 			<div data-ng-repeat="globalServer in globalServers" class="deployment-server-container">
 				<div
 						class="deployment-server"
-						data-ng-class="[getRootContext(globalServer.applications.0.options.context), targetDisplay(globalServer)]"
+						data-ng-class="[getRootContext(globalServer.applications[0].options.context), targetDisplay(globalServer)]"
 						data-ng-click="setCurrentTarget(globalServer)"
 						>
 					<div class="title">
-						<i class="fa fa-hdd-o"></i>{{globalServer.applications.0.nodes.0.name}}
+						<i class="fa fa-hdd-o"></i>{{globalServer.applications[0].nodes[0].name}}
 					</div>
 					<div class="context-container">
-						<span class="context">({{globalServer.applications.0.options.context}})</span>
+						<span class="context">({{globalServer.applications[0].options.context}})</span>
 					</div>
 				</div>
 			</div>
@@ -90,9 +90,9 @@
 			<div class="modal-header">
 				<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span
 						class="sr-only">Close</span></button>
-				<h4 class="modal-title">{{currentSource.applications.0.nodes.0.name}} Sync</h4>
-				You are going to sync shared folders and database from {{currentSource.applications.0.nodes.0.name}}
-				onto {{currentTarget.applications.0.nodes.0.name}}.
+				<h4 class="modal-title">{{currentSource.applications[0].nodes[0].name}} Sync</h4>
+				You are going to sync shared folders and database from {{currentSource.applications[0].nodes[0].name}}
+				onto {{currentTarget.applications[0].nodes[0].name}}.
 			</div>
 			<div class="modal-footer">
 				<button type="button" class="btn btn-success" data-ng-click="sync(currentSource, currentTarget)"

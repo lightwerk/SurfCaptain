@@ -1,14 +1,20 @@
-/*global surfCaptain*/
-/*jslint node: true */
+/* global angular */
 
-'use strict';
-angular.module('surfCaptain').directive('spinner', function () {
-    var linker = function (scope, element, attrs) {
-    };
+(function () {
+    'use strict';
+    angular
+        .module('surfCaptain')
+        .directive('spinner', spinner);
 
-    return {
-        restrict: 'E',
-        template: '<i class="fa fa-spinner fa-spin fa-4x"></i>',
-        link: linker
-    };
-});
+    /* @ngInject */
+    function spinner() {
+        // scope, element, attrs are passed to the linker function but not needed here
+        function linker() {}
+
+        return {
+            restrict: 'E',
+            template: '<i class="fa fa-spinner fa-spin fa-4x"></i>',
+            link: linker
+        };
+    }
+}());

@@ -1,21 +1,13 @@
-/*jslint node: true, plusplus:true */
-/*global surfCaptain, angular*/
+/* global angular */
 
-// TODO uinittests
+(function () {
+    'use strict';
+    angular
+        .module('surfCaptain')
+        .controller('ServerController', ServerController);
 
-'use strict';
-angular.module('surfCaptain').controller('ServerController', [
-    '$scope',
-    '$controller',
-    'PresetRepository',
-    'ValidationService',
-    'SettingsRepository',
-    'MarkerService',
-    'PresetService',
-    'FlashMessageService',
-    'SEVERITY',
-    'ProjectRepository',
-    function ($scope, $controller, PresetRepository, ValidationService, SettingsRepository, MarkerService, PresetService, FlashMessageService, SEVERITY, ProjectRepository) {
+    /* @ngInject */
+    function ServerController($scope, $controller, PresetRepository, ValidationService, SettingsRepository, MarkerService, PresetService, FlashMessageService, SEVERITY, ProjectRepository) {
 
         var self = this;
 
@@ -68,6 +60,27 @@ angular.module('surfCaptain').controller('ServerController', [
         };
 
         /**
+         * nameSuggestions are retrieved from the Settings.yaml
+         *
+         * Example configuration:
+         *
+         * Lightwerk:
+         *   SurfCaptain:
+         *     frontendSettings
+         *       nameSuggestions:
+         *         live: 'Production'
+         *         qa: 'Production/Qa'
+         *         staging: 'Production/Staging'
+         *         test: 'Testing'
+         *         dev: 'Development'
+         *
+         * It populates the $scope.nameSuggestions array with objects like
+         *
+         * {
+         *   suffix: live,
+         *   available: true,
+         *   context: 'Production'
+         * }
          *
          * @param {object} nameSuggestions
          * @return {void}
@@ -88,6 +101,15 @@ angular.module('surfCaptain').controller('ServerController', [
         };
 
         /**
+         * Here are FrontendSettings regarding Server Management
+         * taken into account. The settings are retrieved from
+         * Settings.yaml.
+         *
+         * The considered settings are
+         *   * contexts - a comma separated list of allowed TYPO3_CONTEXTs
+         *   * nameSuggestions - @see generateNameSuggestions
+         *   * defaultDeploymentPath - the field deploymentPath of the new server
+         *     server form will be prefilled with this string.
          *
          * @return {void}
          */
@@ -134,7 +156,7 @@ angular.module('surfCaptain').controller('ServerController', [
             }
         };
 
-        this.failureCallback = function (response) {
+        this.failureCallback = function () {
             $scope.finished = true;
             $scope.messages = FlashMessageService.addFlashMessage(
                 'Request failed!',
@@ -165,7 +187,7 @@ angular.module('surfCaptain').controller('ServerController', [
         /**
          * Takes a suffix and tries to replace a {{suffix}} marker
          * within the document root. Stores the returning string
-         * within the deploymentPath property of the newPreset.
+         * in the deploymentPath property of the newPreset.
          *
          * @param {string} suffix
          * @return {void}
@@ -195,7 +217,7 @@ angular.module('surfCaptain').controller('ServerController', [
                 delete server.options.deploymentPathWithMarkers;
             }
             PresetRepository.addServer(server).then(
-                function (response) {
+                function () {
                     $scope.newPreset = PresetService.getNewPreset($scope.settings);
                     $scope.newServerForm.$setPristine();
                     self.handleSettings();
@@ -206,7 +228,7 @@ angular.module('surfCaptain').controller('ServerController', [
                         SEVERITY.ok
                     );
                 },
-                function (response) {
+                function () {
                     $scope.finished = true;
                     $scope.messages = FlashMessageService.addFlashMessage(
                         'Creation failed!',
@@ -240,7 +262,7 @@ angular.module('surfCaptain').controller('ServerController', [
          *
          * @return {void}
          */
-        $scope.$watch('project', function (newValue, oldValue) {
+        $scope.$watch('project', function (newValue) {
             if (angular.isDefined(newValue.name)) {
                 SettingsRepository.getSettings().then(
                     function (response) {
@@ -257,4 +279,4 @@ angular.module('surfCaptain').controller('ServerController', [
             }
         });
     }
-]);
+}());

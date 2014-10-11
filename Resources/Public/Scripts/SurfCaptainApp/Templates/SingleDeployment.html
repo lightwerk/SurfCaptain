@@ -13,7 +13,7 @@
 	<div class="row">
 		<div class="col-xs-12 col-md-8 col-md-offset-2 text-center">
 			<h1>{{deployment.type | DeploymentTypeFilter}} Details</h1>
-			<h3><a data-ng-href="#/project/{{deployment.repositoryIdentifier}}" >{{deployment.repositoryIdentifier}}</a> - {{deployment.referenceName}}{{deployment.options.sourceNode.name}} onto {{deployment.configuration.applications.0.nodes.0.name}}</h3>
+			<h3><a data-ng-href="#/project/{{deployment.repositoryIdentifier}}" >{{deployment.repositoryIdentifier}}</a> - {{deployment.referenceName}}{{deployment.options.sourceNode.name}} onto {{deployment.configuration.applications[0].nodes[0].name}}</h3>
 			<br />
 			<button data-ng-if="deployment.status === 'waiting'" class="btn btn-danger" data-ng-click="cancelDeployment()">Cancel</button>
 			<button data-ng-if="deployment.status !== 'running' && deployment.status !== 'waiting'" class="btn btn-danger" data-ng-click="deployConfigurationAgain()">Deploy again</button>
