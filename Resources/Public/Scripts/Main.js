@@ -2,7 +2,7 @@
 /*jslint node: true */
 
 'use strict';
-angular.module('surfCaptain', ['ngRoute', 'xeditable', 'ngAnimate', 'ngMessages', 'ngBiscuit'])
+angular.module('surfCaptain', ['ngRoute', 'xeditable', 'ngAnimate', 'ngMessages', 'ngBiscuit', 'toaster'])
     .config(['$routeProvider', function ($routeProvider) {
         var templatePath = '/_Resources/Static/Packages/Lightwerk.SurfCaptain/Scripts/SurfCaptainApp/Templates/';
         $routeProvider.
@@ -50,13 +50,7 @@ angular.module('surfCaptain', ['ngRoute', 'xeditable', 'ngAnimate', 'ngMessages'
                 redirectTo: '/'
             });
     }])
-    .value('version', '1.0.0')
-    .constant('SEVERITY', {
-        ok: 0,
-        info: 1,
-        warning: 2,
-        error: 3
-    })
+    .value('version', '1.0.7')
     .constant('CONFIG', {
         applicationTypes: {
             deploy: 'Deploy',
@@ -218,7 +212,7 @@ angular.module('surfCaptain').run(['editableOptions', function (editableOptions)
         .controller('AbstractSingleProjectController', AbstractSingleProjectController);
 
     /* @ngInject */
-    function AbstractSingleProjectController($scope, $routeParams, ProjectRepository, FavorService, FlashMessageService, SEVERITY) {
+    function AbstractSingleProjectController($scope, $routeParams, ProjectRepository, FavorService, toaster) {
         $scope.name = $routeParams.projectName;
         $scope.project = {};
         $scope.messages = {};
@@ -232,11 +226,10 @@ angular.module('surfCaptain').run(['editableOptions', function (editableOptions)
                 },
                 function () {
                     $scope.finished = true;
-                    $scope.messages = FlashMessageService.addFlashMessage(
+                    toaster.pop(
+                        'error',
                         'Error!',
-                        'API call failed. Please try again later.',
-                        SEVERITY.error,
-                        'request-error'
+                        'API call failed. Please try again later.'
                     );
                     $scope.error = true;
                 }
@@ -244,7 +237,7 @@ angular.module('surfCaptain').run(['editableOptions', function (editableOptions)
         };
         this.init();
     }
-    AbstractSingleProjectController.$inject = ['$scope', '$routeParams', 'ProjectRepository', 'FavorService', 'FlashMessageService', 'SEVERITY'];
+    AbstractSingleProjectController.$inject = ['$scope', '$routeParams', 'ProjectRepository', 'FavorService', 'toaster'];
 }());
 /* global angular,jQuery */
 
@@ -255,7 +248,7 @@ angular.module('surfCaptain').run(['editableOptions', function (editableOptions)
         .controller('DeployController', DeployController);
 
     /* @ngInject */
-    function DeployController($scope, $controller, ProjectRepository, SEVERITY, FlashMessageService, CONFIG, DeploymentRepository, $location, PresetRepository, SettingsRepository, UtilityService) {
+    function DeployController($scope, $controller, ProjectRepository, toaster, CONFIG, DeploymentRepository, $location, PresetRepository, SettingsRepository, UtilityService) {
 
         // Inherit from AbstractSingleProjectController
         angular.extend(this, $controller('AbstractSingleProjectController', {$scope: $scope}));
@@ -297,11 +290,10 @@ angular.module('surfCaptain').run(['editableOptions', function (editableOptions)
          */
         this.addFailureFlashMessage = function (message, unique) {
             $scope.finished = true;
-            $scope.messages = FlashMessageService.addFlashMessage(
+            toaster.pop(
+                'error',
                 'Error!',
-                message,
-                SEVERITY.error,
-                unique ? 'deployment-project-call-failed' : undefined
+                message
             );
             $scope.error = true;
         };
@@ -318,6 +310,50 @@ angular.module('surfCaptain').run(['editableOptions', function (editableOptions)
                 throw new DeployControllerException('Something went wrong with the chosen Commit');
             }
             return commits[0];
+        };
+
+        /**
+         * Takes a set of presets, recieved from the API and fills the
+         * $scope.servers with any preset that have no or one of the
+         * allowed applicationTypes from CONFIG.
+         *
+         * @param {object} presets
+         * @return {void}
+         */
+        this.setServersFromPresets = function (presets) {
+            var property;
+            for (property in presets) {
+                if (presets.hasOwnProperty(property)) {
+                    if (angular.isUndefined(presets[property].applications[0].type) ||
+                        presets[property].applications[0].type === CONFIG.applicationTypes.deployTYPO3 ||
+                        presets[property].applications[0].type === CONFIG.applicationTypes.deploy) {
+                        $scope.servers.push(presets[property]);
+                    }
+                }
+            }
+            self.setPreconfiguredServer();
+        };
+
+        /**
+         * It is possible to assign a server as deploy target
+         * as the GET parameter server. This method checks if
+         * that parameter exists and is a valid server. If
+         * this is the case, setCurrentPreset() is called to
+         * trigger step2.
+         *
+         * @return {void}
+         */
+        this.setPreconfiguredServer = function () {
+            var searchObject = $location.search(),
+                preconfiguredPreset;
+            if (angular.isDefined(searchObject.server)) {
+                preconfiguredPreset = $scope.servers.filter(function (preset) {
+                    return preset.applications[0].nodes[0].name.toLowerCase() === searchObject.server.toLowerCase();
+                });
+                if (preconfiguredPreset.length) {
+                    $scope.setCurrentPreset(preconfiguredPreset[0]);
+                }
+            }
         };
 
         /**
@@ -344,12 +380,6 @@ angular.module('surfCaptain').run(['editableOptions', function (editableOptions)
                 }
                 DeploymentRepository.addDeployment($scope.currentPreset).then(
                     function (response) {
-                        $scope.messages = FlashMessageService.addFlashMessage(
-                            'OK!',
-                            $scope.currentCommit.type + ' ' + $scope.currentCommit.name + ' will be shortly deployed onto ' +
-                            $scope.currentPreset.applications[0].nodes[0].name + '! You can cancel the deployment while it is still waiting.',
-                            SEVERITY.ok
-                        );
                         ProjectRepository.updateFullProjectInCache($scope.project.repositoryUrl);
                         $location.path('project/' + $scope.name + '/deployment/' + response.deployment.__identity);
                     },
@@ -439,8 +469,6 @@ angular.module('surfCaptain').run(['editableOptions', function (editableOptions)
 
             ProjectRepository.getFullProjectByRepositoryUrl(project.repositoryUrl).then(
                 function (response) {
-                    var property,
-                        presets = response.repository.presets;
                     $scope.repositoryUrl = response.repository.webUrl;
                     response.repository.tags.sort(UtilityService.byCommitDate);
                     response.repository.branches.sort(UtilityService.byCommitDate);
@@ -448,20 +476,16 @@ angular.module('surfCaptain').run(['editableOptions', function (editableOptions)
                     $scope.deployableCommits = response.repository.tags;
                     jQuery.merge($scope.deployableCommits, response.repository.branches);
 
-                    for (property in presets) {
-                        if (presets.hasOwnProperty(property)) {
-                            if (angular.isUndefined(presets[property].applications[0].type) || presets[property].applications[0].type === CONFIG.applicationTypes.deployTYPO3 || presets[property].applications[0].type === CONFIG.applicationTypes.deploy) {
-                                $scope.servers.push(presets[property]);
-                            }
-                        }
-                    }
+                    self.setServersFromPresets(response.repository.presets);
+
                     $scope.finished = true;
                     if ($scope.servers.length === 0) {
-                        $scope.messages = FlashMessageService.addFlashMessage(
+                        toaster.pop(
+                            'note',
                             'No Servers yet!',
                             'FYI: There are no servers for project <span class="uppercase">' + $scope.name + '</span> yet. Why dont you create one, hmm?',
-                            SEVERITY.info,
-                            $scope.name + '-no-servers'
+                            4000,
+                            'trustedHtml'
                         );
                     }
                 },
@@ -489,7 +513,7 @@ angular.module('surfCaptain').run(['editableOptions', function (editableOptions)
             );
         });
     }
-    DeployController.$inject = ['$scope', '$controller', 'ProjectRepository', 'SEVERITY', 'FlashMessageService', 'CONFIG', 'DeploymentRepository', '$location', 'PresetRepository', 'SettingsRepository', 'UtilityService'];
+    DeployController.$inject = ['$scope', '$controller', 'ProjectRepository', 'toaster', 'CONFIG', 'DeploymentRepository', '$location', 'PresetRepository', 'SettingsRepository', 'UtilityService'];
 }());
 /* global angular */
 
@@ -500,7 +524,7 @@ angular.module('surfCaptain').run(['editableOptions', function (editableOptions)
         .controller('DeploymentsController', DeploymentsController);
 
     /* @ngInject */
-    function DeploymentsController($scope, DeploymentRepository, FlashMessageService, SEVERITY) {
+    function DeploymentsController($scope, DeploymentRepository, toaster) {
 
         var self = this;
 
@@ -523,11 +547,10 @@ angular.module('surfCaptain').run(['editableOptions', function (editableOptions)
                 },
                 function () {
                     $scope.finished = true;
-                    FlashMessageService.addFlashMessage(
+                    toaster.pop(
+                        'error',
                         'Error!',
-                        'The API call failed. Please try again later.',
-                        SEVERITY.error,
-                        'deployment-list-no-response'
+                        'The API call failed. Please try again later.'
                     );
                 }
             );
@@ -537,7 +560,7 @@ angular.module('surfCaptain').run(['editableOptions', function (editableOptions)
         $scope.deployments = [];
         $scope.finished = false;
     }
-    DeploymentsController.$inject = ['$scope', 'DeploymentRepository', 'FlashMessageService', 'SEVERITY'];
+    DeploymentsController.$inject = ['$scope', 'DeploymentRepository', 'toaster'];
 }());
 /* global angular */
 
@@ -559,7 +582,7 @@ angular.module('surfCaptain').run(['editableOptions', function (editableOptions)
         .controller('GlobalServerController', GlobalServerController);
 
     /* @ngInject */
-    function GlobalServerController($scope, PresetRepository, PresetService, FlashMessageService, SEVERITY, SettingsRepository) {
+    function GlobalServerController($scope, PresetRepository, PresetService, toaster, SettingsRepository) {
         var self = this;
 
         $scope.newPreset = PresetService.getNewPreset();
@@ -603,21 +626,21 @@ angular.module('surfCaptain').run(['editableOptions', function (editableOptions)
                     $scope.servers = response.presets;
                     self.setServerNames();
                     if ($scope.servers.length === 0) {
-                        $scope.messages = FlashMessageService.addFlashMessage(
+                        toaster.pop(
+                            'note',
                             'FYI!',
                             'There are no servers yet. Why dont you create one, hmm?',
-                            SEVERITY.info,
-                            'global-server-request-no-results'
+                            4000,
+                            'trustedHtml'
                         );
                     }
                 },
                 function () {
                     $scope.finished = true;
-                    $scope.messages = FlashMessageService.addFlashMessage(
+                    toaster.pop(
+                        'error',
                         'Request failed!',
-                        'The global servers could not be received. Please try again later..',
-                        SEVERITY.error,
-                        'global-server-request-failed'
+                        'The global servers could not be received. Please try again later..'
                     );
                 }
             );
@@ -635,18 +658,18 @@ angular.module('surfCaptain').run(['editableOptions', function (editableOptions)
                     $scope.newPreset = PresetService.getNewPreset();
                     $scope.newServerForm.$setPristine();
                     $scope.getAllServers();
-                    $scope.messages = FlashMessageService.addFlashMessage(
+                    toaster.pop(
+                        'success',
                         'Server created!',
-                        'The Server ' + server.nodes[0].name + ' was successfully created.',
-                        SEVERITY.ok
+                        'The Server ' + server.nodes[0].name + ' was successfully created.'
                     );
                 },
                 function () {
                     $scope.finished = true;
-                    $scope.messages = FlashMessageService.addFlashMessage(
+                    toaster.pop(
+                        'error',
                         'Creation failed!',
-                        'The Server "' + server.nodes[0].name + '" could not be created.',
-                        SEVERITY.error
+                        'The Server "' + server.nodes[0].name + '" could not be created.'
                     );
                 }
             );
@@ -663,7 +686,7 @@ angular.module('surfCaptain').run(['editableOptions', function (editableOptions)
         };
         this.init();
     }
-    GlobalServerController.$inject = ['$scope', 'PresetRepository', 'PresetService', 'FlashMessageService', 'SEVERITY', 'SettingsRepository'];
+    GlobalServerController.$inject = ['$scope', 'PresetRepository', 'PresetService', 'toaster', 'SettingsRepository'];
 }());
 /* global angular */
 
@@ -674,7 +697,7 @@ angular.module('surfCaptain').run(['editableOptions', function (editableOptions)
         .controller('ProjectController', ProjectController);
 
     /* @ngInject */
-    function ProjectController($scope, $controller, FlashMessageService, ProjectRepository, SEVERITY, PresetService, SettingsRepository, UtilityService) {
+    function ProjectController($scope, $controller, ProjectRepository, PresetService, SettingsRepository, UtilityService, $location) {
 
         // Inherit from AbstractSingleProjectController
         angular.extend(this, $controller('AbstractSingleProjectController', {$scope: $scope}));
@@ -698,6 +721,30 @@ angular.module('surfCaptain').run(['editableOptions', function (editableOptions)
          */
         $scope.getDeployedTag = function (name) {
             return UtilityService.getDeployedTag(name, $scope.tags);
+        };
+
+        /**
+         * Sets the GET Parameter server and redirects to
+         * the deploy view.
+         *
+         * @param {string} serverName
+         * @return {void}
+         */
+        $scope.triggerDeployment = function (serverName) {
+            $location.search('server', serverName);
+            $location.path('project/' + $scope.name + '/deploy');
+        };
+
+        /**
+         * Sets the GET Parameter server and redirects to
+         * the sync view.
+         *
+         * @param {string} serverName
+         * @return {void}
+         */
+        $scope.triggerSync = function (serverName) {
+            $location.search('server', serverName);
+            $location.path('project/' + $scope.name + '/sync');
         };
 
         $scope.$watch('project', function (project) {
@@ -726,7 +773,7 @@ angular.module('surfCaptain').run(['editableOptions', function (editableOptions)
             );
         });
     }
-    ProjectController.$inject = ['$scope', '$controller', 'FlashMessageService', 'ProjectRepository', 'SEVERITY', 'PresetService', 'SettingsRepository', 'UtilityService'];
+    ProjectController.$inject = ['$scope', '$controller', 'ProjectRepository', 'PresetService', 'SettingsRepository', 'UtilityService', '$location'];
 }());
 /* global angular */
 
@@ -737,7 +784,7 @@ angular.module('surfCaptain').run(['editableOptions', function (editableOptions)
         .controller('ProjectsController', ProjectsController);
 
     /* @ngInject */
-    function ProjectsController($scope, ProjectRepository, SettingsRepository, SEVERITY, FlashMessageService) {
+    function ProjectsController($scope, ProjectRepository, SettingsRepository, toaster) {
         $scope.settings = {};
         $scope.ordering = 'name';
         $scope.projects = [];
@@ -752,11 +799,10 @@ angular.module('surfCaptain').run(['editableOptions', function (editableOptions)
                 function () {
                     //an error occurred
                     $scope.finished = true;
-                    $scope.messages = FlashMessageService.addFlashMessage(
+                    toaster.pop(
+                        'error',
                         'Error!',
-                        'API call failed. GitLab is currently not available.',
-                        SEVERITY.error,
-                        'projects-loaded-error'
+                        'API call failed. GitLab is currently not available.'
                     );
                 }
             );
@@ -768,7 +814,7 @@ angular.module('surfCaptain').run(['editableOptions', function (editableOptions)
         };
         this.init();
     }
-    ProjectsController.$inject = ['$scope', 'ProjectRepository', 'SettingsRepository', 'SEVERITY', 'FlashMessageService'];
+    ProjectsController.$inject = ['$scope', 'ProjectRepository', 'SettingsRepository', 'toaster'];
 }());
 /* global angular */
 
@@ -779,7 +825,7 @@ angular.module('surfCaptain').run(['editableOptions', function (editableOptions)
         .controller('ServerController', ServerController);
 
     /* @ngInject */
-    function ServerController($scope, $controller, PresetRepository, ValidationService, SettingsRepository, MarkerService, PresetService, FlashMessageService, SEVERITY, ProjectRepository) {
+    function ServerController($scope, $controller, PresetRepository, ValidationService, SettingsRepository, MarkerService, PresetService, toaster, ProjectRepository) {
 
         var self = this;
 
@@ -919,22 +965,22 @@ angular.module('surfCaptain').run(['editableOptions', function (editableOptions)
                 self.setTakenServerNamesAsUnavailableSuggestions();
             }
             if ($scope.servers.length === 0) {
-                $scope.messages = FlashMessageService.addFlashMessage(
+                toaster.pop(
+                    'note',
                     'No Servers yet!',
                     'FYI: There are no servers for project <span class="uppercase">' + $scope.name  + '</span> yet. Why dont you create one, hmm?',
-                    SEVERITY.info,
-                    $scope.name + '-no-servers'
+                    4000,
+                    'trustedHtml'
                 );
             }
         };
 
         this.failureCallback = function () {
             $scope.finished = true;
-            $scope.messages = FlashMessageService.addFlashMessage(
+            toaster.pop(
+                'error',
                 'Request failed!',
-                'The servers could not be received. Please try again later..',
-                SEVERITY.error,
-                'server-request-failed'
+                'The servers could not be received. Please try again later..'
             );
         };
 
@@ -994,18 +1040,18 @@ angular.module('surfCaptain').run(['editableOptions', function (editableOptions)
                     $scope.newServerForm.$setPristine();
                     self.handleSettings();
                     $scope.getAllServers(false);
-                    $scope.messages = FlashMessageService.addFlashMessage(
+                    toaster.pop(
+                        'success',
                         'Server created!',
-                        'The Server "' + server.nodes[0].name + '" was successfully created.',
-                        SEVERITY.ok
+                        'The Server "' + server.nodes[0].name + '" was successfully created.'
                     );
                 },
                 function () {
                     $scope.finished = true;
-                    $scope.messages = FlashMessageService.addFlashMessage(
+                    toaster.pop(
+                        'error',
                         'Creation failed!',
-                        'The Server "' + server.nodes[0].name + '" could not be created.',
-                        SEVERITY.error
+                        'The Server "' + server.nodes[0].name + '" could not be created.'
                     );
                 }
             );
@@ -1051,7 +1097,7 @@ angular.module('surfCaptain').run(['editableOptions', function (editableOptions)
             }
         });
     }
-    ServerController.$inject = ['$scope', '$controller', 'PresetRepository', 'ValidationService', 'SettingsRepository', 'MarkerService', 'PresetService', 'FlashMessageService', 'SEVERITY', 'ProjectRepository'];
+    ServerController.$inject = ['$scope', '$controller', 'PresetRepository', 'ValidationService', 'SettingsRepository', 'MarkerService', 'PresetService', 'toaster', 'ProjectRepository'];
 }());
 /* global angular */
 
@@ -1062,9 +1108,11 @@ angular.module('surfCaptain').run(['editableOptions', function (editableOptions)
         .controller('SingleDeploymentController', SingleDeploymentController);
 
     /* @ngInject */
-    function SingleDeploymentController($scope, DeploymentRepository, $routeParams, $cacheFactory, $location, FlashMessageService, SEVERITY, ProjectRepository, $controller) {
+    function SingleDeploymentController($scope, DeploymentRepository, $routeParams, $cacheFactory, $location, toaster, ProjectRepository, $controller) {
 
-        var self = this;
+        var self = this,
+            flashMessageShown = false,
+            wasRunning = false;
 
         // Inherit from AbstractSingleProjectController
         angular.extend(this, $controller('AbstractSingleProjectController', {$scope: $scope}));
@@ -1082,21 +1130,65 @@ angular.module('surfCaptain').run(['editableOptions', function (editableOptions)
             }
             switch ($scope.deployment.status) {
                 case 'success':
-                case 'failed':
-                case 'cancelled':
-                    if (angular.isUndefined($cacheFactory.get('deploymentCache'))) {
-                        $cacheFactory('deploymentCache');
+                    if (wasRunning && !flashMessageShown) {
+                        toaster.pop(
+                            'success',
+                            'Deployment Successfull!',
+                            $scope.deployment.referenceName +
+                            'was successfully deployed onto ' +
+                            $scope.deployment.options.name + '!'
+                        );
+                        flashMessageShown = true;
                     }
-                    $cacheFactory.get('deploymentCache').put($scope.deployment.__identity, $scope.deployment);
-                    ProjectRepository.updateFullProjectInCache($scope.deployment.repositoryUrl);
+                    self.storeDeploymentInCacheFactory();
+                    break;
+                case 'failed':
+                    if (wasRunning && !flashMessageShown) {
+                        toaster.pop(
+                            'error',
+                            'Deployment Failed!',
+                            $scope.deployment.referenceName +
+                            'could not be deployed onto ' +
+                            $scope.deployment.options.name + '! Check the log for what went wrong.'
+                        );
+                        flashMessageShown = true;
+                    }
+                    self.storeDeploymentInCacheFactory();
+                    break;
+                case 'cancelled':
+                    self.storeDeploymentInCacheFactory();
                     return;
                 case 'waiting':
+                    if (!flashMessageShown) {
+                        toaster.pop(
+                            'note',
+                            'Deployment will start shortly!',
+                            $scope.deployment.referenceName + ' will be shortly deployed onto ' +
+                            $scope.deployment.options.name + '! You can cancel the deployment while it is still waiting.'
+                        );
+                        flashMessageShown = true;
+                    }
+                    setTimeout(self.getDeployment, 1000);
+                    break;
                 case 'running':
+                    flashMessageShown = false;
+                    wasRunning = true;
                     setTimeout(self.getDeployment, 1000);
                     break;
                 default:
                     return;
             }
+        };
+
+        /**
+         * @return {void}
+         */
+        this.storeDeploymentInCacheFactory = function () {
+            if (angular.isUndefined($cacheFactory.get('deploymentCache'))) {
+                $cacheFactory('deploymentCache');
+            }
+            $cacheFactory.get('deploymentCache').put($scope.deployment.__identity, $scope.deployment);
+            ProjectRepository.updateFullProjectInCache($scope.deployment.repositoryUrl);
         };
 
         /**
@@ -1142,20 +1234,13 @@ angular.module('surfCaptain').run(['editableOptions', function (editableOptions)
         $scope.deployConfigurationAgain = function () {
             DeploymentRepository.addDeployment($scope.deployment.configuration).then(
                 function (response) {
-                    $scope.messages = FlashMessageService.addFlashMessage(
-                        'OK!',
-                        $scope.deployment.referenceName + ' will be shortly deployed onto ' +
-                        $scope.deployment.configuration.applications[0].nodes[0].name +
-                        '! You can cancel the deployment while it is still waiting.',
-                        SEVERITY.ok
-                    );
                     $location.path('project/' + $scope.name + '/deployment/' + response.deployment.__identity);
                 },
                 function () {
-                    $scope.messages = FlashMessageService.addFlashMessage(
+                    toaster.pop(
+                        'error',
                         'Error!',
-                        'Deployment configuration could not be submitted successfully. Try again later.',
-                        SEVERITY.error
+                        'Deployment configuration could not be submitted successfully. Try again later.'
                     );
                 }
             );
@@ -1165,7 +1250,7 @@ angular.module('surfCaptain').run(['editableOptions', function (editableOptions)
         $scope.noLog = false;
 
     }
-    SingleDeploymentController.$inject = ['$scope', 'DeploymentRepository', '$routeParams', '$cacheFactory', '$location', 'FlashMessageService', 'SEVERITY', 'ProjectRepository', '$controller'];
+    SingleDeploymentController.$inject = ['$scope', 'DeploymentRepository', '$routeParams', '$cacheFactory', '$location', 'toaster', 'ProjectRepository', '$controller'];
 }());
 /* global angular */
 
@@ -1176,7 +1261,7 @@ angular.module('surfCaptain').run(['editableOptions', function (editableOptions)
         .controller('SyncController', SyncController);
 
     /* @ngInject */
-    function SyncController($scope, $controller, PresetRepository, CONFIG, FlashMessageService, SEVERITY, ProjectRepository, SettingsRepository, DeploymentRepository, $location) {
+    function SyncController($scope, $controller, PresetRepository, CONFIG, toaster, ProjectRepository, SettingsRepository, DeploymentRepository, $location) {
 
         // Inherit from AbstractSingleProjectController
         angular.extend(this, $controller('AbstractSingleProjectController', {$scope: $scope}));
@@ -1196,11 +1281,10 @@ angular.module('surfCaptain').run(['editableOptions', function (editableOptions)
          */
         this.addFailureFlashMessage = function () {
             $scope.finished = true;
-            $scope.messages = FlashMessageService.addFlashMessage(
+            toaster.pop(
+                'error',
                 'Request failed!',
-                'API call failed. Sync not possible.',
-                SEVERITY.error,
-                $scope.name + '-sync-call-failed'
+                'API call failed. Sync not possible.'
             );
         };
 
@@ -1236,6 +1320,49 @@ angular.module('surfCaptain').run(['editableOptions', function (editableOptions)
                     self.addFailureFlashMessage();
                 }
             );
+        };
+
+        /**
+         * Takes a set of presets, recieved from the API and fills the
+         * $scope.servers with any preset that have no or one of the
+         * allowed applicationTypes from CONFIG.
+         *
+         * @param {object} presets
+         * @return {void}
+         */
+        this.setServersFromPresets = function (presets) {
+            var property;
+            for (property in presets) {
+                if (presets.hasOwnProperty(property)) {
+                    if (angular.isUndefined(presets[property].applications[0].type) ||
+                        presets[property].applications[0].type === CONFIG.applicationTypes.syncTYPO3) {
+                        $scope.servers.push(presets[property]);
+                    }
+                }
+            }
+            self.setPreconfiguredServer();
+        };
+
+        /**
+         * It is possible to assign a server as sync source
+         * as the GET parameter server. This method checks if
+         * that parameter exists and is a valid server. If
+         * this is the case, setCurrentSource() is called to
+         * trigger step2.
+         *
+         * @return {void}
+         */
+        this.setPreconfiguredServer = function () {
+            var searchObject = $location.search(),
+                preconfiguredPreset;
+            if (angular.isDefined(searchObject.server)) {
+                preconfiguredPreset = $scope.servers.filter(function (preset) {
+                    return preset.applications[0].nodes[0].name.toLowerCase() === searchObject.server.toLowerCase();
+                });
+                if (preconfiguredPreset.length) {
+                    $scope.setCurrentSource(preconfiguredPreset[0]);
+                }
+            }
         };
 
         /**
@@ -1307,11 +1434,11 @@ angular.module('surfCaptain').run(['editableOptions', function (editableOptions)
             target.applications[0].options.repositoryUrl = $scope.project.repositoryUrl;
             DeploymentRepository.addDeployment(target).then(
                 function (response) {
-                    $scope.messages = FlashMessageService.addFlashMessage(
+                    toaster.pop(
+                        'success',
                         'OK!',
                         target.applications[0].nodes[0].name + ' will be synchronized with ' +
-                        source.applications[0].nodes[0].name + '.',
-                        SEVERITY.ok
+                        source.applications[0].nodes[0].name + '.'
                     );
                     ProjectRepository.updateFullProjectInCache($scope.project.repositoryUrl);
                     $location.path('project/' + $scope.name + '/deployment/' + response.deployment.__identity);
@@ -1331,22 +1458,15 @@ angular.module('surfCaptain').run(['editableOptions', function (editableOptions)
 
             ProjectRepository.getFullProjectByRepositoryUrl(project.repositoryUrl).then(
                 function (response) {
-                    var property,
-                        presets = response.repository.presets;
-                    for (property in presets) {
-                        if (presets.hasOwnProperty(property)) {
-                            if (angular.isUndefined(presets[property].applications[0].type) || presets[property].applications[0].type === CONFIG.applicationTypes.syncTYPO3) {
-                                $scope.servers.push(presets[property]);
-                            }
-                        }
-                    }
+                    self.setServersFromPresets(response.repository.presets);
                     $scope.finished = true;
                     if ($scope.servers.length === 0) {
-                        $scope.messages = FlashMessageService.addFlashMessage(
+                        toaster.pop(
+                            'note',
                             'No Servers yet!',
                             'FYI: There are no servers for project <span class="uppercase">' + $scope.name  + '</span> yet. Why dont you create one, hmm?',
-                            SEVERITY.info,
-                            $scope.name + '-no-servers'
+                            4000,
+                            'trustedHtml'
                         );
                     }
                 },
@@ -1356,7 +1476,7 @@ angular.module('surfCaptain').run(['editableOptions', function (editableOptions)
             );
         });
     }
-    SyncController.$inject = ['$scope', '$controller', 'PresetRepository', 'CONFIG', 'FlashMessageService', 'SEVERITY', 'ProjectRepository', 'SettingsRepository', 'DeploymentRepository', '$location'];
+    SyncController.$inject = ['$scope', '$controller', 'PresetRepository', 'CONFIG', 'toaster', 'ProjectRepository', 'SettingsRepository', 'DeploymentRepository', '$location'];
 }());
 /* global angular */
 
@@ -1397,99 +1517,6 @@ angular.module('surfCaptain').run(['editableOptions', function (editableOptions)
     }
     chosen.$inject = ['$timeout'];
 }());
-/*global surfCaptain, angular*/
-/*jslint node: true, plusplus: true */
-
-'use strict';
-angular.module('surfCaptain').directive('flashMessages', ['SEVERITY', 'FlashMessageService', function (SEVERITY, FlashMessageService) {
-    var linker = function (scope, element, attrs) {
-
-        /**
-         *
-         * @param {string} severity
-         * @returns {string}
-         */
-        var getSeverityClass = function (severity) {
-            switch (severity) {
-            case SEVERITY.ok:
-                return 'ok';
-            case SEVERITY.info:
-                return 'info';
-            case SEVERITY.warning:
-                return 'warning';
-            case SEVERITY.error:
-                return 'error';
-            default:
-                return 'info';
-            }
-        },
-            getTimeString = function (time) {
-                if (time instanceof Date) {
-                    return 'Time: ' + time.getHours() + ':' + time.getMinutes() + ':' + time.getSeconds();
-                }
-                return '';
-            },
-
-            /**
-             *
-             * @returns {string}
-             */
-            generateFlashMessage = function (message, id) {
-                var idString = id ? ' id="' + id + '">' : '">';
-                return '<div class="flash-message"'
-                    + idString
-                    + '<div class="flash-message-title '
-                    + getSeverityClass(message.severity)
-                    + '">'
-                    + message.title
-                    + '<span class="close" onclick="angular.element(this).parent().parent().remove()">&times;</span>'
-                    + '</div>'
-                    + '<div class="flash-message-message">'
-                    + message.message
-                    + '</div>'
-                    + '<div class="flash-message-footer">'
-                    + '<span class="time">'
-                    + getTimeString(message.time)
-                    + '</span>'
-                    + '</div>';
-            };
-
-        scope.$watchCollection(attrs.messages, function (messages) {
-            var length, i = 0, html = '', message, id;
-            if (angular.isDefined(messages)) {
-                length = messages.length;
-            } else {
-                return;
-            }
-            if (length) {
-                for (i; i < length; i++) {
-                    message = messages[i];
-                    id = '';
-                    if (angular.isDefined(message.id)) {
-                        id = message.id;
-                        if (angular.element('#' + id).length) {
-                            html += '';
-                        } else {
-                            html += generateFlashMessage(message, id);
-                        }
-                    } else {
-                        html += generateFlashMessage(message, id);
-                    }
-                }
-                angular.element('.flash-messages-container').append(html);
-                FlashMessageService.flush();
-            }
-        });
-    };
-
-    return {
-        restrict: 'E',
-        scope: {
-            messages: '='
-        },
-        link: linker
-    };
-}]);
 /*global surfCaptain*/
 /*jslint node: true */
 
@@ -1567,7 +1594,7 @@ angular.module('surfCaptain').directive('overlay', function () {
         .directive('serverList', serverList);
 
     /* @ngInject */
-    function serverList(PresetRepository, ValidationService, FlashMessageService, SEVERITY, SettingsRepository, ProjectRepository) {
+    function serverList(PresetRepository, ValidationService, toaster, SettingsRepository, ProjectRepository) {
         var linker = function (scope) {
             scope.toggleSpinnerAndOverlay = function () {
                 scope.finished = !scope.finished;
@@ -1619,18 +1646,18 @@ angular.module('surfCaptain').directive('overlay', function () {
                 PresetRepository.deleteServer(server).then(
                     function () {
                         scope.$parent.getAllServers(false);
-                        scope.messages = FlashMessageService.addFlashMessage(
+                        toaster.pop(
+                            'success',
                             'Server deleted!',
-                            'The Server "' + server.applications[0].nodes[0].name + '" was successfully removed.',
-                            SEVERITY.ok
+                            'The Server "' + server.applications[0].nodes[0].name + '" was successfully removed.'
                         );
                     },
                     function () {
                         scope.toggleSpinnerAndOverlay();
-                        scope.messages = FlashMessageService.addFlashMessage(
+                        toaster.pop(
+                            'error',
                             'Deletion failed!',
-                            'The Server "' + server.applications[0].nodes[0].name + '" could not be removed.',
-                            SEVERITY.error
+                            'The Server "' + server.applications[0].nodes[0].name + '" could not be removed.'
                         );
                     }
                 );
@@ -1651,18 +1678,18 @@ angular.module('surfCaptain').directive('overlay', function () {
                         if (angular.isDefined(scope.$parent.project)) {
                             ProjectRepository.updateFullProjectInCache(scope.$parent.project.repositoryUrl);
                         }
-                        scope.messages = FlashMessageService.addFlashMessage(
+                        toaster.pop(
+                            'success',
                             'Update successful!',
-                            'The Server "' + server.applications[0].nodes[0].name + '" was updated successfully.',
-                            SEVERITY.ok
+                            'The Server "' + server.applications[0].nodes[0].name + '" was updated successfully.'
                         );
                     },
                     function () {
                         scope.toggleSpinnerAndOverlay();
-                        scope.messages = FlashMessageService.addFlashMessage(
+                        toaster.pop(
+                            'error',
                             'Update failed!',
-                            'The Server "' + server.applications[0].nodes[0].name + '" could not be updated.',
-                            SEVERITY.error
+                            'The Server "' + server.applications[0].nodes[0].name + '" could not be updated.'
                         );
                     }
                 );
@@ -1734,7 +1761,7 @@ angular.module('surfCaptain').directive('overlay', function () {
             link: linker
         };
     }
-    serverList.$inject = ['PresetRepository', 'ValidationService', 'FlashMessageService', 'SEVERITY', 'SettingsRepository', 'ProjectRepository'];
+    serverList.$inject = ['PresetRepository', 'ValidationService', 'toaster', 'SettingsRepository', 'ProjectRepository'];
 }());
 /* global angular */
 
