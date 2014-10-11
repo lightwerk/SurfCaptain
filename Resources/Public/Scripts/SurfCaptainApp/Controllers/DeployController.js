@@ -7,7 +7,7 @@
         .controller('DeployController', DeployController);
 
     /* @ngInject */
-    function DeployController($scope, $controller, ProjectRepository, SEVERITY, FlashMessageService, CONFIG, DeploymentRepository, $location, PresetRepository, SettingsRepository, UtilityService) {
+    function DeployController($scope, $controller, ProjectRepository, toaster, CONFIG, DeploymentRepository, $location, PresetRepository, SettingsRepository, UtilityService) {
 
         // Inherit from AbstractSingleProjectController
         angular.extend(this, $controller('AbstractSingleProjectController', {$scope: $scope}));
@@ -49,11 +49,10 @@
          */
         this.addFailureFlashMessage = function (message, unique) {
             $scope.finished = true;
-            $scope.messages = FlashMessageService.addFlashMessage(
+            toaster.pop(
+                'error',
                 'Error!',
-                message,
-                SEVERITY.error,
-                unique ? 'deployment-project-call-failed' : undefined
+                message
             );
             $scope.error = true;
         };
@@ -140,12 +139,6 @@
                 }
                 DeploymentRepository.addDeployment($scope.currentPreset).then(
                     function (response) {
-                        $scope.messages = FlashMessageService.addFlashMessage(
-                            'OK!',
-                            $scope.currentCommit.type + ' ' + $scope.currentCommit.name + ' will be shortly deployed onto ' +
-                            $scope.currentPreset.applications[0].nodes[0].name + '! You can cancel the deployment while it is still waiting.',
-                            SEVERITY.ok
-                        );
                         ProjectRepository.updateFullProjectInCache($scope.project.repositoryUrl);
                         $location.path('project/' + $scope.name + '/deployment/' + response.deployment.__identity);
                     },
@@ -246,11 +239,12 @@
 
                     $scope.finished = true;
                     if ($scope.servers.length === 0) {
-                        $scope.messages = FlashMessageService.addFlashMessage(
+                        toaster.pop(
+                            'note',
                             'No Servers yet!',
                             'FYI: There are no servers for project <span class="uppercase">' + $scope.name + '</span> yet. Why dont you create one, hmm?',
-                            SEVERITY.info,
-                            $scope.name + '-no-servers'
+                            4000,
+                            'trustedHtml'
                         );
                     }
                 },

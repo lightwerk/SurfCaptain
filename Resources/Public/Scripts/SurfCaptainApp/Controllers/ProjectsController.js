@@ -7,7 +7,7 @@
         .controller('ProjectsController', ProjectsController);
 
     /* @ngInject */
-    function ProjectsController($scope, ProjectRepository, SettingsRepository, SEVERITY, FlashMessageService) {
+    function ProjectsController($scope, ProjectRepository, SettingsRepository, toaster) {
         $scope.settings = {};
         $scope.ordering = 'name';
         $scope.projects = [];
@@ -22,11 +22,10 @@
                 function () {
                     //an error occurred
                     $scope.finished = true;
-                    $scope.messages = FlashMessageService.addFlashMessage(
+                    toaster.pop(
+                        'error',
                         'Error!',
-                        'API call failed. GitLab is currently not available.',
-                        SEVERITY.error,
-                        'projects-loaded-error'
+                        'API call failed. GitLab is currently not available.'
                     );
                 }
             );

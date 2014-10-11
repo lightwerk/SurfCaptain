@@ -2,22 +2,24 @@
 
 describe('SingleDeploymentController', function () {
     'use strict';
-    var ctrl, scope, $location, DeploymentRepository, $q, success = true, $routeParams, $cacheFactory, setTimeoutSpy;
+    var ctrl, scope, $location, DeploymentRepository, $q, success = true, $cacheFactory, setTimeoutSpy, toaster;
 
     beforeEach(module('surfCaptain'));
 
-    beforeEach(inject(function ($controller, $rootScope, _$location_, _DeploymentRepository_, _$q_, _$cacheFactory_) {
+    beforeEach(inject(function ($controller, $rootScope, _$location_, _DeploymentRepository_, _$q_, _$cacheFactory_, _toaster_) {
         $location = _$location_;
         scope = $rootScope.$new();
         DeploymentRepository = _DeploymentRepository_;
         $q = _$q_;
         $cacheFactory = _$cacheFactory_;
+        toaster = _toaster_;
         setTimeoutSpy = jasmine.createSpy('setTimeout');
         ctrl = $controller('SingleDeploymentController', {
             $scope: scope,
             $location: $location,
             DeploymentRepository: DeploymentRepository,
-            $cacheFactory: $cacheFactory
+            $cacheFactory: $cacheFactory,
+            toaster: toaster
         });
     }));
 
@@ -82,30 +84,63 @@ describe('SingleDeploymentController', function () {
         beforeEach(function () {
             scope.deployment = {
                 __identity: 'foo',
-                someProperty: 'bar'
+                someProperty: 'bar',
+                options: {
+                    name: 'foobar'
+                }
             };
+            spyOn(ctrl, 'storeDeploymentInCacheFactory');
+            spyOn(toaster, 'pop');
+            spyOn(ctrl, 'getDeployment');
         });
 
-        it('should store $scopeDeployment in deploymentCache of $cacheFactory if status is "success".', function () {
+        it('should call storeDeploymentInCacheFactory on controller if status is "success".', function () {
             scope.deployment.status = 'success';
             ctrl.initLiveLog();
-            expect($cacheFactory.get('deploymentCache').get('foo')).toEqual(scope.deployment);
+            expect(ctrl.storeDeploymentInCacheFactory).toHaveBeenCalled();
         });
 
-        it('should store $scopeDeployment in deploymentCache of $cacheFactory if status is "failed".', function () {
+        it('should not call pop on toaster if status is "success".', function () {
+            scope.deployment.status = 'success';
+            ctrl.initLiveLog();
+            expect(toaster.pop).not.toHaveBeenCalled();
+        });
+
+        it('should call pop on toaster if status is "success" and was "running" before.', function () {
+            scope.deployment.status = 'running';
+            ctrl.initLiveLog();
+            scope.deployment.status = 'success';
+            ctrl.initLiveLog();
+            expect(toaster.pop).toHaveBeenCalled();
+        });
+
+        it('should call storeDeploymentInCacheFactory on controller if status is "failed".', function () {
             scope.deployment.status = 'failed';
             ctrl.initLiveLog();
-            expect($cacheFactory.get('deploymentCache').get('foo')).toEqual(scope.deployment);
+            expect(ctrl.storeDeploymentInCacheFactory).toHaveBeenCalled();
         });
 
-        it('should store $scopeDeployment in deploymentCache of $cacheFactory if status is "cancelled".', function () {
+        it('should not call pop on toaster if status is "failed".', function () {
+            scope.deployment.status = 'failed';
+            ctrl.initLiveLog();
+            expect(toaster.pop).not.toHaveBeenCalled();
+        });
+
+        it('should call pop on toaster if status is "failed" and was "running" before.', function () {
+            scope.deployment.status = 'running';
+            ctrl.initLiveLog();
+            scope.deployment.status = 'failed';
+            ctrl.initLiveLog();
+            expect(toaster.pop).toHaveBeenCalled();
+        });
+
+        it('should call storeDeploymentInCacheFactory on controller if status is "cancelled".', function () {
             scope.deployment.status = 'cancelled';
             ctrl.initLiveLog();
-            expect($cacheFactory.get('deploymentCache').get('foo')).toEqual(scope.deployment);
+            expect(ctrl.storeDeploymentInCacheFactory).toHaveBeenCalled();
         });
 
         it('should call ctrl.getDeployment after one second if status is "waiting"', function () {
-            spyOn(ctrl, 'getDeployment');
             scope.deployment.status = 'waiting';
             jasmine.Clock.useMock();
             ctrl.initLiveLog();
@@ -114,12 +149,32 @@ describe('SingleDeploymentController', function () {
         });
 
         it('should call ctrl.getDeployment after one second if status is "running"', function () {
-            spyOn(ctrl, 'getDeployment');
             scope.deployment.status = 'running';
             jasmine.Clock.useMock();
             ctrl.initLiveLog();
             jasmine.Clock.tick(1000);
             expect(ctrl.getDeployment).toHaveBeenCalled();
+        });
+    });
+
+    it('should have a method storeDeploymentInCacheFactory', function () {
+        expect(ctrl.storeDeploymentInCacheFactory).toBeDefined();
+    });
+
+    describe('->storeDeploymentInCacheFactory()', function () {
+        beforeEach(function () {
+            scope.deployment = {
+                __identity: 'foo',
+                someProperty: 'bar',
+                options: {
+                    name: 'foobar'
+                }
+            };
+        });
+
+        it('should store $scopeDeployment in deploymentCache of $cacheFactory.', function () {
+            ctrl.storeDeploymentInCacheFactory();
+            expect($cacheFactory.get('deploymentCache').get('foo')).toEqual(scope.deployment);
         });
     });
 

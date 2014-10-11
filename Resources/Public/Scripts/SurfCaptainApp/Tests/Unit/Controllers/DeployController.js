@@ -2,13 +2,13 @@
 
 describe('Deployontroller', function () {
     'use strict';
-    var ctrl, scope, FlashMessageService, preset, commit, DeploymentRepository, ProjectRepository, $location, CONFIG, q;
+    var ctrl, scope, toaster, preset, commit, DeploymentRepository, ProjectRepository, $location, CONFIG, q;
 
     beforeEach(module('surfCaptain'));
 
-    beforeEach(inject(function ($controller, $rootScope, _FlashMessageService_, _DeploymentRepository_, _ProjectRepository_, _CONFIG_, $q) {
+    beforeEach(inject(function ($controller, $rootScope, _toaster_, _DeploymentRepository_, _ProjectRepository_, _CONFIG_, $q) {
         scope = $rootScope.$new();
-        FlashMessageService = _FlashMessageService_;
+        toaster = _toaster_;
         DeploymentRepository = _DeploymentRepository_;
         ProjectRepository = _ProjectRepository_;
         $location = {
@@ -23,7 +23,7 @@ describe('Deployontroller', function () {
         q = $q;
         ctrl = $controller('DeployController', {
             $scope: scope,
-            FlashMessageService: FlashMessageService,
+            toaster: toaster,
             DeploymentRepository: DeploymentRepository,
             ProjectRepository: ProjectRepository,
             $location: $location,
@@ -112,7 +112,7 @@ describe('Deployontroller', function () {
 
     describe('->addFailureFlashMessage()', function () {
         beforeEach(function () {
-            spyOn(FlashMessageService, 'addFlashMessage');
+            spyOn(toaster, 'pop');
         });
 
         it('should be defined.', function () {
@@ -122,17 +122,9 @@ describe('Deployontroller', function () {
             ctrl.addFailureFlashMessage();
             expect(scope.finished).toBeTruthy();
         });
-        it('should call FlashMessageService.addFlashMessage().', function () {
+        it('should call toaster.pop().', function () {
             ctrl.addFailureFlashMessage();
-            expect(FlashMessageService.addFlashMessage).toHaveBeenCalled();
-        });
-        it('should call FlashMessageService.addFlashMessage() with passed message, fixed arguments and undefined instead of id if 2nd argument ist false.', function () {
-            ctrl.addFailureFlashMessage('foo bar bar foo!', false);
-            expect(FlashMessageService.addFlashMessage).toHaveBeenCalledWith('Error!', 'foo bar bar foo!', 3, undefined);
-        });
-        it('should call FlashMessageService.addFlashMessage() with passed message, fixed arguments and "deployment-project-call-failed" as id if 2nd argument ist true.', function () {
-            ctrl.addFailureFlashMessage('foo bar bar foo!', true);
-            expect(FlashMessageService.addFlashMessage).toHaveBeenCalledWith('Error!', 'foo bar bar foo!', 3, 'deployment-project-call-failed');
+            expect(toaster.pop).toHaveBeenCalled();
         });
         it('should set $scope.error to true.', function () {
             ctrl.addFailureFlashMessage();

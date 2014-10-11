@@ -7,7 +7,7 @@
         .controller('SyncController', SyncController);
 
     /* @ngInject */
-    function SyncController($scope, $controller, PresetRepository, CONFIG, FlashMessageService, SEVERITY, ProjectRepository, SettingsRepository, DeploymentRepository, $location) {
+    function SyncController($scope, $controller, PresetRepository, CONFIG, toaster, ProjectRepository, SettingsRepository, DeploymentRepository, $location) {
 
         // Inherit from AbstractSingleProjectController
         angular.extend(this, $controller('AbstractSingleProjectController', {$scope: $scope}));
@@ -27,11 +27,10 @@
          */
         this.addFailureFlashMessage = function () {
             $scope.finished = true;
-            $scope.messages = FlashMessageService.addFlashMessage(
+            toaster.pop(
+                'error',
                 'Request failed!',
-                'API call failed. Sync not possible.',
-                SEVERITY.error,
-                $scope.name + '-sync-call-failed'
+                'API call failed. Sync not possible.'
             );
         };
 
@@ -181,11 +180,11 @@
             target.applications[0].options.repositoryUrl = $scope.project.repositoryUrl;
             DeploymentRepository.addDeployment(target).then(
                 function (response) {
-                    $scope.messages = FlashMessageService.addFlashMessage(
+                    toaster.pop(
+                        'success',
                         'OK!',
                         target.applications[0].nodes[0].name + ' will be synchronized with ' +
-                        source.applications[0].nodes[0].name + '.',
-                        SEVERITY.ok
+                        source.applications[0].nodes[0].name + '.'
                     );
                     ProjectRepository.updateFullProjectInCache($scope.project.repositoryUrl);
                     $location.path('project/' + $scope.name + '/deployment/' + response.deployment.__identity);
@@ -208,11 +207,12 @@
                     self.setServersFromPresets(response.repository.presets);
                     $scope.finished = true;
                     if ($scope.servers.length === 0) {
-                        $scope.messages = FlashMessageService.addFlashMessage(
+                        toaster.pop(
+                            'note',
                             'No Servers yet!',
                             'FYI: There are no servers for project <span class="uppercase">' + $scope.name  + '</span> yet. Why dont you create one, hmm?',
-                            SEVERITY.info,
-                            $scope.name + '-no-servers'
+                            4000,
+                            'trustedHtml'
                         );
                     }
                 },

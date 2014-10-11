@@ -1,20 +1,20 @@
 /*global describe,beforeEach,module,it,xit,expect,inject,spyOn*/
 
 describe('ProjectsController', function () {
-    var ctrl, scope, projectRepository, q, projects, succeedPromise, controller, settingsRepository, settings, FlashMessageService,
+    var ctrl, scope, projectRepository, q, projects, succeedPromise, controller, settingsRepository, settings, toaster,
         createController = function () {
             ctrl = controller('ProjectsController', {
                 $scope: scope,
                 ProjectRepository: projectRepository,
                 SettingsRepository: settingsRepository,
-                FlashMessageSerive: FlashMessageService
+                toaster: toaster
             });
             scope.$digest();
         };
 
     beforeEach(module('surfCaptain'));
 
-    beforeEach(inject(function ($controller, $rootScope, $q, ProjectRepository, SettingsRepository, _FlashMessageService_) {
+    beforeEach(inject(function ($controller, $rootScope, $q, ProjectRepository, SettingsRepository, _toaster_) {
         scope = $rootScope.$new();
         projects = [
             {"name": "foo", "ssh_url_to_repo": "git@git.example.com:project/foo.git", "id": 1}
@@ -23,7 +23,7 @@ describe('ProjectsController', function () {
         controller = $controller;
         projectRepository = ProjectRepository;
         settingsRepository = SettingsRepository;
-        FlashMessageService = _FlashMessageService_;
+        toaster = _toaster_;
 
         // simulate success or failure of request based on succeedPromise
         spyOn(projectRepository, 'getProjects').andCallFake(function () {
@@ -38,7 +38,7 @@ describe('ProjectsController', function () {
             return $q.when(settings);
         });
 
-        spyOn(FlashMessageService, 'addFlashMessage');
+        spyOn(toaster, 'pop');
     }));
 
     describe('Initialization', function () {
@@ -93,8 +93,8 @@ describe('ProjectsController', function () {
                 expect(scope.finished).toBeTruthy();
             });
 
-            it('should call FlashMessageService.addFlashMessage().', function () {
-                expect(FlashMessageService.addFlashMessage).toHaveBeenCalled();
+            it('should call toaster.pop().', function () {
+                expect(toaster.pop).toHaveBeenCalled();
             });
 
         });

@@ -7,7 +7,7 @@
         .controller('AbstractSingleProjectController', AbstractSingleProjectController);
 
     /* @ngInject */
-    function AbstractSingleProjectController($scope, $routeParams, ProjectRepository, FavorService, FlashMessageService, SEVERITY) {
+    function AbstractSingleProjectController($scope, $routeParams, ProjectRepository, FavorService, toaster) {
         $scope.name = $routeParams.projectName;
         $scope.project = {};
         $scope.messages = {};
@@ -21,11 +21,10 @@
                 },
                 function () {
                     $scope.finished = true;
-                    $scope.messages = FlashMessageService.addFlashMessage(
+                    toaster.pop(
+                        'error',
                         'Error!',
-                        'API call failed. Please try again later.',
-                        SEVERITY.error,
-                        'request-error'
+                        'API call failed. Please try again later.'
                     );
                     $scope.error = true;
                 }

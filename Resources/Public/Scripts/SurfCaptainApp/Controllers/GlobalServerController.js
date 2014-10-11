@@ -7,7 +7,7 @@
         .controller('GlobalServerController', GlobalServerController);
 
     /* @ngInject */
-    function GlobalServerController($scope, PresetRepository, PresetService, FlashMessageService, SEVERITY, SettingsRepository) {
+    function GlobalServerController($scope, PresetRepository, PresetService, toaster, SettingsRepository) {
         var self = this;
 
         $scope.newPreset = PresetService.getNewPreset();
@@ -51,21 +51,21 @@
                     $scope.servers = response.presets;
                     self.setServerNames();
                     if ($scope.servers.length === 0) {
-                        $scope.messages = FlashMessageService.addFlashMessage(
+                        toaster.pop(
+                            'note',
                             'FYI!',
                             'There are no servers yet. Why dont you create one, hmm?',
-                            SEVERITY.info,
-                            'global-server-request-no-results'
+                            4000,
+                            'trustedHtml'
                         );
                     }
                 },
                 function () {
                     $scope.finished = true;
-                    $scope.messages = FlashMessageService.addFlashMessage(
+                    toaster.pop(
+                        'error',
                         'Request failed!',
-                        'The global servers could not be received. Please try again later..',
-                        SEVERITY.error,
-                        'global-server-request-failed'
+                        'The global servers could not be received. Please try again later..'
                     );
                 }
             );
@@ -83,18 +83,18 @@
                     $scope.newPreset = PresetService.getNewPreset();
                     $scope.newServerForm.$setPristine();
                     $scope.getAllServers();
-                    $scope.messages = FlashMessageService.addFlashMessage(
+                    toaster.pop(
+                        'success',
                         'Server created!',
-                        'The Server ' + server.nodes[0].name + ' was successfully created.',
-                        SEVERITY.ok
+                        'The Server ' + server.nodes[0].name + ' was successfully created.'
                     );
                 },
                 function () {
                     $scope.finished = true;
-                    $scope.messages = FlashMessageService.addFlashMessage(
+                    toaster.pop(
+                        'error',
                         'Creation failed!',
-                        'The Server "' + server.nodes[0].name + '" could not be created.',
-                        SEVERITY.error
+                        'The Server "' + server.nodes[0].name + '" could not be created.'
                     );
                 }
             );

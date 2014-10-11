@@ -25,6 +25,7 @@ module.exports = {
             'Resources/Public/Components/angular/angular.js',
             'Resources/Public/Components/angular-route/angular-route.js',
             'Resources/Public/Components/angular-animate/angular-animate.js',
+            'Resources/Public/Components/AngularJS-Toaster/toaster.js',
             'Resources/Public/Components/ng-biscuit/dist/ng-biscuit.js',
             'Resources/Public/Components/angular-messages/angular-messages.js',
             'Resources/Public/Components/angular-xeditable/dist/js/xeditable.js'

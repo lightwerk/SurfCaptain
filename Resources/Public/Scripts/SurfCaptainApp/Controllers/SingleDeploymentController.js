@@ -7,9 +7,11 @@
         .controller('SingleDeploymentController', SingleDeploymentController);
 
     /* @ngInject */
-    function SingleDeploymentController($scope, DeploymentRepository, $routeParams, $cacheFactory, $location, FlashMessageService, SEVERITY, ProjectRepository, $controller) {
+    function SingleDeploymentController($scope, DeploymentRepository, $routeParams, $cacheFactory, $location, toaster, ProjectRepository, $controller) {
 
-        var self = this;
+        var self = this,
+            flashMessageShown = false,
+            wasRunning = false;
 
         // Inherit from AbstractSingleProjectController
         angular.extend(this, $controller('AbstractSingleProjectController', {$scope: $scope}));
@@ -27,21 +29,65 @@
             }
             switch ($scope.deployment.status) {
                 case 'success':
-                case 'failed':
-                case 'cancelled':
-                    if (angular.isUndefined($cacheFactory.get('deploymentCache'))) {
-                        $cacheFactory('deploymentCache');
+                    if (wasRunning && !flashMessageShown) {
+                        toaster.pop(
+                            'success',
+                            'Deployment Successfull!',
+                            $scope.deployment.referenceName +
+                            'was successfully deployed onto ' +
+                            $scope.deployment.options.name + '!'
+                        );
+                        flashMessageShown = true;
                     }
-                    $cacheFactory.get('deploymentCache').put($scope.deployment.__identity, $scope.deployment);
-                    ProjectRepository.updateFullProjectInCache($scope.deployment.repositoryUrl);
+                    self.storeDeploymentInCacheFactory();
+                    break;
+                case 'failed':
+                    if (wasRunning && !flashMessageShown) {
+                        toaster.pop(
+                            'error',
+                            'Deployment Failed!',
+                            $scope.deployment.referenceName +
+                            'could not be deployed onto ' +
+                            $scope.deployment.options.name + '! Check the log for what went wrong.'
+                        );
+                        flashMessageShown = true;
+                    }
+                    self.storeDeploymentInCacheFactory();
+                    break;
+                case 'cancelled':
+                    self.storeDeploymentInCacheFactory();
                     return;
                 case 'waiting':
+                    if (!flashMessageShown) {
+                        toaster.pop(
+                            'note',
+                            'Deployment will start shortly!',
+                            $scope.deployment.referenceName + ' will be shortly deployed onto ' +
+                            $scope.deployment.options.name + '! You can cancel the deployment while it is still waiting.'
+                        );
+                        flashMessageShown = true;
+                    }
+                    setTimeout(self.getDeployment, 1000);
+                    break;
                 case 'running':
+                    flashMessageShown = false;
+                    wasRunning = true;
                     setTimeout(self.getDeployment, 1000);
                     break;
                 default:
                     return;
             }
+        };
+
+        /**
+         * @return {void}
+         */
+        this.storeDeploymentInCacheFactory = function () {
+            if (angular.isUndefined($cacheFactory.get('deploymentCache'))) {
+                $cacheFactory('deploymentCache');
+            }
+            $cacheFactory.get('deploymentCache').put($scope.deployment.__identity, $scope.deployment);
+            ProjectRepository.updateFullProjectInCache($scope.deployment.repositoryUrl);
         };
 
         /**
@@ -87,20 +133,13 @@
         $scope.deployConfigurationAgain = function () {
             DeploymentRepository.addDeployment($scope.deployment.configuration).then(
                 function (response) {
-                    $scope.messages = FlashMessageService.addFlashMessage(
-                        'OK!',
-                        $scope.deployment.referenceName + ' will be shortly deployed onto ' +
-                        $scope.deployment.configuration.applications[0].nodes[0].name +
-                        '! You can cancel the deployment while it is still waiting.',
-                        SEVERITY.ok
-                    );
                     $location.path('project/' + $scope.name + '/deployment/' + response.deployment.__identity);
                 },
                 function () {
-                    $scope.messages = FlashMessageService.addFlashMessage(
+                    toaster.pop(
+                        'error',
                         'Error!',
-                        'Deployment configuration could not be submitted successfully. Try again later.',
-                        SEVERITY.error
+                        'Deployment configuration could not be submitted successfully. Try again later.'
                     );
                 }
             );

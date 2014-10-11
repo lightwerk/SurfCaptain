@@ -7,7 +7,7 @@
         .controller('DeploymentsController', DeploymentsController);
 
     /* @ngInject */
-    function DeploymentsController($scope, DeploymentRepository, FlashMessageService, SEVERITY) {
+    function DeploymentsController($scope, DeploymentRepository, toaster) {
 
         var self = this;
 
@@ -30,11 +30,10 @@
                 },
                 function () {
                     $scope.finished = true;
-                    FlashMessageService.addFlashMessage(
+                    toaster.pop(
+                        'error',
                         'Error!',
-                        'The API call failed. Please try again later.',
-                        SEVERITY.error,
-                        'deployment-list-no-response'
+                        'The API call failed. Please try again later.'
                     );
                 }
             );

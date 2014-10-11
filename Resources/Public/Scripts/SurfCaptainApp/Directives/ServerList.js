@@ -7,7 +7,7 @@
         .directive('serverList', serverList);
 
     /* @ngInject */
-    function serverList(PresetRepository, ValidationService, FlashMessageService, SEVERITY, SettingsRepository, ProjectRepository) {
+    function serverList(PresetRepository, ValidationService, toaster, SettingsRepository, ProjectRepository) {
         var linker = function (scope) {
             scope.toggleSpinnerAndOverlay = function () {
                 scope.finished = !scope.finished;
@@ -59,18 +59,18 @@
                 PresetRepository.deleteServer(server).then(
                     function () {
                         scope.$parent.getAllServers(false);
-                        scope.messages = FlashMessageService.addFlashMessage(
+                        toaster.pop(
+                            'success',
                             'Server deleted!',
-                            'The Server "' + server.applications[0].nodes[0].name + '" was successfully removed.',
-                            SEVERITY.ok
+                            'The Server "' + server.applications[0].nodes[0].name + '" was successfully removed.'
                         );
                     },
                     function () {
                         scope.toggleSpinnerAndOverlay();
-                        scope.messages = FlashMessageService.addFlashMessage(
+                        toaster.pop(
+                            'error',
                             'Deletion failed!',
-                            'The Server "' + server.applications[0].nodes[0].name + '" could not be removed.',
-                            SEVERITY.error
+                            'The Server "' + server.applications[0].nodes[0].name + '" could not be removed.'
                         );
                     }
                 );
@@ -91,18 +91,18 @@
                         if (angular.isDefined(scope.$parent.project)) {
                             ProjectRepository.updateFullProjectInCache(scope.$parent.project.repositoryUrl);
                         }
-                        scope.messages = FlashMessageService.addFlashMessage(
+                        toaster.pop(
+                            'success',
                             'Update successful!',
-                            'The Server "' + server.applications[0].nodes[0].name + '" was updated successfully.',
-                            SEVERITY.ok
+                            'The Server "' + server.applications[0].nodes[0].name + '" was updated successfully.'
                         );
                     },
                     function () {
                         scope.toggleSpinnerAndOverlay();
-                        scope.messages = FlashMessageService.addFlashMessage(
+                        toaster.pop(
+                            'error',
                             'Update failed!',
-                            'The Server "' + server.applications[0].nodes[0].name + '" could not be updated.',
-                            SEVERITY.error
+                            'The Server "' + server.applications[0].nodes[0].name + '" could not be updated.'
                         );
                     }
                 );

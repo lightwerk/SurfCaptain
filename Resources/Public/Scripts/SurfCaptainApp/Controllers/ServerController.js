@@ -7,7 +7,7 @@
         .controller('ServerController', ServerController);
 
     /* @ngInject */
-    function ServerController($scope, $controller, PresetRepository, ValidationService, SettingsRepository, MarkerService, PresetService, FlashMessageService, SEVERITY, ProjectRepository) {
+    function ServerController($scope, $controller, PresetRepository, ValidationService, SettingsRepository, MarkerService, PresetService, toaster, ProjectRepository) {
 
         var self = this;
 
@@ -147,22 +147,22 @@
                 self.setTakenServerNamesAsUnavailableSuggestions();
             }
             if ($scope.servers.length === 0) {
-                $scope.messages = FlashMessageService.addFlashMessage(
+                toaster.pop(
+                    'note',
                     'No Servers yet!',
                     'FYI: There are no servers for project <span class="uppercase">' + $scope.name  + '</span> yet. Why dont you create one, hmm?',
-                    SEVERITY.info,
-                    $scope.name + '-no-servers'
+                    4000,
+                    'trustedHtml'
                 );
             }
         };
 
         this.failureCallback = function () {
             $scope.finished = true;
-            $scope.messages = FlashMessageService.addFlashMessage(
+            toaster.pop(
+                'error',
                 'Request failed!',
-                'The servers could not be received. Please try again later..',
-                SEVERITY.error,
-                'server-request-failed'
+                'The servers could not be received. Please try again later..'
             );
         };
 
@@ -222,18 +222,18 @@
                     $scope.newServerForm.$setPristine();
                     self.handleSettings();
                     $scope.getAllServers(false);
-                    $scope.messages = FlashMessageService.addFlashMessage(
+                    toaster.pop(
+                        'success',
                         'Server created!',
-                        'The Server "' + server.nodes[0].name + '" was successfully created.',
-                        SEVERITY.ok
+                        'The Server "' + server.nodes[0].name + '" was successfully created.'
                     );
                 },
                 function () {
                     $scope.finished = true;
-                    $scope.messages = FlashMessageService.addFlashMessage(
+                    toaster.pop(
+                        'error',
                         'Creation failed!',
-                        'The Server "' + server.nodes[0].name + '" could not be created.',
-                        SEVERITY.error
+                        'The Server "' + server.nodes[0].name + '" could not be created.'
                     );
                 }
             );
