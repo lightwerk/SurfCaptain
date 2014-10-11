@@ -16,7 +16,7 @@
 			<h3><a data-ng-href="#/project/{{deployment.repositoryIdentifier}}" >{{deployment.repositoryIdentifier}}</a> - {{deployment.referenceName}}{{deployment.options.sourceNode.name}} onto {{deployment.configuration.applications[0].nodes[0].name}}</h3>
 			<br />
 			<button data-ng-if="deployment.status === 'waiting'" class="btn btn-danger" data-ng-click="cancelDeployment()">Cancel</button>
-			<button data-ng-if="deployment.status !== 'running' && deployment.status !== 'waiting'" class="btn btn-danger" data-ng-click="deployConfigurationAgain()">Deploy again</button>
+			<button data-ng-if="deployment.status !== 'running' && deployment.status !== 'waiting'" class="btn btn-danger" modal="confirm-deployment">Deploy again</button>
 			<br /><br /><br />
 			<dl class="dl-horizontal">
 				<dt>Project</dt>
@@ -73,5 +73,24 @@
 		<span id="bottom">
 			<span class="label {{deployment.status}}" data-ng-if="deployment.logs.length">{{deployment.status}}</span>
 		</span>
+	</div>
+</div>
+
+<div class="modal fade confirm-deployment">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span
+						class="sr-only">Close</span></button>
+				<h4 class="modal-title">Deploy again!</h4>
+				You are going to deploy Commit {{deployment.configuration.applications[0].options.sha1}} onto {{deployment.options.name}}.
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-success" data-ng-click="deployConfigurationAgain()"
+						data-dismiss="modal">Continue
+				</button>
+				<button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+			</div>
+		</div>
 	</div>
 </div>
