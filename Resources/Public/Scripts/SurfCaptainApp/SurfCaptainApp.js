@@ -1,9 +1,22 @@
-/*global angular*/
-/*jslint node: true */
+/* global angular */
 
-'use strict';
-angular.module('surfCaptain', ['ngRoute', 'xeditable', 'ngAnimate', 'ngMessages', 'ngBiscuit', 'toaster'])
-    .config(['$routeProvider', function ($routeProvider) {
+(function () {
+    'use strict';
+    angular
+        .module('surfCaptain', ['ngRoute', 'xeditable', 'ngAnimate', 'ngMessages', 'ngBiscuit', 'toaster'])
+        .config(routeConfig)
+        .value('version', '1.0.7')
+        .constant('CONFIG', {
+            applicationTypes: {
+                deploy: 'Deploy',
+                deployTYPO3: 'TYPO3\\CMS\\Deploy',
+                syncTYPO3: 'TYPO3\\CMS\\Shared'
+            }
+        })
+        .run(xeditableConfig);
+
+    /* @ngInject */
+    function routeConfig($routeProvider) {
         var templatePath = '/_Resources/Static/Packages/Lightwerk.SurfCaptain/Scripts/SurfCaptainApp/Templates/';
         $routeProvider.
             when('/', {
@@ -49,16 +62,11 @@ angular.module('surfCaptain', ['ngRoute', 'xeditable', 'ngAnimate', 'ngMessages'
             otherwise({
                 redirectTo: '/'
             });
-    }])
-    .value('version', '1.0.7')
-    .constant('CONFIG', {
-        applicationTypes: {
-            deploy: 'Deploy',
-            deployTYPO3: 'TYPO3\\CMS\\Deploy',
-            syncTYPO3: 'TYPO3\\CMS\\Shared'
-        }
-    });
+    }
 
-angular.module('surfCaptain').run(['editableOptions', function (editableOptions) {
-    editableOptions.theme = 'bs3';
-}]);
+    /* @ngInject */
+    function xeditableConfig(editableOptions) {
+        editableOptions.theme = 'bs3';
+    }
+
+}());
