@@ -1,6 +1,7 @@
-/*global describe,beforeEach,module,it,xit,expect,inject,spyOn*/
+/* global describe,beforeEach,module,it,expect,inject,spyOn */
 
 describe('AbstractSingleProjectController', function () {
+    'use strict';
     var ctrl, scope, routeParams, ProjectRepository, projects, q;
 
     // Load the module
@@ -15,9 +16,9 @@ describe('AbstractSingleProjectController', function () {
         };
         ProjectRepository = _ProjectRepository_;
         projects = [{
-            "identifier": "foo",
-            "ssh_url_to_repo": "git@git.example.com:project/foo.git",
-            "id": 1
+            'identifier': 'foo',
+            'ssh_url_to_repo': 'git@git.example.com:project/foo.git',
+            'id': 1
         }];
         q = $q;
 

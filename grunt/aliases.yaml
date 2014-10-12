@@ -18,3 +18,8 @@ jsdev:
   - standard-dev
   - test
   - watch
+sniff:
+  - jshint
+proof:
+  - sniff
+  - test

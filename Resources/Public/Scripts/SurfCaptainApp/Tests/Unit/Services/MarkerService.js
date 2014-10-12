@@ -1,6 +1,7 @@
 /*global describe,beforeEach,module,it,expect,inject*/
 
 describe('MarkerService', function () {
+    'use strict';
     var markerService, configuration;
 
     // Load the module

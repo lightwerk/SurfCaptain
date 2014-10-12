@@ -1,16 +1,10 @@
-/*global angular,describe,beforeEach,afterEach,module,it,xit,expect,inject,spyOn*/
+/* global angular,describe,beforeEach,afterEach,module,it,expect,inject,spyOn */
 
 describe('ServerController', function () {
-    var ctrl, scope, nameSuggestions, q, projects, MarkerService, PresetRepository,
+    'use strict';
+    var ctrl, scope, nameSuggestions, q, MarkerService, PresetRepository,
         PresetService, toaster, settings, server, ProjectRepository, $http,
-        SettingsRepository, newPreset, success, ValidationService, returnString,
-        simulateReceivementOfProjectData = function () {
-            scope.$digest();
-            scope.$apply(function () {
-                scope.project = projects[0];
-                scope.projects = projects;
-            });
-        };
+        SettingsRepository, newPreset, success, ValidationService, returnString;
 
     beforeEach(module('surfCaptain'));
 

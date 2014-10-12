@@ -1,6 +1,7 @@
-/*global describe,beforeEach,module,it,jasmine,expect,inject,angular,spyOn*/
+/* global describe,module,it,jasmine,expect,inject,angular */
 
 describe('surfcaptainMenu', function () {
+    'use strict';
     var element, scope, setUp;
 
     setUp = function (context) {

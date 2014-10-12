@@ -1,6 +1,7 @@
 /*global describe,beforeEach,module,it,expect,inject*/
 
 describe('ValidationService', function () {
+    'use strict';
     var validationService;
 
     // Load the module

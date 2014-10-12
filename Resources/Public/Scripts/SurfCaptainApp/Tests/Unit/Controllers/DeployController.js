@@ -34,24 +34,24 @@ describe('Deployontroller', function () {
     // providing a dummy preset and dummy commit
     beforeEach(function () {
         preset = {
-            "applications": [
+            'applications': [
                 {
-                    "options": {
-                        "repositoryUrl": "git@git.example.com:project/foo.git",
-                        "deploymentPath": "/var/www/foo/staging/",
-                        "context": "Testing",
-                        "branch": "foo",
-                        "tag": "1.0.0",
-                        "sha1": "11111111111111111111111111111"
+                    'options': {
+                        'repositoryUrl': 'git@git.example.com:project/foo.git',
+                        'deploymentPath': '/var/www/foo/staging/',
+                        'context': 'Testing',
+                        'branch': 'foo',
+                        'tag': '1.0.0',
+                        'sha1': '11111111111111111111111111111'
                     },
-                    "nodes": [
+                    'nodes': [
                         {
-                            "name": "foo-staging",
-                            "hostname": "127.0.0.1",
-                            "username": "foobar"
+                            'name': 'foo-staging',
+                            'hostname': '127.0.0.1',
+                            'username': 'foobar'
                         }
                     ],
-                    "type": "TYPO3\\CMS\\Deploy"
+                    'type': 'TYPO3\\CMS\\Deploy'
                 }
             ]
         };

@@ -47,7 +47,7 @@
          * @param {boolean} unique
          * @return {void}
          */
-        this.addFailureFlashMessage = function (message, unique) {
+        this.addFailureFlashMessage = function (message) {
             $scope.finished = true;
             toaster.pop(
                 'error',
@@ -143,7 +143,7 @@
                         $location.path('project/' + $scope.name + '/deployment/' + response.deployment.__identity);
                     },
                     function () {
-                        self.addFailureFlashMessage('Deployment configuration could not be submitted successfully. Try again later.', false);
+                        self.addFailureFlashMessage('Deployment configuration could not be submitted successfully. Try again later.');
                     }
                 );
             }
@@ -167,15 +167,14 @@
                     default:
                         self.addFailureFlashMessage(
                             'Something is wrong with the type of the chosen commit. This should never happen. ' +
-                            'In fact, If you see this message, please go ahaed and punch any of the involved developers in the face.',
-                            false
+                            'In fact, If you see this message, please go ahaed and punch any of the involved developers in the face.'
                         );
                         $scope.currentCommit = null;
                         return;
                 }
                 $scope.currentPreset.applications[0].options.sha1 = $scope.currentCommit.commit.id;
             } catch (e) {
-                self.addFailureFlashMessage(e.message, false);
+                self.addFailureFlashMessage(e.message);
                 $scope.currentCommit = null;
             }
         };
@@ -249,7 +248,7 @@
                     }
                 },
                 function () {
-                    self.addFailureFlashMessage('API call failed. Deployment not possible.', true);
+                    self.addFailureFlashMessage('API call failed. Deployment not possible.');
                 }
             );
 
@@ -258,7 +257,7 @@
                     $scope.globalServers = response.presets;
                 },
                 function () {
-                    self.addFailureFlashMessage('API call failed. Deployment not possible.', true);
+                    self.addFailureFlashMessage('API call failed. Deployment not possible.');
                 }
             );
 

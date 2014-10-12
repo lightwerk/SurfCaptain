@@ -13,7 +13,7 @@
                 syncTYPO3: 'TYPO3\\CMS\\Shared'
             }
         })
-        .run(xeditableConfig)
+        .run(xeditableConfig);
 
     /* @ngInject */
     function routeConfig($routeProvider) {
@@ -81,114 +81,122 @@
 
     /* @ngInject */
     function AboutController($scope) {
-        $scope.techs = [
-            {
-                name: 'angular',
-                url: 'https://angularjs.org/',
-                description: {
-                    headline: 'AngularJS',
-                    span1: 'JavaScript',
-                    span2: 'Framework'
+
+        $scope.techs = [];
+        $scope.subtechs = [];
+
+        activate();
+
+        function activate() {
+            $scope.techs = [
+                {
+                    name: 'angular',
+                    url: 'https://angularjs.org/',
+                    description: {
+                        headline: 'AngularJS',
+                        span1: 'JavaScript',
+                        span2: 'Framework'
+                    }
+                },
+                {
+                    name: 'flow',
+                    url: 'http://flow.typo3.org/',
+                    description: {
+                        headline: 'TYPO3 FLOW',
+                        span1: 'PHP-Application',
+                        span2: 'Framework'
+                    }
+                },
+                {
+                    name: 'bootstrap',
+                    url: 'http://getbootstrap.com/',
+                    description: {
+                        headline: 'Bootstrap',
+                        span1: 'CSS',
+                        span2: 'Framework'
+                    }
                 }
-            },
-            {
-                name: 'flow',
-                url: 'http://flow.typo3.org/',
-                description: {
-                    headline: 'TYPO3 FLOW',
-                    span1: 'PHP-Application',
-                    span2: 'Framework'
+            ];
+            $scope.subtechs = [
+                {
+                    name: 'grunt',
+                    url: 'http://gruntjs.com/',
+                    description: {
+                        headline: 'Grunt'
+                    }
+                },
+                {
+                    name: 'bower',
+                    url: 'http://bower.io/',
+                    description: {
+                        headline: 'Bower'
+                    }
+                },
+                {
+                    name: 'composer',
+                    url: 'https://getcomposer.org/',
+                    description: {
+                        headline: 'Composer'
+                    }
+                },
+                {
+                    name: 'karma',
+                    url: 'http://karma-runner.github.io',
+                    description: {
+                        headline: 'Karma'
+                    }
+                },
+                {
+                    name: 'jasmine',
+                    url: 'http://jasmine.github.io/',
+                    description: {
+                        headline: 'Jasmine'
+                    }
+                },
+                {
+                    name: 'jquery',
+                    url: 'http://jquery.com/',
+                    description: {
+                        headline: 'jQuery'
+                    }
+                },
+                {
+                    name: 'css3',
+                    url: 'http://en.wikipedia.org/wiki/Cascading_Style_Sheets#CSS_3',
+                    description: {
+                        headline: 'CSS 3'
+                    }
+                },
+                {
+                    name: 'git',
+                    url: 'http://git-scm.com/',
+                    description: {
+                        headline: 'git'
+                    }
+                },
+                {
+                    name: 'html5',
+                    url: 'http://en.wikipedia.org/wiki/HTML5',
+                    description: {
+                        headline: 'HTML 5'
+                    }
+                },
+                {
+                    name: 'mysql',
+                    url: 'http://www.mysql.com/',
+                    description: {
+                        headline: 'MySQL'
+                    }
+                },
+                {
+                    name: 'less',
+                    url: 'http://www.lesscss.de/',
+                    description: {
+                        headline: 'LESS'
+                    }
                 }
-            },
-            {
-                name: 'bootstrap',
-                url: 'http://getbootstrap.com/',
-                description: {
-                    headline: 'Bootstrap',
-                    span1: 'CSS',
-                    span2: 'Framework'
-                }
-            }
-        ];
-        $scope.subtechs = [
-            {
-                name: 'grunt',
-                url: 'http://gruntjs.com/',
-                description: {
-                    headline: 'Grunt'
-                }
-            },
-            {
-                name: 'bower',
-                url: 'http://bower.io/',
-                description: {
-                    headline: 'Bower'
-                }
-            },
-            {
-                name: 'composer',
-                url: 'https://getcomposer.org/',
-                description: {
-                    headline: 'Composer'
-                }
-            },
-            {
-                name: 'karma',
-                url: 'http://karma-runner.github.io',
-                description: {
-                    headline: 'Karma'
-                }
-            },
-            {
-                name: 'jasmine',
-                url: 'http://jasmine.github.io/',
-                description: {
-                    headline: 'Jasmine'
-                }
-            },
-            {
-                name: 'jquery',
-                url: 'http://jquery.com/',
-                description: {
-                    headline: 'jQuery'
-                }
-            },
-            {
-                name: 'css3',
-                url: 'http://en.wikipedia.org/wiki/Cascading_Style_Sheets#CSS_3',
-                description: {
-                    headline: 'CSS 3'
-                }
-            },
-            {
-                name: 'git',
-                url: 'http://git-scm.com/',
-                description: {
-                    headline: 'git'
-                }
-            },
-            {
-                name: 'html5',
-                url: 'http://en.wikipedia.org/wiki/HTML5',
-                description: {
-                    headline: 'HTML 5'
-                }
-            },
-            {
-                name: 'mysql',
-                url: 'http://www.mysql.com/',
-                description: {
-                    headline: 'MySQL'
-                }
-            },
-            {
-                name: 'less',
-                url: 'http://www.lesscss.de/',
-                description: {
-                    headline: 'LESS'
-                }
-            }
-        ];
+            ];
+        }
     }
     AboutController.$inject = ['$scope'];
 }());
@@ -298,7 +306,7 @@
          * @param {boolean} unique
          * @return {void}
          */
-        this.addFailureFlashMessage = function (message, unique) {
+        this.addFailureFlashMessage = function (message) {
             $scope.finished = true;
             toaster.pop(
                 'error',
@@ -394,7 +402,7 @@
                         $location.path('project/' + $scope.name + '/deployment/' + response.deployment.__identity);
                     },
                     function () {
-                        self.addFailureFlashMessage('Deployment configuration could not be submitted successfully. Try again later.', false);
+                        self.addFailureFlashMessage('Deployment configuration could not be submitted successfully. Try again later.');
                     }
                 );
             }
@@ -418,15 +426,14 @@
                     default:
                         self.addFailureFlashMessage(
                             'Something is wrong with the type of the chosen commit. This should never happen. ' +
-                            'In fact, If you see this message, please go ahaed and punch any of the involved developers in the face.',
-                            false
+                            'In fact, If you see this message, please go ahaed and punch any of the involved developers in the face.'
                         );
                         $scope.currentCommit = null;
                         return;
                 }
                 $scope.currentPreset.applications[0].options.sha1 = $scope.currentCommit.commit.id;
             } catch (e) {
-                self.addFailureFlashMessage(e.message, false);
+                self.addFailureFlashMessage(e.message);
                 $scope.currentCommit = null;
             }
         };
@@ -500,7 +507,7 @@
                     }
                 },
                 function () {
-                    self.addFailureFlashMessage('API call failed. Deployment not possible.', true);
+                    self.addFailureFlashMessage('API call failed. Deployment not possible.');
                 }
             );
 
@@ -509,7 +516,7 @@
                     $scope.globalServers = response.presets;
                 },
                 function () {
-                    self.addFailureFlashMessage('API call failed. Deployment not possible.', true);
+                    self.addFailureFlashMessage('API call failed. Deployment not possible.');
                 }
             );
 
@@ -1527,74 +1534,92 @@
     }
     chosen.$inject = ['$timeout'];
 }());
-/*global surfCaptain*/
-/*jslint node: true */
+/* global angular */
+(function () {
+    'use strict';
+    angular
+        .module('surfCaptain')
+        .directive('lastCharacterValidate', lastCharacterValidate);
 
-'use strict';
-angular.module('surfCaptain').directive('lastCharacterValidate', ['ValidationService', function (ValidationService) {
-    return {
-        restrict: 'A',
-        require: 'ngModel',
-        scope: {
-            character: '@character'
-        },
-        link: function (scope, elem, attr, ctrl) {
-            var character = scope.character || '';
-            // add a parser
-            ctrl.$parsers.unshift(function (value) {
-                var valid = value ? ValidationService.doesLastCharacterMatch(value.slice(-1), character) : false;
-                ctrl.$setValidity('last-character-validate', valid);
+    /* ngInject */
+    function lastCharacterValidate(ValidationService) {
+        return {
+            restrict: 'A',
+            require: 'ngModel',
+            scope: {
+                character: '@character'
+            },
+            link: function (scope, elem, attr, ctrl) {
+                var character = scope.character || '';
+                // add a parser
+                ctrl.$parsers.unshift(function (value) {
+                    var valid = value ? ValidationService.doesLastCharacterMatch(value.slice(-1), character) : false;
+                    ctrl.$setValidity('last-character-validate', valid);
 
-                // if it's valid, return the value to the model,
-                // otherwise return undefined.
-                return valid ? value : undefined;
-            });
+                    // if it's valid, return the value to the model,
+                    // otherwise return undefined.
+                    return valid ? value : undefined;
+                });
 
-            // add a formatter
-            ctrl.$formatters.unshift(function (value) {
-                var valid = value ? ValidationService.doesLastCharacterMatch(value.slice(-1), character) : false;
-                ctrl.$setValidity('last-character-validate', valid);
+                // add a formatter
+                ctrl.$formatters.unshift(function (value) {
+                    var valid = value ? ValidationService.doesLastCharacterMatch(value.slice(-1), character) : false;
+                    ctrl.$setValidity('last-character-validate', valid);
 
-                // return the value or nothing will be written to the DOM.
-                return value;
-            });
+                    // return the value or nothing will be written to the DOM.
+                    return value;
+                });
+            }
+        };
+    }
+    lastCharacterValidate.$inject = ['ValidationService'];
+}());
+/* global angular */
 
-        }
-    };
-}]);
-/*global surfCaptain, angular*/
-/*jslint node: true */
+(function () {
+    'use strict';
+    angular
+        .module('surfCaptain')
+        .directive('modal', modal);
 
-'use strict';
-angular.module('surfCaptain').directive('modal', function () {
-    return {
-        scope: {
-            modal: '@modal'
-        },
-        link: function (scope, element, attributes) {
-            element.bind('click', function () {
-                angular.element('.' + scope.modal).modal();
-            });
-        }
-    };
-});
-/*global surfCaptain*/
-/*jslint node: true */
+    /* @nInject */
+    function modal() {
+        return {
+            scope: {
+                modal: '@modal'
+            },
+            link: function (scope, element) {
+                element.bind('click', function () {
+                    angular.element('.' + scope.modal).modal();
+                });
+            }
+        };
+    }
+}());
+/* global angular */
 
-'use strict';
-angular.module('surfCaptain').directive('overlay', function () {
-    var linker = function (scope, element, attrs) {
-    };
+(function () {
+    'use strict';
+    angular
+        .module('surfCaptain')
+        .directive('overlay', overlay);
 
-    return {
-        restrict: 'E',
-        template: '<div data-ng-class="{false:\'overlay\'}[finished]"></div>',
-        scope: {
-            finished: '='
-        },
-        link: linker
-    };
-});
+    /* @nInject */
+    function overlay() {
+        var linker = function () {};
+
+        return {
+            restrict: 'E',
+            template: '<div data-ng-class="{false:\'overlay\'}[finished]"></div>',
+            scope: {
+                finished: '='
+            },
+            link: linker
+        };
+    }
+}());
+
+
 /* global angular */
 
 (function () {

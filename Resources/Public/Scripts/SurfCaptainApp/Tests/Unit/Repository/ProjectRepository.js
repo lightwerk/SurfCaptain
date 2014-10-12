@@ -1,6 +1,7 @@
 /*global describe,beforeEach,afterEach,module,it,expect,inject*/
 
 describe('ProjectRepository', function () {
+    'use strict';
     var projectRepository,
         $http,
         cacheFactory,

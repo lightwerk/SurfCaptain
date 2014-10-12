@@ -1,4 +1,4 @@
-/*global describe,beforeEach,module,it,xit,expect,inject,spyOn, jasmine*/
+/* global describe,beforeEach,module,it,expect,inject,spyOn, jasmine */
 
 describe('SingleDeploymentController', function () {
     'use strict';

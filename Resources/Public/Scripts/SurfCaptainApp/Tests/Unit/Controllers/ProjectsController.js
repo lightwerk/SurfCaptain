@@ -1,7 +1,8 @@
-/*global describe,beforeEach,module,it,xit,expect,inject,spyOn*/
+/* global describe,beforeEach,module,it,expect,inject,spyOn */
 
 describe('ProjectsController', function () {
-    var ctrl, scope, projectRepository, q, projects, succeedPromise, controller, settingsRepository, settings, toaster,
+    'use strict';
+    var ctrl, scope, projectRepository, projects, succeedPromise, controller, settingsRepository, settings, toaster,
         createController = function () {
             ctrl = controller('ProjectsController', {
                 $scope: scope,
@@ -17,7 +18,7 @@ describe('ProjectsController', function () {
     beforeEach(inject(function ($controller, $rootScope, $q, ProjectRepository, SettingsRepository, _toaster_) {
         scope = $rootScope.$new();
         projects = [
-            {"name": "foo", "ssh_url_to_repo": "git@git.example.com:project/foo.git", "id": 1}
+            {'name': 'foo', 'ssh_url_to_repo': 'git@git.example.com:project/foo.git', 'id': 1}
         ];
         settings = {a: 'b'};
         controller = $controller;

@@ -1,17 +1,23 @@
-/*global surfCaptain*/
-/*jslint node: true */
+/* global angular */
 
-'use strict';
-angular.module('surfCaptain').directive('overlay', function () {
-    var linker = function (scope, element, attrs) {
-    };
+(function () {
+    'use strict';
+    angular
+        .module('surfCaptain')
+        .directive('overlay', overlay);
 
-    return {
-        restrict: 'E',
-        template: '<div data-ng-class="{false:\'overlay\'}[finished]"></div>',
-        scope: {
-            finished: '='
-        },
-        link: linker
-    };
-});
+    /* @nInject */
+    function overlay() {
+        var linker = function () {};
+
+        return {
+            restrict: 'E',
+            template: '<div data-ng-class="{false:\'overlay\'}[finished]"></div>',
+            scope: {
+                finished: '='
+            },
+            link: linker
+        };
+    }
+}());
+

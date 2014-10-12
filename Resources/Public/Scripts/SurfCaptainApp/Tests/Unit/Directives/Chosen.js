@@ -1,6 +1,7 @@
-/*global describe,beforeEach,module,it,xit,expect,inject,angular*/
+/* global describe,beforeEach,module,it,expect,inject,angular */
 
 describe('chosen', function () {
+    'use strict';
     var element, scope;
 
     beforeEach(module('surfCaptain'));

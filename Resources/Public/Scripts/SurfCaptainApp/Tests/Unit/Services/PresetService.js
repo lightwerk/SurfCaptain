@@ -1,18 +1,19 @@
 /*global describe,beforeEach,module,it,expect,inject,angular,spyOn*/
 
 describe('PresetService', function () {
-    var presetService, configuration, expectedPreset, SettingsRepository, ValidationService, contexts
+    'use strict';
+    var presetService, expectedPreset, SettingsRepository, ValidationService, contexts,
         expectedPresetSkeleton = {
-            "options": {
-                "repositoryUrl": '',
-                "deploymentPath": '',
-                "context": ''
+            'options': {
+                'repositoryUrl': '',
+                'deploymentPath': '',
+                'context': ''
             },
-            "nodes": [
+            'nodes': [
                 {
-                    "name": '',
-                    "hostname": '',
-                    "username": ''
+                    'name': '',
+                    'hostname': '',
+                    'username': ''
                 }
             ]
         };

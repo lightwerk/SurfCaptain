@@ -1,6 +1,7 @@
-/*global describe,beforeEach,module,it,jasmine,expect,inject,angular,spyOn*/
+/* global describe,module,it,jasmine,expect,inject,angular */
 
 describe('surfcaptainHeader', function () {
+    'use strict';
     var element, scope, setUp, $httpBackend,
         LocationMock = function () {
             var pathStr = '/project/bar';

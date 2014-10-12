@@ -1,6 +1,7 @@
-/*global describe,beforeEach,module,it,xit,expect,inject,angular*/
+/* global describe,beforeEach,module,it,expect,inject,angular */
 
 describe('tooltip', function () {
+    'use strict';
     var element, scope;
 
     beforeEach(module('surfCaptain'));

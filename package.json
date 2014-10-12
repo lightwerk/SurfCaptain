@@ -2,6 +2,7 @@
   "devDependencies": {
     "grunt": "*",
     "grunt-contrib-concat": "*",
+    "grunt-contrib-jshint": "^0.10.0",
     "grunt-contrib-less": "*",
     "grunt-contrib-uglify": "*",
     "grunt-contrib-watch": "*",
@@ -9,6 +10,7 @@
     "grunt-karma": "^0.8.3",
     "grunt-newer": "*",
     "grunt-ng-annotate": "^0.4.0",
+    "jshint-stylish": "^1.0.0",
     "karma": "^0.12.16",
     "karma-chrome-launcher": "^0.1.4",
     "karma-firefox-launcher": "^0.1.3",
