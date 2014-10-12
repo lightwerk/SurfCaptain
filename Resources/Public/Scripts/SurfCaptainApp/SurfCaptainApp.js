@@ -4,7 +4,8 @@
     'use strict';
     angular
         .module('surfCaptain', ['ngRoute', 'xeditable', 'ngAnimate', 'ngMessages', 'ngBiscuit', 'toaster'])
-        .config(routeConfig)
+        .config(routeConfiguration)
+        .config(toasterConfiguration)
         .value('version', '1.0.7')
         .constant('CONFIG', {
             applicationTypes: {
@@ -16,7 +17,7 @@
         .run(xeditableConfig);
 
     /* @ngInject */
-    function routeConfig($routeProvider) {
+    function routeConfiguration($routeProvider) {
         var templatePath = '/_Resources/Static/Packages/Lightwerk.SurfCaptain/Scripts/SurfCaptainApp/Templates/';
         $routeProvider.
             when('/', {
@@ -62,6 +63,16 @@
             otherwise({
                 redirectTo: '/'
             });
+    }
+
+    /* @ngInject */
+    function toasterConfiguration(toasterConfig) {
+        var customConfig = {
+            'position-class': 'toast-bottom-right',
+            'time-out': 5000,
+            'close-button': true
+        };
+        angular.extend(toasterConfig, customConfig);
     }
 
     /* @ngInject */
