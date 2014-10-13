@@ -2,11 +2,11 @@
 
 describe('Deployontroller', function () {
     'use strict';
-    var ctrl, scope, toaster, preset, commit, DeploymentRepository, ProjectRepository, $location, CONFIG, q;
+    var ctrl, scope, toaster, preset, commit, DeploymentRepository, ProjectRepository, $location, CONFIG, q, presets, UtilityService;
 
     beforeEach(module('surfCaptain'));
 
-    beforeEach(inject(function ($controller, $rootScope, _toaster_, _DeploymentRepository_, _ProjectRepository_, _CONFIG_, $q) {
+    beforeEach(inject(function ($controller, $rootScope, _toaster_, _DeploymentRepository_, _ProjectRepository_, _CONFIG_, _UtilityService_, $q) {
         scope = $rootScope.$new();
         toaster = _toaster_;
         DeploymentRepository = _DeploymentRepository_;
@@ -21,13 +21,15 @@ describe('Deployontroller', function () {
         };
         CONFIG = _CONFIG_;
         q = $q;
+        UtilityService = _UtilityService_;
         ctrl = $controller('DeployController', {
             $scope: scope,
             toaster: toaster,
             DeploymentRepository: DeploymentRepository,
             ProjectRepository: ProjectRepository,
             $location: $location,
-            CONFIG: CONFIG
+            CONFIG: CONFIG,
+            UtilityService: UtilityService
         });
     }));
 
@@ -154,6 +156,84 @@ describe('Deployontroller', function () {
         it('should return the commit object with matching identifier if it is found once in $scope.deployableCommits.', function () {
             scope.deployableCommits.push(commit);
             expect(ctrl.getCurrentCommit()).toEqual(commit);
+        });
+    });
+
+    describe('->setServersFromPresets()', function () {
+        beforeEach(function () {
+            presets = [];
+            spyOn(ctrl, 'setPreconfiguredServer');
+        });
+
+        it('should be defined.', function () {
+            expect(ctrl.setServersFromPresets).toBeDefined();
+        });
+
+        it('should add a server to $scope.servers if the applicationType is TYPO3Deploy.', function () {
+            preset.applications[0].type = CONFIG.applicationTypes.deployTYPO3;
+            presets.push(preset);
+            scope.servers = [];
+            ctrl.setServersFromPresets(presets);
+            expect(scope.servers).toContain(preset);
+        });
+
+        it('should add a server to $scope.servers if the applicationType is "deploy".', function () {
+            preset.applications[0].type = CONFIG.applicationTypes.deploy;
+            presets.push(preset);
+            scope.servers = [];
+            ctrl.setServersFromPresets(presets);
+            expect(scope.servers).toContain(preset);
+        });
+
+        it('should add a server to $scope.servers if the applicationType is undefined.', function () {
+            delete preset.applications[0].type;
+            presets.push(preset);
+            scope.servers = [];
+            ctrl.setServersFromPresets(presets);
+            expect(scope.servers).toContain(preset);
+        });
+
+        it('should not add a server to $scope.servers if the applicationType is something else.', function () {
+            preset.applications[0].type = 'foo';
+            presets.push(preset);
+            scope.servers = [];
+            ctrl.setServersFromPresets(presets);
+            expect(scope.servers).not.toContain(preset);
+        });
+
+        it('should call ctrl.setPreconfiguredServer()', function () {
+            ctrl.setServersFromPresets();
+            expect(ctrl.setPreconfiguredServer).toHaveBeenCalled();
+        });
+    });
+
+    describe('->setPreconfiguredServer()', function () {
+        beforeEach(function () {
+            spyOn(scope, 'setCurrentPreset');
+            scope.servers.push(preset);
+        });
+        it('should be defined', function () {
+            expect(ctrl.setPreconfiguredServer).toBeDefined();
+        });
+        it('should not call setCurrentPreset on controller if no server parameter is set.', function () {
+            $location.search = function () {return{};};
+            ctrl.setPreconfiguredServer();
+            expect(scope.setCurrentPreset).not.toHaveBeenCalled();
+        });
+        it('should not call setCurrentPreset on controller if server parameter is set but not found in $scope.servers.', function () {
+            $location.search = function () {return{'server': 'baz'};};
+            ctrl.setPreconfiguredServer();
+            expect(scope.setCurrentPreset).not.toHaveBeenCalled();
+        });
+        it('should call setCurrentPreset on controller if server parameter is set and found in $scope.servers.', function () {
+            $location.search = function () {return{'server': 'foo-staging'};};
+            ctrl.setPreconfiguredServer();
+            expect(scope.setCurrentPreset).toHaveBeenCalled();
+        });
+        it('should call setCurrentPreset on controller with whole preset if server parameter is set and found in $scope.servers.', function () {
+            $location.search = function () {return{'server': 'foo-staging'};};
+            ctrl.setPreconfiguredServer();
+            expect(scope.setCurrentPreset).toHaveBeenCalledWith(preset);
         });
     });
 
@@ -288,6 +368,16 @@ describe('Deployontroller', function () {
     });
 
     describe('$scope.deploy', function () {
+
+        beforeEach(function () {
+            spyOn(DeploymentRepository, 'addDeployment').andCallFake(
+                function () {
+                    var defer = q.defer();
+                    return defer.promise;
+                }
+            );
+        });
+
         it('should be defined.', function () {
             expect(scope.deploy).toBeDefined();
         });
@@ -298,12 +388,6 @@ describe('Deployontroller', function () {
                 scope.project = {
                     repositoryUrl: 'foo/bar'
                 };
-                spyOn(DeploymentRepository, 'addDeployment').andCallFake(
-                    function () {
-                        var defer = q.defer();
-                        return defer.promise;
-                    }
-                );
             });
 
             it('should set the TYPO3Deploy type if no type is set in currentPreset.', function () {
@@ -329,12 +413,45 @@ describe('Deployontroller', function () {
                 scope.deploy(preset);
                 expect(scope.currentPreset.applications[0].options.repositoryUrl).toEqual(scope.project.repositoryUrl);
             });
+
+            it('should call DeploymentRepository.addDeployment().', function () {
+                scope.deploy(preset);
+                expect(DeploymentRepository.addDeployment).toHaveBeenCalled();
+            });
         });
 
         describe('with unmatching presets', function () {
+
             beforeEach(function () {
-                scope.deploy(preset);
+                spyOn(toaster, 'pop');
+                scope.deploy();
             });
+
+            it('should not call DeploymentRepository.addDeployment().', function () {
+                expect(DeploymentRepository.addDeployment).not.toHaveBeenCalled();
+            });
+            it('should not call toaster.pop().', function () {
+                expect(toaster.pop).toHaveBeenCalled();
+            });
+        });
+    });
+
+    describe('$scope.getDeployedTag', function () {
+
+        beforeEach(function () {
+            spyOn(UtilityService, 'getDeployedTag');
+        });
+        it('should be defined', function () {
+            scope.tags = [];
+            expect(scope.getDeployedTag).toBeDefined();
+        });
+        it('should call UtilityService.getDeployedTag.', function () {
+            scope.getDeployedTag();
+            expect(UtilityService.getDeployedTag).toHaveBeenCalled();
+        });
+        it('should pass argument and $scope.tags to UtilityService.getDeployedTag.', function () {
+            scope.getDeployedTag('foo');
+            expect(UtilityService.getDeployedTag).toHaveBeenCalledWith('foo', scope.tags);
         });
     });
 });

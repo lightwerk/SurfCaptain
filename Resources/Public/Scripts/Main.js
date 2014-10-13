@@ -293,32 +293,53 @@
             this.name = 'DeployControllerException';
             this.message = message;
         }
-
         DeployControllerException.prototype = new Error();
         DeployControllerException.prototype.constructor = DeployControllerException;
 
-        $scope.deployableCommits = [
-            {
-                name: loadingString,
-                group: 'Tags'
-            },
-            {
-                name: loadingString,
-                group: 'Branches'
-            }
-        ];
+        $scope.deployableCommits = [];
         $scope.servers = [];
         $scope.error = false;
         $scope.finished = false;
         $scope.currentPreset = {};
         $scope.tags = [];
 
+        // methods published to the view
+        $scope.setCommitInCurrentPreset = setCommitInCurrentPreset;
+        $scope.setCurrentPreset = setCurrentPreset;
+        $scope.deploy = deploy;
+        $scope.presetDisplay = presetDisplay;
+        $scope.unsetLoadingKeyForGroup = unsetLoadingKeyForGroup;
+        $scope.getDeployedTag = getDeployedTag;
+
+        // internal methods
+        this.addFailureFlashMessage = addFailureFlashMessage;
+        this.getCurrentCommit = getCurrentCommit;
+        this.setServersFromPresets = setServersFromPresets;
+        this.setPreconfiguredServer = setPreconfiguredServer;
+
+        init();
+
         /**
-         * @param {string} message
-         * @param {boolean} unique
          * @return {void}
          */
-        this.addFailureFlashMessage = function (message) {
+        function init() {
+            $scope.deployableCommits = [
+                {
+                    name: loadingString,
+                    group: 'Tags'
+                },
+                {
+                    name: loadingString,
+                    group: 'Branches'
+                }
+            ];
+        }
+
+        /**
+         * @param {string} message
+         * @return {void}
+         */
+        function addFailureFlashMessage(message) {
             $scope.finished = true;
             toaster.pop(
                 'error',
@@ -326,13 +347,13 @@
                 message
             );
             $scope.error = true;
-        };
+        }
 
         /**
          * @returns {object}
          * @throws DeployControllerException
          */
-        this.getCurrentCommit = function () {
+        function getCurrentCommit() {
             var commits = $scope.deployableCommits.filter(function (commit) {
                 return commit.identifier === $scope.selectedCommit;
             });
@@ -340,7 +361,7 @@
                 throw new DeployControllerException('Something went wrong with the chosen Commit');
             }
             return commits[0];
-        };
+        }
 
         /**
          * Takes a set of presets, recieved from the API and fills the
@@ -350,7 +371,7 @@
          * @param {object} presets
          * @return {void}
          */
-        this.setServersFromPresets = function (presets) {
+        function setServersFromPresets(presets) {
             var property;
             for (property in presets) {
                 if (presets.hasOwnProperty(property)) {
@@ -362,18 +383,18 @@
                 }
             }
             self.setPreconfiguredServer();
-        };
+        }
 
         /**
          * It is possible to assign a server as deploy target
-         * as the GET parameter server. This method checks if
+         * as the GET parameter "server". This method checks if
          * that parameter exists and is a valid server. If
          * this is the case, setCurrentPreset() is called to
          * trigger step2.
          *
          * @return {void}
          */
-        this.setPreconfiguredServer = function () {
+        function setPreconfiguredServer() {
             var searchObject = $location.search(),
                 preconfiguredPreset;
             if (angular.isDefined(searchObject.server)) {
@@ -384,20 +405,27 @@
                     $scope.setCurrentPreset(preconfiguredPreset[0]);
                 }
             }
-        };
+        }
 
         /**
          * @param {object} preset
          * @return {void}
          */
-        $scope.setCurrentPreset = function (preset) {
+        function setCurrentPreset(preset) {
             $scope.currentPreset = preset;
             if (angular.isDefined($scope.selectedCommit) && $scope.selectedCommit !== '') {
                 $scope.setCommitInCurrentPreset();
             }
-        };
+        }
 
-        $scope.deploy = function (preset) {
+        /**
+         * Takes the current preset, checks validity removes some properties
+         * that are not needed by API and pass the object to the DeploymentRepository.
+         *
+         * @param {object} preset
+         * @return {void}
+         */
+        function deploy(preset) {
             if (preset === $scope.currentPreset) {
                 if (angular.isUndefined($scope.currentPreset.applications[0].type)) {
                     $scope.currentPreset.applications[0].type = CONFIG.applicationTypes.deployTYPO3;
@@ -417,13 +445,19 @@
                         self.addFailureFlashMessage('Deployment configuration could not be submitted successfully. Try again later.');
                     }
                 );
+            } else {
+                toaster.pop(
+                    'error',
+                    'Oooops',
+                    'Something went terribly wrong.'
+                );
             }
-        };
+        }
 
         /**
          * @return {void}
          */
-        $scope.setCommitInCurrentPreset = function () {
+        function setCommitInCurrentPreset() {
             try {
                 $scope.currentCommit = self.getCurrentCommit();
                 switch ($scope.currentCommit.type) {
@@ -448,13 +482,16 @@
                 self.addFailureFlashMessage(e.message);
                 $scope.currentCommit = null;
             }
-        };
+        }
 
         /**
+         * Method is used by View to determine if a server is
+         * displayed as disabled (if not chosen).
+         *
          * @param {object} preset
          * @returns {string}
          */
-        $scope.presetDisplay = function (preset) {
+        function presetDisplay(preset) {
             if (angular.isUndefined($scope.currentPreset.applications)) {
                 return '';
             }
@@ -462,13 +499,13 @@
                 return '';
             }
             return 'disabled';
-        };
+        }
 
         /**
          * @param {string} group
          * @return void
          */
-        $scope.unsetLoadingKeyForGroup = function (group) {
+        function unsetLoadingKeyForGroup(group) {
             var key;
             for (key in $scope.deployableCommits) {
                 if ($scope.deployableCommits.hasOwnProperty(key)) {
@@ -481,16 +518,22 @@
                     }
                 }
             }
-        };
+        }
 
         /**
          * @param {string} name
          * @return {string}
          */
-        $scope.getDeployedTag = function (name) {
+        function getDeployedTag(name) {
             return UtilityService.getDeployedTag(name, $scope.tags);
-        };
+        }
 
+        /**
+         * If the project data is received and stored in
+         * $scope.project, we trigger further requests.
+         *
+         * @return {void}
+         */
         $scope.$watch('project', function (project) {
             if (angular.isUndefined(project.repositoryUrl)) {
                 return;
