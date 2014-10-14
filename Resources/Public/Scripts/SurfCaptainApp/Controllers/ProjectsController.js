@@ -8,12 +8,18 @@
 
     /* @ngInject */
     function ProjectsController($scope, ProjectRepository, SettingsRepository, toaster) {
+
+        // properties of the vm
         $scope.settings = {};
         $scope.ordering = 'name';
         $scope.projects = [];
         $scope.finished = false;
 
-        this.init = function () {
+        this.init = init;
+
+        init();
+
+        function init() {
             ProjectRepository.getProjects().then(
                 function (response) {
                     $scope.finished = true;
@@ -34,7 +40,6 @@
                     $scope.settings = response;
                 }
             );
-        };
-        this.init();
+        }
     }
 }());

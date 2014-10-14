@@ -223,13 +223,16 @@
     /* @ngInject */
     function AbstractApplicationController($scope, PresetService) {
 
+        // methods published to the view
+        $scope.getRootContext = getRootContext;
+
         /**
          * @param {string} context
          * @returns {string}
          */
-        $scope.getRootContext = function (context) {
+        function getRootContext(context) {
             return PresetService.getRootContext(context, $scope.contexts);
-        };
+        }
     }
     AbstractApplicationController.$inject = ['$scope', 'PresetService'];
 }());
@@ -600,18 +603,17 @@
 
         var self = this;
 
-        /**
-         * @param deployments
-         * @return {void}
-         */
-        this.setDeployments = function (deployments) {
-            $scope.deployments = deployments;
-        };
+        $scope.deployments = [];
+        $scope.finished = false;
+
+        this.init = init;
+        this.setDeployments = setDeployments;
+        init();
 
         /**
          * @return {void}
          */
-        this.init = function () {
+        function init() {
             DeploymentRepository.getAllDeployments().then(
                 function (response) {
                     $scope.finished = true;
@@ -626,11 +628,16 @@
                     );
                 }
             );
-        };
-        this.init();
+        }
 
-        $scope.deployments = [];
-        $scope.finished = false;
+        /**
+         * @param deployments
+         * @return {void}
+         */
+        function setDeployments(deployments) {
+            $scope.deployments = deployments;
+        }
+
     }
     DeploymentsController.$inject = ['$scope', 'DeploymentRepository', 'toaster'];
 }());
@@ -657,27 +664,38 @@
     function GlobalServerController($scope, PresetRepository, PresetService, toaster, SettingsRepository) {
         var self = this;
 
+        // properties of vm
         $scope.newPreset = PresetService.getNewPreset();
         $scope.finished = false;
         $scope.messages = [];
         $scope.serverNames = [];
 
+        // methods published to the view
+        $scope.getAllServers = getAllServers;
+        $scope.addServer = addServer;
+
+        // internal methods
+        this.setServerNames = setServerNames;
+        this.getSettings = getSettings;
+
+        init();
+
         /**
          * @return void
          */
-        this.setServerNames = function () {
+        function setServerNames() {
             var property;
             for (property in $scope.servers) {
                 if ($scope.servers.hasOwnProperty(property)) {
                     $scope.serverNames.push(property);
                 }
             }
-        };
+        }
 
         /**
          * @return {void}
          */
-        this.getSettings = function () {
+         function getSettings() {
             SettingsRepository.getSettings().then(
                 function (response) {
                     $scope.contexts = '';
@@ -686,12 +704,12 @@
                     }
                 }
             );
-        };
+        }
 
         /**
          * @return {void}
          */
-        $scope.getAllServers = function () {
+        function getAllServers() {
             PresetRepository.getGlobalServers('').then(
                 function (response) {
                     $scope.finished = true;
@@ -716,14 +734,14 @@
                     );
                 }
             );
-        };
+        }
 
         /**
          *
          * @param {object} server
          * @return {void}
          */
-        $scope.addServer = function (server) {
+        function addServer(server) {
             $scope.finished = false;
             PresetRepository.addServer(server).then(
                 function () {
@@ -745,18 +763,17 @@
                     );
                 }
             );
-        };
+        }
 
         /**
          * Initializes the GlobalServerController
          *
          * @return {void}
          */
-        this.init = function () {
+        function init() {
             self.getSettings();
             $scope.getAllServers();
-        };
-        this.init();
+        }
     }
     GlobalServerController.$inject = ['$scope', 'PresetRepository', 'PresetService', 'toaster', 'SettingsRepository'];
 }());
@@ -774,26 +791,33 @@
         // Inherit from AbstractSingleProjectController
         angular.extend(this, $controller('AbstractSingleProjectController', {$scope: $scope}));
 
+        // properties of the vm
         $scope.ordering = 'date';
         $scope.finished = false;
         $scope.tags = [];
+
+        // methods published to the view
+        $scope.getRootContext = getRootContext;
+        $scope.getDeployedTag = getDeployedTag;
+        $scope.triggerDeployment = triggerDeployment;
+        $scope.triggerSync = triggerSync;
 
         /**
          * @param {string} context
          * @returns {string}
          */
-        $scope.getRootContext = function (context) {
+        function getRootContext(context) {
             return PresetService.getRootContext(context, $scope.contexts);
-        };
+        }
 
         /**
          *
          * @param {string} name
          * @return {string}
          */
-        $scope.getDeployedTag = function (name) {
+        function getDeployedTag(name) {
             return UtilityService.getDeployedTag(name, $scope.tags);
-        };
+        }
 
         /**
          * Sets the GET Parameter server and redirects to
@@ -802,10 +826,10 @@
          * @param {string} serverName
          * @return {void}
          */
-        $scope.triggerDeployment = function (serverName) {
+         function triggerDeployment(serverName) {
             $location.search('server', serverName);
             $location.path('project/' + $scope.name + '/deploy');
-        };
+        }
 
         /**
          * Sets the GET Parameter server and redirects to
@@ -814,10 +838,10 @@
          * @param {string} serverName
          * @return {void}
          */
-        $scope.triggerSync = function (serverName) {
+        function triggerSync(serverName) {
             $location.search('server', serverName);
             $location.path('project/' + $scope.name + '/sync');
-        };
+        }
 
         $scope.$watch('project', function (project) {
             if (angular.isUndefined(project.repositoryUrl)) {
@@ -857,12 +881,18 @@
 
     /* @ngInject */
     function ProjectsController($scope, ProjectRepository, SettingsRepository, toaster) {
+
+        // properties of the vm
         $scope.settings = {};
         $scope.ordering = 'name';
         $scope.projects = [];
         $scope.finished = false;
 
-        this.init = function () {
+        this.init = init;
+
+        init();
+
+        function init() {
             ProjectRepository.getProjects().then(
                 function (response) {
                     $scope.finished = true;
@@ -883,8 +913,7 @@
                     $scope.settings = response;
                 }
             );
-        };
-        this.init();
+        }
     }
     ProjectsController.$inject = ['$scope', 'ProjectRepository', 'SettingsRepository', 'toaster'];
 }());
@@ -911,16 +940,31 @@
         ServerControllerException.prototype = new Error();
         ServerControllerException.prototype.constructor = ServerControllerException;
 
+        // properties of the vm
         $scope.finished = false;
         $scope.currentPreset = {};
         $scope.messages = [];
         $scope.serverNames = [];
 
+        // methods published to the view
+        $scope.getAllServers = getAllServers;
+        $scope.setDeploymentPath = setDeploymentPath;
+        $scope.addServer = addServer;
+        $scope.generateServerName = generateServerName;
+
+        // internal methods
+        this.setServerNames = setServerNames;
+        this.setTakenServerNamesAsUnavailableSuggestions = setTakenServerNamesAsUnavailableSuggestions;
+        this.generateNameSuggestions = generateNameSuggestions;
+        this.handleSettings = handleSettings;
+        this.successCallback = successCallback;
+        this.failureCallback = failureCallback;
+
 
         /**
          * @return void
          */
-        this.setServerNames = function () {
+        function setServerNames() {
             var property;
             $scope.serverNames = [];
             for (property in $scope.servers) {
@@ -928,7 +972,7 @@
                     $scope.serverNames.push(property);
                 }
             }
-        };
+        }
 
         /**
          * Sets all serverNames that are already in use as
@@ -936,7 +980,7 @@
          *
          * @return {void}
          */
-        this.setTakenServerNamesAsUnavailableSuggestions = function () {
+        function setTakenServerNamesAsUnavailableSuggestions() {
             var i = 0, numberOfNameSuggestions, serverName;
 
             if ($scope.serverNames.length) {
@@ -947,7 +991,7 @@
                     $scope.nameSuggestions[i].available = !ValidationService.doesArrayContainItem($scope.serverNames, serverName);
                 }
             }
-        };
+        }
 
         /**
          * nameSuggestions are retrieved from the Settings.yaml
@@ -975,7 +1019,7 @@
          * @param {object} nameSuggestions
          * @return {void}
          */
-        this.generateNameSuggestions = function (nameSuggestions) {
+        function generateNameSuggestions(nameSuggestions) {
             var nameSuggestion, item;
             $scope.nameSuggestions = [];
             for (nameSuggestion in nameSuggestions) {
@@ -988,7 +1032,7 @@
                     $scope.nameSuggestions.push(item);
                 }
             }
-        };
+        }
 
         /**
          * Here are FrontendSettings regarding Server Management
@@ -1003,7 +1047,7 @@
          *
          * @return {void}
          */
-        this.handleSettings = function () {
+        function handleSettings() {
             var docRoot;
             if (angular.isUndefined($scope.settings)) {
                 return;
@@ -1027,9 +1071,9 @@
                     $scope.newPreset.options.deploymentPath = docRoot;
                 }
             }
-        };
+        }
 
-        this.successCallback = function (response) {
+        function successCallback(response) {
             $scope.finished = true;
             $scope.servers = response.repository.presets;
             self.setServerNames();
@@ -1045,21 +1089,21 @@
                     'trustedHtml'
                 );
             }
-        };
+        }
 
-        this.failureCallback = function () {
+        function failureCallback() {
             $scope.finished = true;
             toaster.pop(
                 'error',
                 'Request failed!',
                 'The servers could not be received. Please try again later..'
             );
-        };
+        }
 
         /**
          * @return {void}
          */
-        $scope.getAllServers = function (cache) {
+        function getAllServers(cache) {
             $scope.newPreset.options.repositoryUrl = $scope.project.repositoryUrl;
             if (cache === false) {
                 ProjectRepository.getFullProjectByRepositoryUrlFromServer($scope.project.repositoryUrl).then(
@@ -1072,7 +1116,7 @@
                     self.failureCallback
                 );
             }
-        };
+        }
 
         /**
          * Takes a suffix and tries to replace a {{suffix}} marker
@@ -1082,7 +1126,7 @@
          * @param {string} suffix
          * @return {void}
          */
-        $scope.setDeploymentPath = function (suffix) {
+        function setDeploymentPath(suffix) {
             var docRoot;
             if (angular.isDefined($scope.newPreset.options.deploymentPathWithMarkers)) {
                 docRoot = MarkerService.replaceMarkers(
@@ -1091,8 +1135,7 @@
                 );
                 $scope.newPreset.options.deploymentPath = docRoot;
             }
-
-        };
+        }
 
         /**
          * Adds a Server (preset) to the collection of presets.
@@ -1101,7 +1144,7 @@
          * @param {object} server
          * @return {void}
          */
-        $scope.addServer = function (server) {
+         function addServer(server) {
             $scope.finished = false;
             if (angular.isDefined(server.options.deploymentPathWithMarkers)) {
                 delete server.options.deploymentPathWithMarkers;
@@ -1127,7 +1170,7 @@
                     );
                 }
             );
-        };
+        }
 
         /**
          * Applies a server suffix to the current project name.
@@ -1136,7 +1179,7 @@
          * @returns {string}
          * @throws {ServerControllerException}
          */
-        $scope.generateServerName = function (suffix) {
+        function generateServerName(suffix) {
             if (angular.isUndefined($scope.project)) {
                 throw new ServerControllerException('No project given.');
             }
@@ -1144,7 +1187,7 @@
                 throw new ServerControllerException('Project got no identifier.');
             }
             return $scope.project.identifier + '-' + suffix;
-        };
+        }
 
         /**
          * Watches for the project property. If it gets filled,
@@ -1189,6 +1232,22 @@
         // Inherit from AbstractSingleProjectController
         angular.extend(this, $controller('AbstractSingleProjectController', {$scope: $scope}));
 
+        // properties of the vm
+        $scope.finished = false;
+        $scope.noLog = false;
+
+        // methods published to the view
+        $scope.cancelDeployment = cancelDeployment;
+        $scope.deployConfigurationAgain = deployConfigurationAgain;
+
+        // internal methods
+        this.initLiveLog = initLiveLog;
+        this.storeDeploymentInCacheFactory = storeDeploymentInCacheFactory;
+        this.getDeployment = getDeployment;
+        this.init = init;
+
+        init();
+
         /**
          * Triggers the request for the Deployment object
          * after 1 second again if status of deployment
@@ -1196,7 +1255,7 @@
          *
          * @return {void}
          */
-        this.initLiveLog = function () {
+        function initLiveLog() {
             if ($scope.noLog) {
                 return;
             }
@@ -1250,23 +1309,23 @@
                 default:
                     return;
             }
-        };
+        }
 
         /**
          * @return {void}
          */
-        this.storeDeploymentInCacheFactory = function () {
+        function storeDeploymentInCacheFactory() {
             if (angular.isUndefined($cacheFactory.get('deploymentCache'))) {
                 $cacheFactory('deploymentCache');
             }
             $cacheFactory.get('deploymentCache').put($scope.deployment.__identity, $scope.deployment);
             ProjectRepository.updateFullProjectInCache($scope.deployment.repositoryUrl);
-        };
+        }
 
         /**
          * @return {void}
          */
-        this.getDeployment = function () {
+        function getDeployment() {
             DeploymentRepository.getSingleDeployment($routeParams.deploymentId).then(
                 function (response) {
                     $scope.finished = true;
@@ -1278,32 +1337,30 @@
                     $scope.noLog = true;
                 }
             );
-        };
+        }
 
         /**
          * @return {void}
          */
-        this.init = function () {
-            this.getDeployment();
-        };
-
-        this.init();
+         function init() {
+            self.getDeployment();
+        }
 
         /**
          * @return {void}
          */
-        $scope.cancelDeployment = function () {
+        function cancelDeployment() {
             DeploymentRepository.cancelDeployment($routeParams.deploymentId).then(
                 function () {
                     self.getDeployment();
                 }
             );
-        };
+        }
 
         /**
          * @return {void}
          */
-        $scope.deployConfigurationAgain = function () {
+        function deployConfigurationAgain() {
             DeploymentRepository.addDeployment($scope.deployment.configuration).then(
                 function (response) {
                     $location.path('project/' + $scope.name + '/deployment/' + response.deployment.__identity);
@@ -1316,11 +1373,7 @@
                     );
                 }
             );
-        };
-
-        $scope.finished = false;
-        $scope.noLog = false;
-
+        }
     }
     SingleDeploymentController.$inject = ['$scope', 'DeploymentRepository', '$routeParams', '$cacheFactory', '$location', 'toaster', 'ProjectRepository', '$controller'];
 }());
@@ -1343,22 +1396,37 @@
 
         var self = this;
 
+        // properties of the vm
         $scope.servers = [];
         $scope.finished = false;
         $scope.currentSource = {};
         $scope.currentTarget = {};
 
+        // methods published to the view
+        $scope.sync = sync;
+        $scope.setCurrentTarget = setCurrentTarget;
+        $scope.setCurrentSource = setCurrentSource;
+        $scope.targetDisplay = targetDisplay;
+        $scope.sourceDisplay = sourceDisplay;
+
+        // internal methods
+        this.addFailureFlashMessage = addFailureFlashMessage;
+        this.setContexts = setContexts;
+        this.setGlobalServers = setGlobalServers;
+        this.setServersFromPresets = setServersFromPresets;
+        this.setPreconfiguredServer = setPreconfiguredServer;
+
         /**
          * @return {void}
          */
-        this.addFailureFlashMessage = function () {
+        function addFailureFlashMessage() {
             $scope.finished = true;
             toaster.pop(
                 'error',
                 'Request failed!',
                 'API call failed. Sync not possible.'
             );
-        };
+        }
 
         /**
          * Fills $scope.contexts with configured contexts if
@@ -1366,7 +1434,7 @@
          *
          * @return {void}
          */
-        this.setContexts = function () {
+        function setContexts() {
             SettingsRepository.getSettings().then(
                 function (response) {
                     $scope.contexts = [];
@@ -1375,7 +1443,7 @@
                     }
                 }
             );
-        };
+        }
 
         /**
          * Requests all global Servers from the API and
@@ -1383,7 +1451,7 @@
          *
          * @return {void}
          */
-        this.setGlobalServers = function () {
+        function setGlobalServers() {
             PresetRepository.getGlobalServers('').then(
                 function (response) {
                     $scope.globalServers = response.presets;
@@ -1392,7 +1460,7 @@
                     self.addFailureFlashMessage();
                 }
             );
-        };
+        }
 
         /**
          * Takes a set of presets, recieved from the API and fills the
@@ -1402,7 +1470,7 @@
          * @param {object} presets
          * @return {void}
          */
-        this.setServersFromPresets = function (presets) {
+        function setServersFromPresets(presets) {
             var property;
             for (property in presets) {
                 if (presets.hasOwnProperty(property)) {
@@ -1413,7 +1481,7 @@
                 }
             }
             self.setPreconfiguredServer();
-        };
+        }
 
         /**
          * It is possible to assign a server as sync source
@@ -1424,7 +1492,7 @@
          *
          * @return {void}
          */
-        this.setPreconfiguredServer = function () {
+        function setPreconfiguredServer() {
             var searchObject = $location.search(),
                 preconfiguredPreset;
             if (angular.isDefined(searchObject.server)) {
@@ -1435,7 +1503,7 @@
                     $scope.setCurrentSource(preconfiguredPreset[0]);
                 }
             }
-        };
+        }
 
         /**
          * Initialization of SyncController. This function is called
@@ -1454,7 +1522,7 @@
          * @param {object} preset
          * @returns {string}
          */
-        $scope.sourceDisplay = function (preset) {
+         function sourceDisplay(preset) {
             if (angular.isUndefined($scope.currentSource.applications)) {
                 return '';
             }
@@ -1462,13 +1530,13 @@
                 return '';
             }
             return 'disabled';
-        };
+        }
 
         /**
          * @param {object} preset
          * @returns {string}
          */
-        $scope.targetDisplay = function (preset) {
+        function targetDisplay(preset) {
             if (angular.isUndefined($scope.currentTarget.applications)) {
                 return '';
             }
@@ -1476,30 +1544,30 @@
                 return '';
             }
             return 'disabled';
-        };
+        }
 
         /**
          * @param {object} preset
          * @return {void}
          */
-        $scope.setCurrentSource = function (preset) {
+        function setCurrentSource(preset) {
             $scope.currentSource = preset;
-        };
+        }
 
         /**
          * @param {object} preset
          * @return {void}
          */
-        $scope.setCurrentTarget = function (preset) {
+         function setCurrentTarget(preset) {
             $scope.currentTarget = preset;
-        };
+        }
 
         /**
          * @param {object} source - source node
          * @param {object} target - target node
          * @return {void}
          */
-        $scope.sync = function (source, target) {
+        function sync(source, target) {
             target.applications[0].type = CONFIG.applicationTypes.syncTYPO3;
             target.applications[0].options.sourceNode = source.applications[0].nodes[0];
             target.applications[0].options.sourceNode.deploymentPath = source.applications[0].options.deploymentPath;
@@ -1517,7 +1585,7 @@
                 },
                 self.addFailureFlashMessage
             );
-        };
+        }
 
         /**
          * As soon as we receive the repositoryUrl, we

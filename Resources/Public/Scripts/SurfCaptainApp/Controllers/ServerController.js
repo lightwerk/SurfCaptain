@@ -21,16 +21,31 @@
         ServerControllerException.prototype = new Error();
         ServerControllerException.prototype.constructor = ServerControllerException;
 
+        // properties of the vm
         $scope.finished = false;
         $scope.currentPreset = {};
         $scope.messages = [];
         $scope.serverNames = [];
 
+        // methods published to the view
+        $scope.getAllServers = getAllServers;
+        $scope.setDeploymentPath = setDeploymentPath;
+        $scope.addServer = addServer;
+        $scope.generateServerName = generateServerName;
+
+        // internal methods
+        this.setServerNames = setServerNames;
+        this.setTakenServerNamesAsUnavailableSuggestions = setTakenServerNamesAsUnavailableSuggestions;
+        this.generateNameSuggestions = generateNameSuggestions;
+        this.handleSettings = handleSettings;
+        this.successCallback = successCallback;
+        this.failureCallback = failureCallback;
+
 
         /**
          * @return void
          */
-        this.setServerNames = function () {
+        function setServerNames() {
             var property;
             $scope.serverNames = [];
             for (property in $scope.servers) {
@@ -38,7 +53,7 @@
                     $scope.serverNames.push(property);
                 }
             }
-        };
+        }
 
         /**
          * Sets all serverNames that are already in use as
@@ -46,7 +61,7 @@
          *
          * @return {void}
          */
-        this.setTakenServerNamesAsUnavailableSuggestions = function () {
+        function setTakenServerNamesAsUnavailableSuggestions() {
             var i = 0, numberOfNameSuggestions, serverName;
 
             if ($scope.serverNames.length) {
@@ -57,7 +72,7 @@
                     $scope.nameSuggestions[i].available = !ValidationService.doesArrayContainItem($scope.serverNames, serverName);
                 }
             }
-        };
+        }
 
         /**
          * nameSuggestions are retrieved from the Settings.yaml
@@ -85,7 +100,7 @@
          * @param {object} nameSuggestions
          * @return {void}
          */
-        this.generateNameSuggestions = function (nameSuggestions) {
+        function generateNameSuggestions(nameSuggestions) {
             var nameSuggestion, item;
             $scope.nameSuggestions = [];
             for (nameSuggestion in nameSuggestions) {
@@ -98,7 +113,7 @@
                     $scope.nameSuggestions.push(item);
                 }
             }
-        };
+        }
 
         /**
          * Here are FrontendSettings regarding Server Management
@@ -113,7 +128,7 @@
          *
          * @return {void}
          */
-        this.handleSettings = function () {
+        function handleSettings() {
             var docRoot;
             if (angular.isUndefined($scope.settings)) {
                 return;
@@ -137,9 +152,9 @@
                     $scope.newPreset.options.deploymentPath = docRoot;
                 }
             }
-        };
+        }
 
-        this.successCallback = function (response) {
+        function successCallback(response) {
             $scope.finished = true;
             $scope.servers = response.repository.presets;
             self.setServerNames();
@@ -155,21 +170,21 @@
                     'trustedHtml'
                 );
             }
-        };
+        }
 
-        this.failureCallback = function () {
+        function failureCallback() {
             $scope.finished = true;
             toaster.pop(
                 'error',
                 'Request failed!',
                 'The servers could not be received. Please try again later..'
             );
-        };
+        }
 
         /**
          * @return {void}
          */
-        $scope.getAllServers = function (cache) {
+        function getAllServers(cache) {
             $scope.newPreset.options.repositoryUrl = $scope.project.repositoryUrl;
             if (cache === false) {
                 ProjectRepository.getFullProjectByRepositoryUrlFromServer($scope.project.repositoryUrl).then(
@@ -182,7 +197,7 @@
                     self.failureCallback
                 );
             }
-        };
+        }
 
         /**
          * Takes a suffix and tries to replace a {{suffix}} marker
@@ -192,7 +207,7 @@
          * @param {string} suffix
          * @return {void}
          */
-        $scope.setDeploymentPath = function (suffix) {
+        function setDeploymentPath(suffix) {
             var docRoot;
             if (angular.isDefined($scope.newPreset.options.deploymentPathWithMarkers)) {
                 docRoot = MarkerService.replaceMarkers(
@@ -201,8 +216,7 @@
                 );
                 $scope.newPreset.options.deploymentPath = docRoot;
             }
-
-        };
+        }
 
         /**
          * Adds a Server (preset) to the collection of presets.
@@ -211,7 +225,7 @@
          * @param {object} server
          * @return {void}
          */
-        $scope.addServer = function (server) {
+         function addServer(server) {
             $scope.finished = false;
             if (angular.isDefined(server.options.deploymentPathWithMarkers)) {
                 delete server.options.deploymentPathWithMarkers;
@@ -237,7 +251,7 @@
                     );
                 }
             );
-        };
+        }
 
         /**
          * Applies a server suffix to the current project name.
@@ -246,7 +260,7 @@
          * @returns {string}
          * @throws {ServerControllerException}
          */
-        $scope.generateServerName = function (suffix) {
+        function generateServerName(suffix) {
             if (angular.isUndefined($scope.project)) {
                 throw new ServerControllerException('No project given.');
             }
@@ -254,7 +268,7 @@
                 throw new ServerControllerException('Project got no identifier.');
             }
             return $scope.project.identifier + '-' + suffix;
-        };
+        }
 
         /**
          * Watches for the project property. If it gets filled,

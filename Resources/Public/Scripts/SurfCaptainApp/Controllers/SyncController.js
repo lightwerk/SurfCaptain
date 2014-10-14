@@ -17,22 +17,37 @@
 
         var self = this;
 
+        // properties of the vm
         $scope.servers = [];
         $scope.finished = false;
         $scope.currentSource = {};
         $scope.currentTarget = {};
 
+        // methods published to the view
+        $scope.sync = sync;
+        $scope.setCurrentTarget = setCurrentTarget;
+        $scope.setCurrentSource = setCurrentSource;
+        $scope.targetDisplay = targetDisplay;
+        $scope.sourceDisplay = sourceDisplay;
+
+        // internal methods
+        this.addFailureFlashMessage = addFailureFlashMessage;
+        this.setContexts = setContexts;
+        this.setGlobalServers = setGlobalServers;
+        this.setServersFromPresets = setServersFromPresets;
+        this.setPreconfiguredServer = setPreconfiguredServer;
+
         /**
          * @return {void}
          */
-        this.addFailureFlashMessage = function () {
+        function addFailureFlashMessage() {
             $scope.finished = true;
             toaster.pop(
                 'error',
                 'Request failed!',
                 'API call failed. Sync not possible.'
             );
-        };
+        }
 
         /**
          * Fills $scope.contexts with configured contexts if
@@ -40,7 +55,7 @@
          *
          * @return {void}
          */
-        this.setContexts = function () {
+        function setContexts() {
             SettingsRepository.getSettings().then(
                 function (response) {
                     $scope.contexts = [];
@@ -49,7 +64,7 @@
                     }
                 }
             );
-        };
+        }
 
         /**
          * Requests all global Servers from the API and
@@ -57,7 +72,7 @@
          *
          * @return {void}
          */
-        this.setGlobalServers = function () {
+        function setGlobalServers() {
             PresetRepository.getGlobalServers('').then(
                 function (response) {
                     $scope.globalServers = response.presets;
@@ -66,7 +81,7 @@
                     self.addFailureFlashMessage();
                 }
             );
-        };
+        }
 
         /**
          * Takes a set of presets, recieved from the API and fills the
@@ -76,7 +91,7 @@
          * @param {object} presets
          * @return {void}
          */
-        this.setServersFromPresets = function (presets) {
+        function setServersFromPresets(presets) {
             var property;
             for (property in presets) {
                 if (presets.hasOwnProperty(property)) {
@@ -87,7 +102,7 @@
                 }
             }
             self.setPreconfiguredServer();
-        };
+        }
 
         /**
          * It is possible to assign a server as sync source
@@ -98,7 +113,7 @@
          *
          * @return {void}
          */
-        this.setPreconfiguredServer = function () {
+        function setPreconfiguredServer() {
             var searchObject = $location.search(),
                 preconfiguredPreset;
             if (angular.isDefined(searchObject.server)) {
@@ -109,7 +124,7 @@
                     $scope.setCurrentSource(preconfiguredPreset[0]);
                 }
             }
-        };
+        }
 
         /**
          * Initialization of SyncController. This function is called
@@ -128,7 +143,7 @@
          * @param {object} preset
          * @returns {string}
          */
-        $scope.sourceDisplay = function (preset) {
+         function sourceDisplay(preset) {
             if (angular.isUndefined($scope.currentSource.applications)) {
                 return '';
             }
@@ -136,13 +151,13 @@
                 return '';
             }
             return 'disabled';
-        };
+        }
 
         /**
          * @param {object} preset
          * @returns {string}
          */
-        $scope.targetDisplay = function (preset) {
+        function targetDisplay(preset) {
             if (angular.isUndefined($scope.currentTarget.applications)) {
                 return '';
             }
@@ -150,30 +165,30 @@
                 return '';
             }
             return 'disabled';
-        };
+        }
 
         /**
          * @param {object} preset
          * @return {void}
          */
-        $scope.setCurrentSource = function (preset) {
+        function setCurrentSource(preset) {
             $scope.currentSource = preset;
-        };
+        }
 
         /**
          * @param {object} preset
          * @return {void}
          */
-        $scope.setCurrentTarget = function (preset) {
+         function setCurrentTarget(preset) {
             $scope.currentTarget = preset;
-        };
+        }
 
         /**
          * @param {object} source - source node
          * @param {object} target - target node
          * @return {void}
          */
-        $scope.sync = function (source, target) {
+        function sync(source, target) {
             target.applications[0].type = CONFIG.applicationTypes.syncTYPO3;
             target.applications[0].options.sourceNode = source.applications[0].nodes[0];
             target.applications[0].options.sourceNode.deploymentPath = source.applications[0].options.deploymentPath;
@@ -191,7 +206,7 @@
                 },
                 self.addFailureFlashMessage
             );
-        };
+        }
 
         /**
          * As soon as we receive the repositoryUrl, we

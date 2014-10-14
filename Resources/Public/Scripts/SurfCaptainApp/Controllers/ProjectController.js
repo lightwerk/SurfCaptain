@@ -12,26 +12,33 @@
         // Inherit from AbstractSingleProjectController
         angular.extend(this, $controller('AbstractSingleProjectController', {$scope: $scope}));
 
+        // properties of the vm
         $scope.ordering = 'date';
         $scope.finished = false;
         $scope.tags = [];
+
+        // methods published to the view
+        $scope.getRootContext = getRootContext;
+        $scope.getDeployedTag = getDeployedTag;
+        $scope.triggerDeployment = triggerDeployment;
+        $scope.triggerSync = triggerSync;
 
         /**
          * @param {string} context
          * @returns {string}
          */
-        $scope.getRootContext = function (context) {
+        function getRootContext(context) {
             return PresetService.getRootContext(context, $scope.contexts);
-        };
+        }
 
         /**
          *
          * @param {string} name
          * @return {string}
          */
-        $scope.getDeployedTag = function (name) {
+        function getDeployedTag(name) {
             return UtilityService.getDeployedTag(name, $scope.tags);
-        };
+        }
 
         /**
          * Sets the GET Parameter server and redirects to
@@ -40,10 +47,10 @@
          * @param {string} serverName
          * @return {void}
          */
-        $scope.triggerDeployment = function (serverName) {
+         function triggerDeployment(serverName) {
             $location.search('server', serverName);
             $location.path('project/' + $scope.name + '/deploy');
-        };
+        }
 
         /**
          * Sets the GET Parameter server and redirects to
@@ -52,10 +59,10 @@
          * @param {string} serverName
          * @return {void}
          */
-        $scope.triggerSync = function (serverName) {
+        function triggerSync(serverName) {
             $location.search('server', serverName);
             $location.path('project/' + $scope.name + '/sync');
-        };
+        }
 
         $scope.$watch('project', function (project) {
             if (angular.isUndefined(project.repositoryUrl)) {
