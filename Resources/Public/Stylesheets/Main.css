@@ -6245,6 +6245,7 @@ div.project-buttons {
   padding: 10px 0;
   background-color: #000000 !important;
   width: 100%;
+  overflow: hidden;
 }
 div.project-buttons .fa {
   font-size: 130%;

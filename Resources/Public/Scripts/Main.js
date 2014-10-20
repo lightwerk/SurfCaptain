@@ -281,7 +281,7 @@
         .controller('DeployController', DeployController);
 
     /* @ngInject */
-    function DeployController($scope, $controller, ProjectRepository, toaster, CONFIG, DeploymentRepository, $location, PresetRepository, SettingsRepository, UtilityService) {
+    function DeployController($scope, $controller, ProjectRepository, toaster, CONFIG, DeploymentRepository, $location, PresetRepository, SettingsRepository, UtilityService, MarkerService) {
 
         // Inherit from AbstractSingleProjectController
         angular.extend(this, $controller('AbstractSingleProjectController', {$scope: $scope}));
@@ -439,6 +439,9 @@
                 if (angular.isUndefined($scope.currentPreset.applications[0].options.repositoryUrl) || $scope.currentPreset.applications[0].options.repositoryUrl === '') {
                     $scope.currentPreset.applications[0].options.repositoryUrl = $scope.project.repositoryUrl;
                 }
+                if (MarkerService.containsMarker($scope.currentPreset.applications[0].options.deploymentPath)) {
+                    $scope.currentPreset.applications[0].options.deploymentPath = MarkerService.replaceMarkers($scope.currentPreset.applications[0].options.deploymentPath, {name: $scope.name});
+                }
                 DeploymentRepository.addDeployment($scope.currentPreset).then(
                     function (response) {
                         ProjectRepository.updateFullProjectInCache($scope.project.repositoryUrl);
@@ -588,7 +591,7 @@
             );
         });
     }
-    DeployController.$inject = ['$scope', '$controller', 'ProjectRepository', 'toaster', 'CONFIG', 'DeploymentRepository', '$location', 'PresetRepository', 'SettingsRepository', 'UtilityService'];
+    DeployController.$inject = ['$scope', '$controller', 'ProjectRepository', 'toaster', 'CONFIG', 'DeploymentRepository', '$location', 'PresetRepository', 'SettingsRepository', 'UtilityService', 'MarkerService'];
 }());
 /* global angular */
 
@@ -1629,8 +1632,15 @@
 
     /* @ngInject */
     function chosen($timeout) {
-        var linker = function (scope, element) {
+        return {
+            restrict: 'A',
+            link: linker,
+            scope: {
+                chosen: '='
+            }
+        };
 
+        function linker (scope, element) {
             scope.$watchCollection('chosen', function (value, old) {
                 if (angular.isArray(value) && value !== old) {
                     $timeout(
@@ -1646,15 +1656,7 @@
             element.chosen({
                 search_contains: true
             });
-        };
-
-        return {
-            restrict: 'A',
-            link: linker,
-            scope: {
-                chosen: '='
-            }
-        };
+        }
     }
     chosen.$inject = ['$timeout'];
 }());
@@ -1730,15 +1732,12 @@
 
     /* @nInject */
     function overlay() {
-        var linker = function () {};
-
         return {
             restrict: 'E',
             template: '<div data-ng-class="{false:\'overlay\'}[finished]"></div>',
             scope: {
                 finished: '='
-            },
-            link: linker
+            }
         };
     }
 }());
@@ -1972,13 +1971,9 @@
 
     /* @ngInject */
     function spinner() {
-        // scope, element, attrs are passed to the linker function but not needed here
-        function linker() {}
-
         return {
             restrict: 'E',
-            template: '<i class="fa fa-spinner fa-spin fa-4x"></i>',
-            link: linker
+            template: '<i class="fa fa-spinner fa-spin fa-4x"></i>'
         };
     }
 }());
@@ -2059,21 +2054,22 @@
     /* @ngInject */
     function surfcaptainHeader($routeParams, $location, FavorService) {
 
+        return {
+            restrict: 'E',
+            templateUrl: '/_Resources/Static/Packages/Lightwerk.SurfCaptain/Scripts/SurfCaptainApp/Partials/Header.html',
+            scope: {
+                icon: '@'
+            },
+            link: linker,
+            replace: true
+        };
+
         function linker(scope) {
             var lastUrlPart = $location.path().split('/').pop();
             scope.project = $routeParams.itemName;
             scope.context = lastUrlPart === scope.project ? '' : lastUrlPart;
             scope.favorites = FavorService.getFavoriteProjects();
         }
-
-        return {
-            restrict: 'E',
-            templateUrl: '/_Resources/Static/Packages/Lightwerk.SurfCaptain/Scripts/SurfCaptainApp/Partials/Header.html',
-            scope: {
-                icon: '@icon'
-            },
-            link: linker
-        };
     }
     surfcaptainHeader.$inject = ['$routeParams', '$location', 'FavorService'];
 }());
@@ -2088,18 +2084,19 @@
     /* @ngInject */
     function surfcaptainMenu($routeParams, $location) {
 
+        return {
+            restrict: 'E',
+            templateUrl: '/_Resources/Static/Packages/Lightwerk.SurfCaptain/Scripts/SurfCaptainApp/Partials/Menu.html',
+            scope: {},
+            link: linker,
+            replace: true
+        };
+
         function linker(scope) {
             var lastUrlPart = $location.path().split('/').pop();
             scope.project = $routeParams.projectName;
             scope.context = lastUrlPart === scope.project ? 'history' : lastUrlPart;
         }
-
-        return {
-            restrict: 'E',
-            templateUrl: '/_Resources/Static/Packages/Lightwerk.SurfCaptain/Scripts/SurfCaptainApp/Partials/Menu.html',
-            scope: {},
-            link: linker
-        };
     }
     surfcaptainMenu.$inject = ['$routeParams', '$location'];
 }());
@@ -2859,6 +2856,14 @@
                 return string;
             }
             return string.substring(0, index);
+        };
+
+        /**
+         * @param {string} string
+         * @returns {boolean}
+         */
+        this.containsMarker = function (string) {
+            return this.getFirstMarker(string) !== null;
         };
     }
 }());
