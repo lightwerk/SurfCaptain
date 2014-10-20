@@ -1,8 +1,8 @@
 /*global describe,beforeEach,module,it,expect,inject,angular,spyOn*/
 
-describe('Deployontroller', function () {
+describe('DeployController', function () {
     'use strict';
-    var ctrl, scope, toaster, preset, commit, DeploymentRepository, ProjectRepository, $location, CONFIG, q, presets, UtilityService;
+    var ctrl, scope, toaster, preset, commit, DeploymentRepository, ProjectRepository, $location, CONFIG, q, presets, UtilityService, MarkerService;
 
     beforeEach(module('surfCaptain'));
 
@@ -19,6 +19,14 @@ describe('Deployontroller', function () {
                 return {server: 'foobaar'};
             }
         };
+        MarkerService = {
+            containsMarker: function () {
+                return true;
+            },
+            replaceMarkers: function (string) {
+                return string;
+            }
+        };
         CONFIG = _CONFIG_;
         q = $q;
         UtilityService = _UtilityService_;
@@ -29,7 +37,8 @@ describe('Deployontroller', function () {
             ProjectRepository: ProjectRepository,
             $location: $location,
             CONFIG: CONFIG,
-            UtilityService: UtilityService
+            UtilityService: UtilityService,
+            MarkerService: MarkerService
         });
     }));
 
@@ -418,6 +427,40 @@ describe('Deployontroller', function () {
                 scope.deploy(preset);
                 expect(DeploymentRepository.addDeployment).toHaveBeenCalled();
             });
+
+            describe('calling of MarkerService', function () {
+                beforeEach(function () {
+                    spyOn(MarkerService, 'replaceMarkers').andCallFake(
+                        function () {
+                            return 'some/path/foo';
+                        }
+                    );
+                    spyOn(MarkerService, 'containsMarker').andCallThrough();
+                });
+
+                it('should call containsMarker on MarkerService.', function () {
+                    scope.deploy(preset);
+                    expect(MarkerService.containsMarker).toHaveBeenCalled();
+                });
+
+                it('should call containsMarker on MarkerService with deploymentPath.', function () {
+                    scope.deploy(preset);
+                    expect(MarkerService.containsMarker).toHaveBeenCalledWith('/var/www/foo/staging/');
+                });
+
+                it('should call replaceMarkers on MarkerService if deploymentPath contains a marker.', function () {
+                    preset.applications[0].options.deploymentPath = 'some/path/{{projectName}}';
+                    scope.deploy(preset);
+                    expect(MarkerService.replaceMarkers).toHaveBeenCalled();
+                });
+
+                it('should set preset.applications[0].options.deploymentPath to the return value of MarkerService.replaceMarkers.', function () {
+                    preset.applications[0].options.deploymentPath = 'some/path/{{projectName}}';
+                    scope.deploy(preset);
+                    expect(scope.currentPreset.applications[0].options.deploymentPath).toEqual('some/path/foo');
+                });
+            });
+
         });
 
         describe('with unmatching presets', function () {

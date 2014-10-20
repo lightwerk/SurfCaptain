@@ -118,5 +118,13 @@
             }
             return string.substring(0, index);
         };
+
+        /**
+         * @param {string} string
+         * @returns {boolean}
+         */
+        this.containsMarker = function (string) {
+            return this.getFirstMarker(string) !== null;
+        };
     }
 }());

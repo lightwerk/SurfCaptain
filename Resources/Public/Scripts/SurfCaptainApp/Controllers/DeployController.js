@@ -7,7 +7,7 @@
         .controller('DeployController', DeployController);
 
     /* @ngInject */
-    function DeployController($scope, $controller, ProjectRepository, toaster, CONFIG, DeploymentRepository, $location, PresetRepository, SettingsRepository, UtilityService) {
+    function DeployController($scope, $controller, ProjectRepository, toaster, CONFIG, DeploymentRepository, $location, PresetRepository, SettingsRepository, UtilityService, MarkerService) {
 
         // Inherit from AbstractSingleProjectController
         angular.extend(this, $controller('AbstractSingleProjectController', {$scope: $scope}));
@@ -164,6 +164,9 @@
                 }
                 if (angular.isUndefined($scope.currentPreset.applications[0].options.repositoryUrl) || $scope.currentPreset.applications[0].options.repositoryUrl === '') {
                     $scope.currentPreset.applications[0].options.repositoryUrl = $scope.project.repositoryUrl;
+                }
+                if (MarkerService.containsMarker($scope.currentPreset.applications[0].options.deploymentPath)) {
+                    $scope.currentPreset.applications[0].options.deploymentPath = MarkerService.replaceMarkers($scope.currentPreset.applications[0].options.deploymentPath, {name: $scope.name});
                 }
                 DeploymentRepository.addDeployment($scope.currentPreset).then(
                     function (response) {

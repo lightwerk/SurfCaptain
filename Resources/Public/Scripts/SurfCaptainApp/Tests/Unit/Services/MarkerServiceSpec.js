@@ -118,4 +118,19 @@ describe('MarkerService', function () {
             expect(markerService.getFirstMarker({})).toBeNull();
         });
     });
+
+
+    it('should have a method containsMarker.', function () {
+        expect(markerService.containsMarker).toBeDefined();
+    });
+
+    describe('->containsMarker()', function () {
+        it('should return true if passed string contains a marker.', function () {
+            expect(markerService.containsMarker('sdsad{{projectName}}asdad')).toBeTruthy();
+        });
+
+        it('should return false if passed string contains n0 marker.', function () {
+            expect(markerService.containsMarker('sdsadprojectName}}asdad')).toBeFalsy();
+        });
+    });
 });
