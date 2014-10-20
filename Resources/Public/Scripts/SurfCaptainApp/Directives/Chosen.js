@@ -8,8 +8,15 @@
 
     /* @ngInject */
     function chosen($timeout) {
-        var linker = function (scope, element) {
+        return {
+            restrict: 'A',
+            link: linker,
+            scope: {
+                chosen: '='
+            }
+        };
 
+        function linker (scope, element) {
             scope.$watchCollection('chosen', function (value, old) {
                 if (angular.isArray(value) && value !== old) {
                     $timeout(
@@ -25,14 +32,6 @@
             element.chosen({
                 search_contains: true
             });
-        };
-
-        return {
-            restrict: 'A',
-            link: linker,
-            scope: {
-                chosen: '='
-            }
-        };
+        }
     }
 }());
