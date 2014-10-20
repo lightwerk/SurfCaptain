@@ -6,7 +6,7 @@
         .module('surfCaptain', ['ngRoute', 'xeditable', 'ngAnimate', 'ngMessages', 'ngBiscuit', 'toaster'])
         .config(routeConfiguration)
         .config(toasterConfiguration)
-        .value('version', '1.0.7')
+        .value('version', '1.0.8')
         .constant('CONFIG', {
             applicationTypes: {
                 deploy: 'Deploy',
