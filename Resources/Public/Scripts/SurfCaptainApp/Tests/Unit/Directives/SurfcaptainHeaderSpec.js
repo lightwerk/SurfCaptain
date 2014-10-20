@@ -46,12 +46,12 @@ describe('surfcaptainHeader', function () {
 
     it('should set scope.context as container class if it does not match scope.project', function () {
         setUp();
-        expect(element.find('.surfcaptain').hasClass('bar')).toBeTruthy();
+        expect(element.hasClass('bar')).toBeTruthy();
     });
 
     it('should not set scope.context as container class if it does match scope.project', function () {
         setUp('bar');
-        expect(element.find('.surfcaptain').hasClass('bar')).toBeFalsy();
+        expect(element.hasClass('bar')).toBeFalsy();
     });
 
     it('should call getFavoriteProjects on FavorService.', function () {
