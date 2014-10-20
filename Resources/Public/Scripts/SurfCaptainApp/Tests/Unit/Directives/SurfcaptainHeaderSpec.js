@@ -1,4 +1,4 @@
-/* global describe,module,it,jasmine,expect,inject,angular */
+/* global describe,module,it,jasmine,expect,inject,angular,spyOn */
 
 describe('surfcaptainHeader', function () {
     'use strict';

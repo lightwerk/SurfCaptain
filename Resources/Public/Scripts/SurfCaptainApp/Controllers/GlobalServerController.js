@@ -31,6 +31,7 @@
          */
         function setServerNames() {
             var property;
+            $scope.serverNames = [];
             for (property in $scope.servers) {
                 if ($scope.servers.hasOwnProperty(property)) {
                     $scope.serverNames.push(property);
