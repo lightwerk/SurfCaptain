@@ -1,8 +1,8 @@
-/* global describe,module,it,jasmine,expect,inject,angular */
+/* global describe,module,it,jasmine,expect,inject,angular,spyOn */
 
 describe('surfcaptainHeader', function () {
     'use strict';
-    var element, scope, setUp, $httpBackend,
+    var element, scope, setUp, $httpBackend, FavorService,
         LocationMock = function () {
             var pathStr = '/project/bar';
             this.path = function () {
@@ -22,18 +22,22 @@ describe('surfcaptainHeader', function () {
             });
         });
 
-        inject(function ($routeParams, $location, $rootScope, $compile, _$httpBackend_) {
+        inject(function ($routeParams, $location, $rootScope, $compile, _$httpBackend_, _FavorService_) {
             element = angular.element('<surfcaptain-header icon="foo"></surfcaptain-header>');
             scope = $rootScope;
             $httpBackend = _$httpBackend_;
+            FavorService = _FavorService_;
 
             $httpBackend.when('GET', '/api/repository').respond(true);
             $httpBackend.expect('GET', '/api/repository');
+
+            spyOn(FavorService, 'getFavoriteProjects');
 
             $compile(element)(scope);
             scope.$digest();
         });
     };
+
 
     it('should contain the font awesome passed to the directive', function () {
         setUp();
@@ -48,5 +52,10 @@ describe('surfcaptainHeader', function () {
     it('should not set scope.context as container class if it does match scope.project', function () {
         setUp('bar');
         expect(element.find('.surfcaptain').hasClass('bar')).toBeFalsy();
+    });
+
+    it('should call getFavoriteProjects on FavorService.', function () {
+        setUp();
+        expect(FavorService.getFavoriteProjects).toHaveBeenCalled();
     });
 });

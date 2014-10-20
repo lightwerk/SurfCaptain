@@ -10,27 +10,39 @@
     function GlobalServerController($scope, PresetRepository, PresetService, toaster, SettingsRepository) {
         var self = this;
 
+        // properties of vm
         $scope.newPreset = PresetService.getNewPreset();
         $scope.finished = false;
         $scope.messages = [];
         $scope.serverNames = [];
 
+        // methods published to the view
+        $scope.getAllServers = getAllServers;
+        $scope.addServer = addServer;
+
+        // internal methods
+        this.setServerNames = setServerNames;
+        this.getSettings = getSettings;
+
+        init();
+
         /**
          * @return void
          */
-        this.setServerNames = function () {
+        function setServerNames() {
             var property;
+            $scope.serverNames = [];
             for (property in $scope.servers) {
                 if ($scope.servers.hasOwnProperty(property)) {
                     $scope.serverNames.push(property);
                 }
             }
-        };
+        }
 
         /**
          * @return {void}
          */
-        this.getSettings = function () {
+         function getSettings() {
             SettingsRepository.getSettings().then(
                 function (response) {
                     $scope.contexts = '';
@@ -39,12 +51,12 @@
                     }
                 }
             );
-        };
+        }
 
         /**
          * @return {void}
          */
-        $scope.getAllServers = function () {
+        function getAllServers() {
             PresetRepository.getGlobalServers('').then(
                 function (response) {
                     $scope.finished = true;
@@ -69,14 +81,14 @@
                     );
                 }
             );
-        };
+        }
 
         /**
          *
          * @param {object} server
          * @return {void}
          */
-        $scope.addServer = function (server) {
+        function addServer(server) {
             $scope.finished = false;
             PresetRepository.addServer(server).then(
                 function () {
@@ -98,17 +110,16 @@
                     );
                 }
             );
-        };
+        }
 
         /**
          * Initializes the GlobalServerController
          *
          * @return {void}
          */
-        this.init = function () {
+        function init() {
             self.getSettings();
             $scope.getAllServers();
-        };
-        this.init();
+        }
     }
 }());

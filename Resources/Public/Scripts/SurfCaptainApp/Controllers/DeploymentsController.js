@@ -11,18 +11,17 @@
 
         var self = this;
 
-        /**
-         * @param deployments
-         * @return {void}
-         */
-        this.setDeployments = function (deployments) {
-            $scope.deployments = deployments;
-        };
+        $scope.deployments = [];
+        $scope.finished = false;
+
+        this.init = init;
+        this.setDeployments = setDeployments;
+        init();
 
         /**
          * @return {void}
          */
-        this.init = function () {
+        function init() {
             DeploymentRepository.getAllDeployments().then(
                 function (response) {
                     $scope.finished = true;
@@ -37,10 +36,15 @@
                     );
                 }
             );
-        };
-        this.init();
+        }
 
-        $scope.deployments = [];
-        $scope.finished = false;
+        /**
+         * @param deployments
+         * @return {void}
+         */
+        function setDeployments(deployments) {
+            $scope.deployments = deployments;
+        }
+
     }
 }());

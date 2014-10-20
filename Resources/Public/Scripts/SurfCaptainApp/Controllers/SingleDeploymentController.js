@@ -16,6 +16,22 @@
         // Inherit from AbstractSingleProjectController
         angular.extend(this, $controller('AbstractSingleProjectController', {$scope: $scope}));
 
+        // properties of the vm
+        $scope.finished = false;
+        $scope.noLog = false;
+
+        // methods published to the view
+        $scope.cancelDeployment = cancelDeployment;
+        $scope.deployConfigurationAgain = deployConfigurationAgain;
+
+        // internal methods
+        this.initLiveLog = initLiveLog;
+        this.storeDeploymentInCacheFactory = storeDeploymentInCacheFactory;
+        this.getDeployment = getDeployment;
+        this.init = init;
+
+        init();
+
         /**
          * Triggers the request for the Deployment object
          * after 1 second again if status of deployment
@@ -23,7 +39,7 @@
          *
          * @return {void}
          */
-        this.initLiveLog = function () {
+        function initLiveLog() {
             if ($scope.noLog) {
                 return;
             }
@@ -77,23 +93,23 @@
                 default:
                     return;
             }
-        };
+        }
 
         /**
          * @return {void}
          */
-        this.storeDeploymentInCacheFactory = function () {
+        function storeDeploymentInCacheFactory() {
             if (angular.isUndefined($cacheFactory.get('deploymentCache'))) {
                 $cacheFactory('deploymentCache');
             }
             $cacheFactory.get('deploymentCache').put($scope.deployment.__identity, $scope.deployment);
             ProjectRepository.updateFullProjectInCache($scope.deployment.repositoryUrl);
-        };
+        }
 
         /**
          * @return {void}
          */
-        this.getDeployment = function () {
+        function getDeployment() {
             DeploymentRepository.getSingleDeployment($routeParams.deploymentId).then(
                 function (response) {
                     $scope.finished = true;
@@ -105,32 +121,30 @@
                     $scope.noLog = true;
                 }
             );
-        };
+        }
 
         /**
          * @return {void}
          */
-        this.init = function () {
-            this.getDeployment();
-        };
-
-        this.init();
+         function init() {
+            self.getDeployment();
+        }
 
         /**
          * @return {void}
          */
-        $scope.cancelDeployment = function () {
+        function cancelDeployment() {
             DeploymentRepository.cancelDeployment($routeParams.deploymentId).then(
                 function () {
                     self.getDeployment();
                 }
             );
-        };
+        }
 
         /**
          * @return {void}
          */
-        $scope.deployConfigurationAgain = function () {
+        function deployConfigurationAgain() {
             DeploymentRepository.addDeployment($scope.deployment.configuration).then(
                 function (response) {
                     $location.path('project/' + $scope.name + '/deployment/' + response.deployment.__identity);
@@ -143,10 +157,6 @@
                     );
                 }
             );
-        };
-
-        $scope.finished = false;
-        $scope.noLog = false;
-
+        }
     }
 }());

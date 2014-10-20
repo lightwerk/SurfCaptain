@@ -9,12 +9,15 @@
     /* @ngInject */
     function AbstractApplicationController($scope, PresetService) {
 
+        // methods published to the view
+        $scope.getRootContext = getRootContext;
+
         /**
          * @param {string} context
          * @returns {string}
          */
-        $scope.getRootContext = function (context) {
+        function getRootContext(context) {
             return PresetService.getRootContext(context, $scope.contexts);
-        };
+        }
     }
 }());
