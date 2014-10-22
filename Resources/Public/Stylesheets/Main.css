@@ -6264,6 +6264,9 @@ div.project-buttons .project-brand {
   line-height: 40px;
   height: 40px;
 }
+div.project-buttons .row {
+  width: 100%;
+}
 .footer {
   background-color: #000000;
   color: #99cccc;
