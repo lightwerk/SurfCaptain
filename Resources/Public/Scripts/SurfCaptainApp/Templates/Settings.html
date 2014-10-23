@@ -1,0 +1,37 @@
+<surfcaptain-header icon="gear"></surfcaptain-header>
+
+<div class="container settings-view dark inner-container">
+	<div class="row">
+		<div class="col-xs-12 text-center">
+			<h1>Settings</h1>
+			<p>Configurable in Settings.yaml.</p>
+
+
+			<dl class="dl-horizontal">
+				<dt>publicDeploymentKey</dt>
+				<dd>{{settings.publicDeploymentKey}}
+					<span data-ng-hide="settings.publicDeploymentKey">You can specify a deployment key in the frontend settings (settings.yaml) to be displayed here.</span>
+				</dd>
+				<dt>contexts</dt>
+				<dd>{{settings.contexts}}
+					<span data-ng-hide="settings.contexts">See Settings.yaml.</span>
+				</dd>
+				<dt>defaultDeploymentPath</dt>
+				<dd>{{settings.defaultDeploymentPath}}
+					<span data-ng-hide="settings.defaultDeploymentPath">See Settings.yaml.</span>
+				</dd>
+				<dt>defaultUser</dt>
+				<dd>{{settings.defaultUser}}
+					<span data-ng-hide="settings.defaultUser">See Settings.yaml.</span>
+				</dd>
+				<dt>nameSuggestions</dt>
+				<dd><p data-ng-repeat="(prefix, context) in settings.nameSuggestions">
+					{{prefix}} -- {{context}}
+				</p>
+					<span data-ng-hide="settings.defaultUser">See Settings.yaml.</span>
+				</dd>
+			</dl>
+		</div>
+	</div>
+
+</div>

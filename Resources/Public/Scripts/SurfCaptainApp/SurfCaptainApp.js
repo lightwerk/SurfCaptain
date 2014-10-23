@@ -60,6 +60,10 @@
                 templateUrl: templatePath + 'SingleDeployment.html',
                 controller: 'SingleDeploymentController'
             }).
+            when('/settings', {
+                templateUrl: templatePath + 'Settings.html',
+                controller: 'SettingsController'
+            }).
             otherwise({
                 redirectTo: '/'
             });
