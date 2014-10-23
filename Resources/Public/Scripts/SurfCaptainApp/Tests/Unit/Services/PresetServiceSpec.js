@@ -30,14 +30,14 @@ describe('PresetService', function () {
         spyOn(ValidationService, 'doesStringStartWithSubstring').andCallThrough();
     });
 
-    it('should have a method getNewPreset.', function () {
-        expect(presetService.getNewPreset).toBeDefined();
-    });
-
     describe('->getNewPreset()', function () {
 
         beforeEach(function () {
             expectedPreset = angular.copy(expectedPresetSkeleton);
+        });
+
+        it('should be defined.', function () {
+            expect(presetService.getNewPreset).toBeDefined();
         });
 
         it('should return a copy of the preset skeleton when no configuration is passed.', function () {
@@ -65,13 +65,13 @@ describe('PresetService', function () {
         });
     });
 
-    it('should have a method getRootContext.', function () {
-        expect(presetService.getRootContext).toBeDefined();
-    });
-
     describe('->getRootContext()', function () {
         beforeEach(function () {
             contexts = ['Production', 'Development'];
+        });
+
+        it('should be defined.', function () {
+            expect(presetService.getRootContext).toBeDefined();
         });
 
         it('should call setContexts() on self.', function () {
@@ -92,6 +92,39 @@ describe('PresetService', function () {
         it('should return correct ootContext if passed string is valid rootContext.', function () {
             var rootContext = presetService.getRootContext('Production/Staging', contexts);
             expect(rootContext).toEqual('Production');
+        });
+    });
+
+    describe('->isPresetGlobal()', function () {
+
+        it('should be defined.', function () {
+            expect(presetService.isPresetGlobal).toBeDefined();
+        });
+
+        it('should return false if passed preset has property repositoryUrl defined.', function () {
+            var preset = {
+                applications: [
+                    expectedPreset
+                ]
+            };
+            preset.applications[0].options.repositoryUrl = 'myRepositoryUrl';
+            expect(presetService.isPresetGlobal(preset)).toBeFalsy();
+        });
+
+        it('should return true if passed preset has no property repositoryUrl defined.', function () {
+            var preset = {
+                applications: [
+                    expectedPreset
+                ]
+            };
+            delete preset.applications[0].options.repositoryUrl;
+            expect(presetService.isPresetGlobal(preset)).toBeTruthy();
+        });
+
+        it('should return false if passed preset is no valid preset.', function () {
+            var preset = {};
+            expect(presetService.isPresetGlobal(preset)).toBeFalsy();
+
         });
     });
 

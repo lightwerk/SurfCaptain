@@ -85,5 +85,22 @@
             }
             return 'unknown-context';
         };
+
+        /**
+         * @param {object} preset
+         * @returns {boolean}
+         */
+        this.isPresetGlobal = function (preset) {
+            if (angular.isUndefined(preset.applications) || !angular.isArray(preset.applications)) {
+                return false;
+            }
+            if (preset.applications.length === 0) {
+                return false;
+            }
+            if (angular.isUndefined(preset.applications[0].options)) {
+                return false;
+            }
+            return angular.isUndefined(preset.applications[0].options.repositoryUrl) || preset.applications[0].options.repositoryUrl === '';
+        };
     }
 }());
