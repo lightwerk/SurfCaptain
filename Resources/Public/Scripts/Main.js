@@ -6,7 +6,7 @@
         .module('surfCaptain', ['ngRoute', 'xeditable', 'ngAnimate', 'ngMessages', 'ngBiscuit', 'toaster'])
         .config(routeConfiguration)
         .config(toasterConfiguration)
-        .value('version', '1.0.8')
+        .value('version', '1.0.10')
         .constant('CONFIG', {
             applicationTypes: {
                 deploy: 'Deploy',
@@ -59,6 +59,10 @@
             when('/project/:projectName/deployment/:deploymentId', {
                 templateUrl: templatePath + 'SingleDeployment.html',
                 controller: 'SingleDeploymentController'
+            }).
+            when('/settings', {
+                templateUrl: templatePath + 'Settings.html',
+                controller: 'SettingsController'
             }).
             otherwise({
                 redirectTo: '/'
@@ -281,7 +285,7 @@
         .controller('DeployController', DeployController);
 
     /* @ngInject */
-    function DeployController($scope, $controller, ProjectRepository, toaster, CONFIG, DeploymentRepository, $location, PresetRepository, SettingsRepository, UtilityService, MarkerService) {
+    function DeployController($scope, $controller, ProjectRepository, toaster, CONFIG, DeploymentRepository, $location, PresetRepository, SettingsRepository, UtilityService, MarkerService, PresetService) {
 
         // Inherit from AbstractSingleProjectController
         angular.extend(this, $controller('AbstractSingleProjectController', {$scope: $scope}));
@@ -305,6 +309,10 @@
         $scope.finished = false;
         $scope.currentPreset = {};
         $scope.tags = [];
+        $scope.globalPreset = false;
+        $scope.showNewRepositoryOption = false;
+        $scope.repositoryOptions = [];
+        $scope.newRepositoryOption = {};
 
         // methods published to the view
         $scope.setCommitInCurrentPreset = setCommitInCurrentPreset;
@@ -313,12 +321,18 @@
         $scope.presetDisplay = presetDisplay;
         $scope.unsetLoadingKeyForGroup = unsetLoadingKeyForGroup;
         $scope.getDeployedTag = getDeployedTag;
+        $scope.addRepositoryOption = addRepositoryOption;
+        $scope.removeRepositoryOption = removeRepositoryOption;
 
         // internal methods
         this.addFailureFlashMessage = addFailureFlashMessage;
         this.getCurrentCommit = getCurrentCommit;
         this.setServersFromPresets = setServersFromPresets;
         this.setPreconfiguredServer = setPreconfiguredServer;
+        this.setRepositoryOptions = setRepositoryOptions;
+        this.normalizePresetAndUpdate = normalizePresetAndUpdate;
+        this.deploymentPath = '';
+        this.context = '';
 
         init();
 
@@ -416,9 +430,127 @@
          */
         function setCurrentPreset(preset) {
             $scope.currentPreset = preset;
+            self.deploymentPath = $scope.currentPreset.applications[0].options.deploymentPath;
+            self.context = $scope.currentPreset.applications[0].options.context;
+            $scope.globalPreset = PresetService.isPresetGlobal(preset);
+            self.setRepositoryOptions();
             if (angular.isDefined($scope.selectedCommit) && $scope.selectedCommit !== '') {
                 $scope.setCommitInCurrentPreset();
             }
+        }
+
+        /**
+         * Adds a repositoryOption to the project related section in the preset JSON
+         * If the passed title is not used yet.
+         *
+         * @param {object} repositoryOption
+         * @param {string} title
+         */
+        function addRepositoryOption (repositoryOption, title) {
+            var titleAlreadyUsed,
+                repoOption = {
+                deploymentPath: repositoryOption.deploymentPath,
+                context: repositoryOption.context,
+                title: title
+            };
+            if (angular.isUndefined($scope.currentPreset.applications[0].repositoryOptions)) {
+                $scope.currentPreset.applications[0].repositoryOptions = {};
+            }
+            if (angular.isUndefined($scope.currentPreset.applications[0].repositoryOptions[$scope.project.repositoryUrl])) {
+                $scope.currentPreset.applications[0].repositoryOptions[$scope.project.repositoryUrl] = [];
+            }
+            titleAlreadyUsed = $scope.currentPreset.applications[0].repositoryOptions[$scope.project.repositoryUrl].filter(function (element) {
+                return element.title === title;
+            });
+            if (titleAlreadyUsed.length) {
+                toaster.pop(
+                    'error',
+                    'Error',
+                    'Title already in use. Please choose another one.'
+                );
+            } else {
+                $scope.currentPreset.applications[0].repositoryOptions[$scope.project.repositoryUrl].push(repoOption);
+                self.normalizePresetAndUpdate();
+            }
+        }
+
+        /**
+         * This method normalizes the preset on behalf of the addition or removal
+         * of a repository option. We only want to add or remove a item of the
+         * corresponding array, so we clone the current preset and simulate every
+         * other property to not have been changed. So we have a clean diff.
+         *
+         * @return {void}
+         */
+        function normalizePresetAndUpdate() {
+            // we clone the current preset to normalize it before sending it to update the JSON.
+            var preset = angular.copy($scope.currentPreset);
+            $scope.finished = false;
+            preset.applications[0].options.deploymentPath = self.deploymentPath;
+            preset.applications[0].options.context = self.context;
+            delete preset.applications[0].options.tag;
+            delete preset.applications[0].options.branch;
+            delete preset.applications[0].options.sha1;
+            PresetRepository.updateServer(preset.applications[0]).then(
+                function () {
+                    $scope.finished = true;
+                    toaster.pop(
+                        'success',
+                        'Success',
+                        'Repository Options successfully updated.'
+                    );
+                    self.setRepositoryOptions();
+                },
+                function () {
+                    $scope.finished = true;
+                    toaster.pop(
+                        'error',
+                        'Error',
+                        'The API call failed. Repository Options could not be updated.'
+                    );
+                }
+            );
+        }
+
+        /**
+         * For better handling in the view we store the repository options
+         * of the current preset in a property of the scope if any are found.
+         * This method is called each time a server is selected for deployment.
+         *
+         * @see setCurrentPreset
+         * @return {void}
+         */
+        function setRepositoryOptions() {
+            var property,
+                repositoryOptions;
+            $scope.repositoryOptions = [];
+            if ($scope.globalPreset) {
+                if (angular.isDefined($scope.currentPreset.applications[0].repositoryOptions)) {
+                    repositoryOptions = $scope.currentPreset.applications[0].repositoryOptions;
+                    for (property in repositoryOptions) {
+                        if (property === $scope.project.repositoryUrl) {
+                            $scope.repositoryOptions = repositoryOptions[property];
+                        }
+                    }
+                }
+            }
+        }
+
+        /**
+         * This method removes the passed repository option from the current preset
+         * and triggers the normalization and update afterwards.
+         *
+         * @param {object} repositoryOption
+         * @return {void}
+         */
+        function removeRepositoryOption(repositoryOption) {
+            var remainingRepositoryOption,
+                title = repositoryOption.title;
+            remainingRepositoryOption = $scope.currentPreset.applications[0].repositoryOptions[$scope.project.repositoryUrl].filter(function (element) {
+                return element.title !== title;
+            });
+            $scope.currentPreset.applications[0].repositoryOptions[$scope.project.repositoryUrl] = remainingRepositoryOption;
+            self.normalizePresetAndUpdate();
         }
 
         /**
@@ -591,7 +723,7 @@
             );
         });
     }
-    DeployController.$inject = ['$scope', '$controller', 'ProjectRepository', 'toaster', 'CONFIG', 'DeploymentRepository', '$location', 'PresetRepository', 'SettingsRepository', 'UtilityService', 'MarkerService'];
+    DeployController.$inject = ['$scope', '$controller', 'ProjectRepository', 'toaster', 'CONFIG', 'DeploymentRepository', '$location', 'PresetRepository', 'SettingsRepository', 'UtilityService', 'MarkerService', 'PresetService'];
 }());
 /* global angular */
 
@@ -1217,6 +1349,36 @@
         });
     }
     ServerController.$inject = ['$scope', '$controller', 'PresetRepository', 'ValidationService', 'SettingsRepository', 'MarkerService', 'PresetService', 'toaster', 'ProjectRepository'];
+}());
+/* global angular */
+(function () {
+    'use strict';
+    angular
+        .module('surfCaptain')
+        .controller('SettingsController', SettingsController);
+
+    /* @ngInject */
+    function SettingsController($scope, SettingsRepository, toaster) {
+
+        activate();
+
+        function activate() {
+            SettingsRepository.getSettings().then(
+                function (response) {
+                    $scope.settings = response;
+                    console.log(response);
+                },
+                function () {
+                    toaster.pop(
+                        'error',
+                        'Error!',
+                        'Something went wrong'
+                    );
+                }
+            );
+        }
+    }
+    SettingsController.$inject = ['$scope', 'SettingsRepository', 'toaster'];
 }());
 /* global angular */
 
@@ -2953,6 +3115,23 @@
                 }
             }
             return 'unknown-context';
+        };
+
+        /**
+         * @param {object} preset
+         * @returns {boolean}
+         */
+        this.isPresetGlobal = function (preset) {
+            if (angular.isUndefined(preset.applications) || !angular.isArray(preset.applications)) {
+                return false;
+            }
+            if (preset.applications.length === 0) {
+                return false;
+            }
+            if (angular.isUndefined(preset.applications[0].options)) {
+                return false;
+            }
+            return angular.isUndefined(preset.applications[0].options.repositoryUrl) || preset.applications[0].options.repositoryUrl === '';
         };
     }
     PresetService.$inject = ['SettingsRepository', 'ValidationService'];

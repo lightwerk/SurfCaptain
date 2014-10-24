@@ -2,15 +2,32 @@
 
 describe('DeployController', function () {
     'use strict';
-    var ctrl, scope, toaster, preset, commit, DeploymentRepository, ProjectRepository, $location, CONFIG, q, presets, UtilityService, MarkerService;
+    var ctrl, scope, toaster, preset, commit, DeploymentRepository, ProjectRepository, $location, CONFIG, q, presets, UtilityService, MarkerService, PresetService, repositoryOption, PresetRepository, $http;
 
     beforeEach(module('surfCaptain'));
 
-    beforeEach(inject(function ($controller, $rootScope, _toaster_, _DeploymentRepository_, _ProjectRepository_, _CONFIG_, _UtilityService_, $q) {
+    beforeEach(inject(function ($controller, $rootScope, _toaster_, _DeploymentRepository_, _CONFIG_, _UtilityService_, $q) {
         scope = $rootScope.$new();
         toaster = _toaster_;
         DeploymentRepository = _DeploymentRepository_;
-        ProjectRepository = _ProjectRepository_;
+        ProjectRepository = {
+            getFullProjectByRepositoryUrl: function () {
+                return true;
+            },
+            getProjects: function () {
+                return true;
+            }
+        };
+        PresetService = {
+            isPresetGlobal: function () {
+                return true;
+            }
+        };
+        PresetRepository = {
+            updateServer: function (server) {
+                return $q.when();
+            }
+        };
         $location = {
             path: function (path) {
                 return path;
@@ -38,7 +55,9 @@ describe('DeployController', function () {
             $location: $location,
             CONFIG: CONFIG,
             UtilityService: UtilityService,
-            MarkerService: MarkerService
+            MarkerService: MarkerService,
+            PresetService: PresetService,
+            PresetRepository: PresetRepository
         });
     }));
 
@@ -118,6 +137,15 @@ describe('DeployController', function () {
         });
         it('should initialize $scope.tags as empty.', function () {
             expect(scope.tags.length).toEqual(0);
+        });
+        it('should initialize $scope.globalPreset as false', function () {
+            expect(scope.globalPreset).toBeFalsy();
+        });
+        it('should initialize $scope.repositoryOptions as Array.', function () {
+            expect(angular.isArray(scope.repositoryOptions)).toBeTruthy();
+        });
+        it('should initialize $scope.repositoryOptions as empty.', function () {
+            expect(scope.repositoryOptions.length).toEqual(0);
         });
     });
 
@@ -246,9 +274,101 @@ describe('DeployController', function () {
         });
     });
 
+    describe('->normalizePresetAndUpdate()', function () {
+
+        it('should be defined.', function () {
+            expect(ctrl.normalizePresetAndUpdate).toBeDefined();
+        });
+
+        describe('with successfull request', function  () {
+            beforeEach(inject(function (_$httpBackend_) {
+                $http = _$httpBackend_;
+                scope.currentPreset = preset;
+                ctrl.deploymentPath = 'foo/bar/';
+                ctrl.context = 'Foo';
+                spyOn(PresetRepository, 'updateServer').andCallThrough();
+                spyOn(toaster, 'pop');
+                // The call of the extended controller cant be prevented by a spy ...
+                $http.whenGET('/api/repository').respond({ project: {name: 'foo'} });
+            }));
+
+            it('should remove unneeded properties and set deploymentPath and context to default values.', function () {
+                var expectedPreset = {
+                    'applications': [
+                        {
+                            'options': {
+                                'repositoryUrl': 'git@git.example.com:project/foo.git',
+                                'deploymentPath': 'foo/bar/',
+                                'context': 'Foo'
+                            },
+                            'nodes': [
+                                {
+                                    'name': 'foo-staging',
+                                    'hostname': '127.0.0.1',
+                                    'username': 'foobar'
+                                }
+                            ],
+                            'type': 'TYPO3\\CMS\\Deploy'
+                        }
+                    ]
+                };
+                ctrl.normalizePresetAndUpdate();
+                expect(PresetRepository.updateServer).toHaveBeenCalledWith(expectedPreset.applications[0]);
+            });
+
+            it('should call pop on toaster after request is resolved.', function () {
+                ctrl.normalizePresetAndUpdate();
+                scope.$digest();
+                expect(toaster.pop).toHaveBeenCalled();
+            });
+
+            it('should set $scope.finished to true.', function () {
+                ctrl.normalizePresetAndUpdate();
+                scope.$digest();
+                expect(scope.finished).toBeTruthy();
+            });
+        });
+
+    });
+
+    describe('->setRepositoryOptions()', function () {
+
+        it('should be defined.', function () {
+            expect(ctrl.setRepositoryOptions).toBeDefined();
+        });
+
+        it('should set $scope.repositoryOptions to an empty array if current preset is no global server.', function () {
+            scope.globalPreset = false;
+            ctrl.setRepositoryOptions();
+            expect(scope.repositoryOptions).toEqual([]);
+        });
+
+        it('should set $scope.repositoryOptions to an empty array if current preset has no repository options for the projects repositoryUrl.', function () {
+            scope.globalPreset = true;
+            scope.currentPreset = preset;
+            scope.project = {repositoryUrl: 'foo'};
+            ctrl.setRepositoryOptions();
+            expect(scope.repositoryOptions).toEqual([]);
+        });
+
+        it('should set $scope.repositoryOptions to matching repository options if current preset has repository options for the projects repositoryUrl.', function () {
+            var repositoryOptions = [
+                {context: 'Foo', title: 'fooBar'},
+                {context: 'Bar', title: 'barBaz'}
+            ];
+            scope.globalPreset = true;
+            scope.currentPreset = preset;
+            scope.currentPreset.applications[0].repositoryOptions = {foo: repositoryOptions};
+            scope.project = {repositoryUrl: 'foo'};
+            ctrl.setRepositoryOptions();
+            expect(scope.repositoryOptions).toEqual(repositoryOptions);
+        });
+    });
+
     describe('$scope.setCurrentPreset()', function () {
         beforeEach(function () {
             spyOn(scope, 'setCommitInCurrentPreset');
+            spyOn(PresetService, 'isPresetGlobal').andCallThrough();
         });
         it('should be defined.', function () {
             expect(scope.setCurrentPreset).toBeDefined();
@@ -256,6 +376,18 @@ describe('DeployController', function () {
         it('should set $scope.currentPreset to the passed object.', function () {
             scope.setCurrentPreset(preset);
             expect(scope.currentPreset).toEqual(preset);
+        });
+        it('should call PresetService.isPresetGlobal.', function () {
+            scope.setCurrentPreset(preset);
+            expect(PresetService.isPresetGlobal).toHaveBeenCalled();
+        });
+        it('should call PresetService.isPresetGlobal with passed preset.', function () {
+            scope.setCurrentPreset(preset);
+            expect(PresetService.isPresetGlobal).toHaveBeenCalledWith(preset);
+        });
+        it('should set $scope.globalPreset to return value of PresetService.isPresetGlobal.', function () {
+            scope.setCurrentPreset(preset);
+            expect(scope.globalPreset).toBeTruthy();
         });
         it('should not call scope.setCommitInCurrentPreset() if $scope.selectedCommit is undefined.', function () {
             scope.selectedCommit = undefined;
@@ -495,6 +627,101 @@ describe('DeployController', function () {
         it('should pass argument and $scope.tags to UtilityService.getDeployedTag.', function () {
             scope.getDeployedTag('foo');
             expect(UtilityService.getDeployedTag).toHaveBeenCalledWith('foo', scope.tags);
+        });
+    });
+
+    describe('$scope.addRepositoryOption', function () {
+
+        beforeEach(function () {
+            repositoryOption = {
+                deploymentPath: 'bar',
+                context: 'barBaz',
+                title: 'foo'
+            };
+            scope.project = {
+                repositoryUrl: 'fooUrl'
+            };
+            spyOn(ctrl, 'normalizePresetAndUpdate');
+        });
+
+        it('should be defined.', function () {
+            expect(scope.addRepositoryOption).toBeDefined();
+        });
+
+        describe('called with unique title', function () {
+            beforeEach(function () {
+                scope.currentPreset = preset;
+                scope.addRepositoryOption(repositoryOption, 'foo');
+            });
+
+            it('should create a repositoryOptions property with the projects repositoryUrl.', function () {
+                expect(scope.currentPreset.applications[0].repositoryOptions[scope.project.repositoryUrl]).toBeDefined();
+            });
+
+            it('should initialize the a repositoryOptions property with the projects repositoryUrl as array.', function () {
+                expect(angular.isArray(scope.currentPreset.applications[0].repositoryOptions[scope.project.repositoryUrl])).toBeTruthy();
+            });
+
+            it('should add the repositoryOption to the current preset if no repository option ist set yet.', function () {
+                expect(scope.currentPreset.applications[0].repositoryOptions.fooUrl[0]).toEqual(repositoryOption);
+            });
+
+            it('should call normalizePresetAndUpdate on controller if repositoryOption wasnt in array before.', function () {
+                expect(ctrl.normalizePresetAndUpdate).toHaveBeenCalled();
+            });
+        });
+
+        describe('called with already used title', function () {
+            beforeEach(function () {
+                preset.applications[0].repositoryOptions = {
+                    fooUrl: [
+                        {
+                            title: 'foo'
+                        }
+                    ]
+                };
+                scope.currentPreset = preset;
+                spyOn(toaster, 'pop');
+                scope.addRepositoryOption(repositoryOption, 'foo');
+            });
+
+            it('should not call normalizePresetAndUpdate on controller if repositoryOption wasnt in array before.', function () {
+                expect(ctrl.normalizePresetAndUpdate).not.toHaveBeenCalled();
+            });
+
+            it('should call pop on toaster if repositoryOption wasnt in array before.', function () {
+                expect(toaster.pop).toHaveBeenCalled();
+            });
+        });
+
+
+    });
+
+    describe('$scope.removeRepositoryOption', function () {
+
+        beforeEach(function () {
+            var repositoryOptions = [
+                {context: 'Foo', title: 'fooBar'},
+                {context: 'Bar', title: 'barBaz'}
+            ];
+            scope.currentPreset = preset;
+            scope.currentPreset.applications[0].repositoryOptions = {foo: repositoryOptions};
+            scope.project = {repositoryUrl: 'foo'};
+            spyOn(ctrl, 'normalizePresetAndUpdate');
+        });
+
+        it('should be defined.', function () {
+            expect(scope.removeRepositoryOption).toBeDefined();
+        });
+
+        it('should remove the repository option with matching title from current preset.', function () {
+            scope.removeRepositoryOption({context: 'Bar', title: 'barBaz'});
+            expect(scope.currentPreset.applications[0].repositoryOptions.foo).toEqual([{context: 'Foo', title: 'fooBar'}]);
+        });
+
+        it('should call normalizePresetAndUpdate on controller.', function () {
+            scope.removeRepositoryOption({context: 'Bar', title: 'barBaz'});
+            expect(ctrl.normalizePresetAndUpdate).toHaveBeenCalled();
         });
     });
 });

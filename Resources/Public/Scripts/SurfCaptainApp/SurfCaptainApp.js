@@ -6,7 +6,7 @@
         .module('surfCaptain', ['ngRoute', 'xeditable', 'ngAnimate', 'ngMessages', 'ngBiscuit', 'toaster'])
         .config(routeConfiguration)
         .config(toasterConfiguration)
-        .value('version', '1.0.8')
+        .value('version', '1.0.10')
         .constant('CONFIG', {
             applicationTypes: {
                 deploy: 'Deploy',
@@ -59,6 +59,10 @@
             when('/project/:projectName/deployment/:deploymentId', {
                 templateUrl: templatePath + 'SingleDeployment.html',
                 controller: 'SingleDeploymentController'
+            }).
+            when('/settings', {
+                templateUrl: templatePath + 'Settings.html',
+                controller: 'SettingsController'
             }).
             otherwise({
                 redirectTo: '/'

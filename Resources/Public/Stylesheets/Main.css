@@ -6280,6 +6280,20 @@ div.project-buttons .row {
   font-size: 90%;
   line-height: 50px;
 }
+.footer .btn-default {
+  background-color: #000000;
+  border-color: #444444;
+  color: #444444;
+  font-size: 26px;
+  line-height: 13px;
+  margin-left: 5px;
+  margin-right: 5px;
+  margin-top: 5px;
+  padding: 6px;
+}
+.footer .btn-default:hover {
+  color: #888888;
+}
 .flash-messages-container {
   position: fixed;
   width: 300px;
@@ -6640,6 +6654,49 @@ div.project-history .history {
 .project-deploy .configure-deployment-row .submit-deployment {
   margin-top: 30px;
 }
+.project-deploy .configure-deployment-row .repositoryOption {
+  width: 100%;
+  padding: 5px;
+  font-size: 80%;
+  height: 55px;
+  margin: 10px 0;
+  border: 1px dashed #888888;
+  border-radius: 5px;
+}
+.project-deploy .configure-deployment-row .repositoryOption .arrow-left {
+  font-size: 30px;
+  color: #99cccc;
+  padding-left: 10px;
+  cursor: pointer;
+}
+.project-deploy .configure-deployment-row .repositoryOption .repositoryOption-main {
+  padding-left: 15px;
+  width: 80%;
+}
+.project-deploy .configure-deployment-row .repositoryOption .repositoryOption-main .title {
+  font-weight: 600;
+  font-size: 16px;
+}
+.project-deploy .configure-deployment-row .repositoryOption .repositoryOption-delete {
+  font-size: 25px;
+  color: #d9534f;
+  padding: 0 15px;
+  cursor: pointer;
+}
+.project-deploy .configure-deployment-row .no-repositoryOptions {
+  font-style: italic;
+  font-size: 90%;
+}
+.project-deploy .configure-deployment-row .add-repository-option .btn {
+  float: left;
+  margin: 4px;
+  height: 35px;
+}
+.project-deploy .configure-deployment-row .add-repository-option input {
+  float: left;
+  margin: 4px;
+  width: 200px;
+}
 .deployment-server-container .deployment-server {
   border: solid 2px #000;
   box-shadow: 0px 0px 5px #000000;
@@ -6906,6 +6963,19 @@ div.project-history .history {
 .single-deployment-view h2 {
   text-align: center;
   margin-bottom: 30px;
+}
+.settings-view .dl-horizontal dt {
+  width: 220px;
+  padding: 10px;
+}
+.settings-view .dl-horizontal dd {
+  margin-left: 220px;
+  text-align: left;
+  border-left: 1px dashed #888888;
+  padding: 10px;
+}
+.settings-view .dl-horizontal dd p {
+  margin-bottom: 2px;
 }
 .surfcaptain-container {
   min-height: 100%;

@@ -84,6 +84,56 @@
 		.submit-deployment {
 			margin-top: 30px;
 		}
+
+		.repositoryOption {
+			width: 100%;
+			padding: 5px;
+			font-size: 80%;
+			height: 55px;
+			margin: 10px 0;
+			border: 1px dashed @main-color-bright;
+			border-radius: 5px;
+
+			.arrow-left {
+				font-size: 30px;
+				color: @brand-primary;
+				padding-left: 10px;
+				cursor: pointer;
+			}
+
+			.repositoryOption-main {
+				padding-left: 15px;
+				width: 80%;
+
+				.title {
+					font-weight: 600;
+					font-size: 16px;
+				}
+			}
+
+			.repositoryOption-delete {
+				font-size: 25px;
+				color: @brand-danger;
+				padding: 0 15px;
+				cursor: pointer;
+			}
+		}
+		.no-repositoryOptions {
+			font-style: italic;
+			font-size: 90%;
+		}
+		.add-repository-option {
+			.btn {
+				float: left;
+				margin: 4px;
+				height: 35px;
+			}
+			input {
+				float: left;
+				margin: 4px;
+				width: 200px;
+			}
+		}
 	}
 }
 

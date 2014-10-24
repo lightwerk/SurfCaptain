@@ -121,7 +121,7 @@
 		<div class="col-md-2 col-xs-12 text-center">
 			<h2>Step 3</h2>
 		</div>
-		<div class="col-md-10 col-xs-12">
+		<div class="col-md-4 col-xs-12">
 			<h3>Override if you must ...</h3>
 			<label>Override DeploymentPath</label>
 			<span editable-text="currentPreset.applications[0].options.deploymentPath"
@@ -137,6 +137,51 @@
 			>
 				{{currentPreset.applications[0].options.context}}
 			</span>
+			<br />
+			<div data-ng-if="globalPreset" class="add-repository-option">
+				<button
+						class="btn btn-primary btn-sm"
+						data-ng-click="showNewRepositoryOption = !showNewRepositoryOption"
+						>
+					<i class="fa fa-plus"></i> add
+				</button>
+
+				<input
+						class="form-control"
+						data-ng-model="repositoryOptionTitle"
+						data-ng-show="showNewRepositoryOption"
+						placeholder="Title"
+						data-ng-init="repositoryOptionTitle = ''"
+						/>
+
+				<button
+						class="btn btn-sm btn-success"
+						data-ng-click="addRepositoryOption(currentPreset.applications[0].options, repositoryOptionTitle); showNewRepositoryOption = false"
+						data-ng-show="showNewRepositoryOption"
+						data-ng-disabled="repositoryOptionTitle === ''"
+						>
+					<i class="fa fa-save"></i> Save
+				</button>
+			</div>
+		</div>
+		<div class="col-md-6 col-xs-12" data-ng-if="globalPreset">
+			<h3>Repository Options</h3>
+			<div
+				data-ng-repeat="repositoryOption in repositoryOptions"
+				class="repositoryOption"
+			>
+				<div class="pull-left arrow-left" data-ng-click="currentPreset.applications[0].options.deploymentPath = repositoryOption.deploymentPath; currentPreset.applications[0].options.context = repositoryOption.context">
+					<i class="fa fa-arrow-circle-left"></i>
+				</div>
+				<div class="pull-left repositoryOption-main">
+					<span class="title">{{repositoryOption.title}}</span> <span class="context pull-right">({{repositoryOption.context}})</span><br />
+					<span>{{repositoryOption.deploymentPath}}</span>
+				</div>
+				<div class="pull-right repositoryOption-delete" data-ng-click="removeRepositoryOption(repositoryOption)">
+					<i class="fa fa-trash"></i>
+				</div>
+			</div>
+			<p class="no-repositoryOptions" data-ng-if="repositoryOptions.length === 0">No Repository Options yet. You can save a set of DeploymentPath and Context for later usage.</p>
 		</div>
 	</div>
 
