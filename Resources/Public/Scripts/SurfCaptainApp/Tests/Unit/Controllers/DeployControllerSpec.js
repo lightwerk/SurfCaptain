@@ -24,7 +24,7 @@ describe('DeployController', function () {
             }
         };
         PresetRepository = {
-            updateServer: function (server) {
+            updateServer: function () {
                 return $q.when();
             }
         };
