@@ -64,11 +64,11 @@
 									data-ng-class="[presetDisplay(server), getRootContext(server.applications[0].options.context)]"
 									data-ng-click="setCurrentPreset(server)"
 								>
+									<div class="pull-right">
+										<div class="context">({{server.applications[0].options.context}})</div>
+									</div>
 									<div class="title">
 										<i class="fa fa-hdd-o"></i>{{server.applications[0].nodes[0].name}}
-									</div>
-									<div class="context-container">
-										<span class="context">({{server.applications[0].options.context}})</span>
 									</div>
 								</div>
 							</div>
