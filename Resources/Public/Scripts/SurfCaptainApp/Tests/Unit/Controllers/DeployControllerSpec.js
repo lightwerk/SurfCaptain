@@ -724,4 +724,21 @@ describe('DeployController', function () {
             expect(ctrl.normalizePresetAndUpdate).toHaveBeenCalled();
         });
     });
+
+    describe('->selectBranchByName()', function () {
+
+        it('should be defined.', function () {
+            expect(ctrl.selectBranchByName).toBeDefined();
+        });
+
+        it('should leave $scope.selectedCommit undefined if branch name was not passed within array.', function () {
+            ctrl.selectBranchByName('master', []);
+            expect(scope.selectedCommit).toBeUndefined();
+        });
+
+        it('should set $scope.selectedCommit to corresponding identifier if name was found in passed array.', function () {
+            ctrl.selectBranchByName('master', [{name: 'master', identifier: 'fooBarFoo'}]);
+            expect(scope.selectedCommit).toEqual('fooBarFoo');
+        });
+    });
 });

@@ -53,6 +53,7 @@
         this.setPreconfiguredServer = setPreconfiguredServer;
         this.setRepositoryOptions = setRepositoryOptions;
         this.normalizePresetAndUpdate = normalizePresetAndUpdate;
+        this.selectBranchByName = selectBranchByName;
         this.deploymentPath = '';
         this.context = '';
 
@@ -235,6 +236,20 @@
         }
 
         /**
+         * @param {string} name
+         * @param {Array} branches
+         * @return void
+         */
+        function selectBranchByName(name, branches) {
+            for (var i = 0; i < branches.length; i++) {
+                if (angular.isDefined(branches[i].name) && branches[i].name === name) {
+                    $scope.selectedCommit = branches[i].identifier;
+                    return;
+                }
+            }
+        }
+
+        /**
          * For better handling in the view we store the repository options
          * of the current preset in a property of the scope if any are found.
          * This method is called each time a server is selected for deployment.
@@ -404,6 +419,9 @@
                     $scope.repositoryUrl = response.repository.webUrl;
                     response.repository.tags.sort(UtilityService.byCommitDate);
                     response.repository.branches.sort(UtilityService.byCommitDate);
+
+                    self.selectBranchByName('master', response.repository.branches);
+
                     $scope.tags = response.repository.tags;
                     $scope.deployableCommits = response.repository.tags;
                     jQuery.merge($scope.deployableCommits, response.repository.branches);
