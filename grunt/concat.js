@@ -18,7 +18,7 @@ module.exports = {
     libs: {
         src: [
             'Resources/Public/Components/jquery/dist/jquery.js',
-            'Resources/Public/Components/chosen-build/chosen.jquery.js',
+            'Resources/Public/Components/chosen/chosen.jquery.js',
             'Resources/Public/Components/bootstrap/js/tooltip.js',
             'Resources/Public/Components/bootstrap/js/modal.js',
             'Resources/Public/Components/bootstrap/js/tab.js',

@@ -49,9 +49,36 @@
 @import "../Components/bootstrap/less/utilities.less";
 @import "../Components/bootstrap/less/responsive-utilities.less";
 
+// Font Awesome
+@import "../Components/components-font-awesome/less/variables.less";
+@import "../Components/components-font-awesome/less/mixins.less";
+
+// Overwrite the fontAwesome Path so the fonts from ..fonts are actually used.
+//@import "../Components/components-font-awesome/less/path.less";
+@font-face {
+	font-family: 'FontAwesome';
+	src: url('@{fa-font-path}/fontawesome-webfont.eot?v=@{fa-version}');
+	src: url('@{fa-font-path}/fontawesome-webfont.eot?#iefix&v=@{fa-version}') format('embedded-opentype'),
+	url('@{fa-font-path}/fontawesome-webfont.woff?v=@{fa-version}') format('woff'),
+	url('@{fa-font-path}/fontawesome-webfont.ttf?v=@{fa-version}') format('truetype'),
+	url('@{fa-font-path}/fontawesome-webfont.svg?v=@{fa-version}#fontawesomeregular') format('svg');
+	//  src: url('@{fa-font-path}/FontAwesome.otf') format('opentype'); // used when developing fonts
+	font-weight: normal;
+	font-style: normal;
+}
+
+@import "../Components/components-font-awesome/less/core.less";
+@import "../Components/components-font-awesome/less/larger.less";
+@import "../Components/components-font-awesome/less/fixed-width.less";
+@import "../Components/components-font-awesome/less/list.less";
+@import "../Components/components-font-awesome/less/bordered-pulled.less";
+@import "../Components/components-font-awesome/less/spinning.less";
+@import "../Components/components-font-awesome/less/rotated-flipped.less";
+@import "../Components/components-font-awesome/less/stacked.less";
+@import "../Components/components-font-awesome/less/icons.less";
+
 // SurfCaptain classes
-@import "../Components/components-font-awesome/less/font-awesome.less";
-@import (less) "../Components/chosen-build/chosen.css";
+@import (less) "../Components/chosen/chosen.css";
 @import (less) "../Components/angular-xeditable/dist/css/xeditable.css";
 @import (less) "../Components/AngularJS-Toaster/toaster.css";
 @import "SurfCaptain.less";

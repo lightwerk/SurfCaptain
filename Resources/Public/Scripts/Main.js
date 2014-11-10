@@ -6,7 +6,7 @@
         .module('surfCaptain', ['ngRoute', 'xeditable', 'ngAnimate', 'ngMessages', 'ngBiscuit', 'toaster'])
         .config(routeConfiguration)
         .config(toasterConfiguration)
-        .value('version', '1.0.10')
+        .value('version', '1.0.11')
         .constant('CONFIG', {
             applicationTypes: {
                 deploy: 'Deploy',
@@ -331,6 +331,7 @@
         this.setPreconfiguredServer = setPreconfiguredServer;
         this.setRepositoryOptions = setRepositoryOptions;
         this.normalizePresetAndUpdate = normalizePresetAndUpdate;
+        this.selectBranchByName = selectBranchByName;
         this.deploymentPath = '';
         this.context = '';
 
@@ -513,6 +514,20 @@
         }
 
         /**
+         * @param {string} name
+         * @param {Array} branches
+         * @return void
+         */
+        function selectBranchByName(name, branches) {
+            for (var i = 0; i < branches.length; i++) {
+                if (angular.isDefined(branches[i].name) && branches[i].name === name) {
+                    $scope.selectedCommit = branches[i].identifier;
+                    return;
+                }
+            }
+        }
+
+        /**
          * For better handling in the view we store the repository options
          * of the current preset in a property of the scope if any are found.
          * This method is called each time a server is selected for deployment.
@@ -682,6 +697,9 @@
                     $scope.repositoryUrl = response.repository.webUrl;
                     response.repository.tags.sort(UtilityService.byCommitDate);
                     response.repository.branches.sort(UtilityService.byCommitDate);
+
+                    self.selectBranchByName('master', response.repository.branches);
+
                     $scope.tags = response.repository.tags;
                     $scope.deployableCommits = response.repository.tags;
                     jQuery.merge($scope.deployableCommits, response.repository.branches);
@@ -3145,33 +3163,43 @@
         .service('UtilityService', UtilityService);
 
     /* @ngInject */
-    function UtilityService() {
+    function UtilityService($filter) {
 
         /**
+         * Searches within an Array of commits for a commit with a certain name
+         * to return information about the commit, containing
+         *   * Whether it was a Tag, a Branch or a standalone commit (sha1)
+         *   * Name of the committer
+         *   * Commit message
          *
          * @param {string} name
-         * @param {array} tags
+         * @param {Array} commits
          * @returns {string}
          */
-        this.getDeployedTag = function (name, tags) {
-            var length = tags.length,
+        this.getDeployedTag = function (name, commits) {
+            var length = commits.length,
                 i = 0,
                 commit;
+            // Search for a commit named after the server
             for (i; i < length; i++) {
-                if (tags[i].name === 'server-' + name) {
-                    commit = tags[i].commit;
+                if (commits[i].name === 'server-' + name) {
+                    commit = commits[i].commit;
+                    break;
                 }
             }
+            // If non was found we cant tell whats currently deployed
             if (angular.isUndefined(commit)) {
-                return 'No deployed tag found.';
+                return 'No deployed commit found.';
             }
-            i = 0;
-            for (i; i < length; i++) {
-                if (tags[i].commit.id === commit.id && tags[i].name !== 'server-' + name) {
-                    return tags[i].type + ' ' + tags[i].name + ' - ' + commit.committerName + ': "' + commit.message + '"';
+            // If there was a commit found, we look if it matches a specific tag or branch and return the information
+            for (i = 0; i < length; i++) {
+                if (commits[i].commit.id === commit.id && commits[i].name !== 'server-' + name) {
+                    return commits[i].type + ' ' + commits[i].name + ' - ' + commit.committerName + ': "' + commit.message + '"';
                 }
             }
-            return commit.id + ' - ' + commit.committerName + ': "' + commit.message + '"';
+            // If no tag or branch matched the commit, we can at least
+            // return the sha1 of the commit along with the information
+            return 'sha1: ' + $filter('limitTo')(commit.id, 8) + ' - ' + commit.committerName + ': "' + commit.message + '"';
         };
 
         /**
@@ -3184,12 +3212,20 @@
          * @returns {number}
          */
         this.byCommitDate = function (a, b) {
+            if (angular.isUndefined(a.commit) ||
+                angular.isUndefined(b.commit) ||
+                angular.isUndefined(a.commit.date) ||
+                angular.isUndefined(b.commit.date)
+            ) {
+                return -1;
+            }
             if (a.commit.date < b.commit.date) {
                 return 1;
             }
             return -1;
         };
     }
+    UtilityService.$inject = ['$filter'];
 }());
 
 /* global angular */

@@ -136,7 +136,6 @@ describe('ProjectRepository', function () {
             var expectation = {name: 'bar'},
                 result;
             cacheFactory.get('repositoryCache').put('repositoryUrl', expectation);
-            $http.expectGET(url + '?repositoryUrl=repositoryUrl');
             projectRepository.getFullProjectByRepositoryUrl('repositoryUrl').then(
                 function (response) {
                     result = response;
