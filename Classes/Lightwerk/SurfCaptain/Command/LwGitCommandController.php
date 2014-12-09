@@ -24,6 +24,7 @@ class LwGitCommandController extends BrowserCommandController {
 		'/projects/209',
 		'/projects/209/repository/branches',
 		'/projects/209/repository/tags',
+		'/groups/5',
 	);
 
 	/**
