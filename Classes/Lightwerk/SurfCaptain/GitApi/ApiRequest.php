@@ -7,7 +7,6 @@ namespace Lightwerk\SurfCaptain\GitApi;
  *                                                                        */
 
 use TYPO3\Flow\Annotations as Flow;
-use TYPO3\Flow\Http\Response;
 
 class ApiRequest implements ApiRequestInterface {
 
@@ -39,6 +38,11 @@ class ApiRequest implements ApiRequestInterface {
 	protected $apiUrl;
 
 	/**
+	 * @var string
+	 */
+	protected $fallbackApiUrl;
+
+	/**
 	 * @return void
 	 */
 	public function initializeObject() {
@@ -64,9 +68,18 @@ class ApiRequest implements ApiRequestInterface {
 	}
 
 	/**
+	 * @param string $fallbackApiUrl
+	 * @return void
+	 */
+	public function setFallbackApiUrl($fallbackApiUrl) {
+		$this->fallbackApiUrl = $fallbackApiUrl;
+	}
+
+	/**
 	 * @param string $command
 	 * @param string $method
 	 * @param array $parameters
+	 * @param array $content
 	 * @return mixed $data
 	 * @throws Exception
 	 * @throws \TYPO3\Flow\Http\Exception
@@ -91,16 +104,36 @@ class ApiRequest implements ApiRequestInterface {
 		}
 		return $content;
 	}
-	
+
+	/**
+	 * @param string $command
+	 * @param string $method
+	 * @param array $parameters
+	 * @param array $content
+	 * @return mixed $data
+	 * @throws Exception
+	 * @throws \TYPO3\Flow\Http\Exception
+	 */
+	public function callFallback($command, $method = 'GET', array $parameters = array(), array $content = array()) {
+		if (empty($this->fallbackApiUrl)) {
+			throw new Exception('No Fallback API Url was configured.', 1408987296);
+		}
+		$apiUrl = $this->apiUrl;
+		$this->setApiUrl($this->fallbackApiUrl);
+		$contentToReturn = $this->call($command, $method, $parameters, $content);
+		$this->setApiUrl($apiUrl);
+		return $contentToReturn;
+	}
+
 	/**
 	 * @param string $url
 	 * @param string $method
-	 * @param Response $response
+	 * @param mixed $response
 	 * @return void
 	 * @Flow\Signal
 	 */
-	protected function emitApiCall($url, $method, Response $response) {}
-	
+	protected function emitApiCall($url, $method, $response) {}
+
 	/**
 	 * @param string $url
 	 * @param string $method
