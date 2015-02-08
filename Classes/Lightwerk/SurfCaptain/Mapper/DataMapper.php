@@ -29,8 +29,8 @@ class DataMapper {
 		if (preg_match('/^(.+)\[\]$/', $objectClass, $matches)) {
 			$objectClass = $matches[1];
 			$objects = array();
-			foreach ($objectData as $objectRow) {
-				$objects[] = $this->mapOneToObject($objectRow, $objectClass, $settings);
+			foreach ($objectData as $key => $objectRow) {
+				$objects[] = $this->mapOneToObject($objectRow, $objectClass, $settings, $key);
 			}
 			return $objects;
 		}
@@ -41,10 +41,11 @@ class DataMapper {
 	 * @param array $objectData
 	 * @param string $objectClass
 	 * @param array $settings
+	 * @param string $key
 	 * @return object
 	 * @throws Exception
 	 */
-	protected function mapOneToObject($objectData, $objectClass, $settings) {
+	protected function mapOneToObject($objectData, $objectClass, $settings, $key = '') {
 		if (!is_array($objectData)) {
 			throw new Exception('Object mapping is not possible with given unexpected data for ObjectClass ' . $objectClass . ': ' . json_encode($objectData), 1408468371);
 		}
@@ -54,7 +55,7 @@ class DataMapper {
 		$object = new $objectClass();
 		$properties = ObjectAccess::getSettablePropertyNames($object);
 		foreach ($properties as $property) {
-			$value = $this->getPropertyValue($object, $property, $objectData, $settings);
+			$value = $this->getPropertyValue($object, $property, $objectData, $settings, $key);
 			if (isset($value)) {
 				$setterName = ObjectAccess::buildSetterMethodName($property);
 				$object->$setterName($value);
@@ -68,18 +69,32 @@ class DataMapper {
 	 * @param string $property
 	 * @param array $objectData
 	 * @param array $settings
+	 * @param string $key
 	 * @return mixed
 	 */
-	protected function getPropertyValue($object, $property, $objectData, $settings) {
+	protected function getPropertyValue($object, $property, $objectData, $settings, $key) {
 		$value = NULL;
 
 		// Value is configured by settings
 		$modelName = $this->getModelName($object);
 		if (isset($settings[$modelName][$property])) {
-			$value = MarkerUtility::replaceVariablesInValue(
-				$settings[$modelName][$property],
-				$objectData
-			);
+			if ($settings[$modelName][$property] === '{{_KEY_}}') {
+				return $key;
+			}
+			if (is_array($settings[$modelName][$property])) {
+				$value = array();
+				foreach ($settings[$modelName][$property] as $key => $marker) {
+					$value[$key] = MarkerUtility::replaceVariablesInValue(
+						$marker,
+						$objectData
+					);
+				}
+			} else {
+				$value = MarkerUtility::replaceVariablesInValue(
+					$settings[$modelName][$property],
+					$objectData
+				);
+			}
 		}
 		// Name is in convention. Map it automatically
 		else {
