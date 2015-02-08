@@ -61,13 +61,4 @@ class OauthApiRequest extends ApiRequest {
 		}
 		return $content;
 	}
-
-	/**
-	 * @param string $url
-	 * @param string $method
-	 * @param mixed $response
-	 * @return void
-	 * @Flow\Signal
-	 */
-	protected function emitApiCall($url, $method, $response) {}
 }
