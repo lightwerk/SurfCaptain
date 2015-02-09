@@ -38,11 +38,6 @@ class ApiRequest implements ApiRequestInterface {
 	protected $apiUrl;
 
 	/**
-	 * @var string
-	 */
-	protected $fallbackApiUrl;
-
-	/**
 	 * @return void
 	 */
 	public function initializeObject() {
@@ -65,14 +60,6 @@ class ApiRequest implements ApiRequestInterface {
 	 */
 	public function setApiUrl($apiUrl) {
 		$this->apiUrl = $apiUrl;
-	}
-
-	/**
-	 * @param string $fallbackApiUrl
-	 * @return void
-	 */
-	public function setFallbackApiUrl($fallbackApiUrl) {
-		$this->fallbackApiUrl = $fallbackApiUrl;
 	}
 
 	/**
@@ -103,26 +90,6 @@ class ApiRequest implements ApiRequestInterface {
 			throw new Exception('Response from ApiRequest is not a valid json', 1408987294);
 		}
 		return $content;
-	}
-
-	/**
-	 * @param string $command
-	 * @param string $method
-	 * @param array $parameters
-	 * @param array $content
-	 * @return mixed $data
-	 * @throws Exception
-	 * @throws \TYPO3\Flow\Http\Exception
-	 */
-	public function callFallback($command, $method = 'GET', array $parameters = array(), array $content = array()) {
-		if (empty($this->fallbackApiUrl)) {
-			throw new Exception('No Fallback API Url was configured.', 1408987296);
-		}
-		$apiUrl = $this->apiUrl;
-		$this->setApiUrl($this->fallbackApiUrl);
-		$contentToReturn = $this->call($command, $method, $parameters, $content);
-		$this->setApiUrl($apiUrl);
-		return $contentToReturn;
 	}
 
 	/**

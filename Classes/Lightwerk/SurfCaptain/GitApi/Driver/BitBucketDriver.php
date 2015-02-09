@@ -8,7 +8,6 @@ namespace Lightwerk\SurfCaptain\GitApi\Driver;
 
 use Lightwerk\SurfCaptain\Domain\Model\Repository;
 use TYPO3\Flow\Annotations as Flow;
-use TYPO3\Flow\Error\Debugger;
 
 /**
  * GitLab Driver
@@ -24,11 +23,8 @@ class BitBucketDriver extends AbstractDriver {
 	public function setSettings(array $settings) {
 		$this->settings = $settings;
 		$this->apiRequest = $this->objectManager->get('Lightwerk\SurfCaptain\GitApi\ApiRequestInterface');
-		$this->apiRequest->setApiUrl($settings['apiUrl']);
-		$this->apiRequest->setFallbackApiUrl($settings['fallbackApiUrl']);
 		$this->apiRequest->setOAuthClient($settings['privateToken'], $settings['privateSecret'], $settings['accessToken'], $settings['accessSecret']);
 	}
-
 
 	/**
 	 * @param string $repositoryUrl
@@ -44,6 +40,7 @@ class BitBucketDriver extends AbstractDriver {
 	public function getRepositories() {
 		$repositories = array();
 		foreach ($this->settings['repositories'] as $command) {
+			$this->apiRequest->setApiUrl($this->settings['apiUrl']);
 			$response = $this->apiRequest->call($command);
 			$projects = $response['values'];
 			$repositories = array_merge(
@@ -69,7 +66,8 @@ class BitBucketDriver extends AbstractDriver {
 		$name = $this->getRepositoryName($repositoryUrl);
 		$name = urlencode($name);
 		$command = 'repositories/' . $this->settings['accountName'] . '/' . $name . '/raw/' . $reference . '/' . $filePath;
-		$response = $this->apiRequest->callFallback($command);
+		$this->apiRequest->setApiUrl($this->settings['fallbackApiUrl']);
+		$response = $this->apiRequest->call($command);
 		return json_encode($response);
 	}
 
@@ -80,19 +78,10 @@ class BitBucketDriver extends AbstractDriver {
 	 * @param string $commitMessage
 	 * @param string $branchName
 	 * @return void
+	 * @throws Exception
 	 */
 	public function setFileContent($repositoryUrl, $filePath, $content, $commitMessage, $branchName = 'master') {
-		$this->apiRequest->call(
-			'projects/' . urlencode($this->getRepositoryName($repositoryUrl)) . '/repository/files',
-			'PUT',
-			array(),
-			array(
-				'file_path' => $filePath,
-				'branch_name' => $branchName,
-				'commit_message' => $commitMessage,
-				'content' => $content
-			)
-		);
+		throw new Exception('Bitbucket does not support writing of files through the API.', 1423472111);
 	}
 
 	/**
@@ -102,6 +91,7 @@ class BitBucketDriver extends AbstractDriver {
 	public function getRepository($repositoryUrl) {
 		$name = $this->getRepositoryName($repositoryUrl);
 		$name = urlencode($name);
+		$this->apiRequest->setApiUrl($this->settings['apiUrl']);
 		$command = 'repositories/' . $this->settings['accountName'] . '/' . $name;
 		$response = $this->apiRequest->call($command);
 		$repository = $this->dataMapper->mapToObject(
@@ -110,8 +100,10 @@ class BitBucketDriver extends AbstractDriver {
 			$this->settings['mapping']
 		);
 
+		$this->apiRequest->setApiUrl($this->settings['fallbackApiUrl']);
+
 		// branches
-		$response = $this->apiRequest->callFallback($command . '/branches');
+		$response = $this->apiRequest->call($command . '/branches');
 		$branches = $this->dataMapper->mapToObject(
 			$response,
 			'\\Lightwerk\\SurfCaptain\\Domain\\Model\\Branch[]',
@@ -120,7 +112,7 @@ class BitBucketDriver extends AbstractDriver {
 		$repository->setBranches($branches);
 
 		// tags
-		$response = $this->apiRequest->callFallback($command . '/tags');
+		$response = $this->apiRequest->call($command . '/tags');
 		$tags = $this->dataMapper->mapToObject(
 			$response,
 			'\\Lightwerk\\SurfCaptain\\Domain\\Model\\Tag[]',

@@ -7,7 +7,6 @@ namespace Lightwerk\SurfCaptain\GitApi;
  *                                                                        */
 
 use TYPO3\Flow\Annotations as Flow;
-use TYPO3\Flow\Http\Response;
 
 class OauthApiRequest extends ApiRequest {
 
