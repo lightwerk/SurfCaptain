@@ -7,6 +7,7 @@ namespace Lightwerk\SurfCaptain\GitApi;
  *                                                                        */
 
 use TYPO3\Flow\Annotations as Flow;
+use TYPO3\Flow\Http\Response;
 
 class ApiRequest implements ApiRequestInterface {
 
@@ -82,12 +83,12 @@ class ApiRequest implements ApiRequestInterface {
 		$statusCode = $response->getStatusCode();
 
 		if ($statusCode < 200 || $statusCode >= 400) {
-			throw new Exception('ApiRequest was not successful for command  ' . $command . ' Response was: ' . $response->getStatus(), 1408987295);
+			throw new Exception('ApiRequest was not successful for command  ' . $command . ' Response was: ' . $response->getStatus(), 1423473312);
 		}
 
 		$content = json_decode($response->getContent(), TRUE);
 		if ($content === NULL) {
-			throw new Exception('Response from ApiRequest is not a valid json', 1408987294);
+			throw new Exception('Response from ApiRequest is not a valid json', 1423473312);
 		}
 		return $content;
 	}
@@ -95,11 +96,11 @@ class ApiRequest implements ApiRequestInterface {
 	/**
 	 * @param string $url
 	 * @param string $method
-	 * @param mixed $response
+	 * @param Response $response
 	 * @return void
 	 * @Flow\Signal
 	 */
-	protected function emitApiCall($url, $method, $response) {}
+	protected function emitApiCall($url, $method, Response $response) {}
 
 	/**
 	 * @param string $url

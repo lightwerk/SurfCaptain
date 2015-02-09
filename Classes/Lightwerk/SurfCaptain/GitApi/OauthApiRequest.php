@@ -7,6 +7,7 @@ namespace Lightwerk\SurfCaptain\GitApi;
  *                                                                        */
 
 use TYPO3\Flow\Annotations as Flow;
+use TYPO3\Flow\Http\Response;
 
 class OauthApiRequest extends ApiRequest {
 
@@ -43,18 +44,26 @@ class OauthApiRequest extends ApiRequest {
 		$url = $this->apiUrl . $command;
 		$this->emitBeforeApiCall($url, $method);
 		// maybe we will throw own exception to give less information (token is outputed)
-		$this->oAuthClient->fetch($url, $parameters, $method);
+		try {
+			$this->oAuthClient->fetch($url, $parameters, $method);
+		} catch (\OAuthException $e) {
+			// we get a 404 Response here, so lets process it
+		}
+
 		$responseInfo = $this->oAuthClient->getLastResponseInfo();
-		$response = $this->oAuthClient->getLastResponse();
+
+		$response = Response::createFromRaw($responseInfo['headers_recv']);
+		$response->appendContent($this->oAuthClient->getLastResponse());
 
 		$this->emitApiCall($url, $method, $response);
 
-		$statusCode = $responseInfo['http_code'];
+		$statusCode = $response->getStatusCode();
 
 		if ($statusCode < 200 || $statusCode >= 400) {
-			throw new Exception('ApiRequest was not successful for command  ' . $command . ' Response was: ' . $statusCode, 1408987295);
+			throw new Exception('ApiRequest was not successful for command  ' . $command . ' Response was: ' . $response->getStatus(), 1408987295);
 		}
-		$content = json_decode($response, TRUE);
+
+		$content = json_decode($response->getContent(), TRUE);
 		if ($content === NULL) {
 			throw new Exception('Response from ApiRequest is not a valid json', 1408987294);
 		}
