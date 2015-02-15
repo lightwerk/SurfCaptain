@@ -136,12 +136,11 @@ Since we developed against interfaces you can (and in some cases you have to) sp
     Lightwerk\SurfCaptain\GitApi\ApiRequestInterface:
       className: 'Lightwerk\SurfCaptain\GitApi\ApiRequest'
     #  className: 'Lightwerk\SurfCaptain\GitApi\OfflineRequest'
-    #  className: 'Lightwerk\SurfCaptain\GitApi\OauthApiRequest'
     
     Lightwerk\SurfCaptain\Domain\Repository\Preset\RepositoryInterface:
       className: 'Lightwerk\SurfCaptain\Domain\Repository\Preset\FileRepository'
     #  className: 'Lightwerk\SurfCaptain\Domain\Repository\Preset\GitRepository'
     
-There are several implementations for the `ApiRequestInterface`. If you want to connect your Bitbucket repositories you have to switch to the OauthApiRequest. The `OfflineRequest` is
+There are several implementations for the `ApiRequestInterface`. The `OfflineRequest` is
 mainly for development and testing as the `ApiRequest` implementation is the default. To make your Repository configuration in your Settings.yaml work you have to
 set the corresponding implementation of the `RepositoryInterface`. 

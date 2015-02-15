@@ -9,7 +9,12 @@ namespace Lightwerk\SurfCaptain\GitApi;
 use TYPO3\Flow\Annotations as Flow;
 use TYPO3\Flow\Http\Response;
 
-class OauthApiRequest extends ApiRequest {
+/**
+ * Class BitbucketApiRequest
+ *
+ * @author Daniel Goerz <dlg@lightwerk.com>
+ */
+class BitbucketApiRequest implements OAuthRequestInterface {
 
 	/**
 	 * @var \OAuth
@@ -17,15 +22,32 @@ class OauthApiRequest extends ApiRequest {
 	protected $oAuthClient;
 
 	/**
+	 * @var string
+	 */
+	protected $apiUrl;
+
+	/**
 	 * @param string $consumerKey
 	 * @param string $consumerSecret
 	 * @param string $accessToken
 	 * @param string$accessSecret
 	 * @return void
+	 * @throws Exception
 	 */
 	public function setOAuthClient($consumerKey, $consumerSecret, $accessToken, $accessSecret) {
+		if (!class_exists('OAuth')) {
+			throw new Exception('The OAuth PHP module must be present to perform OAuth requests.', 1424003541);
+		}
 		$this->oAuthClient = new \OAuth($consumerKey, $consumerSecret);
 		$this->oAuthClient->setToken($accessToken, $accessSecret);
+	}
+
+	/**
+	 * @param string $apiUrl
+	 * @return void
+	 */
+	public function setApiUrl($apiUrl) {
+		$this->apiUrl = $apiUrl;
 	}
 
 	/**
@@ -38,25 +60,16 @@ class OauthApiRequest extends ApiRequest {
 	 * @throws \TYPO3\Flow\Http\Exception
 	 */
 	public function call($command, $method = 'GET', array $parameters = array(), array $content = array()) {
-		if (empty($this->oAuthClient)) {
-			return parent::call($command, $method, $parameters, $content);
-		}
 		$url = $this->apiUrl . $command;
 		$this->emitBeforeApiCall($url, $method);
-		// maybe we will throw own exception to give less information (token is outputed)
 		try {
 			$this->oAuthClient->fetch($url, $parameters, $method);
 		} catch (\OAuthException $e) {
 			// we get a 404 Response here, so lets process it
 		}
 
-		$responseInfo = $this->oAuthClient->getLastResponseInfo();
-
-		$response = Response::createFromRaw($responseInfo['headers_recv']);
-		$response->appendContent($this->oAuthClient->getLastResponse());
-
+		$response = $this->getResponse();
 		$this->emitApiCall($url, $method, $response);
-
 		$statusCode = $response->getStatusCode();
 
 		if ($statusCode < 200 || $statusCode >= 400) {
@@ -69,4 +82,31 @@ class OauthApiRequest extends ApiRequest {
 		}
 		return $content;
 	}
+
+	/**
+	 * @return Response
+	 */
+	protected function getResponse() {
+		$responseInfo = $this->oAuthClient->getLastResponseInfo();
+		$response = Response::createFromRaw($responseInfo['headers_recv']);
+		$response->appendContent($this->oAuthClient->getLastResponse());
+		return $response;
+	}
+
+	/**
+	 * @param string $url
+	 * @param string $method
+	 * @param Response $response
+	 * @return void
+	 * @Flow\Signal
+	 */
+	protected function emitApiCall($url, $method, Response $response) {}
+
+	/**
+	 * @param string $url
+	 * @param string $method
+	 * @return void
+	 * @Flow\Signal
+	 */
+	protected function emitBeforeApiCall($url, $method) {}
 }

@@ -22,7 +22,7 @@ class BitBucketDriver extends AbstractDriver {
 	 */
 	public function setSettings(array $settings) {
 		$this->settings = $settings;
-		$this->apiRequest = $this->objectManager->get('Lightwerk\SurfCaptain\GitApi\ApiRequestInterface');
+		$this->apiRequest = $this->objectManager->get('Lightwerk\SurfCaptain\GitApi\BitbucketApiRequest');
 		$this->apiRequest->setOAuthClient($settings['privateToken'], $settings['privateSecret'], $settings['accessToken'], $settings['accessSecret']);
 	}
 
