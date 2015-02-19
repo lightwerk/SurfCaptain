@@ -1,5 +1,5 @@
 <?php
-namespace Lightwerk\SurfCaptain\Tests\Unit\GitApi;
+namespace Lightwerk\SurfCaptain\Tests\Unit\GitApi\Request;
 
 /*                                                                        *
  * This script belongs to the TYPO3 Flow package "Lightwerk.SurfCaptain". *
@@ -11,7 +11,7 @@ use TYPO3\Flow\Tests\UnitTestCase;
 /**
  * ApiRequestTest
  */
-class ApiRequestTest extends UnitTestCase {
+class HttpAuthRequestTest extends UnitTestCase {
 
 	/**
 	 * @test
