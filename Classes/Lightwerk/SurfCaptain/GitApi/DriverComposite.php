@@ -53,13 +53,8 @@ class DriverComposite implements DriverInterface {
 			throw new Exception('No existing sources', 1407702241);
 		}
 		foreach ($settings['sources'] as $key => $source) {
-			if (empty($source['className'])) {
-				throw new Exception('No className defined for "' . $key . '"', 1407702622);
-			}
-			if (!class_exists($source['className'])) {
-				throw new Exception('Class "' . $source['className'] . '" does not exist!', 1407702669);
-			}
-			$driver = new $source['className']();
+			$className = $this->resolveClassName($source, $key);
+			$driver = new $className();
 			if ($driver instanceof DriverInterface) {
 				$driver->setSettings($source);
 				$this->drivers[$key] = $driver;
@@ -70,6 +65,36 @@ class DriverComposite implements DriverInterface {
 				);
 			}
 		}
+	}
+
+	/**
+	 * @param array $source
+	 * @param string $key
+	 * @return string
+	 * @throws Exception
+	 */
+	protected function resolveClassName(array $source, $key) {
+		if (empty($source['className']) === FALSE) {
+			$className = $source['className'];
+		} elseif (empty($source['driver']) === FALSE) {
+			$className = '\Lightwerk\SurfCaptain\GitApi\Driver\\' . ucfirst($source['driver']) .  'Driver';
+		} else {
+			throw new Exception('No className or driver defined for "' . $key . '"', 1407702622);
+		}
+		$this->assureClassExists($className);
+		return $className;
+	}
+
+	/**
+	 * @param $className
+	 * @return boolean
+	 * @throws Exception
+	 */
+	public function assureClassExists($className) {
+		if (!class_exists($className)) {
+			throw new Exception('Class "' . $className . '" does not exist!', 1407702669);
+		}
+		return TRUE;
 	}
 
 	/**
