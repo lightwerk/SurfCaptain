@@ -1,0 +1,13 @@
+Lightwerk:
+  SurfCaptain:
+      github.com:
+        apiUrl: https://api.github.com/
+        driver: 'GitHubDriver'
+        accountName: 'git@github.com'
+        privateToken: '1234567890abcdefghij'
+        mapping:
+          Repository:
+            repositoryUrl: '{{ssh_url}}'
+            webUrl: '{{url}}'
+          Commit:
+            id: '{{sha}}'
