@@ -22,7 +22,7 @@ class GitLabDriver extends AbstractDriver {
 	 */
 	public function setSettings(array $settings) {
 		$this->settings = $settings;
-		$this->apiRequest = $this->objectManager->get('Lightwerk\SurfCaptain\GitApi\ApiRequestInterface');
+		$this->apiRequest = $this->objectManager->get('Lightwerk\SurfCaptain\GitApi\Request\HttpAuthRequestInterface');
 		$this->apiRequest->setApiUrl($settings['apiUrl']);
 		$this->apiRequest->setAuthorizationHeader(array('PRIVATE-TOKEN: ' . $this->settings['privateToken']));
 	}

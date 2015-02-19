@@ -1,5 +1,5 @@
 <?php
-namespace Lightwerk\SurfCaptain\GitApi;
+namespace Lightwerk\SurfCaptain\GitApi\Request;
 
 /*                                                                        *
  * This script belongs to the TYPO3 Flow package "Lightwerk.SurfCaptain". *
@@ -14,7 +14,7 @@ use TYPO3\Flow\Http\Response;
  *
  * @author Daniel Goerz <dlg@lightwerk.com>
  */
-class BitbucketApiRequest implements OAuthRequestInterface {
+class OAuthRequest implements OAuthRequestInterface {
 
 	/**
 	 * @var \OAuth

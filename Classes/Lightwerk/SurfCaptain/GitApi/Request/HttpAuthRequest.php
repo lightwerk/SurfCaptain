@@ -1,5 +1,5 @@
 <?php
-namespace Lightwerk\SurfCaptain\GitApi;
+namespace Lightwerk\SurfCaptain\GitApi\Request;
 
 /*                                                                        *
  * This script belongs to the TYPO3 Flow package "Lightwerk.SurfCaptain". *
@@ -9,7 +9,7 @@ namespace Lightwerk\SurfCaptain\GitApi;
 use TYPO3\Flow\Annotations as Flow;
 use TYPO3\Flow\Http\Response;
 
-class ApiRequest implements ApiRequestInterface {
+class HttpAuthRequest implements HttpAuthRequestInterface {
 
 	/**
 	 * @Flow\Inject

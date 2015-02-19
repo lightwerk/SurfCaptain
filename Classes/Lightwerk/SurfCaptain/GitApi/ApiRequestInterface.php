@@ -11,12 +11,6 @@ use TYPO3\Flow\Annotations as Flow;
 interface ApiRequestInterface {
 
 	/**
-	 * @param array $headers 
-	 * @return void
-	 */
-	public function setAuthorizationHeader(array $headers);
-
-	/**
 	 * @param string $apiUrl 
 	 * @return void
 	 */
