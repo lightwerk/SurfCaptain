@@ -41,7 +41,6 @@ abstract class AbstractDriver implements DriverInterface {
 	protected function getRepositoryName($repositoryUrl) {
 		$parts = explode(':', $repositoryUrl);
 		return str_replace('.git', '', $parts[1]);
-		
 	}
 
 	/**

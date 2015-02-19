@@ -14,7 +14,7 @@ use TYPO3\Flow\Annotations as Flow;
  *
  * @package Lightwerk\SurfCaptain
  */
-class GitLabDriver extends AbstractDriver {
+class BitBucketDriver extends AbstractDriver {
 
 	/**
 	 * @param array $settings
@@ -22,11 +22,9 @@ class GitLabDriver extends AbstractDriver {
 	 */
 	public function setSettings(array $settings) {
 		$this->settings = $settings;
-		$this->apiRequest = $this->objectManager->get('Lightwerk\SurfCaptain\GitApi\Request\HttpAuthRequestInterface');
-		$this->apiRequest->setApiUrl($settings['apiUrl']);
-		$this->apiRequest->setAuthorizationHeader(array('PRIVATE-TOKEN: ' . $this->settings['privateToken']));
+		$this->apiRequest = $this->objectManager->get('Lightwerk\SurfCaptain\GitApi\Request\OAuthRequestInterface');
+		$this->apiRequest->setOAuthClient($settings['privateToken'], $settings['privateSecret'], $settings['accessToken'], $settings['accessSecret']);
 	}
-
 
 	/**
 	 * @param string $repositoryUrl
@@ -42,12 +40,9 @@ class GitLabDriver extends AbstractDriver {
 	public function getRepositories() {
 		$repositories = array();
 		foreach ($this->settings['repositories'] as $command) {
+			$this->apiRequest->setApiUrl($this->settings['apiUrl']);
 			$response = $this->apiRequest->call($command);
-			if (isset($response['projects']) === FALSE) {
-				$projects = array($response);
-			} else {
-				$projects = $response['projects'];
-			}
+			$projects = $response['values'];
 			$repositories = array_merge(
 				$repositories,
 				$this->dataMapper->mapToObject(
@@ -68,22 +63,12 @@ class GitLabDriver extends AbstractDriver {
 	 * @throws Exception
 	 */
 	public function getFileContent($repositoryUrl, $filePath, $reference = 'master') {
-		$response = $this->apiRequest->call(
-			'projects/' . urlencode($this->getRepositoryName($repositoryUrl)) . '/repository/files',
-			'GET',
-			array(
-				'file_path' => $filePath,
-				'ref' => $reference,
-			)
-		);
-		switch ($response['encoding']) {
-			case 'base64':
-				$content = base64_decode($response['content']);
-				break;
-			default:
-				throw new Exception('Encoding "' . $response['encoding'] . '" is unknown!', 1407793800);
-		}
-		return $content;
+		$name = $this->getRepositoryName($repositoryUrl);
+		$name = urlencode($name);
+		$command = 'repositories/' . $this->settings['accountName'] . '/' . $name . '/raw/' . $reference . '/' . $filePath;
+		$this->apiRequest->setApiUrl($this->settings['fallbackApiUrl']);
+		$response = $this->apiRequest->call($command);
+		return json_encode($response);
 	}
 
 	/**
@@ -93,19 +78,10 @@ class GitLabDriver extends AbstractDriver {
 	 * @param string $commitMessage
 	 * @param string $branchName
 	 * @return void
+	 * @throws Exception
 	 */
 	public function setFileContent($repositoryUrl, $filePath, $content, $commitMessage, $branchName = 'master') {
-		$this->apiRequest->call(
-			'projects/' . urlencode($this->getRepositoryName($repositoryUrl)) . '/repository/files',
-			'PUT',
-			array(),
-			array(
-				'file_path' => $filePath,
-				'branch_name' => $branchName,
-				'commit_message' => $commitMessage,
-				'content' => $content
-			)
-		);
+		throw new Exception('Bitbucket does not support writing of files through the API.', 1423472111);
 	}
 
 	/**
@@ -115,7 +91,8 @@ class GitLabDriver extends AbstractDriver {
 	public function getRepository($repositoryUrl) {
 		$name = $this->getRepositoryName($repositoryUrl);
 		$name = urlencode($name);
-		$command = 'projects/' . $name;
+		$this->apiRequest->setApiUrl($this->settings['apiUrl']);
+		$command = 'repositories/' . $this->settings['accountName'] . '/' . $name;
 		$response = $this->apiRequest->call($command);
 		$repository = $this->dataMapper->mapToObject(
 			$response,
@@ -123,8 +100,10 @@ class GitLabDriver extends AbstractDriver {
 			$this->settings['mapping']
 		);
 
+		$this->apiRequest->setApiUrl($this->settings['fallbackApiUrl']);
+
 		// branches
-		$response = $this->apiRequest->call($command . '/repository/branches');
+		$response = $this->apiRequest->call($command . '/branches');
 		$branches = $this->dataMapper->mapToObject(
 			$response,
 			'\\Lightwerk\\SurfCaptain\\Domain\\Model\\Branch[]',
@@ -133,7 +112,7 @@ class GitLabDriver extends AbstractDriver {
 		$repository->setBranches($branches);
 
 		// tags
-		$response = $this->apiRequest->call($command . '/repository/tags');
+		$response = $this->apiRequest->call($command . '/tags');
 		$tags = $this->dataMapper->mapToObject(
 			$response,
 			'\\Lightwerk\\SurfCaptain\\Domain\\Model\\Tag[]',
@@ -142,6 +121,27 @@ class GitLabDriver extends AbstractDriver {
 		$repository->setTags($tags);
 
 		return $repository;
+	}
+
+	/**
+	 * @param string $repositoryUrl
+	 * @return string
+	 */
+	protected function getRepositoryAccount($repositoryUrl) {
+		$parts = explode('/', $repositoryUrl);
+		return $parts[3];
+	}
+
+	/**
+	 * @param string $repositoryUrl
+	 * @return string
+	 */
+	protected function getRepositoryName($repositoryUrl) {
+		if (strpos($repositoryUrl, 'ssh') !== FALSE) {
+			$parts = explode('/', $repositoryUrl);
+			return str_replace('.git', '', array_pop($parts));
+		}
+		return parent::getRepositoryName($repositoryUrl);
 	}
 
 }

@@ -15,15 +15,12 @@ class ApiCommandController extends BrowserCommandController {
 	 */
 	protected $urls = array(
 		'/api/repository',
-		'/api/repository?repositoryUrl=git%40git.lightwerk.com%3Aproject%2Fgtweb.git',
 		'/api/preset',
 		'/api/preset?key=test_af',
-		'/api/preset?key=sma',
 		'/api/preset?key=foo',
 		'/api/preset',
 		'/api/deployment',
 		'/api/frontendsetting',
-		'/api/repository?repositoryUrl=git@git.sma.de:sma-websites/rcw-sma-de.git',
 		'/api/repository?repositoryUrl=git@github.com:achimfritz/championship-distribution.git',
 	);
 

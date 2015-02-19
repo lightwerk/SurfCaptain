@@ -1,7 +1,3 @@
-Lightwerk\SurfCaptain\GitApi\ApiRequestInterface:
-  className: 'Lightwerk\SurfCaptain\GitApi\ApiRequest'
-#  className: 'Lightwerk\SurfCaptain\GitApi\OfflineRequest'
-
 Lightwerk\SurfCaptain\Domain\Repository\Preset\RepositoryInterface:
   className: 'Lightwerk\SurfCaptain\Domain\Repository\Preset\FileRepository'
 #  className: 'Lightwerk\SurfCaptain\Domain\Repository\Preset\GitRepository'

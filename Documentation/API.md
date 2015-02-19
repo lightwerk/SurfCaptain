@@ -9,7 +9,7 @@
 
 Example call:
 
-    curl -H "Accept: application/json" http://surf.flow.lp.lw.loc/api/repository | jq '.'
+    curl -H "Accept: application/json" http://surfcaptain.loc/api/repository | jq '.'
 
 ### Show Repository
 
@@ -21,7 +21,7 @@ Example call:
 
 Example call:
 
-    curl -H "Accept: application/json" http://surf.flow.lp.lw.loc/api/repository\?repositoryUrl\=git%40git.sma.de%3Asma-websites%2Frcw-sma-de.git | jq '.'
+    curl -H "Accept: application/json" http://surfcaptain.loc/api/repository\?repositoryUrl\=git%40git.example.de%3Aexample-websites%2Frcw-example-de.git | jq '.'
 
 ## Deployments
 
@@ -34,7 +34,7 @@ Example call:
 
 Example call to get the deployments of all repositories:
 
-	curl -H "Accept: application/json" http://surf.flow.lp.lw.loc/api/deployment | jq '.'
+	curl -H "Accept: application/json" http://surfcaptain.loc/api/deployment | jq '.'
 
 ### Show deployment
 
@@ -46,7 +46,7 @@ Example call to get the deployments of all repositories:
 
 Example call:
 
-	curl -H "Accept: application/json" http://surf.flow.lp.lw.loc/api/deployment | jq '.'
+	curl -H "Accept: application/json" http://surfcaptain.loc/api/deployment | jq '.'
 
 ### Create new deployment
 
@@ -57,7 +57,7 @@ Example call:
 
 Example call with a configuration:
 
-	curl -H "Accept: application/json" -H "Content-Type: application/json" -v -X POST http://surf.flow.lp.lw.loc/api/deployment -d '{
+	curl -H "Accept: application/json" -H "Content-Type: application/json" -v -X POST http://surfcaptain.loc/api/deployment -d '{
 		"deployment": {
 			"configuration": {
 				"applications": [
@@ -72,7 +72,7 @@ Example call with a configuration:
 						"nodes": [
 							{
 								"name": "Front-End Server 2",
-								"hostname": "www2.sma.de",
+								"hostname": "www2.example.de",
 								"username": "user2"
 							}
 						]
@@ -92,7 +92,7 @@ Example call with a configuration:
 
 Example call:
 
-	curl -H "Accept: application/json" -H "Content-Type: application/json" -v -X PUT http://surf.flow.lp.lw.loc/api/deployment -d '{
+	curl -H "Accept: application/json" -H "Content-Type: application/json" -v -X PUT http://surfcaptain.loc/api/deployment -d '{
 		"deployment": {
 			"__identity": "de45df59-c62f-0367-8a27-8e6899e3673d",
 			"status": "cancelled"
@@ -108,7 +108,7 @@ Example call:
 
 Example call to list presets of a defined project:
 
-	curl -H "Accept: application/json" http://surf.flow.lp.lw.loc/api/frontendsetting | jq '.'
+	curl -H "Accept: application/json" http://surfcaptain.loc/api/frontendsetting | jq '.'
 
 ## Presets
 
@@ -122,11 +122,11 @@ Example call to list presets of a defined project:
 
 Example call to list all presets:
 
-	curl -H "Accept: application/json" http://surf.flow.lp.lw.loc/api/preset | jq '.'
+	curl -H "Accept: application/json" http://surfcaptain.loc/api/preset | jq '.'
 
 Example call to list all global presets:
 
-	curl -H "Accept: application/json" http://surf.flow.lp.lw.loc/api/preset\?global\=1 | jq '.'
+	curl -H "Accept: application/json" http://surfcaptain.loc/api/preset\?global\=1 | jq '.'
 
 ### Add presets
 
@@ -138,8 +138,8 @@ Example call to list all global presets:
 
 Example call:
 
-	curl -H "Accept: application/json" -H "Content-Type: application/json" -v -X POST http://surf.flow.lp.lw.loc/api/preset -d '{
-		"key": "sma",
+	curl -H "Accept: application/json" -H "Content-Type: application/json" -v -X POST http://surfcaptain.loc/api/preset -d '{
+		"key": "example",
 		"configuration": {
 			"applications": [
 				{
@@ -151,7 +151,7 @@ Example call:
 					"nodes": [
 						{
 							"name": "Front-End Server 2",
-							"hostname": "www2.sma.de",
+							"hostname": "www2.example.de",
 							"username": "user2"
 						}
 					]
@@ -171,8 +171,8 @@ Example call:
 
 Example call:
 
-	curl -H "Accept: application/json" -H "Content-Type: application/json" -v -X PUT http://surf.flow.lp.lw.loc/api/preset -d '{
-		"key": "sma",
+	curl -H "Accept: application/json" -H "Content-Type: application/json" -v -X PUT http://surfcaptain.loc/api/preset -d '{
+		"key": "example.com",
 		"configuration": {
 			"applications": [
 				{
@@ -184,7 +184,7 @@ Example call:
 					"nodes": [
 						{
 							"name": "Front-End Server 2",
-							"hostname": "www2.sma.de",
+							"hostname": "example.com",
 							"username": "user2"
 						}
 					]
@@ -202,7 +202,7 @@ Example call:
 
 Example call:
 
-	curl -H "Accept: application/json" -v -X DELETE http://surf.flow.lp.lw.loc/api/preset\?key\=sma
+	curl -H "Accept: application/json" -v -X DELETE http://surfcaptain.loc/api/preset\?key\=example
 
 ### Check SSH login
 
@@ -215,4 +215,4 @@ Example call:
 
 Example call:
 
-	curl -H "Accept: application/json" http://surf.flow.lp.lw.loc/api/checkSshLogin\?hostname\=dev.loc\&username\=lw-lm | jq '.'
+	curl -H "Accept: application/json" http://surfcaptain.loc/api/checkSshLogin\?hostname\=dev.loc\&username\=lw-lm | jq '.'

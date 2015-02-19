@@ -1,5 +1,5 @@
 <?php
-namespace Lightwerk\SurfCaptain\GitApi;
+namespace Lightwerk\SurfCaptain\GitApi\Request;
 
 /*                                                                        *
  * This script belongs to the TYPO3 Flow package "Lightwerk.SurfCaptain". *
@@ -9,29 +9,17 @@ namespace Lightwerk\SurfCaptain\GitApi;
 use TYPO3\Flow\Annotations as Flow;
 use TYPO3\Flow\Http\Response;
 
-class ApiRequest implements ApiRequestInterface {
+/**
+ * Class BitbucketApiRequest
+ *
+ * @author Daniel Goerz <dlg@lightwerk.com>
+ */
+class OAuthRequest implements OAuthRequestInterface {
 
 	/**
-	 * @Flow\Inject
-	 * @var \TYPO3\Flow\Http\Client\Browser
+	 * @var \OAuth
 	 */
-	protected $browser;
-
-	/**
-	 * not sure if inject is "cool" (inject only singletons?)
-	 * contains bugfix
-	 * @Flow\Inject
-	 * @var \Lightwerk\SurfCaptain\Http\Client\CurlEngine
-	 */
-	protected $browserRequestEngine;
-
-	/**
-	 * @var array
-	 */
-	protected $server = array(
-		'HTTP_CONTENT_TYPE' => 'application/json',
-		'Accept' => 'application/json',
-	);
+	protected $oAuthClient;
 
 	/**
 	 * @var string
@@ -39,24 +27,23 @@ class ApiRequest implements ApiRequestInterface {
 	protected $apiUrl;
 
 	/**
+	 * @param string $consumerKey
+	 * @param string $consumerSecret
+	 * @param string $accessToken
+	 * @param string$accessSecret
 	 * @return void
+	 * @throws Exception
 	 */
-	public function initializeObject() {
-		$this->browserRequestEngine->setOption(CURLOPT_SSL_VERIFYPEER, FALSE);
-		$this->browserRequestEngine->setOption(CURLOPT_SSL_VERIFYHOST, FALSE);
-		$this->browser->setRequestEngine($this->browserRequestEngine);
+	public function setOAuthClient($consumerKey, $consumerSecret, $accessToken, $accessSecret) {
+		if (!class_exists('OAuth')) {
+			throw new Exception('The OAuth PHP module must be present to perform OAuth requests.', 1424003541);
+		}
+		$this->oAuthClient = new \OAuth($consumerKey, $consumerSecret);
+		$this->oAuthClient->setToken($accessToken, $accessSecret);
 	}
 
 	/**
-	 * @param array $headers 
-	 * @return void
-	 */
-	public function setAuthorizationHeader(array $headers) {
-		$this->browserRequestEngine->setOption(CURLOPT_HTTPHEADER, $headers);
-	}
-
-	/**
-	 * @param string $apiUrl 
+	 * @param string $apiUrl
 	 * @return void
 	 */
 	public function setApiUrl($apiUrl) {
@@ -67,18 +54,22 @@ class ApiRequest implements ApiRequestInterface {
 	 * @param string $command
 	 * @param string $method
 	 * @param array $parameters
+	 * @param array $content
 	 * @return mixed $data
 	 * @throws Exception
 	 * @throws \TYPO3\Flow\Http\Exception
 	 */
 	public function call($command, $method = 'GET', array $parameters = array(), array $content = array()) {
-		$url = $this->apiUrl . $command . '?' . http_build_query($parameters);
+		$url = $this->apiUrl . $command;
 		$this->emitBeforeApiCall($url, $method);
-		// maybe we will throw own exception to give less information (token is outputed)
-		$response = $this->browser->request($url, $method, array(), array(), $this->server, json_encode($content));
+		try {
+			$this->oAuthClient->fetch($url, $parameters, $method);
+		} catch (\OAuthException $e) {
+			// we get a 404 Response here, so lets process it
+		}
 
+		$response = $this->getResponse();
 		$this->emitApiCall($url, $method, $response);
-
 		$statusCode = $response->getStatusCode();
 
 		if ($statusCode < 200 || $statusCode >= 400) {
@@ -91,7 +82,17 @@ class ApiRequest implements ApiRequestInterface {
 		}
 		return $content;
 	}
-	
+
+	/**
+	 * @return Response
+	 */
+	protected function getResponse() {
+		$responseInfo = $this->oAuthClient->getLastResponseInfo();
+		$response = Response::createFromRaw($responseInfo['headers_recv']);
+		$response->appendContent($this->oAuthClient->getLastResponse());
+		return $response;
+	}
+
 	/**
 	 * @param string $url
 	 * @param string $method
@@ -100,7 +101,7 @@ class ApiRequest implements ApiRequestInterface {
 	 * @Flow\Signal
 	 */
 	protected function emitApiCall($url, $method, Response $response) {}
-	
+
 	/**
 	 * @param string $url
 	 * @param string $method

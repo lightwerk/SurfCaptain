@@ -1,5 +1,5 @@
 <?php
-namespace Lightwerk\SurfCaptain\Tests\Unit\GitApi;
+namespace Lightwerk\SurfCaptain\Tests\Unit\GitApi\Request;
 
 /*                                                                        *
  * This script belongs to the TYPO3 Flow package "Lightwerk.SurfCaptain". *
@@ -11,14 +11,14 @@ use TYPO3\Flow\Tests\UnitTestCase;
 /**
  * ApiRequestTest
  */
-class ApiRequestTest extends UnitTestCase {
+class HttpAuthRequestTest extends UnitTestCase {
 
 	/**
 	 * @test
 	 * @expectedException \TYPO3\Flow\Http\Exception
 	 */
 	public function callThrowsExceptionForRequestFailed() {
-		$apiRequest = $this->getAccessibleMock('Lightwerk\SurfCaptain\GitApi\ApiRequest', array('foo'));
+		$apiRequest = $this->getAccessibleMock('Lightwerk\SurfCaptain\GitApi\Request\HttpAuthRequest', array('foo'));
 		$browser = $this->getMock('TYPO3\Flow\Http\Client\Browser', array('request'));
 		$e = new \TYPO3\Flow\Http\Exception();
 		$browser->expects($this->once())->method('request')->will($this->throwException($e));
@@ -31,7 +31,7 @@ class ApiRequestTest extends UnitTestCase {
 	 * @expectedException \Lightwerk\SurfCaptain\GitApi\Exception
 	 */
 	public function getGitLabApiResponseThrowsExceptionForJsonDecodingFailed() {
-		$apiRequest = $this->getAccessibleMock('Lightwerk\SurfCaptain\GitApi\ApiRequest', array('foo'));
+		$apiRequest = $this->getAccessibleMock('Lightwerk\SurfCaptain\GitApi\Request\HttpAuthRequest', array('foo'));
 		$response = $this->getMock('TYPO3\Flow\Http\Response', array('getContent'));
 		$response->expects($this->once())->method('getContent')->will($this->returnValue('no json string'));
 		$browser = $this->getMock('TYPO3\Flow\Http\Client\Browser', array('request'));
@@ -44,7 +44,7 @@ class ApiRequestTest extends UnitTestCase {
 	 * @test
 	 */
 	public function callReturnsJson() {
-		$apiRequest = $this->getAccessibleMock('Lightwerk\SurfCaptain\GitApi\ApiRequest', array('foo'));
+		$apiRequest = $this->getAccessibleMock('Lightwerk\SurfCaptain\GitApi\Request\HttpAuthRequest', array('foo'));
 		$response = $this->getMock('TYPO3\Flow\Http\Response', array('getContent'));
 		$response->expects($this->once())->method('getContent')->will($this->returnValue('{"var": "val"}'));
 		$browser = $this->getMock('TYPO3\Flow\Http\Client\Browser', array('request'));
