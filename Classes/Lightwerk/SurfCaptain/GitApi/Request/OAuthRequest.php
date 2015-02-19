@@ -8,6 +8,7 @@ namespace Lightwerk\SurfCaptain\GitApi\Request;
 
 use TYPO3\Flow\Annotations as Flow;
 use TYPO3\Flow\Http\Response;
+use Lightwerk\SurfCaptain\GitApi\Exception;
 
 /**
  * Class BitbucketApiRequest
