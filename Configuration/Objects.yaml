@@ -1,3 +1,7 @@
 Lightwerk\SurfCaptain\Domain\Repository\Preset\RepositoryInterface:
   className: 'Lightwerk\SurfCaptain\Domain\Repository\Preset\FileRepository'
 #  className: 'Lightwerk\SurfCaptain\Domain\Repository\Preset\GitRepository'
+Lightwerk\SurfCaptain\GitApi\Request\OAuthRequestInterface:
+  className: 'Lightwerk\SurfCaptain\GitApi\Request\OAuthRequest'
+Lightwerk\SurfCaptain\GitApi\Request\HttpAuthRequestInterface:
+  className: 'Lightwerk\SurfCaptain\GitApi\Request\HttpAuthRequest'
