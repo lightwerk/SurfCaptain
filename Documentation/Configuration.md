@@ -131,16 +131,10 @@ lacks the option to change files in a repo. If a `fileRepository` is specified t
 
 ## Object Configuration (Configuration/Objects.yaml)
 
-Since we developed against interfaces you can (and in some cases you have to) specify the concrete implementation. This is done in Configuration/Objects.yaml
-
-    Lightwerk\SurfCaptain\GitApi\ApiRequestInterface:
-      className: 'Lightwerk\SurfCaptain\GitApi\ApiRequest'
-    #  className: 'Lightwerk\SurfCaptain\GitApi\OfflineRequest'
+Since we developed against interfaces you can specify the concrete implementation. This is done in Configuration/Objects.yaml
     
     Lightwerk\SurfCaptain\Domain\Repository\Preset\RepositoryInterface:
       className: 'Lightwerk\SurfCaptain\Domain\Repository\Preset\FileRepository'
     #  className: 'Lightwerk\SurfCaptain\Domain\Repository\Preset\GitRepository'
     
-There are several implementations for the `ApiRequestInterface`. The `OfflineRequest` is
-mainly for development and testing as the `ApiRequest` implementation is the default. To make your Repository configuration in your Settings.yaml work you have to
-set the corresponding implementation of the `RepositoryInterface`. 
+To make your Repository configuration in your Settings.yaml work you have to set the corresponding implementation of the `RepositoryInterface`. 
