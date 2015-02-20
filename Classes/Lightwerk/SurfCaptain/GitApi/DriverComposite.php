@@ -87,14 +87,13 @@ class DriverComposite implements DriverInterface {
 
 	/**
 	 * @param $className
-	 * @return boolean
+	 * @return void
 	 * @throws Exception
 	 */
 	public function assureClassExists($className) {
 		if (!class_exists($className)) {
 			throw new Exception('Class "' . $className . '" does not exist!', 1407702669);
 		}
-		return TRUE;
 	}
 
 	/**
