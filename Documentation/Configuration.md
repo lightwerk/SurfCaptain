@@ -11,7 +11,7 @@ Surfcaptain was first developed to work with the API of Gitlab. So the basic con
         sources:
           source1:
             apiUrl: 'https://myGitlab.de/api/v3/'
-            className: '\Lightwerk\SurfCaptain\GitApi\Driver\GitLabDriver'
+            driver: 'GitLab'
             accountName: 'me@myGitlab.de'
             privateToken: '1234567890abcdefghij'
             repositories:
@@ -21,7 +21,7 @@ Surfcaptain was first developed to work with the API of Gitlab. So the basic con
 In the above configuration, we tell the Surfcaptain to include all git-repositories from myGitlab.de that are in the namespace with the ID 10 (`groups/10`) as well 
 as the additional repository with the ID 209 (`projects/209`). Additionally the user me@myGitlab.de must have the rights to see these repositories, as we use his 
 `privateToken`. This token can be found in the profile area of Gitlab. Additionally we have to tell the Surfcaptain that this API actually is a Gitlab by defining
-the Driver via `className`.
+the Driver via `driver`.
 
 ### Github
 
@@ -30,7 +30,7 @@ the Driver via `className`.
         sources:
           source1:
             apiUrl: https://api.github.com/
-            className: '\Lightwerk\SurfCaptain\GitApi\Driver\GitHubDriver'
+            driver: 'GitHub'
             accountName: 'git@github.com'
             privateToken: '1234567890abcdefghij'
             mapping:
@@ -53,7 +53,7 @@ mapping being applied before the object is created we can ensure consistent obje
           source1:
             apiUrl: 'https://api.bitbucket.org/2.0/'
             fallbackApiUrl: 'https://api.bitbucket.org/1.0/'
-            className: \Lightwerk\SurfCaptain\GitApi\Driver\BitBucketDriver
+            driver: 'BitBucket'
             accountName: myAccount
             privateToken: myConsumerKey
             privateSecret: myConsumerSecret

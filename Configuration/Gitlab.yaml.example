@@ -8,7 +8,7 @@ Lightwerk:
         # URL to the API
         apiUrl: 'https://git.lightwerk.com/api/v3/'
         # We have different drivers
-        className: '\Lightwerk\SurfCaptain\GitApi\Driver\GitLabDriver'
+        driver: 'GitLab'
         # AccountName connects the repositoryUrl with this source configuration
         # of example: git@git.lightwerk.com:namespace/projectname.git)
         #             ^^^^^^^^^^^^^^^^^^^^^
@@ -35,7 +35,7 @@ Lightwerk:
       # Another example with GitHubDriver
       github.com:
         apiUrl: https://api.github.com/
-        className: '\Lightwerk\SurfCaptain\GitApi\Driver\GitHubDriver'
+        driver: 'GitHubDriver'
         accountName: 'git@github.com'
         privateToken: '1234567890abcdefghij'
         mapping:
@@ -44,38 +44,3 @@ Lightwerk:
             webUrl: '{{url}}'
           Commit:
             id: '{{sha}}'
-
-      # Another example with BitBucketDriver
-      # Note: OauthApiRequest mus be set as implementation of ApiRequestInterface in Objects.yaml
-      bitbucket.com:
-        apiUrl: 'https://api.bitbucket.org/2.0/'
-        # We need both API since none of them provides all the resources we need
-        fallbackApiUrl: 'https://api.bitbucket.org/1.0/'
-        className: \Lightwerk\SurfCaptain\GitApi\Driver\BitBucketDriver
-        accountName: myAcount
-        # consumerKey
-        privateToken: xxxx
-        # consumerSecret
-        privateSecret: xxxxxxxx
-        accessToken: xxxxx
-        accessSecret: xxxxxxxxxx
-        repositories:
-          myRepositories: repositories/myaccount
-        mapping:
-          Repository:
-            repositoryUrl: '{{links.clone.1.href}}'
-            webUrl: '{{links.clone.0.href}}'
-          Branch:
-            name: '{{branch}}'
-            commit:
-              id: '{{raw_node}}'
-              committerName: '{{author}}'
-              date: '{{timestamp}}'
-              message: '{{message}}'
-          Tag:
-            name: '{{_KEY_}}'
-            commit:
-              id: '{{raw_node}}'
-              committerName: '{{author}}'
-              date: '{{timestamp}}'
-              message: '{{message}}'

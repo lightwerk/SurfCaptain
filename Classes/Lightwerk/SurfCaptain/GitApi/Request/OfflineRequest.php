@@ -7,6 +7,7 @@ namespace Lightwerk\SurfCaptain\GitApi\Request;
  *                                                                        */
 
 use TYPO3\Flow\Annotations as Flow;
+use Lightwerk\SurfCaptain\GitApi\Exception;
 
 class OfflineRequest implements HttpAuthRequestInterface {
 

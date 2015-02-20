@@ -1,0 +1,34 @@
+Lightwerk:
+  SurfCaptain:
+      bitbucket.com:
+        apiUrl: 'https://api.bitbucket.org/2.0/'
+        # We need both API since none of them provides all the resources we need
+        fallbackApiUrl: 'https://api.bitbucket.org/1.0/'
+        driver: 'BitBucket'
+        accountName: myAcount
+        # consumerKey
+        privateToken: xxxx
+        # consumerSecret
+        privateSecret: xxxxxxxx
+        accessToken: xxxxx
+        accessSecret: xxxxxxxxxx
+        repositories:
+          myRepositories: repositories/myaccount
+        mapping:
+          Repository:
+            repositoryUrl: '{{links.clone.1.href}}'
+            webUrl: '{{links.clone.0.href}}'
+          Branch:
+            name: '{{branch}}'
+            commit:
+              id: '{{raw_node}}'
+              committerName: '{{author}}'
+              date: '{{timestamp}}'
+              message: '{{message}}'
+          Tag:
+            name: '{{_KEY_}}'
+            commit:
+              id: '{{raw_node}}'
+              committerName: '{{author}}'
+              date: '{{timestamp}}'
+              message: '{{message}}'
