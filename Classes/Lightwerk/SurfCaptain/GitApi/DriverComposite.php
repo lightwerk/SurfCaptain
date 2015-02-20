@@ -60,7 +60,7 @@ class DriverComposite implements DriverInterface {
 				$this->drivers[$key] = $driver;
 			} else {
 				throw new Exception(
-					'Class "' . $source['className'] . '" does not implement Lightwerk\SurfCaptain\GitApi\DriverInterface!',
+					'Class "' . $className . '" does not implement Lightwerk\SurfCaptain\GitApi\DriverInterface!',
 					1407739781
 				);
 			}
