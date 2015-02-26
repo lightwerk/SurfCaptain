@@ -6944,7 +6944,8 @@ div.project-history .history {
 .single-deployment-view .table-striped tr.LOG_INFO .message {
   color: #5cb85c;
 }
-.single-deployment-view .table-striped tr.LOG_ERR {
+.single-deployment-view .table-striped tr.LOG_ERR,
+.single-deployment-view .table-striped tr.LOG_EMERG {
   color: #d9534f;
   font-size: 115%;
 }
