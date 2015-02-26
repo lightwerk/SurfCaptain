@@ -50,7 +50,7 @@
                             'success',
                             'Deployment Successfull!',
                             $scope.deployment.referenceName +
-                            'was successfully deployed onto ' +
+                            ' was successfully deployed onto ' +
                             $scope.deployment.options.name + '!'
                         );
                         flashMessageShown = true;

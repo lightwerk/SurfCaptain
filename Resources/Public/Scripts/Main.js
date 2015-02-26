@@ -1058,7 +1058,7 @@
                     toaster.pop(
                         'error',
                         'Error!',
-                        'API call failed. GitLab is currently not available.'
+                        'API call failed. Your connected Git repository is currently not available.'
                     );
                 }
             );
@@ -1450,7 +1450,7 @@
                             'success',
                             'Deployment Successfull!',
                             $scope.deployment.referenceName +
-                            'was successfully deployed onto ' +
+                            ' was successfully deployed onto ' +
                             $scope.deployment.options.name + '!'
                         );
                         flashMessageShown = true;
