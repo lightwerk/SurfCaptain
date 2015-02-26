@@ -63,12 +63,8 @@ class FileRepository extends AbstractRepository implements RepositoryInterface {
 	/**
 	 * @param string $content
 	 * @return void
-	 * @throws Exception
 	 */
 	protected function setFileContent($content) {
-		if (!file_exists($this->getFilePath())) {
-			throw new Exception('File ' . $this->getFilePath() . ' does not exist', 1410549493);
-		}
 		$bytes = file_put_contents($this->getFilePath(), $content);
 		if ($bytes === FALSE) {
 			throw new Exception('Could not write content to ' . $this->getFilePath(), 1410549549);
@@ -89,11 +85,10 @@ class FileRepository extends AbstractRepository implements RepositoryInterface {
 
 	/**
 	 * @return string
-	 * @throws Exception
 	 */
 	protected function getFileContent() {
-		if (!file_exists($this->getFilePath())) {
-			throw new Exception('File ' . $this->getFilePath() . ' does not exist', 1410549384);
+		if (file_exists($this->getFilePath()) === FALSE) {
+			return '{}';
 		}
 		return file_get_contents($this->getFilePath());
 	}
