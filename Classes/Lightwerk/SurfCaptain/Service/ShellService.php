@@ -17,12 +17,6 @@ use TYPO3\Flow\Annotations as Flow;
 class ShellService {
 
 	/**
-	 * @Flow\Inject
-	 * @var \TYPO3\Flow\Package\PackageManagerInterface
-	 */
-	protected $packageManager;
-
-	/**
 	 * @param string $hostname
 	 * @param string $username
 	 * @param integer $port
@@ -32,7 +26,7 @@ class ShellService {
 	public function checkLogin($hostname, $username = NULL, $port = NULL) {
 		$command = 'ssh -t -t -o LogLevel=ERROR ';
 		if (!empty($port)) {
-			$command .= ' -p ' . escapeshellarg($port);
+			$command .= '-p ' . escapeshellarg($port) . ' ';
 		}
 		if (!empty($username)) {
 			$command .= $username . '@';
