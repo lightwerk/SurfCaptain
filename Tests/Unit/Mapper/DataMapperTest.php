@@ -6,7 +6,6 @@ namespace Lightwerk\SurfCaptain\Tests\Unit\Mapper;
  *                                                                        *
  *                                                                        */
 
-use MyProject\Proxies\__CG__\stdClass;
 use TYPO3\Flow\Tests\UnitTestCase;
 
 /**
