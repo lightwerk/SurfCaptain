@@ -112,4 +112,48 @@ class DataMapperTest extends UnitTestCase {
 			)
 		);
 	}
+
+	/**
+	 * @return void
+	 * @test
+	 * @expectedException \Lightwerk\SurfCaptain\Mapper\Exception
+	 */
+	public function getNewInstanceOfObjectThrowsExceptionIfObjectClassDoesNotExist() {
+		$dataMapperMock = $this->getAccessibleMock('Lightwerk\SurfCaptain\Mapper\DataMapper', array('foo'));
+		$dataMapperMock->_call('getNewInstanceOfObject', 'nonexistingClassName');
+	}
+
+	/**
+	 * @return void
+	 * @test
+	 */
+	public function getNewInstanceOfObjectReturnsInstanceOfObject() {
+		$dataMapperMock = $this->getAccessibleMock('Lightwerk\SurfCaptain\Mapper\DataMapper', array('foo'));
+		$object = $dataMapperMock->_call('getNewInstanceOfObject', 'Lightwerk\SurfCaptain\Tests\Unit\Mapper\DataMapperTest');
+		$this->assertInstanceOf('Lightwerk\SurfCaptain\Tests\Unit\Mapper\DataMapperTest', $object);
+	}
+
+	/**
+	 * @return void
+	 * @test
+	 * @expectedException \Lightwerk\SurfCaptain\Mapper\Exception
+	 */
+	public function mapOneToObjectThrowsExceptionIfObjectDataIsNoArray() {
+		$dataMapperMock = $this->getAccessibleMock('Lightwerk\SurfCaptain\Mapper\DataMapper', array('getPropertyValue'));
+		$dataMapperMock->_call('mapOneToObject', NULL, 'Lightwerk\SurfCaptain\Mapper\DataMapper', array());
+	}
+
+	/**
+	 * @return void
+	 * @test
+	 * @expectedException \Lightwerk\SurfCaptain\Mapper\Exception
+	 */
+	public function mapOneToObjectDoesNotCatchExceptionThrownInGetNewInstanceOfObject() {
+		$dataMapperMock = $this->getAccessibleMock('Lightwerk\SurfCaptain\Mapper\DataMapper', array('getPropertyValue', 'getNewInstanceOfObject'));
+		$e = new \Lightwerk\SurfCaptain\Mapper\Exception();
+		$dataMapperMock->expects($this->once())->method('getNewInstanceOfObject')->with('ObjectClass')->will($this->throwException($e));
+		$dataMapperMock->_call('mapOneToObject', array(), 'ObjectClass', array());
+	}
+
+
 }
