@@ -60,8 +60,8 @@ class MarkerUtilityTest extends UnitTestCase {
 	 */
 	public function replaceVariablesInValueMatchingDataProvider() {
 		return array(
-			'no match Set 1' => array('{{marker}}', array('marker' => 'bar', 'ReplaceMe2' => 'foo'), 'bar'),
-			'no match Set 2' => array('{{marker}}', array(1 => array( 1 => 2), 'marker' => 'foo'), 'foo')
+			'Matching Set 1' => array('{{marker}}', array('marker' => 'bar', 'ReplaceMe2' => 'foo'), 'bar'),
+			'Matching Set 2' => array('{{marker}}', array(1 => array( 1 => 2), 'marker' => 'foo'), 'foo')
 		);
 	}
 }
