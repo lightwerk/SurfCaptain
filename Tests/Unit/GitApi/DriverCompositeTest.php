@@ -31,7 +31,7 @@ class DriverCompositeTest extends UnitTestCase {
 	 * @return void
 	 */
 	public function tearDown() {
-		unset($this->driverCompositeMock);
+		$this->driverCompositeMock = NULL;
 	}
 
 	/**

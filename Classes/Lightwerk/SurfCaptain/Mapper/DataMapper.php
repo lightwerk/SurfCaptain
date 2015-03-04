@@ -49,10 +49,7 @@ class DataMapper {
 		if (!is_array($objectData)) {
 			throw new Exception('Object mapping is not possible with given unexpected data for ObjectClass ' . $objectClass . ': ' . json_encode($objectData), 1408468371);
 		}
-		if (!class_exists($objectClass)) {
-			throw new Exception('Object class "' . $objectClass . '" does not exist!', 1408203711);
-		}
-		$object = new $objectClass();
+		$object = $this->getNewInstanceOfObject($objectClass);
 		$properties = ObjectAccess::getSettablePropertyNames($object);
 		foreach ($properties as $property) {
 			$value = $this->getPropertyValue($object, $property, $objectData, $settings, $key);
@@ -62,6 +59,18 @@ class DataMapper {
 			}
 		}
 		return $object;
+	}
+
+	/**
+	 * @param string $objectClass
+	 * @return mixed
+	 * @throws Exception
+	 */
+	protected function getNewInstanceOfObject($objectClass) {
+		if (!class_exists($objectClass)) {
+			throw new Exception('Object class "' . $objectClass . '" does not exist!', 1408203711);
+		}
+		return new $objectClass();
 	}
 
 	/**
