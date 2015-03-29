@@ -35,7 +35,7 @@ Lightwerk:
       # Another example with GitHubDriver
       github.com:
         apiUrl: https://api.github.com/
-        driver: 'GitHubDriver'
+        driver: 'GitHub'
         accountName: 'git@github.com'
         privateToken: '1234567890abcdefghij'
         mapping:

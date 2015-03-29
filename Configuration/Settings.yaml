@@ -33,6 +33,18 @@ Lightwerk:
       preset:
         fileRepository:
           filePath: 'Configuration/Presets.json'
-        gitRepository:
-          repositoryUrl: 'git@github.com:achimfritz/Test.git'
-          filePath: 'Presets.json'
+TYPO3:
+  Setup:
+    stepOrder: ['database', 'gitdriver', 'gitsettings', 'deployment', 'final']
+    steps:
+      gitdriver:
+        className: 'Lightwerk\SurfCaptain\Setup\Step\GitDriverStep'
+      gitsettings:
+        className: 'Lightwerk\SurfCaptain\Setup\Step\GitSettingsStep'
+      deployment:
+        className: 'Lightwerk\SurfCaptain\Setup\Step\DeploymentStep'
+      final:
+        className: 'Lightwerk\SurfCaptain\Setup\Step\FinalStep'
+    view:
+      title: 'Lightwerk SurfCaptain Setup'
+
