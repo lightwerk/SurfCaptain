@@ -39,6 +39,7 @@ class GitDriverStep extends \TYPO3\Setup\Step\AbstractStep {
 		$gitDriver->setLabel('Git Driver');
 		$gitDriver->setProperty('options', array('GitHub' => 'Git Hub', 'GitLab' => 'Git Lab', 'BitBucket' => 'Bit Bucket'));
 		$gitDriver->addValidator(new NotEmptyValidator());
+		$gitDriver->setDefaultValue(Arrays::getValueByPath($this->distributionSettings, 'Lightwerk.SurfCaptain.sources.default.driver'));
 
 		$formDefinition->setRenderingOption('skipStepNotice', 'If you skip this step make sure that you have configured your Git Repositories in Setup.yaml');
 	}

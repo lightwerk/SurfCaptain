@@ -35,9 +35,11 @@ class DeploymentStep extends \TYPO3\Setup\Step\AbstractStep {
 
 		$user = $deploymentSection->createElement('defaultUser', 'TYPO3.Form:SingleLineText');
 		$user->setLabel('Deployment User (Default SSH User for Deployment on Target System)');
+		$user->setDefaultValue(Arrays::getValueByPath($this->distributionSettings, 'Lightwerk.SurfCaptain.frontendSettings.defaultUser'));
 
 		$path = $deploymentSection->createElement('defaultDeploymentPath', 'TYPO3.Form:SingleLineText');
 		$path->setLabel('Deployment Path (Default Target Path for deployments (without ../htdocs), e.g. /var/www/{{project}}/{{suffix}}/)');
+		$user->setDefaultValue(Arrays::getValueByPath($this->distributionSettings, 'Lightwerk.SurfCaptain.frontendSettings.defaultDeploymentPath'));
 
 		$formDefinition->setRenderingOption('skipStepNotice', 'If you skip this step make sure that you have configured your Git Repositories in Setup.yaml');
 
@@ -56,6 +58,8 @@ class DeploymentStep extends \TYPO3\Setup\Step\AbstractStep {
 		if (empty($formValues['defaultUser']) === FALSE) {
 			$this->distributionSettings = Arrays::setValueByPath($this->distributionSettings, 'Lightwerk.SurfCaptain.frontendSettings.defaultUser', $formValues['defaultUser']);
 		}
+		$this->configurationSource->save(FLOW_PATH_CONFIGURATION . ConfigurationManager::CONFIGURATION_TYPE_SETTINGS, $this->distributionSettings);
+		$this->configurationManager->flushConfigurationCache();
 	}
 
 

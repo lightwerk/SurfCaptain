@@ -62,18 +62,22 @@ class GitSettingsStep extends \TYPO3\Setup\Step\AbstractStep {
 		$apiUrl = $generalSection->createElement('apiUrl', 'TYPO3.Form:SingleLineText');
 		$apiUrl->setLabel('Api Url (e.g. ' . $this->exampleData[$driver]['apiUrl'] . ')');
 		$apiUrl->addValidator(new NotEmptyValidator());
+		$apiUrl->setDefaultValue(Arrays::getValueByPath($this->distributionSettings, 'Lightwerk.SurfCaptain.sources.default.apiUrl'));
 
 		$accountName = $generalSection->createElement('accountName', 'TYPO3.Form:SingleLineText');
 		$accountName->setLabel('Account Name (e.g. ' . $this->exampleData[$driver]['accountName'] . ')');
 		$accountName->addValidator(new NotEmptyValidator());
+		$accountName->setDefaultValue(Arrays::getValueByPath($this->distributionSettings, 'Lightwerk.SurfCaptain.sources.default.accountName'));
 
 		$privateToken = $generalSection->createElement('privateToken', 'TYPO3.Form:SingleLineText');
 		$privateToken->setLabel('Private Token');
 		$privateToken->addValidator(new NotEmptyValidator());
+		$privateToken->setDefaultValue(Arrays::getValueByPath($this->distributionSettings, 'Lightwerk.SurfCaptain.sources.default.privateToken'));
 
 		$repositories = $generalSection->createElement('repositories', 'TYPO3.Form:SingleLineText');
 		$repositories->setLabel('Repositories (csv) (e.g. ' . $this->exampleData[$driver]['repositories'] . ')');
 		$repositories->addValidator(new NotEmptyValidator());
+		$repositories->setDefaultValue(implode(',', Arrays::getValueByPath($this->distributionSettings, 'Lightwerk.SurfCaptain.sources.default.repositories')));
 
 		$driverSection = $page1->createElement('driverSection', 'TYPO3.Form:Section');
 		$driverSection->setLabel('Driver Sepcific Settings');
@@ -88,15 +92,19 @@ class GitSettingsStep extends \TYPO3\Setup\Step\AbstractStep {
 				$fallbackApiUrl = $driverSection->createElement('fallbackApiUrl', 'TYPO3.Form:SingleLineText');
 				$fallbackApiUrl->setLabel('Fallback Api Url');
 				$fallbackApiUrl->addValidator(new NotEmptyValidator());
+				$fallbackApiUrl->setDefaultValue(Arrays::getValueByPath($this->distributionSettings, 'Lightwerk.SurfCaptain.sources.default.fallbackApiUrl'));
 				$privateSecret = $driverSection->createElement('privateSecret', 'TYPO3.Form:SingleLineText');
 				$privateSecret->setLabel('Private Secret');
 				$privateSecret->addValidator(new NotEmptyValidator());
+				$privateSecret->setDefaultValue(Arrays::getValueByPath($this->distributionSettings, 'Lightwerk.SurfCaptain.sources.default.privateSecret'));
 				$accessToken = $driverSection->createElement('accessToken', 'TYPO3.Form:SingleLineText');
 				$accessToken->setLabel('Access Token');
 				$accessToken->addValidator(new NotEmptyValidator());
+				$accessToken->setDefaultValue(Arrays::getValueByPath($this->distributionSettings, 'Lightwerk.SurfCaptain.sources.default.accessToken'));
 				$accessSecret = $driverSection->createElement('accessSecret', 'TYPO3.Form:SingleLineText');
 				$accessSecret->setLabel('Access Secret');
 				$accessSecret->addValidator(new NotEmptyValidator());
+				$accessSecret->setDefaultValue(Arrays::getValueByPath($this->distributionSettings, 'Lightwerk.SurfCaptain.sources.default.accessSecret'));
 				break;
 			default:
 				throw new SetupException('unknown driver ' . $driver, 1427623122);
