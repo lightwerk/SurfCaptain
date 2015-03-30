@@ -35,5 +35,10 @@
         "psr-0": {
             "Lightwerk\\SurfCaptain": "Classes"
         }
+    },
+    "extra": {
+        "typo3/flow": {
+            "manage-resources" : true
+        }
     }
 }
