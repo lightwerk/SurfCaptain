@@ -27,8 +27,8 @@
         "source": "https://bitbucket.org/lightwerk/surfcaptain/src"
     },
     "require": {
-				    "typo3/flow": "2.3.*",
-								"typo3/setup": "1.0.0",
+        "typo3/flow": "2.3.*",
+        "typo3/setup": "1.1.0",
         "typo3/surf": "*"
     },
     "autoload": {

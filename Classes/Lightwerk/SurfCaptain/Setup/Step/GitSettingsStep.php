@@ -77,7 +77,10 @@ class GitSettingsStep extends \TYPO3\Setup\Step\AbstractStep {
 		$repositories = $generalSection->createElement('repositories', 'TYPO3.Form:SingleLineText');
 		$repositories->setLabel('Repositories (csv) (e.g. ' . $this->exampleData[$driver]['repositories'] . ')');
 		$repositories->addValidator(new NotEmptyValidator());
-		$repositories->setDefaultValue(implode(',', Arrays::getValueByPath($this->distributionSettings, 'Lightwerk.SurfCaptain.sources.default.repositories')));
+		$existingRepositories = Arrays::getValueByPath($this->distributionSettings, 'Lightwerk.SurfCaptain.sources.default.repositories');
+		if (is_array($existingRepositories)) {
+			$repositories->setDefaultValue(implode(',', $existingRepositories));
+		}
 
 		$driverSection = $page1->createElement('driverSection', 'TYPO3.Form:Section');
 		$driverSection->setLabel('Driver Sepcific Settings');
@@ -135,16 +138,15 @@ class GitSettingsStep extends \TYPO3\Setup\Step\AbstractStep {
 			case 'GitLab':
 				break;
 			case 'BitBucket':
-		$this->distributionSettings = Arrays::setValueByPath($this->distributionSettings, 'Lightwerk.SurfCaptain.sources.default.fallbackApiUrl', $formValues['fallbackApiUrl']);
-		$this->distributionSettings = Arrays::setValueByPath($this->distributionSettings, 'Lightwerk.SurfCaptain.sources.default.privateSecret', $formValues['privateSecret']);
-		$this->distributionSettings = Arrays::setValueByPath($this->distributionSettings, 'Lightwerk.SurfCaptain.sources.default.accessToken', $formValues['accessToken']);
-		$this->distributionSettings = Arrays::setValueByPath($this->distributionSettings, 'Lightwerk.SurfCaptain.sources.default.accessSecret', $formValues['accessSecret']);
+				$this->distributionSettings = Arrays::setValueByPath($this->distributionSettings, 'Lightwerk.SurfCaptain.sources.default.fallbackApiUrl', $formValues['fallbackApiUrl']);
+				$this->distributionSettings = Arrays::setValueByPath($this->distributionSettings, 'Lightwerk.SurfCaptain.sources.default.privateSecret', $formValues['privateSecret']);
+				$this->distributionSettings = Arrays::setValueByPath($this->distributionSettings, 'Lightwerk.SurfCaptain.sources.default.accessToken', $formValues['accessToken']);
+				$this->distributionSettings = Arrays::setValueByPath($this->distributionSettings, 'Lightwerk.SurfCaptain.sources.default.accessSecret', $formValues['accessSecret']);
 				break;
 			default:
 				throw new SetupException('unknown driver ' . $driver, 1427623122);
 		}
 		$this->configurationSource->save(FLOW_PATH_CONFIGURATION . ConfigurationManager::CONFIGURATION_TYPE_SETTINGS, $this->distributionSettings);
-		$this->configurationManager->flushConfigurationCache();
 	}
 
 
