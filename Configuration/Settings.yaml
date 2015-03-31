@@ -35,7 +35,7 @@ Lightwerk:
           filePath: 'Configuration/Presets.json'
 TYPO3:
   Setup:
-    stepOrder: ['database', 'gitdriver', 'gitsettings', 'deployment', 'verification', 'final']
+    stepOrder: ['database', 'gitdriver', 'gitsettings', 'verification', 'deployment', 'final']
     steps:
       gitdriver:
         className: 'Lightwerk\SurfCaptain\Setup\Step\GitDriverStep'

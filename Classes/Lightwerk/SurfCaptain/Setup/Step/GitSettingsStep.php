@@ -127,6 +127,8 @@ class GitSettingsStep extends \TYPO3\Setup\Step\AbstractStep {
 		$settings = $this->configurationManager->getConfiguration(ConfigurationManager::CONFIGURATION_TYPE_SETTINGS, 'Lightwerk.SurfCaptain');
 		$driver = $settings['sources']['default']['driver'];
 		$repositories = Arrays::trimExplode(',', $formValues['repositories']);
+		// reset
+		$this->distributionSettings['Lightwerk']['SurfCaptain']['sources']['default']['repositories'] = array();
 		for ($i = 0; $i < count($repositories); $i++) {
 			$this->distributionSettings = Arrays::setValueByPath($this->distributionSettings, 'Lightwerk.SurfCaptain.sources.default.repositories.' . $i, $repositories[$i]);
 		}
