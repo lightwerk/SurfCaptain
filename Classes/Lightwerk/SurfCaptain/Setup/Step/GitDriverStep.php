@@ -82,7 +82,6 @@ class GitDriverStep extends \TYPO3\Setup\Step\AbstractStep {
 				throw new SetupException('unknown driver ' . $driver, 1427623122);
 		}
 		$this->configurationSource->save(FLOW_PATH_CONFIGURATION . ConfigurationManager::CONFIGURATION_TYPE_SETTINGS, $this->distributionSettings);
-		$this->configurationManager->flushConfigurationCache();
 	}
 
 

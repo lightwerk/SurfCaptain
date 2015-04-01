@@ -53,6 +53,8 @@ class RepositoryController extends AbstractRestController {
 			$this->view->assign('repository', $repository);
 		} catch (\Lightwerk\SurfCaptain\Service\Exception $e) {
 			$this->handleException($e);
+		} catch (\Lightwerk\SurfCaptain\GitApi\Exception $e) {
+			$this->handleException($e);
 		} catch (\TYPO3\Flow\Http\Exception $e) {
 			$this->handleException($e);
 		}
@@ -65,6 +67,8 @@ class RepositoryController extends AbstractRestController {
 		try {
 			$this->view->assign('repositories', $this->driverComposite->getRepositories());
 		} catch (\Lightwerk\SurfCaptain\Service\Exception $e) {
+			$this->handleException($e);
+		} catch (\Lightwerk\SurfCaptain\GitApi\Exception $e) {
 			$this->handleException($e);
 		} catch (\TYPO3\Flow\Http\Exception $e) {
 			$this->handleException($e);
