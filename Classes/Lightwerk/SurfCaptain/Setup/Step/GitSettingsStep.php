@@ -53,11 +53,6 @@ class GitSettingsStep extends \TYPO3\Setup\Step\AbstractStep {
 		$generalSection = $page1->createElement('generalSection', 'TYPO3.Form:Section');
 		$generalSection->setLabel('General Settings');
 
-		$privateToken = $generalSection->createElement('privateToken', 'TYPO3.Form:SingleLineText');
-		$privateToken->setLabel('Private Token');
-		$privateToken->addValidator(new NotEmptyValidator());
-		$privateToken->setDefaultValue(Arrays::getValueByPath($this->distributionSettings, 'Lightwerk.SurfCaptain.sources.default.privateToken'));
-
 		$repositories = $generalSection->createElement('repositories', 'TYPO3.Form:SingleLineText');
 		$repositories->setLabel('Repositories (csv) (e.g. ' . $this->exampleData[$driver]['repositories'] . ')');
 		$repositories->addValidator(new NotEmptyValidator());
@@ -70,11 +65,16 @@ class GitSettingsStep extends \TYPO3\Setup\Step\AbstractStep {
 		$driverSection->setLabel('Driver Sepcific Settings');
 		switch ($driver) {
 			case 'GitHub':
-				$notRequired = $driverSection->createElement('notRequired', 'TYPO3.Form:StaticText');
-				$notRequired->setProperty('text', 'No Driver Specific Settings required for ' . $driver . ' Driver');
-				$notRequired->setProperty('class', 'alert alert-info');
+				$privateToken = $driverSection->createElement('privateToken', 'TYPO3.Form:SingleLineText');
+				$privateToken->setLabel('Private Token');
+				$privateToken->addValidator(new NotEmptyValidator());
+				$privateToken->setDefaultValue(Arrays::getValueByPath($this->distributionSettings, 'Lightwerk.SurfCaptain.sources.default.privateToken'));
 				break;
 			case 'GitLab':
+				$privateToken = $driverSection->createElement('privateToken', 'TYPO3.Form:SingleLineText');
+				$privateToken->setLabel('Private Token');
+				$privateToken->addValidator(new NotEmptyValidator());
+				$privateToken->setDefaultValue(Arrays::getValueByPath($this->distributionSettings, 'Lightwerk.SurfCaptain.sources.default.privateToken'));
 				$apiUrl = $driverSection->createElement('apiUrl', 'TYPO3.Form:SingleLineText');
 				$apiUrl->setLabel('Api Url (e.g. https://git.lightwerk.com/api/v3/)');
 				$apiUrl->addValidator(new NotEmptyValidator());
@@ -83,7 +83,17 @@ class GitSettingsStep extends \TYPO3\Setup\Step\AbstractStep {
 				$accountName->setLabel('Account Name (e.g. git@git.lightwerk.com)');
 				$accountName->addValidator(new NotEmptyValidator());
 				$accountName->setDefaultValue(Arrays::getValueByPath($this->distributionSettings, 'Lightwerk.SurfCaptain.sources.default.accountName'));
+				break;
 			case 'BitBucket':
+				$link = $driverSection->createElement('link', 'TYPO3.Setup:LinkElement');
+				$link->setLabel('see OAuth on Bitbucket');
+				$link->setProperty('href', 'https://confluence.atlassian.com/display/BITBUCKET/OAuth+on+Bitbucket');
+				$link->setProperty('target', '_blank');
+				$link->setProperty('elementClassAttribute', 'alert alert-info');
+				$privateToken = $driverSection->createElement('privateToken', 'TYPO3.Form:SingleLineText');
+				$privateToken->setLabel('Private Token');
+				$privateToken->addValidator(new NotEmptyValidator());
+				$privateToken->setDefaultValue(Arrays::getValueByPath($this->distributionSettings, 'Lightwerk.SurfCaptain.sources.default.privateToken'));
 				$accountName = $driverSection->createElement('accountName', 'TYPO3.Form:SingleLineText');
 				$accountName->setLabel('Account Name');
 				$accountName->addValidator(new NotEmptyValidator());

@@ -53,6 +53,8 @@ class GitDriverStep extends \TYPO3\Setup\Step\AbstractStep {
 	public function postProcessFormValues(array $formValues) {
 		$driver = $formValues['gitDriver'];
 		$this->distributionSettings = Arrays::setValueByPath($this->distributionSettings, 'Lightwerk.SurfCaptain.sources.default.driver', $driver);
+		// reset
+		$this->distributionSettings['Lightwerk']['SurfCaptain']['sources']['default']['mapping'] = array();
 		switch ($driver) {
 			case 'GitHub':
 				$this->distributionSettings = Arrays::setValueByPath($this->distributionSettings, 'Lightwerk.SurfCaptain.sources.default.mapping.Repository.repositoryUrl', '{{ssh_url}}');
