@@ -27,18 +27,12 @@ class GitSettingsStep extends \TYPO3\Setup\Step\AbstractStep {
 	 */
 	protected $exampleData = array(
 		'GitLab' => array(
-			'apiUrl' => 'https://git.lightwerk.com/api/v3/',
-			'accountName' => 'git@git.lightwerk.com',
 			'repositories' => 'groups/10, projects/209'
 		),
 		'BitBucket' => array(
-			'apiUrl' => 'https://api.bitbucket.org/2.0/',
-			'accountName' => 'myAccount',
 			'repositories' => 'repositories/myaccount'
 		),
 		'GitHub' => array(
-			'apiUrl' => 'https://api.github.com/',
-			'accountName' => 'git@github.com',
 			'repositories' => 'users/lars85/repos, orgs/lightwerk/repos, repos/achimfritz/championship-distribution'
 		)
 	);
@@ -59,16 +53,6 @@ class GitSettingsStep extends \TYPO3\Setup\Step\AbstractStep {
 		$generalSection = $page1->createElement('generalSection', 'TYPO3.Form:Section');
 		$generalSection->setLabel('General Settings');
 
-		$apiUrl = $generalSection->createElement('apiUrl', 'TYPO3.Form:SingleLineText');
-		$apiUrl->setLabel('Api Url (e.g. ' . $this->exampleData[$driver]['apiUrl'] . ')');
-		$apiUrl->addValidator(new NotEmptyValidator());
-		$apiUrl->setDefaultValue(Arrays::getValueByPath($this->distributionSettings, 'Lightwerk.SurfCaptain.sources.default.apiUrl'));
-
-		$accountName = $generalSection->createElement('accountName', 'TYPO3.Form:SingleLineText');
-		$accountName->setLabel('Account Name (e.g. ' . $this->exampleData[$driver]['accountName'] . ')');
-		$accountName->addValidator(new NotEmptyValidator());
-		$accountName->setDefaultValue(Arrays::getValueByPath($this->distributionSettings, 'Lightwerk.SurfCaptain.sources.default.accountName'));
-
 		$privateToken = $generalSection->createElement('privateToken', 'TYPO3.Form:SingleLineText');
 		$privateToken->setLabel('Private Token');
 		$privateToken->addValidator(new NotEmptyValidator());
@@ -83,16 +67,24 @@ class GitSettingsStep extends \TYPO3\Setup\Step\AbstractStep {
 		$driverSection->setLabel('Driver Sepcific Settings');
 		switch ($driver) {
 			case 'GitHub':
-			case 'GitLab':
 				$notRequired = $driverSection->createElement('notRequired', 'TYPO3.Form:StaticText');
 				$notRequired->setProperty('text', 'No Driver Specific Settings required for ' . $driver . ' Driver');
 				$notRequired->setProperty('class', 'alert alert-info');
 				break;
+			case 'GitLab':
+				$apiUrl = $driverSection->createElement('apiUrl', 'TYPO3.Form:SingleLineText');
+				$apiUrl->setLabel('Api Url (e.g. https://git.lightwerk.com/api/v3/)');
+				$apiUrl->addValidator(new NotEmptyValidator());
+				$apiUrl->setDefaultValue(Arrays::getValueByPath($this->distributionSettings, 'Lightwerk.SurfCaptain.sources.default.apiUrl'));
+				$accountName = $driverSection->createElement('accountName', 'TYPO3.Form:SingleLineText');
+				$accountName->setLabel('Account Name (e.g. git@git.lightwerk.com)');
+				$accountName->addValidator(new NotEmptyValidator());
+				$accountName->setDefaultValue(Arrays::getValueByPath($this->distributionSettings, 'Lightwerk.SurfCaptain.sources.default.accountName'));
 			case 'BitBucket':
-				$fallbackApiUrl = $driverSection->createElement('fallbackApiUrl', 'TYPO3.Form:SingleLineText');
-				$fallbackApiUrl->setLabel('Fallback Api Url');
-				$fallbackApiUrl->addValidator(new NotEmptyValidator());
-				$fallbackApiUrl->setDefaultValue(Arrays::getValueByPath($this->distributionSettings, 'Lightwerk.SurfCaptain.sources.default.fallbackApiUrl'));
+				$accountName = $driverSection->createElement('accountName', 'TYPO3.Form:SingleLineText');
+				$accountName->setLabel('Account Name');
+				$accountName->addValidator(new NotEmptyValidator());
+				$accountName->setDefaultValue(Arrays::getValueByPath($this->distributionSettings, 'Lightwerk.SurfCaptain.sources.default.accountName'));
 				$privateSecret = $driverSection->createElement('privateSecret', 'TYPO3.Form:SingleLineText');
 				$privateSecret->setLabel('Private Secret');
 				$privateSecret->addValidator(new NotEmptyValidator());
@@ -127,15 +119,20 @@ class GitSettingsStep extends \TYPO3\Setup\Step\AbstractStep {
 		for ($i = 0; $i < count($repositories); $i++) {
 			$this->distributionSettings = Arrays::setValueByPath($this->distributionSettings, 'Lightwerk.SurfCaptain.sources.default.repositories.' . $i, $repositories[$i]);
 		}
-		$this->distributionSettings = Arrays::setValueByPath($this->distributionSettings, 'Lightwerk.SurfCaptain.sources.default.accountName', $formValues['accountName']);
 		$this->distributionSettings = Arrays::setValueByPath($this->distributionSettings, 'Lightwerk.SurfCaptain.sources.default.privateToken', $formValues['privateToken']);
-		$this->distributionSettings = Arrays::setValueByPath($this->distributionSettings, 'Lightwerk.SurfCaptain.sources.default.apiUrl', $formValues['apiUrl']);
 		switch ($driver) {
 			case 'GitHub':
+				$this->distributionSettings = Arrays::setValueByPath($this->distributionSettings, 'Lightwerk.SurfCaptain.sources.default.accountName', 'git@github.com');
+				$this->distributionSettings = Arrays::setValueByPath($this->distributionSettings, 'Lightwerk.SurfCaptain.sources.default.apiUrl', 'https://api.github.com/');
+				break;
 			case 'GitLab':
+				$this->distributionSettings = Arrays::setValueByPath($this->distributionSettings, 'Lightwerk.SurfCaptain.sources.default.accountName', $formValues['accountName']);
+				$this->distributionSettings = Arrays::setValueByPath($this->distributionSettings, 'Lightwerk.SurfCaptain.sources.default.apiUrl', $formValues['apiUrl']);
 				break;
 			case 'BitBucket':
-		$this->distributionSettings = Arrays::setValueByPath($this->distributionSettings, 'Lightwerk.SurfCaptain.sources.default.fallbackApiUrl', $formValues['fallbackApiUrl']);
+				$this->distributionSettings = Arrays::setValueByPath($this->distributionSettings, 'Lightwerk.SurfCaptain.sources.default.accountName', $formValues['accountName']);
+				$this->distributionSettings = Arrays::setValueByPath($this->distributionSettings, 'Lightwerk.SurfCaptain.sources.default.apiUrl', 'https://api.bitbucket.org/2.0/');
+		$this->distributionSettings = Arrays::setValueByPath($this->distributionSettings, 'Lightwerk.SurfCaptain.sources.default.fallbackApiUrl', 'https://api.bitbucket.org/1.0/');
 		$this->distributionSettings = Arrays::setValueByPath($this->distributionSettings, 'Lightwerk.SurfCaptain.sources.default.privateSecret', $formValues['privateSecret']);
 		$this->distributionSettings = Arrays::setValueByPath($this->distributionSettings, 'Lightwerk.SurfCaptain.sources.default.accessToken', $formValues['accessToken']);
 		$this->distributionSettings = Arrays::setValueByPath($this->distributionSettings, 'Lightwerk.SurfCaptain.sources.default.accessSecret', $formValues['accessSecret']);
