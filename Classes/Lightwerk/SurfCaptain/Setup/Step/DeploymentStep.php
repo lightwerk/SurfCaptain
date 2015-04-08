@@ -38,7 +38,7 @@ class DeploymentStep extends \TYPO3\Setup\Step\AbstractStep {
 		$user->setDefaultValue(Arrays::getValueByPath($this->distributionSettings, 'Lightwerk.SurfCaptain.frontendSettings.defaultUser'));
 
 		$path = $deploymentSection->createElement('defaultDeploymentPath', 'TYPO3.Form:SingleLineText');
-		$path->setLabel('Deployment Path (Default Target Path for deployments (without ../htdocs), e.g. /var/www/{{project}}/{{suffix}}/)');
+		$path->setLabel('Deployment Path (Default Target Path for deployments (with htdocs), e.g. /var/www/{{project}}/{{suffix}}/htdocs/)');
 		$path->setDefaultValue(Arrays::getValueByPath($this->distributionSettings, 'Lightwerk.SurfCaptain.frontendSettings.defaultDeploymentPath'));
 
 		$formDefinition->setRenderingOption('skipStepNotice', 'If you skip this step make sure that you have configured your Git Repositories in Setup.yaml');
