@@ -1,48 +1,49 @@
 # GitLab API Responses
 
-  curl --insecure --header "PRIVATE-TOKEN: ..." https://git.lightwerk.com/api/v3/projects | jq '.'
-  [
-    {
-      "namespace": {
-        "avatar": null,
+    
+    curl --insecure --header "PRIVATE-TOKEN: ..." https://git.lightwerk.com/api/v3/projects | jq '.'
+    [
+      {
+        "namespace": {
+          "avatar": null,
+          "description": "",
+          "updated_at": "2014-04-14T10:26:03.380Z",
+          "created_at": "2014-04-14T10:26:03.380Z",
+          "owner_id": 7,
+          "path": "bb",
+          "name": "bb",
+          "id": 14
+        },
+        "last_activity_at": "2014-05-12T18:58:56.118Z",
+        "created_at": "2014-05-07T12:44:52.201Z",
+        "snippets_enabled": false,
+        "wiki_enabled": true,
+        "web_url": "https://git.lightwerk.com/jd/projectA",
+        "http_url_to_repo": "https://git.lightwerk.com/jd/projectA.git",
+        "ssh_url_to_repo": "git@git.lightwerk.com:jd/projectA.git",
+        "visibility_level": 0,
+        "public": false,
+        "default_branch": "master",
         "description": "",
-        "updated_at": "2014-04-14T10:26:03.380Z",
-        "created_at": "2014-04-14T10:26:03.380Z",
-        "owner_id": 7,
-        "path": "bb",
-        "name": "bb",
-        "id": 14
-      },
-      "last_activity_at": "2014-05-12T18:58:56.118Z",
-      "created_at": "2014-05-07T12:44:52.201Z",
-      "snippets_enabled": false,
-      "wiki_enabled": true,
-      "web_url": "https://git.lightwerk.com/jd/projectA",
-      "http_url_to_repo": "https://git.lightwerk.com/jd/projectA.git",
-      "ssh_url_to_repo": "git@git.lightwerk.com:jd/projectA.git",
-      "visibility_level": 0,
-      "public": false,
-      "default_branch": "master",
-      "description": "",
-      "id": 264,
-      "owner": {
-        "created_at": "2014-04-14T10:26:03.368Z",
-        "state": "blocked",
-        "name": "John Doe",
-        "email": "jd@example.com",
-        "username": "jd",
-        "id": 7
-      },
-      "name": "projectA",
-      "name_with_namespace": "John Doe / projectA",
-      "path": "projectA",
-      "path_with_namespace": "jd/projectA",
-      "issues_enabled": true,
-      "merge_requests_enabled": true,
-      "wall_enabled": false
-    }
-  ]
-
+        "id": 264,
+        "owner": {
+          "created_at": "2014-04-14T10:26:03.368Z",
+          "state": "blocked",
+          "name": "John Doe",
+          "email": "jd@example.com",
+          "username": "jd",
+          "id": 7
+        },
+        "name": "projectA",
+        "name_with_namespace": "John Doe / projectA",
+        "path": "projectA",
+        "path_with_namespace": "jd/projectA",
+        "issues_enabled": true,
+        "merge_requests_enabled": true,
+        "wall_enabled": false
+      }
+    ]
+  
     curl --insecure --header "PRIVATE-TOKEN: ..." https://git.lightwerk.com/api/v3/projects/projectC/repository/branches | jq '.'
     [
       {
