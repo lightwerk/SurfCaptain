@@ -17,9 +17,9 @@
       "created_at": "2014-05-07T12:44:52.201Z",
       "snippets_enabled": false,
       "wiki_enabled": true,
-      "web_url": "https://git.lightwerk.com/bb/smastuff",
-      "http_url_to_repo": "https://git.lightwerk.com/bb/smastuff.git",
-      "ssh_url_to_repo": "git@git.lightwerk.com:bb/smastuff.git",
+      "web_url": "https://git.lightwerk.com/jd/projectA",
+      "http_url_to_repo": "https://git.lightwerk.com/jd/projectA.git",
+      "ssh_url_to_repo": "git@git.lightwerk.com:jd/projectA.git",
       "visibility_level": 0,
       "public": false,
       "default_branch": "master",
@@ -28,21 +28,22 @@
       "owner": {
         "created_at": "2014-04-14T10:26:03.368Z",
         "state": "blocked",
-        "name": "Benjamin Bretz",
-        "email": "bb@lightwerk.com",
-        "username": "bb",
+        "name": "John Doe",
+        "email": "jd@example.com",
+        "username": "jd",
         "id": 7
       },
-      "name": "smastuff",
-      "name_with_namespace": "Benjamin Bretz / smastuff",
-      "path": "smastuff",
-      "path_with_namespace": "bb/smastuff",
+      "name": "projectA",
+      "name_with_namespace": "John Doe / projectA",
+      "path": "projectA",
+      "path_with_namespace": "jd/projectA",
       "issues_enabled": true,
       "merge_requests_enabled": true,
       "wall_enabled": false
-    },
+    }
+  ]
 
-    curl --insecure --header "PRIVATE-TOKEN: ..." https://git.lightwerk.com/api/v3/projects/project%2Fgtinter/repository/branches | jq '.'
+    curl --insecure --header "PRIVATE-TOKEN: ..." https://git.lightwerk.com/api/v3/projects/projectC/repository/branches | jq '.'
     [
       {
         "protected": false,
@@ -50,14 +51,14 @@
           "committed_date": "2013-10-29T15:21:14+01:00",
           "authored_date": "2013-10-29T15:21:14+01:00",
           "committer": {
-            "email": "dlg@xdev.lightwerk.loc",
-            "name": "dlg"
+            "email": "jd@xexample.com",
+            "name": "jd"
           },
           "author": {
-            "email": "dlg@xdev.lightwerk.loc",
-            "name": "dlg"
+            "email": "jd@xexample.com",
+            "name": "jd"
           },
-          "message": "[TASK] new logo and text for europtec clients, configuration and css files for new clients",
+          "message": "[TASK] something that needed to be done",
           "tree": "8a85f8162f2e98f26fba2b705078a7fcecc9ce92",
           "parents": [
             {
@@ -66,7 +67,7 @@
           ],
           "id": "14b8eec6d0393003dd1cb8b7a39b514b4d21e0e6"
         },
-        "name": "GTWEB-154"
+        "name": "TICKET-01"
       },
       ..
     ]
@@ -90,18 +91,18 @@
           "last_activity_at": "2014-06-18T12:33:38.548Z",
           "created_at": "2014-04-14T11:51:40.133Z",
           "snippets_enabled": false,
-          "web_url": "https://git.lightwerk.com/project/gvsweb",
-          "http_url_to_repo": "https://git.lightwerk.com/project/gvsweb.git",
-          "ssh_url_to_repo": "git@git.lightwerk.com:project/gvsweb.git",
+          "web_url": "https://git.lightwerk.com/project/projectC",
+          "http_url_to_repo": "https://git.lightwerk.com/project/projectC.git",
+          "ssh_url_to_repo": "git@git.lightwerk.com:project/projectC.git",
           "visibility_level": 0,
           "public": false,
           "default_branch": "master",
           "description": "",
           "id": 21,
-          "name": "gvsweb",
-          "name_with_namespace": "project / gvsweb",
-          "path": "gvsweb",
-          "path_with_namespace": "project/gvsweb",
+          "name": "projectC",
+          "name_with_namespace": "project / projectC",
+          "path": "projectC",
+          "path_with_namespace": "project/projectC",
           "issues_enabled": true,
           "merge_requests_enabled": true,
           "wall_enabled": false,
@@ -123,14 +124,14 @@
           "committed_date": "2013-03-26T18:16:28+01:00",
           "authored_date": "2013-03-26T18:16:28+01:00",
           "committer": {
-            "email": "gt@gtweb1.nine.ch",
-            "name": "gt"
+            "email": "jd@example.com",
+            "name": "jd"
           },
           "author": {
-            "email": "gt@gtweb1.nine.ch",
-            "name": "gt"
+            "email": "jd@example.com",
+            "name": "jd"
           },
-          "message": "removed development code",
+          "message": "[TASK] something that needed to be done",
           "tree": "7db5d677c97006d3cec977c8be3bdd6fedf046fe",
           "parents": [
             {
@@ -144,7 +145,7 @@
       ...
     ]
 
-    curl --insecure --header "PRIVATE-TOKEN: ..." http://git.sma.de/api/v3/projects/sma-websites%2Frcw-sma-de/repository/tags | jq '.'
+    curl --insecure --header "PRIVATE-TOKEN: ..." http://git.sma.de/api/v3/projects/projectD/repository/tags | jq '.'
     [
       {
         "protected": null,
@@ -152,14 +153,14 @@
           "committed_date": "2013-05-21T15:28:29+02:00",
           "authored_date": "2013-05-21T15:28:29+02:00",
           "committer": {
-            "email": "af@lightwerk.com",
-            "name": "Achim Fritz"
+            "email": "jd@example.com",
+            "name": "John Doe"
           },
           "author": {
-            "email": "af@lightwerk.com",
-            "name": "Achim Fritz"
+            "email": "jd@example.com",
+            "name": "John Doe"
           },
-          "message": "Merge branch 'master' of git.sma.de:sma-websites/rcw-sma-de",
+          "message": "[TASK] something that needed to be done",
           "tree": "b127352641a6968a43fbe6227029e60decfdb686",
           "parents": [
             {
@@ -184,14 +185,14 @@
           "committed_date": "2014-06-08T22:39:15+02:00",
           "authored_date": "2014-06-08T22:39:15+02:00",
           "committer": {
-            "email": "dlg@lightwerk.com",
-            "name": "Daniel Goerz"
+            "email": "jd@example.com",
+            "name": "John Doe"
           },
           "author": {
-            "email": "dlg@lightwerk.com",
-            "name": "Daniel Goerz"
+            "email": "jd@example.com",
+            "name": "John Doe"
           },
-          "message": "[CONFIGURATION] lw_gtweb_basis - set right sys_language_uids",
+          "message": "[CONFIGURATION] something that needed to be done",
           "tree": "7365c56977b99ad41fa87ac0410caf259e413c93",
           "parents": [
             {
