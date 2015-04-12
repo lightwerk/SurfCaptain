@@ -6,7 +6,7 @@
 ## Minimum configuration
 
     {
-        "sma": [
+        "example": [
             {
                 "applications": [
                     {
@@ -16,7 +16,7 @@
                         "nodes": [
                             {
                                 "name": "Front-End Server",
-                                "hostname": "www.sma.de"
+                                "hostname": "www.example.com"
                             }
                         ]
                     }
@@ -30,7 +30,7 @@
 (without "repositoryUrl")
 
     {
-        "sma": [
+        "example": [
             {
                 "applications": [
                     {
@@ -41,7 +41,7 @@
                         "nodes": [
                             {
                                 "name": "Front-End Server",
-                                "hostname": "www.sma.de",
+                                "hostname": "www.example.com",
                                 "username": "user"
                             }
                         ]
@@ -57,7 +57,7 @@
 (for Deploy and Sync)
 
     {
-        "sma": [
+        "example": [
             {
                 "applications": [
                     {
@@ -69,7 +69,7 @@
                         "nodes": [
                             {
                                 "name": "Front-End Server",
-                                "hostname": "www.sma.de",
+                                "hostname": "www.example.com",
                                 "username": "user"
                             }
                         ]
@@ -82,7 +82,7 @@
 ## Default configuration just for Deploy
 
     {
-        "sma": [
+        "example": [
             {
                 "applications": [
                     {
@@ -95,7 +95,7 @@
                         "nodes": [
                             {
                                 "name": "Front-End Server",
-                                "hostname": "www.sma.de",
+                                "hostname": "www.example.com",
                                 "username": "user"
                             }
                         ]
@@ -108,7 +108,7 @@
 ## Default configuration just for Shared
 
     {
-        "sma": [
+        "example": [
             {
                 "applications": [
                     {
@@ -119,14 +119,14 @@
                             "context": "Development",
                             "sourceNode": {
                                 "name": "Front-End Server 2",
-                                "hostname": "dev.rcw.sma.de",
-                                "username": "lw-lpeipmann"
+                                "hostname": "dev.example.com",
+                                "username": "lw-example"
                             }
                         },
                         "nodes": [
                             {
                                 "name": "Front-End Server",
-                                "hostname": "www.sma.de",
+                                "hostname": "www.example.com",
                                 "username": "user"
                             }
                         ]
@@ -141,7 +141,7 @@
 (has to be continued!)
 
     {
-        "sma": [
+        "example": [
             {
                 "applications": [
                     {
@@ -157,14 +157,14 @@
                             "frontendUrl": "http://www.domain.de",
                             "sourceNode": {
                                 "name": "Front-End Server 2",
-                                "hostname": "dev.rcw.sma.de",
-                                "username": "lw-lpeipmann"
+                                "hostname": "dev.example.com",
+                                "username": "lw-example"
                             }
                         },
                         "nodes": [
                             {
                                 "name": "Front-End Server 2",
-                                "hostname": "www2.sma.de",
+                                "hostname": "www2.example.com",
                                 "username": "user2",
                                 "password": "123456" // Do not use it! Use the Surf-Public-Key instead!
                             }
