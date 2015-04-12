@@ -1,6 +1,6 @@
 # Installation
 
-See [https://bitbucket.org/lightwerk/surfcaptaindistribution](https://bitbucket.org/lightwerk/surfcaptaindistribution)
+See [https://github.com/lightwerk/SurfCaptainDistribution](https://github.com/lightwerk/SurfCaptainDistribution)
 
 
 # Index of contents
