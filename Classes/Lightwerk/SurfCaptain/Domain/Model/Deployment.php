@@ -28,7 +28,7 @@ class Deployment {
 
 	/**
 	 * @var Collection<\Lightwerk\SurfCaptain\Domain\Model\Log>
-	 * @ORM\OneToMany(mappedBy="deployment")
+	 * @ORM\OneToMany(mappedBy="deployment", cascade={"all"}))
 	 * @ORM\OrderBy({"date" = "DESC"})
 	 * @Flow\Lazy()
 	 */
@@ -226,6 +226,35 @@ class Deployment {
 	 * @param array $configuration
 	 * @return Deployment
 	 */
+	public function setStaticConfiguration($configuration) {
+		$this->configuration = $configuration;
+		return $this;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getSuffixFromDeploymentPath() {
+		return array_slice(explode(DIRECTORY_SEPARATOR, $this->getDeploymentPath()), -3, 1);
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getProjectNameFromDeploymentPath() {
+		return array_slice(explode(DIRECTORY_SEPARATOR, $this->getDeploymentPath()), -4, 1);
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getDatabaseNameFromDepoymentPath() {
+	}
+
+	/**
+	 * @param array $configuration
+	 * @return Deployment
+	 */
 	public function setConfiguration($configuration) {
 		$this->configuration = $configuration;
 		$options = $this->getOptions();
@@ -246,6 +275,7 @@ class Deployment {
 	 */
 	public function getRepository() {
 		// ToDo lw-lm: Find better way to do that (Flow/Inject annotation?)
+		// TODO refactor $this->repository, $this->configuration and $this->getOptions()
 		if ($this->repository === NULL) {
 			$repositoryUrl = $this->getRepositoryUrl();
 			if (!empty($repositoryUrl)) {
