@@ -232,26 +232,6 @@ class Deployment {
 	}
 
 	/**
-	 * @return string
-	 */
-	public function getSuffixFromDeploymentPath() {
-		return array_slice(explode(DIRECTORY_SEPARATOR, $this->getDeploymentPath()), -3, 1);
-	}
-
-	/**
-	 * @return string
-	 */
-	public function getProjectNameFromDeploymentPath() {
-		return array_slice(explode(DIRECTORY_SEPARATOR, $this->getDeploymentPath()), -4, 1);
-	}
-
-	/**
-	 * @return string
-	 */
-	public function getDatabaseNameFromDepoymentPath() {
-	}
-
-	/**
 	 * @param array $configuration
 	 * @return Deployment
 	 */

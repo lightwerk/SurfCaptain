@@ -8,7 +8,6 @@ namespace Lightwerk\SurfCaptain\Domain\Factory;
 
 use Lightwerk\SurfCaptain\GitApi\DriverComposite;
 use Lightwerk\SurfCaptain\Domain\Facet\Deployment\GitRepositoryDeployment;
-use Lightwerk\SurfCaptain\Domain\Facet\Deployment\SetupDeployment;
 use Lightwerk\SurfCaptain\Domain\Facet\Deployment\SharedDeployment;
 use Lightwerk\SurfCaptain\Domain\Facet\Deployment\InitSharedDeployment;
 use Lightwerk\SurfCaptain\Domain\Model\Deployment;

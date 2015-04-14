@@ -3,12 +3,18 @@
 <f:section name="Title">List of all deployments</f:section>
 
 <f:section name="Content">
-
 	<f:render partial="Deployment/List" arguments="{_all}" />
-
+	<f:render partial="Deployment/Create" arguments="{_all}" />
+	<div class="row">
+		<div class="col-md-3">
+			<f:render partial="GitRepositoryDeployment/Create" />
+		</div>
+		<div class="col-md-3">
+			<f:render partial="SharedDeployment/Create" />
+		</div>
+		<div class="col-md-3">
+			<f:render partial="InitSharedDeployment/Create" />
+		</div>
+	</div>
 </f:section>
 
-
-
-
-<f:render partial="Deployment/Create" arguments="{_all}" />
