@@ -7,13 +7,13 @@
 	<f:render partial="Deployment/Create" arguments="{_all}" />
 	<div class="row">
 		<div class="col-md-3">
-			<f:render partial="GitRepositoryDeployment/Create" />
+			<f:render partial="GitRepositoryDeployment/Create" arguments="{gitRepositoryDeployment: gitRepositoryDeployment}" />
 		</div>
 		<div class="col-md-3">
-			<f:render partial="SharedDeployment/Create" />
+			<f:render partial="SharedDeployment/Create" arguments="{sharedDeployment: sharedDeployment}" />
 		</div>
 		<div class="col-md-3">
-			<f:render partial="InitSharedDeployment/Create" />
+			<f:render partial="InitSharedDeployment/Create" arguments="{initSharedDeployment: initSharedDeployment}" />
 		</div>
 	</div>
 </f:section>

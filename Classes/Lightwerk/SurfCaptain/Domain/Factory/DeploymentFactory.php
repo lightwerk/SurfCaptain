@@ -70,6 +70,9 @@ class DeploymentFactory {
 	public function createFromSharedDeployment(SharedDeployment $sharedDeployment) {
 		$sourcePreset =  $this->presetRepository->findByIdentifier($sharedDeployment->getSourcePresetKey());
 		$preset =  $this->presetRepository->findByIdentifier($sharedDeployment->getTargetPresetKey());
+		if ($preset['applications'][0]['options']['context'] === 'Production') {
+			throw new Exception('shared Deployment to Production Context disabled');
+		}
 		$postset = array();
 		$postset['applications'][0]['options']['db']['credentialsSource'] = 'TYPO3\\CMS';
 		$postset['applications'][0]['options']['sourceNode'] = $sourcePreset['applications'][0]['nodes'][0];

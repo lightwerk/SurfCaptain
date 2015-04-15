@@ -15,8 +15,14 @@ class GitRepositoryDeployment {
 
 	/**
 	 * @var string
+	 * @Flow\Validate(type="NotEmpty")
 	 */
-	protected $deploymentType;
+	protected $presetKey;
+
+	/**
+	 * @var string
+	 */
+	protected $deploymentType = 'TYPO3\\CMS\\Deploy';
 
 	/**
 	 * @var string
@@ -32,11 +38,6 @@ class GitRepositoryDeployment {
 	 * @var string
 	 */
 	protected $tag = '';
-
-	/**
-	 * @var string
-	 */
-	protected $presetKey;
 
 
 	/**

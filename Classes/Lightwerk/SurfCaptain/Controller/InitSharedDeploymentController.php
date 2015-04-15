@@ -8,12 +8,25 @@ namespace Lightwerk\SurfCaptain\Controller;
 
 use TYPO3\Flow\Annotations as Flow;
 use Lightwerk\SurfCaptain\Domain\Facet\Deployment\InitSharedDeployment;
+use TYPO3\Flow\Error\Message;
 
 /**
  * @package Lightwerk\SurfCaptain
  * @author Achim Fritz <af@achimfritz.de>
  */
 class InitSharedDeploymentController extends AbstractRestController {
+
+	/**
+	 * @FLow\Inject
+	 * @var \Lightwerk\SurfCaptain\Domain\Repository\DeploymentRepository
+	 */
+	protected $deploymentRepository;
+
+	/**
+	 * @Flow\Inject
+	 * @var \Lightwerk\SurfCaptain\Domain\Factory\DeploymentFactory
+	 */
+	protected $deploymentFactory;
 
 	/**
 	 * @var string
@@ -25,7 +38,15 @@ class InitSharedDeploymentController extends AbstractRestController {
 	 * @return void
 	 */
 	public function createAction(InitSharedDeployment $initSharedDeployment) {
-		$this->addFlashMessage('Created a new init shared deployment.');
+		try {
+			$deployment = $this->deploymentFactory->createFromInitSharedDeployment($initSharedDeployment);
+			$this->deploymentRepository->add($deployment);
+			$this->addFlashMessage('Created a new init shared deployment.', 'OK', Message::SEVERITY_OK);
+		} catch (\Lightwerk\SurfCaptain\Exception $e) {
+			$this->handleException($e);
+		} catch (\TYPO3\Flow\Http\Exception $e) {
+			$this->handleException($e);
+		}
 		$this->redirect('index', 'Deployment');
 	}
 }

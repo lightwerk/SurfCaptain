@@ -15,11 +15,13 @@ class SharedDeployment {
 
 	/**
 	 * @var string
+	 * @Flow\Validate(type="NotEmpty")
 	 */
 	protected $sourcePresetKey;
 
 	/**
 	 * @var string
+	 * @Flow\Validate(type="NotEmpty")
 	 */
 	protected $targetPresetKey;
 
