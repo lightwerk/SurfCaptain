@@ -10,6 +10,7 @@ use TYPO3\Flow\Annotations as Flow;
 use TYPO3\Flow\Validation\Validator\NotEmptyValidator;
 use TYPO3\Flow\Configuration\ConfigurationManager;
 use TYPO3\Flow\Utility\Arrays;
+use TYPO3\Setup\Exception as SetupException;
 
 /**
  * @Flow\Scope("singleton")
@@ -62,7 +63,7 @@ class GitSettingsStep extends \TYPO3\Setup\Step\AbstractStep {
 		}
 
 		$driverSection = $page1->createElement('driverSection', 'TYPO3.Form:Section');
-		$driverSection->setLabel('Driver Sepcific Settings');
+		$driverSection->setLabel('Driver Specific Settings');
 		switch ($driver) {
 			case 'GitHub':
 				$privateToken = $driverSection->createElement('privateToken', 'TYPO3.Form:SingleLineText');
@@ -75,10 +76,12 @@ class GitSettingsStep extends \TYPO3\Setup\Step\AbstractStep {
 				$privateToken->setLabel('Private Token');
 				$privateToken->addValidator(new NotEmptyValidator());
 				$privateToken->setDefaultValue(Arrays::getValueByPath($this->distributionSettings, 'Lightwerk.SurfCaptain.sources.default.privateToken'));
+
 				$apiUrl = $driverSection->createElement('apiUrl', 'TYPO3.Form:SingleLineText');
 				$apiUrl->setLabel('Api Url (e.g. https://git.lightwerk.com/api/v3/)');
 				$apiUrl->addValidator(new NotEmptyValidator());
 				$apiUrl->setDefaultValue(Arrays::getValueByPath($this->distributionSettings, 'Lightwerk.SurfCaptain.sources.default.apiUrl'));
+
 				$accountName = $driverSection->createElement('accountName', 'TYPO3.Form:SingleLineText');
 				$accountName->setLabel('Account Name (e.g. git@git.lightwerk.com)');
 				$accountName->addValidator(new NotEmptyValidator());
@@ -86,36 +89,41 @@ class GitSettingsStep extends \TYPO3\Setup\Step\AbstractStep {
 				break;
 			case 'BitBucket':
 				$link = $driverSection->createElement('link', 'TYPO3.Setup:LinkElement');
-				$link->setLabel('see OAuth on Bitbucket');
+				$link->setLabel('Read about OAuth on Bitbucket');
 				$link->setProperty('href', 'https://confluence.atlassian.com/display/BITBUCKET/OAuth+on+Bitbucket');
 				$link->setProperty('target', '_blank');
 				$link->setProperty('elementClassAttribute', 'alert alert-info');
-				$privateToken = $driverSection->createElement('privateToken', 'TYPO3.Form:SingleLineText');
-				$privateToken->setLabel('Private Token');
-				$privateToken->addValidator(new NotEmptyValidator());
-				$privateToken->setDefaultValue(Arrays::getValueByPath($this->distributionSettings, 'Lightwerk.SurfCaptain.sources.default.privateToken'));
+
 				$accountName = $driverSection->createElement('accountName', 'TYPO3.Form:SingleLineText');
 				$accountName->setLabel('Account Name');
 				$accountName->addValidator(new NotEmptyValidator());
 				$accountName->setDefaultValue(Arrays::getValueByPath($this->distributionSettings, 'Lightwerk.SurfCaptain.sources.default.accountName'));
+
+				$privateToken = $driverSection->createElement('privateToken', 'TYPO3.Form:SingleLineText');
+				$privateToken->setLabel('Private Token');
+				$privateToken->addValidator(new NotEmptyValidator());
+				$privateToken->setDefaultValue(Arrays::getValueByPath($this->distributionSettings, 'Lightwerk.SurfCaptain.sources.default.privateToken'));
+
 				$privateSecret = $driverSection->createElement('privateSecret', 'TYPO3.Form:SingleLineText');
 				$privateSecret->setLabel('Private Secret');
 				$privateSecret->addValidator(new NotEmptyValidator());
 				$privateSecret->setDefaultValue(Arrays::getValueByPath($this->distributionSettings, 'Lightwerk.SurfCaptain.sources.default.privateSecret'));
+
 				$accessToken = $driverSection->createElement('accessToken', 'TYPO3.Form:SingleLineText');
 				$accessToken->setLabel('Access Token');
 				$accessToken->addValidator(new NotEmptyValidator());
 				$accessToken->setDefaultValue(Arrays::getValueByPath($this->distributionSettings, 'Lightwerk.SurfCaptain.sources.default.accessToken'));
+
 				$accessSecret = $driverSection->createElement('accessSecret', 'TYPO3.Form:SingleLineText');
 				$accessSecret->setLabel('Access Secret');
 				$accessSecret->addValidator(new NotEmptyValidator());
 				$accessSecret->setDefaultValue(Arrays::getValueByPath($this->distributionSettings, 'Lightwerk.SurfCaptain.sources.default.accessSecret'));
 				break;
 			default:
-				throw new SetupException('unknown driver ' . $driver, 1427623122);
+				throw new SetupException('Unknown driver ' . $driver, 1427623122);
 		}
 
-		$formDefinition->setRenderingOption('skipStepNotice', 'If you skip this step make sure that you have configured your Git Repositories in Setup.yaml');
+		$formDefinition->setRenderingOption('skipStepNotice', 'If you skip this step make sure that you have configured your Git Repositories in Settings.yaml');
 	}
 
 	/**
@@ -152,7 +160,7 @@ class GitSettingsStep extends \TYPO3\Setup\Step\AbstractStep {
 				$this->distributionSettings = Arrays::setValueByPath($this->distributionSettings, 'Lightwerk.SurfCaptain.sources.default.accessSecret', $formValues['accessSecret']);
 				break;
 			default:
-				throw new SetupException('unknown driver ' . $driver, 1427623122);
+				throw new SetupException('Unknown driver ' . $driver, 1427623122);
 		}
 		$this->configurationSource->save(FLOW_PATH_CONFIGURATION . ConfigurationManager::CONFIGURATION_TYPE_SETTINGS, $this->distributionSettings);
 	}

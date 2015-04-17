@@ -7,8 +7,6 @@ namespace Lightwerk\SurfCaptain\Setup\Step;
  *                                                                        */
 
 use TYPO3\Flow\Annotations as Flow;
-use TYPO3\Flow\Configuration\ConfigurationManager;
-use TYPO3\Flow\Utility\Arrays;
 
 /**
  * @Flow\Scope("singleton")
@@ -32,7 +30,7 @@ class VerificationStep extends \TYPO3\Setup\Step\AbstractStep {
 		$page1->setRenderingOption('header', 'Verification Git Configuration');
 
 		$verificationSection = $page1->createElement('verificationSection', 'TYPO3.Form:Section');
-		$verificationSection->setLabel('Try to fetch your git repositories');
+		$verificationSection->setLabel('Tried to fetch your git repositories.');
 
 		$result = $verificationSection->createElement('result', 'TYPO3.Form:StaticText');
 
