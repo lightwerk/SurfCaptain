@@ -1,0 +1,27 @@
+	<h3>create new gitRepositoryDeployment</h3>
+	<f:form action="index" controller="GitRepositoryDeployment" object="{gitRepositoryDeployment}" objectName="gitRepositoryDeployment">
+		<input type="hidden" name="__method" value="POST" />
+			<div class="form-group">
+				<label class="control-label" for="deploymentType">Deployment type</label>
+				<f:form.textfield property="deploymentType" class="form-control" id="deploymentType" />
+			</div>
+			<div class="form-group">
+				<label class="control-label" for="sha">Sha</label>
+				<f:form.textfield property="sha" class="form-control" id="sha" />
+			</div>
+			<div class="form-group">
+				<label class="control-label" for="branch">Branch</label>
+				<f:form.textfield property="branch" class="form-control" id="branch" />
+			</div>
+			<div class="form-group">
+				<label class="control-label" for="tag">Tag</label>
+				<f:form.textfield property="tag" class="form-control" id="tag" />
+			</div>
+			<div class="form-group">
+				<label class="control-label" for="presetKey">Preset key</label>
+				<f:form.textfield property="presetKey" class="form-control" id="presetKey" />
+			</div>
+			<div class="form-group">
+				<f:form.submit value="Create" class="btn btn-default"/>
+			</div>
+	</f:form>

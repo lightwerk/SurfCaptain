@@ -35,6 +35,23 @@ class DeploymentRepository extends Repository {
 	}
 
 	/**
+	 * @param integer $daysOld 
+	 * @return \TYPO3\Flow\Persistence\QueryResultInterface
+	 */
+	public function findByDaysOld($daysOld) {
+		if ($daysOld === 0) {
+			return $this->findAll();
+		} else {
+			$now = new \DateTime();
+			$past = $now->sub(new \DateInterval('P' . $daysOld . 'D'));
+			$query = $this->createQuery();
+			return $query->matching(
+				$query->lessThan('date', $past)
+			)->execute();
+		}
+	}
+
+	/**
 	 * @param string $repositoryUrl
 	 * @param string $status
 	 * @return integer

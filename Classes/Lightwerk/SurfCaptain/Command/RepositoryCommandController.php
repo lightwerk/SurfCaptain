@@ -9,9 +9,8 @@ namespace Lightwerk\SurfCaptain\Command;
 use TYPO3\Flow\Annotations as Flow;
 
 /**
- * Repository Command Controller
- *
- * @package Lightwerk\SurfCaptain
+ * @package Lightwerk.SurfCaptain
+ * @author Achim Fritz <af@lightwerk.com> 
  */
 class RepositoryCommandController extends \TYPO3\Flow\Cli\CommandController {
 

@@ -33,7 +33,7 @@ class GitSettingsStep extends \TYPO3\Setup\Step\AbstractStep {
 			'repositories' => 'repositories/myaccount'
 		),
 		'GitHub' => array(
-			'repositories' => 'users/lars85/repos, orgs/lightwerk/repos, repos/achimfritz/championship-distribution'
+			'repositories' => 'users/lars85/repos, orgs/lightwerk/repos, repos/achimfritz/typo3cms'
 		)
 	);
 

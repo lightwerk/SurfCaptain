@@ -10,6 +10,9 @@ use Lightwerk\SurfCaptain\Domain\Model\Deployment;
 use Lightwerk\SurfCaptain\Domain\Repository\DeploymentRepository;
 use Lightwerk\SurfCaptain\Service\Exception;
 use TYPO3\Flow\Annotations as Flow;
+use Lightwerk\SurfCaptain\Domain\Facet\Deployment\InitSharedDeployment;
+use Lightwerk\SurfCaptain\Domain\Facet\Deployment\SharedDeployment;
+use Lightwerk\SurfCaptain\Domain\Facet\Deployment\GitRepositoryDeployment;
 
 /**
  * Deployment Controller
@@ -41,6 +44,9 @@ class DeploymentController extends AbstractRestController {
 	 * @return void
 	 */
 	public function listAction($limit = 100) {
+		$this->view->assign('initSharedDeployment', new InitSharedDeployment());
+		$this->view->assign('sharedDeployment', new SharedDeployment());
+		$this->view->assign('gitRepositoryDeployment', new GitRepositoryDeployment());
 		$this->view->assign('deployments', $this->deploymentRepository->findAllWithLimit($limit));
 	}
 
