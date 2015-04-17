@@ -34,14 +34,14 @@ class DeploymentStep extends \TYPO3\Setup\Step\AbstractStep {
 		$deploymentSection = $page1->createElement('deploymentSection', 'TYPO3.Form:Section');
 
 		$user = $deploymentSection->createElement('defaultUser', 'TYPO3.Form:SingleLineText');
-		$user->setLabel('Deployment User (Default SSH User for Deployment on Target System)');
+		$user->setLabel('Deployment user. Default SSH user for deployment on target systems (optional, will be configurable per target system later on).');
 		$user->setDefaultValue(Arrays::getValueByPath($this->distributionSettings, 'Lightwerk.SurfCaptain.frontendSettings.defaultUser'));
 
 		$path = $deploymentSection->createElement('defaultDeploymentPath', 'TYPO3.Form:SingleLineText');
-		$path->setLabel('Deployment Path (Default Target Path for deployments (with htdocs), e.g. /var/www/{{project}}/{{suffix}}/htdocs/)');
+		$path->setLabel('Deployment Path. Default target path for deployments, e.g. "/var/www/{{project}}/{{suffix}}/htdocs/" (optional, will be configurable per target system later on	).');
 		$path->setDefaultValue(Arrays::getValueByPath($this->distributionSettings, 'Lightwerk.SurfCaptain.frontendSettings.defaultDeploymentPath'));
 
-		$formDefinition->setRenderingOption('skipStepNotice', 'If you skip this step make sure that you have configured your Git Repositories in Setup.yaml');
+		$formDefinition->setRenderingOption('skipStepNotice', 'You can always configure your frontend settings later in Settings.yaml');
 
 	}
 
