@@ -15,7 +15,7 @@ Lightwerk:
         accountName: 'git@git.lightwerk.com'
         # Go to /profile/account in GitLab to get your private token
         privateToken: '1234567890abcdefghij'
-        # Offer repositories of these filteres for deployments
+        # Offer repositories of these filters for deployments
         # (key (lwProjects, single) is just a name for the configuration)
         repositories:
           # All repositories of one group/namespace
@@ -31,16 +31,3 @@ Lightwerk:
           Commit:
             date: '{{committed_date}}'
             committerName: '{{committer.name}}'
-
-      # Another example with GitHubDriver
-      github.com:
-        apiUrl: https://api.github.com/
-        driver: 'GitHub'
-        accountName: 'git@github.com'
-        privateToken: '1234567890abcdefghij'
-        mapping:
-          Repository:
-            repositoryUrl: '{{ssh_url}}'
-            webUrl: '{{url}}'
-          Commit:
-            id: '{{sha}}'
