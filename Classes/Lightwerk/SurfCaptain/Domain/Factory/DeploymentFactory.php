@@ -74,11 +74,17 @@ class DeploymentFactory {
 			throw new Exception('shared Deployment to Production Context disabled');
 		}
 		$postset = array();
-		$postset['applications'][0]['options']['db']['credentialsSource'] = 'TYPO3\\CMS';
+		if (empty($preset['applications'][0]['options']['db']) === TRUE) {
+			$postset['applications'][0]['options']['db']['credentialsSource'] = 'TYPO3\\CMS';
+		}
 		$postset['applications'][0]['options']['sourceNode'] = $sourcePreset['applications'][0]['nodes'][0];
 		$postset['applications'][0]['options']['sourceNodeOptions']['deploymentPath'] = $sourcePreset['applications'][0]['options']['deploymentPath'];
 		$postset['applications'][0]['options']['sourceNodeOptions']['context'] = $sourcePreset['applications'][0]['options']['context'];
-		$postset['applications'][0]['options']['sourceNodeOptions']['db']['credentialsSource'] = 'TYPO3\\CMS';
+		if (empty($sourcePreset['applications'][0]['options']['db']) === TRUE) {
+			$postset['applications'][0]['options']['sourceNodeOptions']['db']['credentialsSource'] = 'TYPO3\\CMS';
+		} else {
+			$postset['applications'][0]['options']['sourceNodeOptions']['db'] = $sourcePreset['applications'][0]['options']['db'];
+		}
 		$postset['applications'][0]['type'] = 'TYPO3\\CMS\\Shared';
 		$configuration = \TYPO3\Flow\Utility\Arrays::arrayMergeRecursiveOverrule($preset, $postset);
 		return $this->createFromConfiguration($configuration);
