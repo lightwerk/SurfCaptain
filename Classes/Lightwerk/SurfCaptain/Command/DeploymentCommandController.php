@@ -8,8 +8,8 @@ namespace Lightwerk\SurfCaptain\Command;
 
 use TYPO3\Flow\Annotations as Flow;
 use Lightwerk\SurfCaptain\Domain\Model\Deployment;
-use Lightwerk\SurfCaptain\Domain\Facet\Deployment\SharedDeployment;
-use Lightwerk\SurfCaptain\Domain\Facet\Deployment\InitSharedDeployment;
+use Lightwerk\SurfCaptain\Domain\Facet\Deployment\SyncDeployment;
+use Lightwerk\SurfCaptain\Domain\Facet\Deployment\InitSyncDeployment;
 use Lightwerk\SurfCaptain\Domain\Facet\Deployment\GitRepositoryDeployment;
 use Lightwerk\SurfCaptain\Domain\Repository\DeploymentRepository;
 
@@ -155,12 +155,12 @@ class DeploymentCommandController extends \TYPO3\Flow\Cli\CommandController {
 	 * @param string $type
 	 * @return void
 	 */
-	public function createSharedDeploymentCommand($sourcePresetKey, $targetPresetKey) {
-		$sharedDeployment = new SharedDeployment();
-		$sharedDeployment->setSourcePresetKey($sourcePresetKey);
-		$sharedDeployment->setTargetPresetKey($targetPresetKey);
+	public function createSyncDeploymentCommand($sourcePresetKey, $targetPresetKey, $type = 'TYPO3\\CMS\\Sync') {
+		$syncDeployment = new SyncDeployment();
+		$syncDeployment->setSourcePresetKey($sourcePresetKey);
+		$syncDeployment->setPresetKey($targetPresetKey);
 		try {
-			$deployment = $this->deploymentFactory->createFromSharedDeployment($sharedDeployment);
+			$deployment = $this->deploymentFactory->createFromSyncDeployment($syncDeployment);
 			$this->deploymentRepository->add($deployment);
 			$this->outputLine('OK: deployment added');
 		} catch (\Lightwerk\SurfCaptain\Exception $e) {
@@ -175,12 +175,12 @@ class DeploymentCommandController extends \TYPO3\Flow\Cli\CommandController {
 	 * @param string $type
 	 * @return void
 	 */
-	public function createInitSharedDeploymentCommand($sourcePresetKey, $targetPresetKey) {
-		$initSharedDeployment = new InitSharedDeployment();
-		$initSharedDeployment->setSourcePresetKey($sourcePresetKey);
-		$initSharedDeployment->setTargetPresetKey($targetPresetKey);
+	public function createInitSyncDeploymentCommand($sourcePresetKey, $targetPresetKey) {
+		$initSyncDeployment = new InitSyncDeployment();
+		$initSyncDeployment->setSourcePresetKey($sourcePresetKey);
+		$initSyncDeployment->setPresetKey($targetPresetKey);
 		try {
-			$deployment = $this->deploymentFactory->createFromInitSharedDeployment($initSharedDeployment);
+			$deployment = $this->deploymentFactory->createFromInitSyncDeployment($initSyncDeployment);
 			$this->deploymentRepository->add($deployment);
 			$this->outputLine('OK: deployment added');
 		} catch (\Lightwerk\SurfCaptain\Exception $e) {

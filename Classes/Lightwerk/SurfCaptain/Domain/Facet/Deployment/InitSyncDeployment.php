@@ -11,7 +11,7 @@ use TYPO3\Flow\Annotations as Flow;
 /**
  * @Flow\Scope("prototype")
  */
-class InitSharedDeployment extends SharedDeployment {
+class InitSyncDeployment extends SyncDeployment {
 
 	/**
 	 * @var string

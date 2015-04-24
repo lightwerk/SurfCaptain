@@ -11,48 +11,47 @@ use TYPO3\Flow\Annotations as Flow;
 /**
  * @Flow\Scope("prototype")
  */
-class SharedDeployment {
+abstract class AbstractDeployment {
 
 	/**
 	 * @var string
 	 * @Flow\Validate(type="NotEmpty")
 	 */
-	protected $sourcePresetKey;
+	protected $presetKey;
 
 	/**
 	 * @var string
-	 * @Flow\Validate(type="NotEmpty")
 	 */
-	protected $targetPresetKey;
+	protected $deploymentType;
 
 	/**
 	 * @return string
 	 */
-	public function getSourcePresetKey() {
-		return $this->sourcePresetKey;
+	public function getDeploymentType() {
+		return $this->deploymentType;
 	}
 
 	/**
-	 * @param string $sourcePresetKey
+	 * @param string $deploymentType
 	 * @return void
 	 */
-	public function setSourcePresetKey($sourcePresetKey) {
-		$this->sourcePresetKey = $sourcePresetKey;
+	public function setDeploymentType($deploymentType) {
+		$this->deploymentType = $deploymentType;
 	}
 
 	/**
 	 * @return string
 	 */
-	public function getTargetPresetKey() {
-		return $this->targetPresetKey;
+	public function getPresetKey() {
+		return $this->presetKey;
 	}
 
 	/**
-	 * @param string $targetPresetKey
+	 * @param string $presetKey
 	 * @return void
 	 */
-	public function setTargetPresetKey($targetPresetKey) {
-		$this->targetPresetKey = $targetPresetKey;
+	public function setPresetKey($presetKey) {
+		$this->presetKey = $presetKey;
 	}
 
 }

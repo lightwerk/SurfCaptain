@@ -8,8 +8,8 @@ namespace Lightwerk\SurfCaptain\Domain\Factory;
 
 use Lightwerk\SurfCaptain\GitApi\DriverComposite;
 use Lightwerk\SurfCaptain\Domain\Facet\Deployment\GitRepositoryDeployment;
-use Lightwerk\SurfCaptain\Domain\Facet\Deployment\SharedDeployment;
-use Lightwerk\SurfCaptain\Domain\Facet\Deployment\InitSharedDeployment;
+use Lightwerk\SurfCaptain\Domain\Facet\Deployment\SyncDeployment;
+use Lightwerk\SurfCaptain\Domain\Facet\Deployment\InitSyncDeployment;
 use Lightwerk\SurfCaptain\Domain\Model\Deployment;
 use TYPO3\Flow\Annotations as Flow;
 
@@ -33,20 +33,20 @@ class DeploymentFactory {
 	protected $presetRepository;
 
 	/**
-	 * @param \Lightwerk\SurfCaptain\Domain\Facet\Deployment\InitSharedDeployment
+	 * @param \Lightwerk\SurfCaptain\Domain\Facet\Deployment\InitSyncDeployment
 	 * @return \Lightwerk\SurfCaptain\Domain\Model\Deployment
 	 * @throws \Lightwerk\SurfCaptain\Domain\Repository\Preset\Exception
 	 * @throws \Lightwerk\SurfCaptain\GitApi\Exception
 	 */
-	public function createFromInitSharedDeployment(InitSharedDeployment $initSharedDeployment) {
-		$deployment = $this->createFromSharedDeployment($initSharedDeployment);
+	public function createFromInitSyncDeployment(InitSyncDeployment $initSyncDeployment) {
+		$deployment = $this->createFromSyncDeployment($initSyncDeployment);
 		$preset =  $deployment->getConfiguration();
 		$postset = array();
 		$postset['applications'][0]['options']['db']['credentialsSource'] = '';
-		$postset['applications'][0]['options']['db']['host'] = $initSharedDeployment->getHost();
-		$postset['applications'][0]['options']['db']['user'] = $initSharedDeployment->getUser();
-		$postset['applications'][0]['options']['db']['password'] = $initSharedDeployment->getPassword();
-		$database = $initSharedDeployment->getDatabase();
+		$postset['applications'][0]['options']['db']['host'] = $initSyncDeployment->getHost();
+		$postset['applications'][0]['options']['db']['user'] = $initSyncDeployment->getUser();
+		$postset['applications'][0]['options']['db']['password'] = $initSyncDeployment->getPassword();
+		$database = $initSyncDeployment->getDatabase();
 		if ($database === '') {
 			// create from path
 			// /data/www/typo3cms/dev/htdocs -> typo3cms_dev
@@ -62,14 +62,14 @@ class DeploymentFactory {
 	}
 
 	/**
-	 * @param \Lightwerk\SurfCaptain\Domain\Facet\Deployment\SharedDeployment
+	 * @param \Lightwerk\SurfCaptain\Domain\Facet\Deployment\SyncDeployment
 	 * @return \Lightwerk\SurfCaptain\Domain\Model\Deployment
 	 * @throws \Lightwerk\SurfCaptain\Domain\Repository\Preset\Exception
 	 * @throws \Lightwerk\SurfCaptain\GitApi\Exception
 	 */
-	public function createFromSharedDeployment(SharedDeployment $sharedDeployment) {
-		$sourcePreset =  $this->presetRepository->findByIdentifier($sharedDeployment->getSourcePresetKey());
-		$preset =  $this->presetRepository->findByIdentifier($sharedDeployment->getTargetPresetKey());
+	public function createFromSyncDeployment(SyncDeployment $syncDeployment) {
+		$sourcePreset =  $this->presetRepository->findByIdentifier($syncDeployment->getSourcePresetKey());
+		$preset =  $this->presetRepository->findByIdentifier($syncDeployment->getPresetKey());
 		if ($preset['applications'][0]['options']['context'] === 'Production') {
 			throw new Exception('shared Deployment to Production Context disabled');
 		}
@@ -85,7 +85,7 @@ class DeploymentFactory {
 		} else {
 			$postset['applications'][0]['options']['sourceNodeOptions']['db'] = $sourcePreset['applications'][0]['options']['db'];
 		}
-		$postset['applications'][0]['type'] = 'TYPO3\\CMS\\Shared';
+		$postset['applications'][0]['type'] = $syncDeployment->getDeploymentType();
 		$configuration = \TYPO3\Flow\Utility\Arrays::arrayMergeRecursiveOverrule($preset, $postset);
 		return $this->createFromConfiguration($configuration);
 	}
@@ -99,6 +99,12 @@ class DeploymentFactory {
 	public function createFromGitRepositoryDeployment(GitRepositoryDeployment $gitRepositoryDeployment) {
 		$preset =  $this->presetRepository->findByIdentifier($gitRepositoryDeployment->getPresetKey());
 		$postset = array();
+		if ($gitRepositoryDeployment->getContext() !== '') {
+			$postset['applications'][0]['options']['context'] = $gitRepositoryDeployment->getContext();
+		}
+		if ($gitRepositoryDeployment->getDeploymentPath() !== '') {
+			$postset['applications'][0]['options']['deploymentPath'] = $gitRepositoryDeployment->getDeploymentPath();
+		}
 		if ($gitRepositoryDeployment->getSha() !== '') {
 			$postset['applications'][0]['options']['sha1'] = $gitRepositoryDeployment->getSha();
 		} elseif ($gitRepositoryDeployment->getTag() !== '') {

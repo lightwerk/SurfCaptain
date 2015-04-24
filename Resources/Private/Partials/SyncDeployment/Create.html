@@ -1,0 +1,19 @@
+	<h3>create new syncDeployment</h3>
+	<f:form action="index" controller="SyncDeployment" object="{syncDeployment}" objectName="syncDeployment">
+		<input type="hidden" name="__method" value="POST" />
+			<div class="form-group">
+				<label class="control-label" for="deploymentType">Deployment type (TYPO3\\CMS\\Sync, SyncDb, SyncFolder)</label>
+				<f:form.textfield property="deploymentType" class="form-control" id="deploymentType" />
+			</div>
+			<div class="form-group">
+				<label class="control-label" for="sourcePresetKey">Source preset key</label>
+				<f:form.textfield property="sourcePresetKey" class="form-control" id="sourcePresetKey" />
+			</div>
+			<div class="form-group">
+				<label class="control-label" for="presetKey">Preset key (target)</label>
+				<f:form.textfield property="presetKey" class="form-control" id="presetKey" />
+			</div>
+			<div class="form-group">
+				<f:form.submit value="Create" class="btn btn-default"/>
+			</div>
+	</f:form>
