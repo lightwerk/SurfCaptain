@@ -7,14 +7,14 @@ namespace Lightwerk\SurfCaptain\Controller;
  *                                                                        */
 
 use TYPO3\Flow\Annotations as Flow;
-use Lightwerk\SurfCaptain\Domain\Facet\Deployment\SharedDeployment;
+use Lightwerk\SurfCaptain\Domain\Facet\Deployment\SyncDeployment;
 use TYPO3\Flow\Error\Message;
 
 /**
  * @package Lightwerk\SurfCaptain
  * @author Achim Fritz <af@achimfritz.de>
  */
-class SharedDeploymentController extends AbstractRestController {
+class SyncDeploymentController extends AbstractRestController {
 
 	/**
 	 * @FLow\Inject
@@ -31,17 +31,17 @@ class SharedDeploymentController extends AbstractRestController {
 	/**
 	 * @var string
 	 */
-	protected $resourceArgumentName = 'sharedDeployment';
+	protected $resourceArgumentName = 'syncDeployment';
 
 	/**
-	 * @param \Lightwerk\SurfCaptain\Domain\Facet\Deployment\SharedDeployment $sharedDeployment
+	 * @param \Lightwerk\SurfCaptain\Domain\Facet\Deployment\SyncDeployment $syncDeployment
 	 * @return void
 	 */
-	public function createAction(SharedDeployment $sharedDeployment) {
+	public function createAction(SyncDeployment $syncDeployment) {
 		try {
-			$deployment = $this->deploymentFactory->createFromSharedDeployment($sharedDeployment);
+			$deployment = $this->deploymentFactory->createFromSyncDeployment($syncDeployment);
 			$this->deploymentRepository->add($deployment);
-			$this->addFlashMessage('Created a new shared deployment.', 'OK', Message::SEVERITY_OK);
+			$this->addFlashMessage('Created a new sync deployment.', 'OK', Message::SEVERITY_OK);
 		} catch (\Lightwerk\SurfCaptain\Exception $e) {
 			$this->handleException($e);
 		} catch (\TYPO3\Flow\Http\Exception $e) {

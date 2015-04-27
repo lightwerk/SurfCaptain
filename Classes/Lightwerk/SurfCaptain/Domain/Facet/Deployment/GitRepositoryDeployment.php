@@ -11,13 +11,7 @@ use TYPO3\Flow\Annotations as Flow;
 /**
  * @Flow\Scope("prototype")
  */
-class GitRepositoryDeployment {
-
-	/**
-	 * @var string
-	 * @Flow\Validate(type="NotEmpty")
-	 */
-	protected $presetKey;
+class GitRepositoryDeployment extends AbstractDeployment {
 
 	/**
 	 * @var string
@@ -39,21 +33,15 @@ class GitRepositoryDeployment {
 	 */
 	protected $tag = '';
 
+	/**
+	 * @var string
+	 */
+	protected $deploymentPath = '';
 
 	/**
-	 * @return string
+	 * @var string
 	 */
-	public function getDeploymentType() {
-		return $this->deploymentType;
-	}
-
-	/**
-	 * @param string $deploymentType
-	 * @return void
-	 */
-	public function setDeploymentType($deploymentType) {
-		$this->deploymentType = $deploymentType;
-	}
+	protected $context = '';
 
 	/**
 	 * @return string
@@ -103,16 +91,30 @@ class GitRepositoryDeployment {
 	/**
 	 * @return string
 	 */
-	public function getPresetKey() {
-		return $this->presetKey;
+	public function getDeploymentPath() {
+		return $this->deploymentPath;
 	}
 
 	/**
-	 * @param string $presetKey
+	 * @param string $deploymentPath
 	 * @return void
 	 */
-	public function setPresetKey($presetKey) {
-		$this->presetKey = $presetKey;
+	public function setDeploymentPath($deploymentPath) {
+		$this->deploymentPath = $deploymentPath;
 	}
 
+	/**
+	 * @return string
+	 */
+	public function getContext() {
+		return $this->context;
+	}
+
+	/**
+	 * @param string $context
+	 * @return void
+	 */
+	public function setContext($context) {
+		$this->context = $context;
+	}
 }

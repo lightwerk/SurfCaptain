@@ -2,8 +2,12 @@
 	<f:form action="index" controller="GitRepositoryDeployment" object="{gitRepositoryDeployment}" objectName="gitRepositoryDeployment">
 		<input type="hidden" name="__method" value="POST" />
 			<div class="form-group">
-				<label class="control-label" for="deploymentType">Deployment type</label>
+				<label class="control-label" for="deploymentType">Deployment type (TYPO3\\CMS\\Deploy, TYPO3\\Flow\\Deploy, Deploy)</label>
 				<f:form.textfield property="deploymentType" class="form-control" id="deploymentType" />
+			</div>
+			<div class="form-group">
+				<label class="control-label" for="presetKey">Preset key</label>
+				<f:form.textfield property="presetKey" class="form-control" id="presetKey" />
 			</div>
 			<div class="form-group">
 				<label class="control-label" for="sha">Sha</label>
@@ -18,8 +22,12 @@
 				<f:form.textfield property="tag" class="form-control" id="tag" />
 			</div>
 			<div class="form-group">
-				<label class="control-label" for="presetKey">Preset key</label>
-				<f:form.textfield property="presetKey" class="form-control" id="presetKey" />
+				<label class="control-label" for="context">Context</label>
+				<f:form.textfield property="context" class="form-control" id="context" />
+			</div>
+			<div class="form-group">
+				<label class="control-label" for="deploymentPath">DeploymentPath</label>
+				<f:form.textfield property="deploymentPath" class="form-control" id="deploymentPath" />
 			</div>
 			<div class="form-group">
 				<f:form.submit value="Create" class="btn btn-default"/>
