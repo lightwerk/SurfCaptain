@@ -8,6 +8,7 @@ namespace Lightwerk\SurfCaptain\Command;
 
 use TYPO3\Flow\Annotations as Flow;
 use Lightwerk\SurfCaptain\Domain\Model\Deployment;
+use Lightwerk\SurfCaptain\Domain\Facet\Deployment\CopyDeployment;
 use Lightwerk\SurfCaptain\Domain\Facet\Deployment\SyncDeployment;
 use Lightwerk\SurfCaptain\Domain\Facet\Deployment\InitSyncDeployment;
 use Lightwerk\SurfCaptain\Domain\Facet\Deployment\GitRepositoryDeployment;
@@ -127,6 +128,30 @@ class DeploymentCommandController extends \TYPO3\Flow\Cli\CommandController {
 			$this->outputLine('SUCCESS: deployment created');
 		} else {
 			$this->outputLine('ERROR: no repository');
+		}
+	}
+
+	/**
+	 * @param string $presetKey 
+	 * @param string $type
+	 * @return void
+	 */
+	public function createCopyDeploymentCommand($sourcePresetKey, $targetPresetKey) {
+		$initSyncDeployment = new InitSyncDeployment();
+		$initSyncDeployment->setSourcePresetKey($sourcePresetKey);
+		$gitRepositoryDeployment = new GitRepositoryDeployment();
+		$copyDeployment = new CopyDeployment();
+		$copyDeployment->setPresetKey($targetPresetKey);
+		$copyDeployment->setInitSyncDeployment($initSyncDeployment);
+		$copyDeployment->setGitRepositoryDeployment($gitRepositoryDeployment);
+		try {
+			$deployment = $this->deploymentFactory->createFromCopyDeployment($copyDeployment);
+			$this->deploymentRepository->add($deployment);
+			$this->outputLine('OK: deployment added');
+		} catch (\Lightwerk\SurfCaptain\Exception $e) {
+			$this->outputLine('ERROR: ' . $e->getMessage() . ' - ' . $e->getCode());
+		} catch (\TYPO3\Flow\Http\Exception $e) {
+			$this->outputLine('ERROR: ' . $e->getMessage() . ' - ' . $e->getCode());
 		}
 	}
 

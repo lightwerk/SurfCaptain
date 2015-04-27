@@ -15,7 +15,6 @@ abstract class AbstractDeployment {
 
 	/**
 	 * @var string
-	 * @Flow\Validate(type="NotEmpty")
 	 */
 	protected $presetKey;
 

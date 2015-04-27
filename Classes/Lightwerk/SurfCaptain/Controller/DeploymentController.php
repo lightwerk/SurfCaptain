@@ -11,6 +11,7 @@ use Lightwerk\SurfCaptain\Domain\Repository\DeploymentRepository;
 use Lightwerk\SurfCaptain\Service\Exception;
 use TYPO3\Flow\Annotations as Flow;
 use Lightwerk\SurfCaptain\Domain\Facet\Deployment\InitSyncDeployment;
+use Lightwerk\SurfCaptain\Domain\Facet\Deployment\CopyDeployment;
 use Lightwerk\SurfCaptain\Domain\Facet\Deployment\SyncDeployment;
 use Lightwerk\SurfCaptain\Domain\Facet\Deployment\GitRepositoryDeployment;
 
@@ -47,6 +48,10 @@ class DeploymentController extends AbstractRestController {
 		$this->view->assign('initSyncDeployment', new InitSyncDeployment());
 		$this->view->assign('syncDeployment', new SyncDeployment());
 		$this->view->assign('gitRepositoryDeployment', new GitRepositoryDeployment());
+		$copyDeployment = new CopyDeployment();
+		$copyDeployment->setGitRepositoryDeployment(new GitRepositoryDeployment());
+		$copyDeployment->setInitSyncDeployment(new InitSyncDeployment());
+		$this->view->assign('copyDeployment', $copyDeployment);
 		$this->view->assign('deployments', $this->deploymentRepository->findAllWithLimit($limit));
 	}
 
@@ -81,6 +86,6 @@ class DeploymentController extends AbstractRestController {
 		// ToDo: Just status can be changed to canceled if it was waiting before!
 		$this->deploymentRepository->update($deployment);
 		$this->addFlashMessage('Updated a deployment.');
-		$this->redirect('index', NULL, NULL, array('deployment' => $deployment));
+		$this->redirect('index');
 	}
 }

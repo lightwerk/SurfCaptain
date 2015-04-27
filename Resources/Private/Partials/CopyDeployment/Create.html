@@ -1,0 +1,57 @@
+	<h3>create new CopyDeployment</h3>
+	<f:form action="index" controller="CopyDeployment" object="{copyDeployment}" objectName="copyDeployment">
+		<input type="hidden" name="__method" value="POST" />
+			<div class="form-group">
+				<label class="control-label" for="sourcePresetKey">Source preset key</label>
+				<f:form.textfield property="initSyncDeployment.sourcePresetKey" class="form-control" id="sourcePresetKey" />
+			</div>
+			<div class="form-group">
+				<label class="control-label" for="presetKey">Preset key (Target)</label>
+				<f:form.textfield property="presetKey" class="form-control" id="presetKey" />
+			</div>
+
+			<h4>target db connection</h4>
+			<div class="form-group">
+				<label class="control-label" for="database">Database</label>
+				<f:form.textfield property="initSyncDeployment.database" class="form-control" id="database" />
+			</div>
+			<div class="form-group">
+				<label class="control-label" for="host">Host</label>
+				<f:form.textfield property="initSyncDeployment.host" class="form-control" id="host" />
+			</div>
+			<div class="form-group">
+				<label class="control-label" for="password">Password</label>
+				<f:form.textfield property="initSyncDeployment.password" class="form-control" id="password" />
+			</div>
+			<div class="form-group">
+				<label class="control-label" for="user">User</label>
+				<f:form.textfield property="initSyncDeployment.user" class="form-control" id="user" />
+			</div>
+
+			<h4>git options</h4>
+			<div class="form-group">
+				<label class="control-label" for="sha">Sha</label>
+				<f:form.textfield property="gitRepositoryDeployment.sha" class="form-control" id="sha" />
+			</div>
+			<div class="form-group">
+				<label class="control-label" for="branch">Branch</label>
+				<f:form.textfield property="gitRepositoryDeployment.branch" class="form-control" id="branch" />
+			</div>
+			<div class="form-group">
+				<label class="control-label" for="tag">Tag</label>
+				<f:form.textfield property="gitRepositoryDeployment.tag" class="form-control" id="tag" />
+			</div>
+			<div class="form-group">
+				<label class="control-label" for="context">Context</label>
+				<f:form.textfield property="gitRepositoryDeployment.context" class="form-control" id="context" />
+			</div>
+			<div class="form-group">
+				<label class="control-label" for="deploymentPath">DeploymentPath</label>
+				<f:form.textfield property="gitRepositoryDeployment.deploymentPath" class="form-control" id="deploymentPath" />
+			</div>
+
+
+			<div class="form-group">
+				<f:form.submit value="Create" class="btn btn-default"/>
+			</div>
+	</f:form>
