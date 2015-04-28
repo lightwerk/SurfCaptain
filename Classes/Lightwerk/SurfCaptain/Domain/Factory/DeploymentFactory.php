@@ -8,6 +8,7 @@ namespace Lightwerk\SurfCaptain\Domain\Factory;
 
 use Lightwerk\SurfCaptain\GitApi\DriverComposite;
 use Lightwerk\SurfCaptain\Domain\Facet\Deployment\GitRepositoryDeployment;
+use Lightwerk\SurfCaptain\Domain\Facet\Deployment\CopyDeployment;
 use Lightwerk\SurfCaptain\Domain\Facet\Deployment\SyncDeployment;
 use Lightwerk\SurfCaptain\Domain\Facet\Deployment\InitSyncDeployment;
 use Lightwerk\SurfCaptain\Domain\Model\Deployment;
@@ -116,6 +117,27 @@ class DeploymentFactory {
 		$configuration = \TYPO3\Flow\Utility\Arrays::arrayMergeRecursiveOverrule($preset, $postset);
 		return $this->createFromConfiguration($configuration);
 	}
+
+	/**
+	 * @param \Lightwerk\SurfCaptain\Domain\Facet\Deployment\CopyDeployment
+	 * @return \Lightwerk\SurfCaptain\Domain\Model\Deployment
+	 * @throws \Lightwerk\SurfCaptain\Domain\Repository\Preset\Exception
+	 * @throws \Lightwerk\SurfCaptain\GitApi\Exception
+	 */
+	public function createFromCopyDeployment(CopyDeployment $copyDeployment) {
+		$gitRepositoryDeployment = $copyDeployment->getGitRepositoryDeployment();
+		$initSyncDeployment = $copyDeployment->getInitSyncDeployment();
+		$gitRepositoryDeployment->setPresetKey($copyDeployment->getPresetKey());
+		$initSyncDeployment->setPresetKey($copyDeployment->getPresetKey());
+		$gitRepositoryConfiguration = $this->createFromGitRepositoryDeployment($gitRepositoryDeployment)->getConfiguration();
+		$syncConfiguration = $this->createFromInitSyncDeployment($initSyncDeployment)->getConfiguration();
+		$preset = \TYPO3\Flow\Utility\Arrays::arrayMergeRecursiveOverrule($syncConfiguration, $gitRepositoryConfiguration);
+		$postset = array();
+		$postset['applications'][0]['type'] = $copyDeployment->getDeploymentType();
+		$configuration = \TYPO3\Flow\Utility\Arrays::arrayMergeRecursiveOverrule($preset, $postset);
+		return $this->createFromConfiguration($configuration);
+	}
+
 
 	/**
 	 * @param array
