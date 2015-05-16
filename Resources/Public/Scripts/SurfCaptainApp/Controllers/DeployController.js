@@ -7,7 +7,7 @@
         .controller('DeployController', DeployController);
 
     /* @ngInject */
-    function DeployController($scope, $controller, ProjectRepository, toaster, CONFIG, DeploymentRepository, $location, PresetRepository, SettingsRepository, UtilityService, MarkerService, PresetService) {
+    function DeployController($scope, $controller, ProjectRepository, toaster, CONFIG, DeploymentRepository, $location, PresetRepository, SettingsRepository, UtilityService, MarkerService, PresetService, ValidationService) {
 
         // Inherit from AbstractSingleProjectController
         angular.extend(this, $controller('AbstractSingleProjectController', {$scope: $scope}));
@@ -35,6 +35,7 @@
         $scope.showNewRepositoryOption = false;
         $scope.repositoryOptions = [];
         $scope.newRepositoryOption = {};
+        $scope.commitUrlSegment = 'commit';
 
         // methods published to the view
         $scope.setCommitInCurrentPreset = setCommitInCurrentPreset;
@@ -417,6 +418,10 @@
             ProjectRepository.getFullProjectByRepositoryUrl(project.repositoryUrl).then(
                 function (response) {
                     $scope.repositoryUrl = response.repository.webUrl;
+                    // On bitbucket.org single commits are hidden behind a .../commits/... URL
+                    if (ValidationService.doesStringContainSubstring($scope.repositoryUrl, 'bitbucket.org')) {
+                        $scope.commitUrlSegment = 'commits';
+                    }
                     response.repository.tags.sort(UtilityService.byCommitDate);
                     response.repository.branches.sort(UtilityService.byCommitDate);
 

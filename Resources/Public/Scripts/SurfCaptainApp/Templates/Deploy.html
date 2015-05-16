@@ -108,7 +108,7 @@
 					<span class="message"><i class="fa fa-user"></i><strong>{{currentCommit.commit.committerName}}</strong>:
 					{{currentCommit.commit.message}}</span>
 					<span class="git-link">
-						<a data-ng-href="{{repositoryUrl}}/commit/{{currentCommit.commit.id}}" target="_blank">View in Git ({{currentCommit.commit.id | limitTo:8}})</a>
+						<a data-ng-href="{{repositoryUrl}}/{{commitUrlSegment}}/{{currentCommit.commit.id}}" target="_blank">View in Git ({{currentCommit.commit.id | limitTo:8}})</a>
 					</span>
 				</span>
 			</div>

@@ -67,7 +67,7 @@ class GitDriverStep extends \TYPO3\Setup\Step\AbstractStep {
 				$this->distributionSettings = Arrays::setValueByPath($this->distributionSettings, 'Lightwerk.SurfCaptain.sources.default.mapping.Commit.committerName', '{{committer.name}}');
 				break;
 			case 'BitBucket':
-				$this->distributionSettings = Arrays::setValueByPath($this->distributionSettings, 'Lightwerk.SurfCaptain.sources.default.mapping.Repository.webUrl', '{{links.clone.0.href}}');
+				$this->distributionSettings = Arrays::setValueByPath($this->distributionSettings, 'Lightwerk.SurfCaptain.sources.default.mapping.Repository.webUrl', '{{links.html.href}}');
 				$this->distributionSettings = Arrays::setValueByPath($this->distributionSettings, 'Lightwerk.SurfCaptain.sources.default.mapping.Repository.repositoryUrl', '{{links.clone.1.href}}');
 				$this->distributionSettings = Arrays::setValueByPath($this->distributionSettings, 'Lightwerk.SurfCaptain.sources.default.mapping.Branch.name', '{{branch}}');
 				$this->distributionSettings = Arrays::setValueByPath($this->distributionSettings, 'Lightwerk.SurfCaptain.sources.default.mapping.Branch.commit.id', '{{raw_node}}');
