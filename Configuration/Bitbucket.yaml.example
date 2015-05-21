@@ -17,7 +17,7 @@ Lightwerk:
         mapping:
           Repository:
             repositoryUrl: '{{links.clone.1.href}}'
-            webUrl: '{{links.clone.0.href}}'
+            webUrl: '{{links.html.href}}'
           Branch:
             name: '{{branch}}'
             commit:

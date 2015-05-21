@@ -7,7 +7,7 @@
         .controller('SingleDeploymentController', SingleDeploymentController);
 
     /* @ngInject */
-    function SingleDeploymentController($scope, DeploymentRepository, $routeParams, $cacheFactory, $location, toaster, ProjectRepository, $controller) {
+    function SingleDeploymentController($scope, DeploymentRepository, $routeParams, $cacheFactory, $location, toaster, ProjectRepository, $controller, ValidationService) {
 
         var self = this,
             flashMessageShown = false,
@@ -19,6 +19,7 @@
         // properties of the vm
         $scope.finished = false;
         $scope.noLog = false;
+        $scope.commitUrlSegment = 'commit';
 
         // methods published to the view
         $scope.cancelDeployment = cancelDeployment;
@@ -114,6 +115,9 @@
                 function (response) {
                     $scope.finished = true;
                     $scope.deployment = response.deployment;
+                    if (ValidationService.doesStringContainSubstring(response.deployment.repositoryUrl, 'bitbucket.org')) {
+                        $scope.commitUrlSegment = 'commits';
+                    }
                     self.initLiveLog();
                 },
                 function () {

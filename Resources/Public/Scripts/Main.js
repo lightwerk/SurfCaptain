@@ -285,7 +285,7 @@
         .controller('DeployController', DeployController);
 
     /* @ngInject */
-    function DeployController($scope, $controller, ProjectRepository, toaster, CONFIG, DeploymentRepository, $location, PresetRepository, SettingsRepository, UtilityService, MarkerService, PresetService) {
+    function DeployController($scope, $controller, ProjectRepository, toaster, CONFIG, DeploymentRepository, $location, PresetRepository, SettingsRepository, UtilityService, MarkerService, PresetService, ValidationService) {
 
         // Inherit from AbstractSingleProjectController
         angular.extend(this, $controller('AbstractSingleProjectController', {$scope: $scope}));
@@ -313,6 +313,7 @@
         $scope.showNewRepositoryOption = false;
         $scope.repositoryOptions = [];
         $scope.newRepositoryOption = {};
+        $scope.commitUrlSegment = 'commit';
 
         // methods published to the view
         $scope.setCommitInCurrentPreset = setCommitInCurrentPreset;
@@ -695,6 +696,10 @@
             ProjectRepository.getFullProjectByRepositoryUrl(project.repositoryUrl).then(
                 function (response) {
                     $scope.repositoryUrl = response.repository.webUrl;
+                    // On bitbucket.org single commits are hidden behind a .../commits/... URL
+                    if (ValidationService.doesStringContainSubstring($scope.repositoryUrl, 'bitbucket.org')) {
+                        $scope.commitUrlSegment = 'commits';
+                    }
                     response.repository.tags.sort(UtilityService.byCommitDate);
                     response.repository.branches.sort(UtilityService.byCommitDate);
 
@@ -741,7 +746,7 @@
             );
         });
     }
-    DeployController.$inject = ['$scope', '$controller', 'ProjectRepository', 'toaster', 'CONFIG', 'DeploymentRepository', '$location', 'PresetRepository', 'SettingsRepository', 'UtilityService', 'MarkerService', 'PresetService'];
+    DeployController.$inject = ['$scope', '$controller', 'ProjectRepository', 'toaster', 'CONFIG', 'DeploymentRepository', '$location', 'PresetRepository', 'SettingsRepository', 'UtilityService', 'MarkerService', 'PresetService', 'ValidationService'];
 }());
 /* global angular */
 
@@ -1407,7 +1412,7 @@
         .controller('SingleDeploymentController', SingleDeploymentController);
 
     /* @ngInject */
-    function SingleDeploymentController($scope, DeploymentRepository, $routeParams, $cacheFactory, $location, toaster, ProjectRepository, $controller) {
+    function SingleDeploymentController($scope, DeploymentRepository, $routeParams, $cacheFactory, $location, toaster, ProjectRepository, $controller, ValidationService) {
 
         var self = this,
             flashMessageShown = false,
@@ -1419,6 +1424,7 @@
         // properties of the vm
         $scope.finished = false;
         $scope.noLog = false;
+        $scope.commitUrlSegment = 'commit';
 
         // methods published to the view
         $scope.cancelDeployment = cancelDeployment;
@@ -1514,6 +1520,9 @@
                 function (response) {
                     $scope.finished = true;
                     $scope.deployment = response.deployment;
+                    if (ValidationService.doesStringContainSubstring(response.deployment.repositoryUrl, 'bitbucket.org')) {
+                        $scope.commitUrlSegment = 'commits';
+                    }
                     self.initLiveLog();
                 },
                 function () {
@@ -1559,7 +1568,7 @@
             );
         }
     }
-    SingleDeploymentController.$inject = ['$scope', 'DeploymentRepository', '$routeParams', '$cacheFactory', '$location', 'toaster', 'ProjectRepository', '$controller'];
+    SingleDeploymentController.$inject = ['$scope', 'DeploymentRepository', '$routeParams', '$cacheFactory', '$location', 'toaster', 'ProjectRepository', '$controller', 'ValidationService'];
 }());
 /* global angular */
 

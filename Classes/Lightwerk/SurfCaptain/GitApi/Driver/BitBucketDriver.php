@@ -41,7 +41,7 @@ class BitBucketDriver extends AbstractDriver {
 		$repositories = array();
 		foreach ($this->settings['repositories'] as $command) {
 			$this->apiRequest->setApiUrl($this->settings['apiUrl']);
-			$response = $this->apiRequest->call($command);
+			$response = $this->apiRequest->call($command . '?pagelen=100');
 			$projects = $response['values'];
 			$repositories = array_merge(
 				$repositories,
