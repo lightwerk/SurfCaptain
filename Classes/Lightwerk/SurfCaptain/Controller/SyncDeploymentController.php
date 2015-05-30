@@ -48,6 +48,6 @@ class SyncDeploymentController extends AbstractRestController {
 		} catch (\TYPO3\Flow\Http\Exception $e) {
 			$this->handleException($e);
 		}
-		$this->redirect('index');
+		$this->redirect('index', 'Deployment');
 	}
 }
