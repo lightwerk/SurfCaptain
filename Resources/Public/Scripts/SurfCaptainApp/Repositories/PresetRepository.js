@@ -7,7 +7,7 @@
         .factory('PresetRepository', PresetRepository);
 
     /* @ngInject */
-    function PresetRepository($http, $q) {
+    function PresetRepository($http, $q, RequestService) {
         var presetRepository = {},
             url = '/api/preset';
 
@@ -41,7 +41,6 @@
         };
 
         /**
-         *
          * @param {object} server
          * @returns {string}
          * @throws {PresetRepositoryException}
@@ -57,7 +56,6 @@
         };
 
         /**
-         *
          * @param {object} server
          * @return {object}
          */
@@ -85,7 +83,11 @@
          * @returns {Q.promise|promise} – promise object
          */
         presetRepository.putServer = function (preset) {
-            return this.sendSinglePresetToApi(preset, 'put');
+            var data = {
+                'key': this.getKeyFromServerConfiguration(preset),
+                'configuration': presetRepository.getFullPreset(preset)
+            };
+            return RequestService.putRequest(data, url);
         };
 
         /**
@@ -95,34 +97,11 @@
          * @returns {Q.promise|promise} – promise object
          */
         presetRepository.postServer = function (preset) {
-            return this.sendSinglePresetToApi(preset, 'post');
-        };
-
-
-        /**
-         * Performs a request to the api with a single preset.
-         * This request can either be POST or PUT which can
-         * be determined with the method argument. Any other
-         * method will result in a failed API call.
-         *
-         * @param {object} preset
-         * @param {string} method
-         * @returns {promise|Q.promise}
-         */
-        presetRepository.sendSinglePresetToApi = function (preset, method) {
-            var deferred = $q.defer();
-            $http({
-                method: method,
-                url: url,
-                data: {
-                    'key': this.getKeyFromServerConfiguration(preset),
-                    'configuration': presetRepository.getFullPreset(preset)
-                },
-                headers: {
-                    'Accept': 'application/json'
-                }
-            }).success(deferred.resolve).error(deferred.reject);
-            return deferred.promise;
+            var data = {
+                'key': this.getKeyFromServerConfiguration(preset),
+                'configuration': presetRepository.getFullPreset(preset)
+            };
+            return RequestService.postRequest(data, url);
         };
 
         /**
