@@ -7,7 +7,7 @@
         .controller('SyncController', SyncController);
 
     /* @ngInject */
-    function SyncController($scope, $controller, PresetRepository, CONFIG, toaster, ProjectRepository, SettingsRepository, DeploymentRepository, $location) {
+    function SyncController($scope, $controller, PresetRepository, CONFIG, toaster, ProjectRepository, SettingsRepository, SyncDeploymentRepository, $location) {
 
         // Inherit from AbstractSingleProjectController
         angular.extend(this, $controller('AbstractSingleProjectController', {$scope: $scope}));
@@ -40,12 +40,19 @@
         /**
          * @return {void}
          */
-        function addFailureFlashMessage() {
+        function addFailureFlashMessage(data) {
+            var message = 'API call failed. Sync not possible.';
+            if (angular.isDefined(data.flashMessages) && angular.isArray(data.flashMessages)) {
+                message = '';
+                angular.forEach(data.flashMessages, function (flashMessage) {
+                    message += flashMessage.message;
+                });
+            }
             $scope.finished = true;
             toaster.pop(
                 'error',
                 'Request failed!',
-                'API call failed. Sync not possible.'
+                message
             );
         }
 
@@ -189,11 +196,14 @@
          * @return {void}
          */
         function sync(source, target) {
-            target.applications[0].type = CONFIG.applicationTypes.syncTYPO3;
-            target.applications[0].options.sourceNode = source.applications[0].nodes[0];
-            target.applications[0].options.sourceNode.deploymentPath = source.applications[0].options.deploymentPath;
-            target.applications[0].options.repositoryUrl = $scope.project.repositoryUrl;
-            DeploymentRepository.addDeployment(target).then(
+            var requestData = {
+                syncDeployment: {
+                    deploymentType: CONFIG.applicationTypes.syncTYPO3,
+                    sourcePresetKey: source.applications[0].nodes[0].name,
+                    presetKey: target.applications[0].nodes[0].name
+                }
+            };
+            SyncDeploymentRepository.create(requestData).then(
                 function (response) {
                     toaster.pop(
                         'success',
