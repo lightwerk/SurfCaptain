@@ -13,10 +13,18 @@
             switch (input) {
                 case 'TYPO3\CMS\Deploy':
                 case 'TYPO3\\CMS\\Deploy':
-                    return 'Deployment';
-                case 'TYPO3\CMS\Shared':
-                case 'TYPO3\\CMS\\Shared':
-                    return 'Sync';
+                    return 'TYPO3 Deployment';
+                case 'TYPO3\CMS\Sync':
+                case 'TYPO3\\CMS\\Sync':
+                    return 'TYPO3 Sync';
+                case 'TYPO3\Flow\Deploy':
+                case 'TYPO3\\Flow\\Deploy':
+                    return 'Flow Deployment';
+                case 'TYPO3\Flow\Sync':
+                case 'TYPO3\\Flow\\Sync':
+                    return 'Flow Sync';
+                case 'Deploy':
+                    return 'Simple Deployment';
                 default:
                     return input;
             }
