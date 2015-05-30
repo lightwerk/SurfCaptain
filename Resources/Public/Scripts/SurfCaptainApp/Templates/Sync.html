@@ -57,22 +57,56 @@
 			<h2>Step 2</h2>
 		</div>
 		<div class="col-md-9 col-xs-12">
-			<h3>Choose a target</h3>
+			<h3>Choose a Target</h3>
 
-			<div data-ng-repeat="globalServer in globalServers" class="deployment-server-container">
-				<div
-						class="deployment-server"
-						data-ng-class="[getRootContext(globalServer.applications[0].options.context), targetDisplay(globalServer)]"
-						data-ng-click="setCurrentTarget(globalServer)"
-						>
-					<div class="pull-right">
-						<div class="context">({{globalServer.applications[0].options.context}})</div>
+			<ul class="nav nav-tabs" role="tablist">
+				<li class="active"><a tab href="#project" role="tab" data-toggle="tab">Project Server</a></li>
+				<li><a tab href="#global" role="tab" data-toggle="tab">Global Server</a></li>
+			</ul>
+
+			<div class="tab-content">
+				<div class="tab-pane active" id="project">
+					<div data-ng-repeat="server in servers" class="deployment-server-container">
+						<div
+								class="deployment-server"
+								data-ng-class="[targetDisplay(server), getRootContext(server.applications[0].options.context)]"
+								data-ng-click="setCurrentTarget(server)"
+								>
+							<div class="pull-right">
+								<div class="context">({{server.applications[0].options.context}})</div>
+							</div>
+							<div class="title">
+								<i class="fa fa-hdd-o"></i>{{server.applications[0].nodes[0].name}}
+							</div>
+							<div class="deployed-commit">{{getDeployedTag(server.applications[0].nodes[0].name)}}</div>
+						</div>
 					</div>
-					<div class="title">
-						<i class="fa fa-hdd-o"></i>{{globalServer.applications[0].nodes[0].name}}
+					<div
+							data-ng-if="finished && servers.length === 0">
+						<p><i>There are no project servers configured yet. You can add servers
+							<a data-ng-href="#/project/{{project.identifier}}/server">here</a>. Anyway you can deploy onto
+							a global server.</i></p>
+					</div>
+				</div>
+
+				<div class="tab-pane" id="global">
+					<div data-ng-repeat="globalServer in globalServers" class="deployment-server-container">
+						<div
+								class="deployment-server"
+								data-ng-class="[getRootContext(globalServer.applications[0].options.context), targetDisplay(globalServer)]"
+								data-ng-click="setCurrentTarget(globalServer)"
+								>
+							<div class="pull-right">
+								<div class="context">({{globalServer.applications[0].options.context}})</div>
+							</div>
+							<div class="title">
+								<i class="fa fa-hdd-o"></i>{{globalServer.applications[0].nodes[0].name}}
+							</div>
+						</div>
 					</div>
 				</div>
 			</div>
+
 		</div>
 	</div>
 
