@@ -10,10 +10,10 @@
     function DeploymentRepository($http, $q, $cacheFactory, RequestService) {
 
         var deploymentRepository = {
-                "addDeployment": addDeployment,
-                "getDeployments": getDeployments,
-                "getSingleDeployment": getSingleDeployment,
-                "cancelDeployment": cancelDeployment
+                'addDeployment': addDeployment,
+                'getDeployments': getDeployments,
+                'getSingleDeployment': getSingleDeployment,
+                'cancelDeployment': cancelDeployment
             },
             url = '/api/deployment';
 

@@ -10,7 +10,7 @@
     function SyncDeploymentRepository(RequestService) {
 
         var deploymentRepository = {
-                "create": addSync
+                'create': addSync
             },
             url = '/api/syncDeployment';
 
