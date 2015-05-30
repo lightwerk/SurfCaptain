@@ -9,8 +9,19 @@
     /* @ngInject */
     function DeploymentRepository($http, $q, $cacheFactory) {
 
-        var deploymentRepository = {},
-            url = '/api/deployment';
+        var deploymentRepository = {
+                "addDeployment": addDeployment,
+                "getDeployments": getDeployments,
+                "getSingleDeployment": getSingleDeployment,
+                "cancelDeployment": cancelDeployment
+            },
+            url = '/api/deployment',
+            self = this;
+
+        this.getRequestObject = getRequestObject;
+        this.postRequest = postRequest;
+        this.putRequest = putRequest;
+        this.request = request;
 
         $cacheFactory('deploymentCache');
 
@@ -18,41 +29,24 @@
          * @param {object} deployment
          * @return {Q.promise|promise}
          */
-        deploymentRepository.addDeployment = function (deployment) {
-            var deploymentContainer = {
-                    'configuration': {}
-                },
-                deferred = $q.defer();
-            deploymentContainer.configuration = deployment;
-
-            $http({
-                method: 'POST',
-                url: url,
-                data: {
-                    deployment: deploymentContainer
-                },
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json'
-                }
-            }).success(deferred.resolve).error(deferred.reject);
-            return deferred.promise;
-        };
+        function addDeployment(deployment) {
+            return self.postRequest({deployment: {'configuration': deployment}});
+        }
 
         /**
          * @return {promise|Q.promise}
          */
-        deploymentRepository.getDeployments = function () {
+        function getDeployments() {
             var deferred = $q.defer();
             $http.get(url).success(deferred.resolve).error(deferred.reject);
             return deferred.promise;
-        };
+        }
 
         /**
          * @param {string} identifier
          * @return {promise|Q.promise}
          */
-        deploymentRepository.getSingleDeployment = function (identifier) {
+        function getSingleDeployment(identifier) {
             var deferred = $q.defer();
             if (angular.isDefined($cacheFactory.get('deploymentCache').get(identifier))) {
                 deferred.resolve({deployment: $cacheFactory.get('deploymentCache').get(identifier)});
@@ -60,26 +54,63 @@
             }
             $http.get(url + '?deployment=' + identifier).success(deferred.resolve).error(deferred.reject);
             return deferred.promise;
-        };
+        }
 
         /**
-         * @param deploymentId
+         * @param {string} deploymentId
          * @return {promise|Q.promise}
          */
-        deploymentRepository.cancelDeployment = function (deploymentId) {
-            var deferred = $q.defer();
-            $http({
-                'method': 'PUT',
-                'url': url,
-                'data': {
-                    'deployment': {
-                        '__identity': deploymentId,
-                        'status': 'cancelled'
-                    }
+        function cancelDeployment(deploymentId) {
+            return self.putRequest({
+                'deployment': {
+                    '__identity': deploymentId,
+                    'status': 'cancelled'
                 }
-            }).success(deferred.resolve).error(deferred.reject);
+            });
+        }
+
+        /**
+         * @param {Object} data
+         * @returns {promise|Q.promise}
+         */
+        function postRequest(data) {
+            return self.request(self.getRequestObject('POST', data));
+        }
+
+        /**
+         * @param {Object} data
+         * @returns {promise|Q.promise}
+         */
+        function putRequest(data) {
+            return self.request(self.getRequestObject('PUT', data));
+        }
+
+        /**
+         * @param {Object} requestConfig
+         * @returns {promise|Q.promise}
+         */
+        function request(requestConfig) {
+            var deferred = $q.defer();
+            $http(requestConfig).success(deferred.resolve).error(deferred.reject);
             return deferred.promise;
-        };
+        }
+
+        /**
+         * @param {string} method
+         * @param {Object} data
+         * @returns {Object}
+         */
+        function getRequestObject(method, data) {
+            return {
+                'method': method,
+                'url': url,
+                'data': data,
+                'headers': {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                }
+            }
+        }
 
         // Public API
         return {
