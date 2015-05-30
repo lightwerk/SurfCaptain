@@ -72,7 +72,7 @@ class DeploymentFactory {
 		$sourcePreset =  $this->presetRepository->findByIdentifier($syncDeployment->getSourcePresetKey());
 		$preset =  $this->presetRepository->findByIdentifier($syncDeployment->getPresetKey());
 		if ($preset['applications'][0]['options']['context'] === 'Production') {
-			throw new Exception('shared Deployment to Production Context disabled');
+			throw new Exception('Sync Deployment to Production Context is not allowed.');
 		}
 		$postset = array();
 		if (empty($preset['applications'][0]['options']['db']) === TRUE) {
@@ -88,6 +88,9 @@ class DeploymentFactory {
 		}
 		$postset['applications'][0]['type'] = $syncDeployment->getDeploymentType();
 		$configuration = \TYPO3\Flow\Utility\Arrays::arrayMergeRecursiveOverrule($preset, $postset);
+		if (empty($configuration['applications'][0]['options']['repositoryUrl']) === TRUE) {
+			$configuration['applications'][0]['options']['repositoryUrl'] = $sourcePreset['applications'][0]['options']['repositoryUrl'];
+		}
 		return $this->createFromConfiguration($configuration);
 	}
 
