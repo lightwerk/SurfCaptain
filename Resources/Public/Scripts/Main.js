@@ -250,7 +250,7 @@
         .controller('AbstractSingleProjectController', AbstractSingleProjectController);
 
     /* @ngInject */
-    function AbstractSingleProjectController($scope, $routeParams, ProjectRepository, FavorService, toaster) {
+    function AbstractSingleProjectController($scope, $routeParams, ProjectRepository, FavorService, FlashMessageService) {
         $scope.name = $routeParams.projectName;
         $scope.project = {};
         $scope.messages = {};
@@ -262,10 +262,10 @@
                     $scope.project = ProjectRepository.getProjectByName($scope.name, projects);
                     FavorService.addFavoriteProject($scope.project);
                 },
-                function () {
+                function (response) {
                     $scope.finished = true;
-                    toaster.pop(
-                        'error',
+                    FlashMessageService.addErrorFlashMessageFromResponse(
+                        response,
                         'Error!',
                         'API call failed. Please try again later.'
                     );
@@ -275,7 +275,7 @@
         };
         this.init();
     }
-    AbstractSingleProjectController.$inject = ['$scope', '$routeParams', 'ProjectRepository', 'FavorService', 'toaster'];
+    AbstractSingleProjectController.$inject = ['$scope', '$routeParams', 'ProjectRepository', 'FavorService', 'FlashMessageService'];
 }());
 /* global angular,jQuery */
 
@@ -286,7 +286,7 @@
         .controller('DeployController', DeployController);
 
     /* @ngInject */
-    function DeployController($scope, $controller, ProjectRepository, toaster, CONFIG, DeploymentRepository, $location, PresetRepository, SettingsRepository, UtilityService, MarkerService, PresetService, ValidationService) {
+    function DeployController($scope, $controller, ProjectRepository, CONFIG, DeploymentRepository, $location, PresetRepository, SettingsRepository, UtilityService, MarkerService, PresetService, ValidationService, FlashMessageService) {
 
         // Inherit from AbstractSingleProjectController
         angular.extend(this, $controller('AbstractSingleProjectController', {$scope: $scope}));
@@ -357,12 +357,13 @@
 
         /**
          * @param {string} message
+         * @param {Object} response
          * @return {void}
          */
-        function addFailureFlashMessage(message) {
+        function addFailureFlashMessage(message, response) {
             $scope.finished = true;
-            toaster.pop(
-                'error',
+            FlashMessageService.addErrorFlashMessageFromResponse(
+                response || {},
                 'Error!',
                 message
             );
@@ -466,8 +467,7 @@
                 return element.title === title;
             });
             if (titleAlreadyUsed.length) {
-                toaster.pop(
-                    'error',
+                FlashMessageService.addErrorFlashMessage(
                     'Error',
                     'Title already in use. Please choose another one.'
                 );
@@ -497,17 +497,16 @@
             PresetRepository.updateServer(preset.applications[0]).then(
                 function () {
                     $scope.finished = true;
-                    toaster.pop(
-                        'success',
+                    FlashMessageService.addSuccessFlashMessage(
                         'Success',
                         'Repository Options successfully updated.'
                     );
                     self.setRepositoryOptions();
                 },
-                function () {
+                function (response) {
                     $scope.finished = true;
-                    toaster.pop(
-                        'error',
+                    FlashMessageService.addErrorFlashMessageFromResponse(
+                        response,
                         'Error',
                         'The API call failed. Repository Options could not be updated.'
                     );
@@ -596,13 +595,12 @@
                         ProjectRepository.updateFullProjectInCache($scope.project.repositoryUrl);
                         $location.path('project/' + $scope.name + '/deployment/' + response.deployment.__identity);
                     },
-                    function () {
-                        self.addFailureFlashMessage('Deployment configuration could not be submitted successfully. Try again later.');
+                    function (response) {
+                        self.addFailureFlashMessage('Deployment configuration could not be submitted successfully. Try again later.', response);
                     }
                 );
             } else {
-                toaster.pop(
-                    'error',
+                FlashMessageService.addErrorFlashMessage(
                     'Oooops',
                     'Something went terribly wrong.'
                 );
@@ -627,14 +625,15 @@
                     default:
                         self.addFailureFlashMessage(
                             'Something is wrong with the type of the chosen commit. This should never happen. ' +
-                            'In fact, If you see this message, please go ahaed and punch any of the involved developers in the face.'
+                            'In fact, If you see this message, please go ahaed and punch any of the involved developers in the face.',
+                            {}
                         );
                         $scope.currentCommit = null;
                         return;
                 }
                 $scope.currentPreset.applications[0].options.sha1 = $scope.currentCommit.commit.id;
             } catch (e) {
-                self.addFailureFlashMessage(e.message);
+                self.addFailureFlashMessage(e.message, {});
                 $scope.currentCommit = null;
             }
         }
@@ -714,17 +713,14 @@
 
                     $scope.finished = true;
                     if ($scope.servers.length === 0) {
-                        toaster.pop(
-                            'note',
+                        FlashMessageService.addInfoFlashMessage(
                             'No Servers yet!',
-                            'FYI: There are no servers for project <span class="uppercase">' + $scope.name + '</span> yet. Why dont you create one, hmm?',
-                            4000,
-                            'trustedHtml'
+                            'FYI: There are no servers for project <span class="uppercase">' + $scope.name + '</span> yet. Why dont you create one, hmm?'
                         );
                     }
                 },
-                function () {
-                    self.addFailureFlashMessage('API call failed. Deployment not possible.');
+                function (response) {
+                    self.addFailureFlashMessage('API call failed. Deployment not possible.', response);
                 }
             );
 
@@ -732,8 +728,8 @@
                 function (response) {
                     $scope.globalServers = response.presets;
                 },
-                function () {
-                    self.addFailureFlashMessage('API call failed. Deployment not possible.');
+                function (response) {
+                    self.addFailureFlashMessage('API call failed. Deployment not possible.', response);
                 }
             );
 
@@ -747,7 +743,7 @@
             );
         });
     }
-    DeployController.$inject = ['$scope', '$controller', 'ProjectRepository', 'toaster', 'CONFIG', 'DeploymentRepository', '$location', 'PresetRepository', 'SettingsRepository', 'UtilityService', 'MarkerService', 'PresetService', 'ValidationService'];
+    DeployController.$inject = ['$scope', '$controller', 'ProjectRepository', 'CONFIG', 'DeploymentRepository', '$location', 'PresetRepository', 'SettingsRepository', 'UtilityService', 'MarkerService', 'PresetService', 'ValidationService', 'FlashMessageService'];
 }());
 /* global angular */
 
@@ -758,7 +754,7 @@
         .controller('DeploymentsController', DeploymentsController);
 
     /* @ngInject */
-    function DeploymentsController($scope, DeploymentRepository, toaster) {
+    function DeploymentsController($scope, DeploymentRepository, FlashMessageService) {
 
         var self = this;
 
@@ -778,10 +774,10 @@
                     $scope.finished = true;
                     self.setDeployments(response.deployments);
                 },
-                function () {
+                function (response) {
                     $scope.finished = true;
-                    toaster.pop(
-                        'error',
+                    FlashMessageService.addErrorFlashMessageFromResponse(
+                        response,
                         'Error!',
                         'The API call failed. Please try again later.'
                     );
@@ -798,7 +794,7 @@
         }
 
     }
-    DeploymentsController.$inject = ['$scope', 'DeploymentRepository', 'toaster'];
+    DeploymentsController.$inject = ['$scope', 'DeploymentRepository', 'FlashMessageService'];
 }());
 /* global angular */
 
@@ -820,7 +816,7 @@
         .controller('GlobalServerController', GlobalServerController);
 
     /* @ngInject */
-    function GlobalServerController($scope, PresetRepository, PresetService, toaster, SettingsRepository) {
+    function GlobalServerController($scope, PresetRepository, PresetService, FlashMessageService, SettingsRepository) {
         var self = this;
 
         // properties of vm
@@ -876,21 +872,18 @@
                     $scope.servers = response.presets;
                     self.setServerNames();
                     if ($scope.servers.length === 0) {
-                        toaster.pop(
-                            'note',
+                        FlashMessageService.addInfoFlashMessage(
                             'FYI!',
-                            'There are no servers yet. Why dont you create one, hmm?',
-                            4000,
-                            'trustedHtml'
+                            'There are no servers yet. Why dont you create one, hmm?'
                         );
                     }
                 },
-                function () {
+                function (response) {
                     $scope.finished = true;
-                    toaster.pop(
-                        'error',
+                    FlashMessageService.addErrorFlashMessageFromResponse(
+                        response,
                         'Request failed!',
-                        'The global servers could not be received. Please try again later..'
+                        'The global servers could not be received. Please try again later.'
                     );
                 }
             );
@@ -908,16 +901,15 @@
                     $scope.newPreset = PresetService.getNewPreset();
                     $scope.newServerForm.$setPristine();
                     $scope.getAllServers();
-                    toaster.pop(
-                        'success',
+                    FlashMessageService.addSuccessFlashMessage(
                         'Server created!',
                         'The Server ' + server.nodes[0].name + ' was successfully created.'
                     );
                 },
-                function () {
+                function (response) {
                     $scope.finished = true;
-                    toaster.pop(
-                        'error',
+                    FlashMessageService.addErrorFlashMessageFromResponse(
+                        response,
                         'Creation failed!',
                         'The Server "' + server.nodes[0].name + '" could not be created.'
                     );
@@ -935,7 +927,7 @@
             $scope.getAllServers();
         }
     }
-    GlobalServerController.$inject = ['$scope', 'PresetRepository', 'PresetService', 'toaster', 'SettingsRepository'];
+    GlobalServerController.$inject = ['$scope', 'PresetRepository', 'PresetService', 'FlashMessageService', 'SettingsRepository'];
 }());
 /* global angular */
 
@@ -1040,7 +1032,7 @@
         .controller('ProjectsController', ProjectsController);
 
     /* @ngInject */
-    function ProjectsController($scope, ProjectRepository, SettingsRepository, toaster) {
+    function ProjectsController($scope, ProjectRepository, SettingsRepository, FlashMessageService) {
 
         // properties of the vm
         $scope.settings = {};
@@ -1058,11 +1050,11 @@
                     $scope.finished = true;
                     $scope.projects = response;
                 },
-                function () {
+                function (response) {
                     //an error occurred
                     $scope.finished = true;
-                    toaster.pop(
-                        'error',
+                    FlashMessageService.addErrorFlashMessageFromResponse(
+                       response,
                         'Error!',
                         'API call failed. Your connected Git repository is currently not available.'
                     );
@@ -1075,7 +1067,7 @@
             );
         }
     }
-    ProjectsController.$inject = ['$scope', 'ProjectRepository', 'SettingsRepository', 'toaster'];
+    ProjectsController.$inject = ['$scope', 'ProjectRepository', 'SettingsRepository', 'FlashMessageService'];
 }());
 /* global angular */
 
@@ -1086,7 +1078,7 @@
         .controller('ServerController', ServerController);
 
     /* @ngInject */
-    function ServerController($scope, $controller, PresetRepository, ValidationService, SettingsRepository, MarkerService, PresetService, toaster, ProjectRepository) {
+    function ServerController($scope, $controller, PresetRepository, ValidationService, SettingsRepository, MarkerService, PresetService, FlashMessageService, ProjectRepository) {
 
         var self = this;
 
@@ -1241,20 +1233,17 @@
                 self.setTakenServerNamesAsUnavailableSuggestions();
             }
             if ($scope.servers.length === 0) {
-                toaster.pop(
-                    'note',
+                FlashMessageService.addInfoFlashMessage(
                     'No Servers yet!',
-                    'FYI: There are no servers for project <span class="uppercase">' + $scope.name  + '</span> yet. Why dont you create one, hmm?',
-                    4000,
-                    'trustedHtml'
+                    'FYI: There are no servers for project <span class="uppercase">' + $scope.name  + '</span> yet. Why dont you create one, hmm?'
                 );
             }
         }
 
-        function failureCallback() {
+        function failureCallback(response) {
             $scope.finished = true;
-            toaster.pop(
-                'error',
+            FlashMessageService.addErrorFlashMessageFromResponse(
+                response,
                 'Request failed!',
                 'The servers could not be received. Please try again later..'
             );
@@ -1315,16 +1304,15 @@
                     $scope.newServerForm.$setPristine();
                     self.handleSettings();
                     $scope.getAllServers(false);
-                    toaster.pop(
-                        'success',
+                    FlashMessageService.addSuccessFlashMessage(
                         'Server created!',
                         'The Server "' + server.nodes[0].name + '" was successfully created.'
                     );
                 },
-                function () {
+                function (response) {
                     $scope.finished = true;
-                    toaster.pop(
-                        'error',
+                    FlashMessageService.addErrorFlashMessageFromResponse(
+                        response,
                         'Creation failed!',
                         'The Server "' + server.nodes[0].name + '" could not be created.'
                     );
@@ -1372,7 +1360,7 @@
             }
         });
     }
-    ServerController.$inject = ['$scope', '$controller', 'PresetRepository', 'ValidationService', 'SettingsRepository', 'MarkerService', 'PresetService', 'toaster', 'ProjectRepository'];
+    ServerController.$inject = ['$scope', '$controller', 'PresetRepository', 'ValidationService', 'SettingsRepository', 'MarkerService', 'PresetService', 'FlashMessageService', 'ProjectRepository'];
 }());
 /* global angular */
 (function () {
@@ -1382,7 +1370,7 @@
         .controller('SettingsController', SettingsController);
 
     /* @ngInject */
-    function SettingsController($scope, SettingsRepository, toaster) {
+    function SettingsController($scope, SettingsRepository, FlashMessageService) {
 
         activate();
 
@@ -1390,19 +1378,18 @@
             SettingsRepository.getSettings().then(
                 function (response) {
                     $scope.settings = response;
-                    console.log(response);
                 },
-                function () {
-                    toaster.pop(
-                        'error',
+                function (response) {
+                    FlashMessageService.addErrorFlashMessageFromResponse(
+                        response,
                         'Error!',
-                        'Something went wrong'
+                        'Something went wrong.'
                     );
                 }
             );
         }
     }
-    SettingsController.$inject = ['$scope', 'SettingsRepository', 'toaster'];
+    SettingsController.$inject = ['$scope', 'SettingsRepository', 'FlashMessageService'];
 }());
 /* global angular */
 
@@ -1413,7 +1400,7 @@
         .controller('SingleDeploymentController', SingleDeploymentController);
 
     /* @ngInject */
-    function SingleDeploymentController($scope, DeploymentRepository, $routeParams, $cacheFactory, $location, toaster, ProjectRepository, $controller, ValidationService) {
+    function SingleDeploymentController($scope, DeploymentRepository, $routeParams, $cacheFactory, $location, FlashMessageService, ProjectRepository, $controller, ValidationService) {
 
         var self = this,
             flashMessageShown = false,
@@ -1453,8 +1440,7 @@
             switch ($scope.deployment.status) {
                 case 'success':
                     if (wasRunning && !flashMessageShown) {
-                        toaster.pop(
-                            'success',
+                        FlashMessageService.addSuccessFlashMessage(
                             'Deployment Successfull!',
                             $scope.deployment.referenceName +
                             ' was successfully deployed onto ' +
@@ -1466,8 +1452,7 @@
                     break;
                 case 'failed':
                     if (wasRunning && !flashMessageShown) {
-                        toaster.pop(
-                            'error',
+                        FlashMessageService.addErrorFlashMessage(
                             'Deployment Failed!',
                             $scope.deployment.referenceName +
                             'could not be deployed onto ' +
@@ -1482,8 +1467,7 @@
                     return;
                 case 'waiting':
                     if (!flashMessageShown) {
-                        toaster.pop(
-                            'note',
+                        FlashMessageService.addInfoFlashMessage(
                             'Deployment will start shortly!',
                             $scope.deployment.referenceName + ' will be shortly deployed onto ' +
                             $scope.deployment.options.name + '! You can cancel the deployment while it is still waiting.'
@@ -1559,9 +1543,9 @@
                 function (response) {
                     $location.path('project/' + $scope.name + '/deployment/' + response.deployment.__identity);
                 },
-                function () {
-                    toaster.pop(
-                        'error',
+                function (response) {
+                    FlashMessageService.addErrorFlashMessageFromResponse(
+                        response,
                         'Error!',
                         'Deployment configuration could not be submitted successfully. Try again later.'
                     );
@@ -1569,7 +1553,7 @@
             );
         }
     }
-    SingleDeploymentController.$inject = ['$scope', 'DeploymentRepository', '$routeParams', '$cacheFactory', '$location', 'toaster', 'ProjectRepository', '$controller', 'ValidationService'];
+    SingleDeploymentController.$inject = ['$scope', 'DeploymentRepository', '$routeParams', '$cacheFactory', '$location', 'FlashMessageService', 'ProjectRepository', '$controller', 'ValidationService'];
 }());
 /* global angular */
 
@@ -1580,7 +1564,7 @@
         .controller('SyncController', SyncController);
 
     /* @ngInject */
-    function SyncController($scope, $controller, PresetRepository, CONFIG, toaster, ProjectRepository, SettingsRepository, SyncDeploymentRepository, $location) {
+    function SyncController($scope, $controller, PresetRepository, CONFIG, ProjectRepository, SettingsRepository, SyncDeploymentRepository, $location, FlashMessageService) {
 
         // Inherit from AbstractSingleProjectController
         angular.extend(this, $controller('AbstractSingleProjectController', {$scope: $scope}));
@@ -1604,30 +1588,10 @@
         $scope.sourceDisplay = sourceDisplay;
 
         // internal methods
-        this.addFailureFlashMessage = addFailureFlashMessage;
         this.setContexts = setContexts;
         this.setGlobalServers = setGlobalServers;
         this.setServersFromPresets = setServersFromPresets;
         this.setPreconfiguredServer = setPreconfiguredServer;
-
-        /**
-         * @return {void}
-         */
-        function addFailureFlashMessage(data) {
-            var message = 'API call failed. Sync not possible.';
-            if (angular.isDefined(data.flashMessages) && angular.isArray(data.flashMessages)) {
-                message = '';
-                angular.forEach(data.flashMessages, function (flashMessage) {
-                    message += flashMessage.message;
-                });
-            }
-            $scope.finished = true;
-            toaster.pop(
-                'error',
-                'Request failed!',
-                message
-            );
-        }
 
         /**
          * Fills $scope.contexts with configured contexts if
@@ -1657,8 +1621,8 @@
                 function (response) {
                     $scope.globalServers = response.presets;
                 },
-                function () {
-                    self.addFailureFlashMessage();
+                function (response) {
+                    FlashMessageService.addErrorFlashMessageFromResponse(response, 'Request Error', 'Could not receive Global Servers.');
                 }
             );
         }
@@ -1778,8 +1742,7 @@
             };
             SyncDeploymentRepository.create(requestData).then(
                 function (response) {
-                    toaster.pop(
-                        'success',
+                    FlashMessageService.addSuccessFlashMessage(
                         'OK!',
                         target.applications[0].nodes[0].name + ' will be synchronized with ' +
                         source.applications[0].nodes[0].name + '.'
@@ -1787,7 +1750,9 @@
                     ProjectRepository.updateFullProjectInCache($scope.project.repositoryUrl);
                     $location.path('project/' + $scope.name + '/deployment/' + response.deployment.__identity);
                 },
-                self.addFailureFlashMessage
+                function (response) {
+                    FlashMessageService.addErrorFlashMessageFromResponse(response, 'Request Error', 'API call failed. Sync not possible.');
+                }
             );
         }
 
@@ -1805,22 +1770,19 @@
                     self.setServersFromPresets(response.repository.presets);
                     $scope.finished = true;
                     if ($scope.servers.length === 0) {
-                        toaster.pop(
-                            'note',
+                        FlashMessageService.addInfoFlashMessage(
                             'No Servers yet!',
-                            'FYI: There are no servers for project <span class="uppercase">' + $scope.name  + '</span> yet. Why dont you create one, hmm?',
-                            4000,
-                            'trustedHtml'
+                            'FYI: There are no servers for project <span class="uppercase">' + $scope.name  + '</span> yet. Why dont you create one, hmm?'
                         );
                     }
                 },
-                function () {
-                    self.addFailureFlashMessage();
+                function (response) {
+                    FlashMessageService.addErrorFlashMessageFromResponse(response, 'Request Error', 'API call failed. Sync not possible.');
                 }
             );
         });
     }
-    SyncController.$inject = ['$scope', '$controller', 'PresetRepository', 'CONFIG', 'toaster', 'ProjectRepository', 'SettingsRepository', 'SyncDeploymentRepository', '$location'];
+    SyncController.$inject = ['$scope', '$controller', 'PresetRepository', 'CONFIG', 'ProjectRepository', 'SettingsRepository', 'SyncDeploymentRepository', '$location', 'FlashMessageService'];
 }());
 /* global angular */
 
@@ -1952,7 +1914,7 @@
         .directive('serverList', serverList);
 
     /* @ngInject */
-    function serverList(PresetRepository, ValidationService, toaster, SettingsRepository, ProjectRepository) {
+    function serverList(PresetRepository, ValidationService, FlashMessageService, SettingsRepository, ProjectRepository) {
         var linker = function (scope) {
             scope.toggleSpinnerAndOverlay = function () {
                 scope.finished = !scope.finished;
@@ -2004,16 +1966,15 @@
                 PresetRepository.deleteServer(server).then(
                     function () {
                         scope.$parent.getAllServers(false);
-                        toaster.pop(
-                            'success',
+                        FlashMessageService.addSuccessFlashMessage(
                             'Server deleted!',
                             'The Server "' + server.applications[0].nodes[0].name + '" was successfully removed.'
                         );
                     },
-                    function () {
+                    function (response) {
                         scope.toggleSpinnerAndOverlay();
-                        toaster.pop(
-                            'error',
+                        FlashMessageService.addErrorFlashMessageFromResponse(
+                            response,
                             'Deletion failed!',
                             'The Server "' + server.applications[0].nodes[0].name + '" could not be removed.'
                         );
@@ -2036,16 +1997,15 @@
                         if (angular.isDefined(scope.$parent.project)) {
                             ProjectRepository.updateFullProjectInCache(scope.$parent.project.repositoryUrl);
                         }
-                        toaster.pop(
-                            'success',
+                        FlashMessageService.addSuccessFlashMessage(
                             'Update successful!',
                             'The Server "' + server.applications[0].nodes[0].name + '" was updated successfully.'
                         );
                     },
-                    function () {
+                    function (response) {
                         scope.toggleSpinnerAndOverlay();
-                        toaster.pop(
-                            'error',
+                        FlashMessageService.addErrorFlashMessageFromResponse(
+                            response,
                             'Update failed!',
                             'The Server "' + server.applications[0].nodes[0].name + '" could not be updated.'
                         );
@@ -2119,7 +2079,7 @@
             link: linker
         };
     }
-    serverList.$inject = ['PresetRepository', 'ValidationService', 'toaster', 'SettingsRepository', 'ProjectRepository'];
+    serverList.$inject = ['PresetRepository', 'ValidationService', 'FlashMessageService', 'SettingsRepository', 'ProjectRepository'];
 }());
 /* global angular */
 
@@ -2427,10 +2387,10 @@
     function DeploymentRepository($http, $q, $cacheFactory, RequestService) {
 
         var deploymentRepository = {
-                "addDeployment": addDeployment,
-                "getDeployments": getDeployments,
-                "getSingleDeployment": getSingleDeployment,
-                "cancelDeployment": cancelDeployment
+                'addDeployment': addDeployment,
+                'getDeployments': getDeployments,
+                'getSingleDeployment': getSingleDeployment,
+                'cancelDeployment': cancelDeployment
             },
             url = '/api/deployment';
 
@@ -2851,7 +2811,7 @@
     function SyncDeploymentRepository(RequestService) {
 
         var deploymentRepository = {
-                "create": addSync
+                'create': addSync
             },
             url = '/api/syncDeployment';
 
@@ -2939,6 +2899,78 @@
     }
     FavorService.$inject = ['cookieStore', 'ProjectRepository'];
 }());
+/* global angular */
+
+(function () {
+    'use strict';
+    angular
+        .module('surfCaptain')
+        .service('FlashMessageService', FlashMessageService);
+
+    /* @ngInject */
+    function FlashMessageService(toaster) {
+
+        var self = this;
+
+        /**
+         * We check for an Exception message within data first.
+         *
+         * @param {Object} response
+         * @param {string} title
+         * @param {string} defaultMessage
+         * @return {void}
+         */
+        this.addErrorFlashMessageFromResponse = function (response, title, defaultMessage) {
+            var message = defaultMessage;
+            if (angular.isDefined(response.flashMessages) && angular.isArray(response.flashMessages)) {
+                message = '';
+                angular.forEach(response.flashMessages, function (flashMessage) {
+                    message += flashMessage.message + ' ';
+                });
+            }
+            self.addErrorFlashMessage(title, message);
+        };
+
+        /**
+         * @param {string} title
+         * @param {string} message
+         * @return {void}
+         */
+        this.addErrorFlashMessage = function (title, message) {
+            self.addFlashMessage('error', title, message);
+        };
+
+        /**
+         * @param {string} title
+         * @param {string} message
+         * @return {void}
+         */
+        this.addSuccessFlashMessage = function (title, message) {
+            self.addFlashMessage('success',title, message);
+        };
+
+        /**
+         * @param {string} title
+         * @param {string} message
+         * @return {void}
+         */
+        this.addInfoFlashMessage = function (title, message) {
+            self.addFlashMessage('note', title, message);
+        };
+
+        /**
+         * @param {string} severity
+         * @param {string} title
+         * @param {string} message
+         * @return {void}
+         */
+        this.addFlashMessage = function (severity, title, message) {
+            toaster.pop(severity, title, message);
+        };
+    }
+    FlashMessageService.$inject = ['toaster'];
+}());
+
 /* global angular */
 
 (function () {
@@ -3237,7 +3269,7 @@
                     'Content-Type': 'application/json',
                     'Accept': 'application/json'
                 }
-            }
+            };
         }
     }
     RequestService.$inject = ['$http', '$q'];
