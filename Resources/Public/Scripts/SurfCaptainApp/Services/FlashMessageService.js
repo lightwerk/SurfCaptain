@@ -30,6 +30,11 @@
             self.addErrorFlashMessage(title, message);
         };
 
+        /**
+         * @param {string} title
+         * @param {string} message
+         * @return {void}
+         */
         this.addErrorFlashMessage = function (title, message) {
             self.addFlashMessage('error', title, message);
         };
