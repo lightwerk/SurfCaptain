@@ -11,7 +11,7 @@
             applicationTypes: {
                 deploy: 'Deploy',
                 deployTYPO3: 'TYPO3\\CMS\\Deploy',
-                syncTYPO3: 'TYPO3\\CMS\\Shared'
+                syncTYPO3: 'TYPO3\\CMS\\Sync'
             }
         })
         .run(xeditableConfig);
@@ -75,7 +75,8 @@
         var customConfig = {
             'position-class': 'toast-bottom-right',
             'time-out': 5000,
-            'close-button': true
+            'close-button': true,
+            'body-output-type': 'trustedHtml'
         };
         angular.extend(toasterConfig, customConfig);
     }
@@ -1579,7 +1580,7 @@
         .controller('SyncController', SyncController);
 
     /* @ngInject */
-    function SyncController($scope, $controller, PresetRepository, CONFIG, toaster, ProjectRepository, SettingsRepository, DeploymentRepository, $location) {
+    function SyncController($scope, $controller, PresetRepository, CONFIG, toaster, ProjectRepository, SettingsRepository, SyncDeploymentRepository, $location) {
 
         // Inherit from AbstractSingleProjectController
         angular.extend(this, $controller('AbstractSingleProjectController', {$scope: $scope}));
@@ -1612,12 +1613,19 @@
         /**
          * @return {void}
          */
-        function addFailureFlashMessage() {
+        function addFailureFlashMessage(data) {
+            var message = 'API call failed. Sync not possible.';
+            if (angular.isDefined(data.flashMessages) && angular.isArray(data.flashMessages)) {
+                message = '';
+                angular.forEach(data.flashMessages, function (flashMessage) {
+                    message += flashMessage.message;
+                });
+            }
             $scope.finished = true;
             toaster.pop(
                 'error',
                 'Request failed!',
-                'API call failed. Sync not possible.'
+                message
             );
         }
 
@@ -1761,11 +1769,14 @@
          * @return {void}
          */
         function sync(source, target) {
-            target.applications[0].type = CONFIG.applicationTypes.syncTYPO3;
-            target.applications[0].options.sourceNode = source.applications[0].nodes[0];
-            target.applications[0].options.sourceNode.deploymentPath = source.applications[0].options.deploymentPath;
-            target.applications[0].options.repositoryUrl = $scope.project.repositoryUrl;
-            DeploymentRepository.addDeployment(target).then(
+            var requestData = {
+                syncDeployment: {
+                    deploymentType: CONFIG.applicationTypes.syncTYPO3,
+                    sourcePresetKey: source.applications[0].nodes[0].name,
+                    presetKey: target.applications[0].nodes[0].name
+                }
+            };
+            SyncDeploymentRepository.create(requestData).then(
                 function (response) {
                     toaster.pop(
                         'success',
@@ -1809,7 +1820,7 @@
             );
         });
     }
-    SyncController.$inject = ['$scope', '$controller', 'PresetRepository', 'CONFIG', 'toaster', 'ProjectRepository', 'SettingsRepository', 'DeploymentRepository', '$location'];
+    SyncController.$inject = ['$scope', '$controller', 'PresetRepository', 'CONFIG', 'toaster', 'ProjectRepository', 'SettingsRepository', 'SyncDeploymentRepository', '$location'];
 }());
 /* global angular */
 
@@ -2353,10 +2364,18 @@
             switch (input) {
                 case 'TYPO3\CMS\Deploy':
                 case 'TYPO3\\CMS\\Deploy':
-                    return 'Deployment';
-                case 'TYPO3\CMS\Shared':
-                case 'TYPO3\\CMS\\Shared':
-                    return 'Sync';
+                    return 'TYPO3 Deployment';
+                case 'TYPO3\CMS\Sync':
+                case 'TYPO3\\CMS\\Sync':
+                    return 'TYPO3 Sync';
+                case 'TYPO3\Flow\Deploy':
+                case 'TYPO3\\Flow\\Deploy':
+                    return 'Flow Deployment';
+                case 'TYPO3\Flow\Sync':
+                case 'TYPO3\\Flow\\Sync':
+                    return 'Flow Sync';
+                case 'Deploy':
+                    return 'Simple Deployment';
                 default:
                     return input;
             }
@@ -2405,9 +2424,14 @@
         .factory('DeploymentRepository', DeploymentRepository);
 
     /* @ngInject */
-    function DeploymentRepository($http, $q, $cacheFactory) {
+    function DeploymentRepository($http, $q, $cacheFactory, RequestService) {
 
-        var deploymentRepository = {},
+        var deploymentRepository = {
+                "addDeployment": addDeployment,
+                "getDeployments": getDeployments,
+                "getSingleDeployment": getSingleDeployment,
+                "cancelDeployment": cancelDeployment
+            },
             url = '/api/deployment';
 
         $cacheFactory('deploymentCache');
@@ -2416,41 +2440,24 @@
          * @param {object} deployment
          * @return {Q.promise|promise}
          */
-        deploymentRepository.addDeployment = function (deployment) {
-            var deploymentContainer = {
-                    'configuration': {}
-                },
-                deferred = $q.defer();
-            deploymentContainer.configuration = deployment;
-
-            $http({
-                method: 'POST',
-                url: url,
-                data: {
-                    deployment: deploymentContainer
-                },
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json'
-                }
-            }).success(deferred.resolve).error(deferred.reject);
-            return deferred.promise;
-        };
+        function addDeployment(deployment) {
+            return RequestService.postRequest({deployment: {'configuration': deployment}}, url);
+        }
 
         /**
          * @return {promise|Q.promise}
          */
-        deploymentRepository.getDeployments = function () {
+        function getDeployments() {
             var deferred = $q.defer();
             $http.get(url).success(deferred.resolve).error(deferred.reject);
             return deferred.promise;
-        };
+        }
 
         /**
          * @param {string} identifier
          * @return {promise|Q.promise}
          */
-        deploymentRepository.getSingleDeployment = function (identifier) {
+        function getSingleDeployment(identifier) {
             var deferred = $q.defer();
             if (angular.isDefined($cacheFactory.get('deploymentCache').get(identifier))) {
                 deferred.resolve({deployment: $cacheFactory.get('deploymentCache').get(identifier)});
@@ -2458,26 +2465,20 @@
             }
             $http.get(url + '?deployment=' + identifier).success(deferred.resolve).error(deferred.reject);
             return deferred.promise;
-        };
+        }
 
         /**
-         * @param deploymentId
+         * @param {string} deploymentId
          * @return {promise|Q.promise}
          */
-        deploymentRepository.cancelDeployment = function (deploymentId) {
-            var deferred = $q.defer();
-            $http({
-                'method': 'PUT',
-                'url': url,
-                'data': {
-                    'deployment': {
-                        '__identity': deploymentId,
-                        'status': 'cancelled'
-                    }
+        function cancelDeployment(deploymentId) {
+            return RequestService.putRequest({
+                'deployment': {
+                    '__identity': deploymentId,
+                    'status': 'cancelled'
                 }
-            }).success(deferred.resolve).error(deferred.reject);
-            return deferred.promise;
-        };
+            }, url);
+        }
 
         // Public API
         return {
@@ -2495,7 +2496,7 @@
             }
         };
     }
-    DeploymentRepository.$inject = ['$http', '$q', '$cacheFactory'];
+    DeploymentRepository.$inject = ['$http', '$q', '$cacheFactory', 'RequestService'];
 }());
 /* global angular */
 
@@ -2506,7 +2507,7 @@
         .factory('PresetRepository', PresetRepository);
 
     /* @ngInject */
-    function PresetRepository($http, $q) {
+    function PresetRepository($http, $q, RequestService) {
         var presetRepository = {},
             url = '/api/preset';
 
@@ -2540,7 +2541,6 @@
         };
 
         /**
-         *
          * @param {object} server
          * @returns {string}
          * @throws {PresetRepositoryException}
@@ -2556,7 +2556,6 @@
         };
 
         /**
-         *
          * @param {object} server
          * @return {object}
          */
@@ -2584,7 +2583,11 @@
          * @returns {Q.promise|promise} – promise object
          */
         presetRepository.putServer = function (preset) {
-            return this.sendSinglePresetToApi(preset, 'put');
+            var data = {
+                'key': this.getKeyFromServerConfiguration(preset),
+                'configuration': presetRepository.getFullPreset(preset)
+            };
+            return RequestService.putRequest(data, url);
         };
 
         /**
@@ -2594,34 +2597,11 @@
          * @returns {Q.promise|promise} – promise object
          */
         presetRepository.postServer = function (preset) {
-            return this.sendSinglePresetToApi(preset, 'post');
-        };
-
-
-        /**
-         * Performs a request to the api with a single preset.
-         * This request can either be POST or PUT which can
-         * be determined with the method argument. Any other
-         * method will result in a failed API call.
-         *
-         * @param {object} preset
-         * @param {string} method
-         * @returns {promise|Q.promise}
-         */
-        presetRepository.sendSinglePresetToApi = function (preset, method) {
-            var deferred = $q.defer();
-            $http({
-                method: method,
-                url: url,
-                data: {
-                    'key': this.getKeyFromServerConfiguration(preset),
-                    'configuration': presetRepository.getFullPreset(preset)
-                },
-                headers: {
-                    'Accept': 'application/json'
-                }
-            }).success(deferred.resolve).error(deferred.reject);
-            return deferred.promise;
+            var data = {
+                'key': this.getKeyFromServerConfiguration(preset),
+                'configuration': presetRepository.getFullPreset(preset)
+            };
+            return RequestService.postRequest(data, url);
         };
 
         /**
@@ -2655,7 +2635,7 @@
             }
         };
     }
-    PresetRepository.$inject = ['$http', '$q'];
+    PresetRepository.$inject = ['$http', '$q', 'RequestService'];
 }());
 /* global angular */
 
@@ -2858,6 +2838,39 @@
         };
     }
     SettingsRepository.$inject = ['$http', '$q', '$cacheFactory'];
+}());
+/* global angular */
+
+(function () {
+    'use strict';
+    angular
+        .module('surfCaptain')
+        .factory('SyncDeploymentRepository', SyncDeploymentRepository);
+
+    /* @ngInject */
+    function SyncDeploymentRepository(RequestService) {
+
+        var deploymentRepository = {
+                "create": addSync
+            },
+            url = '/api/syncDeployment';
+
+        /**
+         * @param {object} sync
+         * @return {Q.promise|promise}
+         */
+        function addSync(sync) {
+            return RequestService.postRequest(sync, url);
+        }
+
+        // Public API
+        return {
+            create: function (sync) {
+                return deploymentRepository.create(sync);
+            }
+        };
+    }
+    SyncDeploymentRepository.$inject = ['RequestService'];
 }());
 /* global angular */
 
@@ -3162,6 +3175,72 @@
         };
     }
     PresetService.$inject = ['SettingsRepository', 'ValidationService'];
+}());
+/* global angular */
+
+(function () {
+    'use strict';
+    angular
+        .module('surfCaptain')
+        .service('RequestService', RequestService);
+
+    /* @ngInject */
+    function RequestService($http, $q) {
+
+        var self = this;
+
+        this.postRequest = postRequest;
+        this.putRequest = putRequest;
+        this.request = request;
+        this.getRequestObject = getRequestObject;
+
+        /**
+         * @param {Object} data
+         * @param {string} url
+         * @returns {promise|Q.promise}
+         */
+        function postRequest(data, url) {
+            return self.request(self.getRequestObject('POST', data, url));
+        }
+
+        /**
+         * @param {Object} data
+         * @param {string} url
+         * @returns {promise|Q.promise}
+         */
+        function putRequest(data, url) {
+            return self.request(self.getRequestObject('PUT', data, url));
+        }
+
+        /**
+         * @param {Object} requestConfig
+         * @returns {promise|Q.promise}
+         */
+        function request(requestConfig) {
+            var deferred = $q.defer();
+            $http(requestConfig).success(deferred.resolve).error(deferred.reject);
+            return deferred.promise;
+        }
+
+        /**
+         * @param {string} method
+         * @param {Object} data
+         * @param {string} url
+         * @returns {Object}
+         */
+        function getRequestObject(method, data, url) {
+            return {
+                'method': method,
+                'url': url,
+                'data': data,
+                'headers': {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                }
+            }
+        }
+    }
+    RequestService.$inject = ['$http', '$q'];
 }());
 /* global angular */
 

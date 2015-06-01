@@ -8,11 +8,10 @@
 			<table class="table table-striped">
 				<thead>
 					<tr>
-						<th>Repository URL</th>
 						<th>Name</th>
+						<th>Repository URL</th>
 						<th>Identifier</th>
 						<th>Web URL</th>
-						<th>Actions</th>
 					</tr>
 				</thead>
 				<tbody>
@@ -20,12 +19,12 @@
 						<tr>
 							<td>
 								<f:link.action action="index" arguments="{repositoryUrl: repository.repositoryUrl}">
-									{repository.repositoryUrl}
+									{repository.name}
 								</f:link.action>
 							</td>
-							<td>{repository.name}</td>
+							<td>{repository.repositoryUrl}</td>
 							<td>{repository.identifier}</td>
-							<td>{repository.webUrl}</td>
+							<td><a href="{repository.webUrl}" target="_blank">{repository.webUrl}</a></td>
 						</tr>
 					</f:for>
 				</tbody>

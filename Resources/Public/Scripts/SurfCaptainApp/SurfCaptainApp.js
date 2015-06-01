@@ -11,7 +11,7 @@
             applicationTypes: {
                 deploy: 'Deploy',
                 deployTYPO3: 'TYPO3\\CMS\\Deploy',
-                syncTYPO3: 'TYPO3\\CMS\\Shared'
+                syncTYPO3: 'TYPO3\\CMS\\Sync'
             }
         })
         .run(xeditableConfig);
@@ -74,7 +74,8 @@
         var customConfig = {
             'position-class': 'toast-bottom-right',
             'time-out': 5000,
-            'close-button': true
+            'close-button': true,
+            'body-output-type': 'trustedHtml'
         };
         angular.extend(toasterConfig, customConfig);
     }

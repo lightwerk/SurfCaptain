@@ -7116,6 +7116,9 @@ div.project-history .history {
   text-align: center;
   margin-bottom: 30px;
 }
+.project-sync .submit-deployment {
+  margin-top: 30px;
+}
 .settings-view .dl-horizontal dt {
   width: 220px;
   padding: 10px;

@@ -1,4 +1,4 @@
-/*global describe,beforeEach,module,it,expect,inject,angular,spyOn*/
+/*global describe,beforeEach,module,it,expect,inject,angular*/
 
 describe('UtilityService', function () {
     'use strict';
