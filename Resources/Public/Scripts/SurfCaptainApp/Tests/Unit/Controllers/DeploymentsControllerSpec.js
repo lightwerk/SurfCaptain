@@ -3,11 +3,11 @@
 describe('DeploymentsController', function () {
    'use strict';
 
-    var scope, ctrl, DeploymentRepository, toaster, q;
+    var scope, ctrl, DeploymentRepository, flashMessageService, q;
 
     beforeEach(module('surfCaptain'));
 
-    beforeEach(inject(function ($controller, $rootScope, $q, _toaster_) {
+    beforeEach(inject(function ($controller, $rootScope, $q, _FlashMessageService_) {
         scope = $rootScope.$new();
         DeploymentRepository = {
             getAllDeployments: function () {
@@ -16,11 +16,11 @@ describe('DeploymentsController', function () {
             }
         };
         q = $q;
-        toaster = _toaster_;
+        flashMessageService = _FlashMessageService_;
         ctrl = $controller('DeploymentsController', {
             $scope: scope,
             DeploymentRepository: DeploymentRepository,
-            toaster: toaster
+            flashMessageService: flashMessageService
         });
     }));
 
@@ -69,7 +69,7 @@ describe('DeploymentsController', function () {
             describe('unsuccessful.', function () {
                 beforeEach(function () {
                     spyOn(DeploymentRepository, 'getAllDeployments').andReturn(q.reject('error'));
-                    spyOn(toaster, 'pop');
+                    spyOn(flashMessageService, 'addErrorFlashMessageFromResponse');
                     spyOn(ctrl, 'setDeployments');
                     ctrl.init();
                     scope.$digest();
@@ -80,8 +80,8 @@ describe('DeploymentsController', function () {
                 it('should not call setDeployments on controller.', function () {
                     expect(ctrl.setDeployments).not.toHaveBeenCalled();
                 });
-                it('should call pop on toaster.', function () {
-                    expect(toaster.pop).toHaveBeenCalled();
+                it('should call addErrorFlashMessageFromResponse on flashMessageService.', function () {
+                    expect(flashMessageService.addErrorFlashMessageFromResponse).toHaveBeenCalled();
                 });
             });
         });

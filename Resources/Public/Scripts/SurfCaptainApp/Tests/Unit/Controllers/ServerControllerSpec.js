@@ -3,7 +3,7 @@
 describe('ServerController', function () {
     'use strict';
     var ctrl, scope, nameSuggestions, q, MarkerService, PresetRepository,
-        PresetService, toaster, settings, server, ProjectRepository, $http,
+        PresetService, flashMessageService, settings, server, ProjectRepository, $http,
         SettingsRepository, newPreset, success, ValidationService, returnString;
 
     beforeEach(module('surfCaptain'));
@@ -300,10 +300,10 @@ describe('ServerController', function () {
         });
 
         describe('->getAllServers()', function () {
-            beforeEach(inject(function ($controller, $rootScope, _ProjectRepository_,_toaster_, $q, _$httpBackend_) {
+            beforeEach(inject(function ($controller, $rootScope, _ProjectRepository_,_FlashMessageService_, $q, _$httpBackend_) {
                 scope = $rootScope.$new();
                 ProjectRepository = _ProjectRepository_;
-                toaster = _toaster_;
+                flashMessageService = _FlashMessageService_;
                 q = $q;
                 $http = _$httpBackend_;
                 success = true;
@@ -311,7 +311,7 @@ describe('ServerController', function () {
                 ctrl = $controller('ServerController', {
                     $scope: scope,
                     ProjectRepository: ProjectRepository,
-                    toaster: toaster
+                    flashMessageService: flashMessageService
                 });
 
                 scope.newPreset = {
@@ -332,7 +332,9 @@ describe('ServerController', function () {
                     }
                     return $q.reject();
                 });
-                spyOn(toaster, 'pop');
+                spyOn(flashMessageService, 'addErrorFlashMessageFromResponse');
+                spyOn(flashMessageService, 'addSuccessFlashMessage');
+                spyOn(flashMessageService, 'addInfoFlashMessage');
                 spyOn(ctrl, 'setServerNames');
                 spyOn(ctrl, 'setTakenServerNamesAsUnavailableSuggestions');
 
@@ -377,8 +379,8 @@ describe('ServerController', function () {
                     expect(ctrl.setTakenServerNamesAsUnavailableSuggestions).not.toHaveBeenCalled();
                 });
 
-                it('should not call toaster.pop if $scope.servers is not an empty array.', function () {
-                    expect(toaster.pop).not.toHaveBeenCalled();
+                it('should not call flashMessageService.addInfoFlashMessage if $scope.servers is not an empty array.', function () {
+                    expect(flashMessageService.addInfoFlashMessage).not.toHaveBeenCalled();
                 });
             });
 
@@ -393,8 +395,8 @@ describe('ServerController', function () {
                     expect(scope.finished).toBeTruthy();
                 });
 
-                it('should call toaster.pop.', function () {
-                    expect(toaster.pop).toHaveBeenCalled();
+                it('should call flashMessageService.addErrorFlashMessageFromResponse.', function () {
+                    expect(flashMessageService.addErrorFlashMessageFromResponse).toHaveBeenCalled();
                 });
             });
 
@@ -456,11 +458,11 @@ describe('ServerController', function () {
         });
 
         describe('->addServer()', function () {
-            beforeEach(inject(function ($controller, $rootScope, _PresetService_, _PresetRepository_,_toaster_, $q, _$httpBackend_) {
+            beforeEach(inject(function ($controller, $rootScope, _PresetService_, _PresetRepository_,_FlashMessageService_, $q, _$httpBackend_) {
                 scope = $rootScope.$new();
                 PresetRepository = _PresetRepository_;
                 PresetService = _PresetService_;
-                toaster = _toaster_;
+                flashMessageService = _FlashMessageService_;
                 q = $q;
                 $http = _$httpBackend_;
                 success = true;
@@ -479,13 +481,14 @@ describe('ServerController', function () {
                     $scope: scope,
                     PresetRepository: PresetRepository,
                     PresetService: PresetService,
-                    toaster: toaster
+                    flashMessageService: flashMessageService
                 });
 
                 // The call of the extended controller cant be prevented by a spy ...
                 $http.whenGET('/api/repository').respond({ hello: 'World' });
 
-                spyOn(toaster, 'pop');
+                spyOn(flashMessageService, 'addSuccessFlashMessage');
+                spyOn(flashMessageService, 'addErrorFlashMessageFromResponse');
                 spyOn(PresetRepository, 'addServer').andCallFake(function (server) {
                     if (server.success) {
                         return $q.when();
@@ -560,8 +563,8 @@ describe('ServerController', function () {
                     expect(scope.getAllServers).toHaveBeenCalled();
                 });
 
-                it('should call pop on the toaster.', function () {
-                    expect(toaster.pop).toHaveBeenCalled();
+                it('should call addSuccessFlashMessage on the flashMessageService.', function () {
+                    expect(flashMessageService.addSuccessFlashMessage).toHaveBeenCalled();
                 });
             });
 
@@ -580,8 +583,8 @@ describe('ServerController', function () {
                     scope.$digest();
                 });
 
-                it('should call pop on the toaster.', function () {
-                    expect(toaster.pop).toHaveBeenCalled();
+                it('should call addErrorFlashMessageFromResponse on the flashMessageService.', function () {
+                    expect(flashMessageService.addErrorFlashMessageFromResponse).toHaveBeenCalled();
                 });
                 it('should set $scope.finished to true.', function () {
                     expect(scope.finished).toBeTruthy();

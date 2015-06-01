@@ -2,13 +2,13 @@
 
 describe('DeployController', function () {
     'use strict';
-    var ctrl, scope, toaster, preset, commit, DeploymentRepository, ProjectRepository, $location, CONFIG, q, presets, UtilityService, MarkerService, PresetService, repositoryOption, PresetRepository, $http;
+    var ctrl, scope, FlashMessageService, preset, commit, DeploymentRepository, ProjectRepository, $location, CONFIG, q, presets, UtilityService, MarkerService, PresetService, repositoryOption, PresetRepository, $http;
 
     beforeEach(module('surfCaptain'));
 
-    beforeEach(inject(function ($controller, $rootScope, _toaster_, _DeploymentRepository_, _CONFIG_, _UtilityService_, $q) {
+    beforeEach(inject(function ($controller, $rootScope, _FlashMessageService_, _DeploymentRepository_, _CONFIG_, _UtilityService_, $q) {
         scope = $rootScope.$new();
-        toaster = _toaster_;
+        FlashMessageService = _FlashMessageService_;
         DeploymentRepository = _DeploymentRepository_;
         ProjectRepository = {
             getFullProjectByRepositoryUrl: function () {
@@ -49,7 +49,7 @@ describe('DeployController', function () {
         UtilityService = _UtilityService_;
         ctrl = $controller('DeployController', {
             $scope: scope,
-            toaster: toaster,
+            FlashMessageService: FlashMessageService,
             DeploymentRepository: DeploymentRepository,
             ProjectRepository: ProjectRepository,
             $location: $location,
@@ -151,7 +151,7 @@ describe('DeployController', function () {
 
     describe('->addFailureFlashMessage()', function () {
         beforeEach(function () {
-            spyOn(toaster, 'pop');
+            spyOn(FlashMessageService, 'addErrorFlashMessageFromResponse');
         });
 
         it('should be defined.', function () {
@@ -161,9 +161,9 @@ describe('DeployController', function () {
             ctrl.addFailureFlashMessage();
             expect(scope.finished).toBeTruthy();
         });
-        it('should call toaster.pop().', function () {
+        it('should call FlashMessageService.addErrorFlashMessageFromResponse().', function () {
             ctrl.addFailureFlashMessage();
-            expect(toaster.pop).toHaveBeenCalled();
+            expect(FlashMessageService.addErrorFlashMessageFromResponse).toHaveBeenCalled();
         });
         it('should set $scope.error to true.', function () {
             ctrl.addFailureFlashMessage();
@@ -287,7 +287,7 @@ describe('DeployController', function () {
                 ctrl.deploymentPath = 'foo/bar/';
                 ctrl.context = 'Foo';
                 spyOn(PresetRepository, 'updateServer').andCallThrough();
-                spyOn(toaster, 'pop');
+                spyOn(FlashMessageService, 'addSuccessFlashMessage');
                 // The call of the extended controller cant be prevented by a spy ...
                 $http.whenGET('/api/repository').respond({ project: {name: 'foo'} });
             }));
@@ -316,10 +316,10 @@ describe('DeployController', function () {
                 expect(PresetRepository.updateServer).toHaveBeenCalledWith(expectedPreset.applications[0]);
             });
 
-            it('should call pop on toaster after request is resolved.', function () {
+            it('should call addSuccessFlashMessage on FlashMessageService after request is resolved.', function () {
                 ctrl.normalizePresetAndUpdate();
                 scope.$digest();
-                expect(toaster.pop).toHaveBeenCalled();
+                expect(FlashMessageService.addSuccessFlashMessage).toHaveBeenCalled();
             });
 
             it('should set $scope.finished to true.', function () {
@@ -598,15 +598,15 @@ describe('DeployController', function () {
         describe('with unmatching presets', function () {
 
             beforeEach(function () {
-                spyOn(toaster, 'pop');
+                spyOn(FlashMessageService, 'addSuccessFlashMessage');
                 scope.deploy();
             });
 
             it('should not call DeploymentRepository.addDeployment().', function () {
                 expect(DeploymentRepository.addDeployment).not.toHaveBeenCalled();
             });
-            it('should not call toaster.pop().', function () {
-                expect(toaster.pop).toHaveBeenCalled();
+            it('should not call FlashMessageService.addSuccessFlashMessage().', function () {
+                expect(FlashMessageService.addSuccessFlashMessage).not.toHaveBeenCalled();
             });
         });
     });
@@ -681,7 +681,7 @@ describe('DeployController', function () {
                     ]
                 };
                 scope.currentPreset = preset;
-                spyOn(toaster, 'pop');
+                spyOn(FlashMessageService, 'addErrorFlashMessage');
                 scope.addRepositoryOption(repositoryOption, 'foo');
             });
 
@@ -689,8 +689,8 @@ describe('DeployController', function () {
                 expect(ctrl.normalizePresetAndUpdate).not.toHaveBeenCalled();
             });
 
-            it('should call pop on toaster if repositoryOption wasnt in array before.', function () {
-                expect(toaster.pop).toHaveBeenCalled();
+            it('should call addErrorFlashMessage on FlashMessageService if repositoryOption wasnt in array before.', function () {
+                expect(FlashMessageService.addErrorFlashMessage).toHaveBeenCalled();
             });
         });
 

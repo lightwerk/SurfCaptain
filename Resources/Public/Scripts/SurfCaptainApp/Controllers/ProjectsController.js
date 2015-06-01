@@ -7,7 +7,7 @@
         .controller('ProjectsController', ProjectsController);
 
     /* @ngInject */
-    function ProjectsController($scope, ProjectRepository, SettingsRepository, toaster) {
+    function ProjectsController($scope, ProjectRepository, SettingsRepository, FlashMessageService) {
 
         // properties of the vm
         $scope.settings = {};
@@ -25,11 +25,11 @@
                     $scope.finished = true;
                     $scope.projects = response;
                 },
-                function () {
+                function (response) {
                     //an error occurred
                     $scope.finished = true;
-                    toaster.pop(
-                        'error',
+                    FlashMessageService.addErrorFlashMessageFromResponse(
+                       response,
                         'Error!',
                         'API call failed. Your connected Git repository is currently not available.'
                     );

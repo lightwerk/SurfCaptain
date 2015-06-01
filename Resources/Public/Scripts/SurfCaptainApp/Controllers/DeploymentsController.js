@@ -7,7 +7,7 @@
         .controller('DeploymentsController', DeploymentsController);
 
     /* @ngInject */
-    function DeploymentsController($scope, DeploymentRepository, toaster) {
+    function DeploymentsController($scope, DeploymentRepository, FlashMessageService) {
 
         var self = this;
 
@@ -27,10 +27,10 @@
                     $scope.finished = true;
                     self.setDeployments(response.deployments);
                 },
-                function () {
+                function (response) {
                     $scope.finished = true;
-                    toaster.pop(
-                        'error',
+                    FlashMessageService.addErrorFlashMessageFromResponse(
+                        response,
                         'Error!',
                         'The API call failed. Please try again later.'
                     );
