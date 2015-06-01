@@ -42,7 +42,7 @@ class SyncDeploymentController extends AbstractRestController {
 			$deployment = $this->deploymentFactory->createFromSyncDeployment($syncDeployment);
 			$this->deploymentRepository->add($deployment);
 			$this->addFlashMessage('Created a new sync deployment.', 'OK', Message::SEVERITY_OK);
-			$this->redirect('index', NULL, NULL, array('deployment' => $deployment));
+			$this->redirect('index', 'Deployment', NULL, array('deployment' => $deployment));
 		} catch (\Lightwerk\SurfCaptain\Exception $e) {
 			$this->handleException($e);
 		} catch (\TYPO3\Flow\Http\Exception $e) {
