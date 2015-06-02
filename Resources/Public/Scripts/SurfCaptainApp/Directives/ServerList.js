@@ -7,7 +7,7 @@
         .directive('serverList', serverList);
 
     /* @ngInject */
-    function serverList(PresetRepository, ValidationService, toaster, SettingsRepository, ProjectRepository) {
+    function serverList(PresetRepository, ValidationService, FlashMessageService, SettingsRepository, ProjectRepository) {
         var linker = function (scope) {
             scope.toggleSpinnerAndOverlay = function () {
                 scope.finished = !scope.finished;
@@ -59,16 +59,15 @@
                 PresetRepository.deleteServer(server).then(
                     function () {
                         scope.$parent.getAllServers(false);
-                        toaster.pop(
-                            'success',
+                        FlashMessageService.addSuccessFlashMessage(
                             'Server deleted!',
                             'The Server "' + server.applications[0].nodes[0].name + '" was successfully removed.'
                         );
                     },
-                    function () {
+                    function (response) {
                         scope.toggleSpinnerAndOverlay();
-                        toaster.pop(
-                            'error',
+                        FlashMessageService.addErrorFlashMessageFromResponse(
+                            response,
                             'Deletion failed!',
                             'The Server "' + server.applications[0].nodes[0].name + '" could not be removed.'
                         );
@@ -91,16 +90,15 @@
                         if (angular.isDefined(scope.$parent.project)) {
                             ProjectRepository.updateFullProjectInCache(scope.$parent.project.repositoryUrl);
                         }
-                        toaster.pop(
-                            'success',
+                        FlashMessageService.addSuccessFlashMessage(
                             'Update successful!',
                             'The Server "' + server.applications[0].nodes[0].name + '" was updated successfully.'
                         );
                     },
-                    function () {
+                    function (response) {
                         scope.toggleSpinnerAndOverlay();
-                        toaster.pop(
-                            'error',
+                        FlashMessageService.addErrorFlashMessageFromResponse(
+                            response,
                             'Update failed!',
                             'The Server "' + server.applications[0].nodes[0].name + '" could not be updated.'
                         );

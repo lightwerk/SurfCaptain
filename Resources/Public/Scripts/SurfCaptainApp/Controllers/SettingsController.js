@@ -6,7 +6,7 @@
         .controller('SettingsController', SettingsController);
 
     /* @ngInject */
-    function SettingsController($scope, SettingsRepository, toaster) {
+    function SettingsController($scope, SettingsRepository, FlashMessageService) {
 
         activate();
 
@@ -14,13 +14,12 @@
             SettingsRepository.getSettings().then(
                 function (response) {
                     $scope.settings = response;
-                    console.log(response);
                 },
-                function () {
-                    toaster.pop(
-                        'error',
+                function (response) {
+                    FlashMessageService.addErrorFlashMessageFromResponse(
+                        response,
                         'Error!',
-                        'Something went wrong'
+                        'Something went wrong.'
                     );
                 }
             );

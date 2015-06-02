@@ -7,7 +7,7 @@
         .controller('DeployController', DeployController);
 
     /* @ngInject */
-    function DeployController($scope, $controller, ProjectRepository, toaster, CONFIG, DeploymentRepository, $location, PresetRepository, SettingsRepository, UtilityService, MarkerService, PresetService, ValidationService) {
+    function DeployController($scope, $controller, ProjectRepository, CONFIG, DeploymentRepository, $location, PresetRepository, SettingsRepository, UtilityService, MarkerService, PresetService, ValidationService, FlashMessageService) {
 
         // Inherit from AbstractSingleProjectController
         angular.extend(this, $controller('AbstractSingleProjectController', {$scope: $scope}));
@@ -78,12 +78,13 @@
 
         /**
          * @param {string} message
+         * @param {Object} response
          * @return {void}
          */
-        function addFailureFlashMessage(message) {
+        function addFailureFlashMessage(message, response) {
             $scope.finished = true;
-            toaster.pop(
-                'error',
+            FlashMessageService.addErrorFlashMessageFromResponse(
+                response || {},
                 'Error!',
                 message
             );
@@ -187,8 +188,7 @@
                 return element.title === title;
             });
             if (titleAlreadyUsed.length) {
-                toaster.pop(
-                    'error',
+                FlashMessageService.addErrorFlashMessage(
                     'Error',
                     'Title already in use. Please choose another one.'
                 );
@@ -218,17 +218,16 @@
             PresetRepository.updateServer(preset.applications[0]).then(
                 function () {
                     $scope.finished = true;
-                    toaster.pop(
-                        'success',
+                    FlashMessageService.addSuccessFlashMessage(
                         'Success',
                         'Repository Options successfully updated.'
                     );
                     self.setRepositoryOptions();
                 },
-                function () {
+                function (response) {
                     $scope.finished = true;
-                    toaster.pop(
-                        'error',
+                    FlashMessageService.addErrorFlashMessageFromResponse(
+                        response,
                         'Error',
                         'The API call failed. Repository Options could not be updated.'
                     );
@@ -317,13 +316,12 @@
                         ProjectRepository.updateFullProjectInCache($scope.project.repositoryUrl);
                         $location.path('project/' + $scope.name + '/deployment/' + response.deployment.__identity);
                     },
-                    function () {
-                        self.addFailureFlashMessage('Deployment configuration could not be submitted successfully. Try again later.');
+                    function (response) {
+                        self.addFailureFlashMessage('Deployment configuration could not be submitted successfully. Try again later.', response);
                     }
                 );
             } else {
-                toaster.pop(
-                    'error',
+                FlashMessageService.addErrorFlashMessage(
                     'Oooops',
                     'Something went terribly wrong.'
                 );
@@ -348,14 +346,15 @@
                     default:
                         self.addFailureFlashMessage(
                             'Something is wrong with the type of the chosen commit. This should never happen. ' +
-                            'In fact, If you see this message, please go ahaed and punch any of the involved developers in the face.'
+                            'In fact, If you see this message, please go ahaed and punch any of the involved developers in the face.',
+                            {}
                         );
                         $scope.currentCommit = null;
                         return;
                 }
                 $scope.currentPreset.applications[0].options.sha1 = $scope.currentCommit.commit.id;
             } catch (e) {
-                self.addFailureFlashMessage(e.message);
+                self.addFailureFlashMessage(e.message, {});
                 $scope.currentCommit = null;
             }
         }
@@ -435,17 +434,14 @@
 
                     $scope.finished = true;
                     if ($scope.servers.length === 0) {
-                        toaster.pop(
-                            'note',
+                        FlashMessageService.addInfoFlashMessage(
                             'No Servers yet!',
-                            'FYI: There are no servers for project <span class="uppercase">' + $scope.name + '</span> yet. Why dont you create one, hmm?',
-                            4000,
-                            'trustedHtml'
+                            'FYI: There are no servers for project <span class="uppercase">' + $scope.name + '</span> yet. Why dont you create one, hmm?'
                         );
                     }
                 },
-                function () {
-                    self.addFailureFlashMessage('API call failed. Deployment not possible.');
+                function (response) {
+                    self.addFailureFlashMessage('API call failed. Deployment not possible.', response);
                 }
             );
 
@@ -453,8 +449,8 @@
                 function (response) {
                     $scope.globalServers = response.presets;
                 },
-                function () {
-                    self.addFailureFlashMessage('API call failed. Deployment not possible.');
+                function (response) {
+                    self.addFailureFlashMessage('API call failed. Deployment not possible.', response);
                 }
             );
 

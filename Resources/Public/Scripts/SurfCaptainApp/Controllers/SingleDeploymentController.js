@@ -7,7 +7,7 @@
         .controller('SingleDeploymentController', SingleDeploymentController);
 
     /* @ngInject */
-    function SingleDeploymentController($scope, DeploymentRepository, $routeParams, $cacheFactory, $location, toaster, ProjectRepository, $controller, ValidationService) {
+    function SingleDeploymentController($scope, DeploymentRepository, $routeParams, $cacheFactory, $location, FlashMessageService, ProjectRepository, $controller, ValidationService) {
 
         var self = this,
             flashMessageShown = false,
@@ -47,8 +47,7 @@
             switch ($scope.deployment.status) {
                 case 'success':
                     if (wasRunning && !flashMessageShown) {
-                        toaster.pop(
-                            'success',
+                        FlashMessageService.addSuccessFlashMessage(
                             'Deployment Successfull!',
                             $scope.deployment.referenceName +
                             ' was successfully deployed onto ' +
@@ -60,8 +59,7 @@
                     break;
                 case 'failed':
                     if (wasRunning && !flashMessageShown) {
-                        toaster.pop(
-                            'error',
+                        FlashMessageService.addErrorFlashMessage(
                             'Deployment Failed!',
                             $scope.deployment.referenceName +
                             'could not be deployed onto ' +
@@ -76,8 +74,7 @@
                     return;
                 case 'waiting':
                     if (!flashMessageShown) {
-                        toaster.pop(
-                            'note',
+                        FlashMessageService.addInfoFlashMessage(
                             'Deployment will start shortly!',
                             $scope.deployment.referenceName + ' will be shortly deployed onto ' +
                             $scope.deployment.options.name + '! You can cancel the deployment while it is still waiting.'
@@ -153,9 +150,9 @@
                 function (response) {
                     $location.path('project/' + $scope.name + '/deployment/' + response.deployment.__identity);
                 },
-                function () {
-                    toaster.pop(
-                        'error',
+                function (response) {
+                    FlashMessageService.addErrorFlashMessageFromResponse(
+                        response,
                         'Error!',
                         'Deployment configuration could not be submitted successfully. Try again later.'
                     );

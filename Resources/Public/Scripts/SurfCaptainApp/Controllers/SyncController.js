@@ -7,7 +7,7 @@
         .controller('SyncController', SyncController);
 
     /* @ngInject */
-    function SyncController($scope, $controller, PresetRepository, CONFIG, toaster, ProjectRepository, SettingsRepository, SyncDeploymentRepository, $location) {
+    function SyncController($scope, $controller, PresetRepository, CONFIG, ProjectRepository, SettingsRepository, SyncDeploymentRepository, $location, FlashMessageService) {
 
         // Inherit from AbstractSingleProjectController
         angular.extend(this, $controller('AbstractSingleProjectController', {$scope: $scope}));
@@ -31,30 +31,10 @@
         $scope.sourceDisplay = sourceDisplay;
 
         // internal methods
-        this.addFailureFlashMessage = addFailureFlashMessage;
         this.setContexts = setContexts;
         this.setGlobalServers = setGlobalServers;
         this.setServersFromPresets = setServersFromPresets;
         this.setPreconfiguredServer = setPreconfiguredServer;
-
-        /**
-         * @return {void}
-         */
-        function addFailureFlashMessage(data) {
-            var message = 'API call failed. Sync not possible.';
-            if (angular.isDefined(data.flashMessages) && angular.isArray(data.flashMessages)) {
-                message = '';
-                angular.forEach(data.flashMessages, function (flashMessage) {
-                    message += flashMessage.message;
-                });
-            }
-            $scope.finished = true;
-            toaster.pop(
-                'error',
-                'Request failed!',
-                message
-            );
-        }
 
         /**
          * Fills $scope.contexts with configured contexts if
@@ -84,8 +64,8 @@
                 function (response) {
                     $scope.globalServers = response.presets;
                 },
-                function () {
-                    self.addFailureFlashMessage();
+                function (response) {
+                    FlashMessageService.addErrorFlashMessageFromResponse(response, 'Request Error', 'Could not receive Global Servers.');
                 }
             );
         }
@@ -205,8 +185,7 @@
             };
             SyncDeploymentRepository.create(requestData).then(
                 function (response) {
-                    toaster.pop(
-                        'success',
+                    FlashMessageService.addSuccessFlashMessage(
                         'OK!',
                         target.applications[0].nodes[0].name + ' will be synchronized with ' +
                         source.applications[0].nodes[0].name + '.'
@@ -214,7 +193,9 @@
                     ProjectRepository.updateFullProjectInCache($scope.project.repositoryUrl);
                     $location.path('project/' + $scope.name + '/deployment/' + response.deployment.__identity);
                 },
-                self.addFailureFlashMessage
+                function (response) {
+                    FlashMessageService.addErrorFlashMessageFromResponse(response, 'Request Error', 'API call failed. Sync not possible.');
+                }
             );
         }
 
@@ -232,17 +213,14 @@
                     self.setServersFromPresets(response.repository.presets);
                     $scope.finished = true;
                     if ($scope.servers.length === 0) {
-                        toaster.pop(
-                            'note',
+                        FlashMessageService.addInfoFlashMessage(
                             'No Servers yet!',
-                            'FYI: There are no servers for project <span class="uppercase">' + $scope.name  + '</span> yet. Why dont you create one, hmm?',
-                            4000,
-                            'trustedHtml'
+                            'FYI: There are no servers for project <span class="uppercase">' + $scope.name  + '</span> yet. Why dont you create one, hmm?'
                         );
                     }
                 },
-                function () {
-                    self.addFailureFlashMessage();
+                function (response) {
+                    FlashMessageService.addErrorFlashMessageFromResponse(response, 'Request Error', 'API call failed. Sync not possible.');
                 }
             );
         });
