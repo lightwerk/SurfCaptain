@@ -2427,10 +2427,10 @@
     function DeploymentRepository($http, $q, $cacheFactory, RequestService) {
 
         var deploymentRepository = {
-                "addDeployment": addDeployment,
-                "getDeployments": getDeployments,
-                "getSingleDeployment": getSingleDeployment,
-                "cancelDeployment": cancelDeployment
+                'addDeployment': addDeployment,
+                'getDeployments': getDeployments,
+                'getSingleDeployment': getSingleDeployment,
+                'cancelDeployment': cancelDeployment
             },
             url = '/api/deployment';
 
@@ -2851,7 +2851,7 @@
     function SyncDeploymentRepository(RequestService) {
 
         var deploymentRepository = {
-                "create": addSync
+                'create': addSync
             },
             url = '/api/syncDeployment';
 
@@ -3237,7 +3237,7 @@
                     'Content-Type': 'application/json',
                     'Accept': 'application/json'
                 }
-            }
+            };
         }
     }
     RequestService.$inject = ['$http', '$q'];
