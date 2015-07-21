@@ -8,6 +8,9 @@
         "TYPO3 Surf",
         "Deployment"
     ],
+    "require": {
+      "lightwerk/surfrunner": "*"
+    },
     "authors": [
         {
             "name": "Daniel Goerz",
