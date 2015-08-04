@@ -397,8 +397,7 @@
             for (property in presets) {
                 if (presets.hasOwnProperty(property)) {
                     if (angular.isUndefined(presets[property].applications[0].type) ||
-                        presets[property].applications[0].type === CONFIG.applicationTypes.deployTYPO3 ||
-                        presets[property].applications[0].type === CONFIG.applicationTypes.deploy) {
+                        presets[property].applications[0].type.indexOf('Deploy') >= 0) {
                         $scope.servers.push(presets[property]);
                     }
                 }
