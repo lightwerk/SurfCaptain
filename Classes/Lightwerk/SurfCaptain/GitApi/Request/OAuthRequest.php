@@ -88,8 +88,8 @@ class OAuthRequest implements OAuthRequestInterface {
 	 * @return Response
 	 */
 	protected function getResponse() {
-		$responseInfo = $this->oAuthClient->getLastResponseInfo();
-		$response = Response::createFromRaw($responseInfo['headers_recv']);
+		$responseHeaders = $this->oAuthClient->getLastResponseHeaders();
+		$response = Response::createFromRaw($responseHeaders);
 		$response->appendContent($this->oAuthClient->getLastResponse());
 		return $response;
 	}
