@@ -158,12 +158,14 @@ class DeploymentCommandController extends \TYPO3\Flow\Cli\CommandController {
 	/**
 	 * @param string $presetKey 
 	 * @param string $type
+	 * @param string $branch
 	 * @return void
 	 */
-	public function createGitRepositoryDeploymentCommand($presetKey, $type = 'TYPO3\\CMS\\Deploy') {
+	public function createGitRepositoryDeploymentCommand($presetKey, $type = 'TYPO3\\CMS\\Deploy', $branch = 'master') {
 		$gitRepositoryDeployment = new GitRepositoryDeployment();
 		$gitRepositoryDeployment->setPresetKey($presetKey);
 		$gitRepositoryDeployment->setDeploymentType($type);
+		$gitRepositoryDeployment->setBranch($branch);
 		try {
 			$deployment = $this->deploymentFactory->createFromGitRepositoryDeployment($gitRepositoryDeployment);
 			$this->deploymentRepository->add($deployment);
