@@ -7119,6 +7119,11 @@ div.project-history .history {
 .project-sync .submit-deployment {
   margin-top: 30px;
 }
+.project-sync .overwrite-settings {
+  background-color: #080808;
+  margin-top: 15px;
+  margin-bottom: 15px;
+}
 .settings-view .dl-horizontal dt {
   width: 220px;
   padding: 10px;
