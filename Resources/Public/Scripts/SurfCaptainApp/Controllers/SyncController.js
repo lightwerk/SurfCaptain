@@ -38,7 +38,6 @@
         $scope.setCurrentSource = setCurrentSource;
         $scope.targetDisplay = targetDisplay;
         $scope.sourceDisplay = sourceDisplay;
-        $scope.setConfigurationFinished = setConfigurationFinished;
 
         // internal methods
         this.setContexts = setContexts;
@@ -200,10 +199,6 @@
             }
             $scope.currentStep = 3;
             $scope.currentTarget = preset;
-        }
-
-        function setConfigurationFinished() {
-            $scope.currentStep = 4;
         }
 
         /**
