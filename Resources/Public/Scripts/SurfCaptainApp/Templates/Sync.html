@@ -27,32 +27,51 @@
 			<div class="col-md-9 col-xs-12">
 				<h3>Choose a Source</h3>
 
-				<div data-ng-repeat="server in servers" class="deployment-server-container">
-					<div
-							class="deployment-server"
-							data-ng-class="[sourceDisplay(server), getRootContext(server.applications[0].options.context)]"
-							data-ng-click="setCurrentSource(server)"
-							>
-						<div class="pull-right">
-							<div class="context">({{server.applications[0].options.context}})</div>
+				<ul class="nav nav-tabs" role="tablist">
+					<li class="active"><a tab href="#sourceProject" role="tab" data-toggle="tab">Project Server</a></li>
+					<li><a tab href="#sourceGlobal" role="tab" data-toggle="tab">Global Server</a></li>
+				</ul>
+
+				<div class="tab-content">
+					<div class="tab-pane active" id="sourceProject">
+						<div data-ng-repeat="server in servers" class="deployment-server-container">
+							<div
+									class="deployment-server"
+									data-ng-class="[sourceDisplay(server), getRootContext(server.applications[0].options.context)]"
+									data-ng-click="setCurrentSource(server)"
+									>
+								<div class="pull-right">
+									<div class="context">({{server.applications[0].options.context}})</div>
+								</div>
+								<div class="title">
+									<i class="fa fa-hdd-o"></i>{{server.applications[0].nodes[0].name}}
+								</div>
+							</div>
 						</div>
-						<div class="title">
-							<i class="fa fa-hdd-o"></i>{{server.applications[0].nodes[0].name}}
+					</div>
+
+					<div class="tab-pane" id="sourceGlobal">
+						<div data-ng-repeat="globalServer in globalServers" class="deployment-server-container">
+							<div
+									class="deployment-server"
+									data-ng-class="[getRootContext(globalServer.applications[0].options.context), targetDisplay(globalServer)]"
+									data-ng-click="setCurrentSource(globalServer)"
+									>
+								<div class="pull-right">
+									<div class="context">({{globalServer.applications[0].options.context}})</div>
+								</div>
+								<div class="title">
+									<i class="fa fa-hdd-o"></i>{{globalServer.applications[0].nodes[0].name}}
+								</div>
+							</div>
 						</div>
 					</div>
 				</div>
-				<div
-						data-ng-if="finished && servers.length === 0">
-					<p><i>There are no project servers configured yet. You can add servers
-						<a data-ng-href="#/project/{{project.identifier}}/server">here</a>. Anyway you can deploy onto
-						a global server.</i></p>
-				</div>
-
 			</div>
 		</div>
 	</div>
 
-	<div class="row configure-deployment-row" data-ng-show="currentSource.applications">
+	<div class="row configure-deployment-row" data-ng-if="currentStep > 1">
 		<div class="col-md-2 col-xs-12 text-center">
 			<h2>Step 2</h2>
 		</div>
@@ -66,7 +85,7 @@
 
 			<div class="tab-content">
 				<div class="tab-pane active" id="project">
-					<div data-ng-repeat="server in servers" class="deployment-server-container">
+					<div data-ng-repeat="server in servers" class="deployment-server-container" data-ng-if="server.applications[0].options.context !== 'Production'">
 						<div
 								class="deployment-server"
 								data-ng-class="[targetDisplay(server), getRootContext(server.applications[0].options.context)]"
@@ -110,15 +129,148 @@
 		</div>
 	</div>
 
-	<div class="row submit-deployment configure-deployment-row" data-ng-if="currentTarget.applications">
+	<div class="row configure-deployment-row overwrite-settings" data-ng-if="currentStep > 2">
+		<div class="col-md-2 col-xs-12 text-center">
+			<h2>Step 3</h2>
+		</div>
+		<div class="col-md-9 col-xs-12">
+			<h3>Override Settings (Optional)</h3>
+			<div class="animate row text-left">
+					<div class="col-xs-6">
+						<div class="row">
+							<h4>Source</h4>
+							<div class="col-xs-10 col-xs-offset-1 deployment-server-container">
+								<div
+										class="deployment-server"
+										data-ng-class="[getRootContext(currentSource.applications[0].options.context)]">
+									<div class="pull-right">
+										<div class="context">({{currentSource.applications[0].options.context}})</div>
+									</div>
+									<div class="title">
+										<i class="fa fa-hdd-o"></i> {{currentSource.applications[0].nodes[0].name}}
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-xs-10 col-xs-offset-1">
+								<label>Shared Path</label>
+								<input
+										type="text"
+										class="form-control"
+										data-ng-model="overrideSettings.sourceSharedPath"
+										data-ng-trim
+										/>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-xs-10 col-xs-offset-1">
+								<label>Deployment Path</label>
+								<input
+										type="text"
+										class="form-control"
+										data-ng-model="overrideSettings.sourceDeploymentPath"
+										data-ng-trim
+										/>
+							</div>
+						</div>
+					</div>
+
+					<div class="col-xs-6">
+						<div class="row">
+							<h4>Target</h4>
+							<div class="col-xs-10 col-xs-offset-1 deployment-server-container">
+								<div
+										class="deployment-server"
+										data-ng-class="[getRootContext(currentTarget.applications[0].options.context)]">
+									<div class="pull-right">
+										<div class="context">({{currentTarget.applications[0].options.context}})</div>
+									</div>
+									<div class="title">
+										<i class="fa fa-hdd-o"></i>{{currentTarget.applications[0].nodes[0].name}}
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-xs-10 col-xs-offset-1">
+								<label>Shared Path</label>
+								<input
+										type="text"
+										class="form-control"
+										data-ng-model="overrideSettings.targetSharedPath"
+										data-ng-trim
+										/>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-xs-10 col-xs-offset-1">
+								<label>Deployment Path</label>
+								<input
+										type="text"
+										class="form-control"
+										data-ng-model="overrideSettings.targetDeploymentPath"
+										data-ng-trim
+										/>
+							</div>
+						</div>
+					</div>
+					<div class="col-xs-12">
+						<div class="row">
+							<div class="col-xs-12">
+								<h4>Task Options</h4>
+
+								<div class="row">
+									<div class="col-xs-6">
+										<div class="row">
+											<div class="col-xs-10 col-xs-offset-1">
+												<div class="checkbox">
+													<label>
+														<input
+																type="checkbox"
+																data-ng-model="overrideSettings.useSourceTaskOptions"
+																/>
+														Use Task Options from source
+													</label>
+												</div>
+											</div>
+										</div>
+									</div>
+									<div class="col-xs-6">
+										<div class="row">
+											<div class="col-xs-10 col-xs-offset-1">
+												<a
+														data-ng-click="overrideSettings.showTaskOptions = !overrideSettings.showTaskOptions"
+														class="btn btn-success btn-sm"
+												>
+													{{overrideSettings.showTaskOptions ? "Hide" : "Show"}} Task Options
+												</a>
+												<div data-ng-if="overrideSettings.showTaskOptions">
+													<pre class="pretty-json" data-ng-if="overrideSettings.useSourceTaskOptions">{{currentSource.applications[0]['taskOptions'] | json}}</pre>
+													<pre class="pretty-json" data-ng-if="!overrideSettings.useSourceTaskOptions">{{currentTarget.applications[0]['taskOptions'] | json}}</pre>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="row submit-deployment configure-deployment-row" data-ng-if="currentStep > 2">
 		<div class="col-xs-12 text-center">
-			<button class="btn btn-lg btn-warning" data-ng-disabled="error"  modal="confirm-shared">Sync!</button>
+			<button class="btn btn-warning" data-ng-disabled="error"  modal="confirm-sync">Sync DB + Shared Folder</button>
+			<button class="btn btn-warning" data-ng-disabled="error"  modal="confirm-sync-db">Sync only DB</button>
+			<button class="btn btn-warning" data-ng-disabled="error"  modal="confirm-sync-folder">Sync only Shared Folder</button>
 		</div>
 	</div>
 
 </div>
 
-<div class="modal fade confirm-shared">
+<div class="modal fade confirm-sync">
 	<div class="modal-dialog">
 		<div class="modal-content">
 			<div class="modal-header">
@@ -129,7 +281,47 @@
 				onto {{currentTarget.applications[0].nodes[0].name}}.
 			</div>
 			<div class="modal-footer">
-				<button type="button" class="btn btn-success" data-ng-click="sync(currentSource, currentTarget)"
+				<button type="button" class="btn btn-success" data-ng-click="sync()"
+						data-dismiss="modal">Continue
+				</button>
+				<button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="modal fade confirm-sync-folder">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span
+						class="sr-only">Close</span></button>
+				<h4 class="modal-title">{{currentSource.applications[0].nodes[0].name}} Sync</h4>
+				You are going to sync shared folders from {{currentSource.applications[0].nodes[0].name}}
+				onto {{currentTarget.applications[0].nodes[0].name}}.
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-success" data-ng-click="sync('SyncFolder')"
+						data-dismiss="modal">Continue
+				</button>
+				<button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="modal fade confirm-sync-db">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span
+						class="sr-only">Close</span></button>
+				<h4 class="modal-title">{{currentSource.applications[0].nodes[0].name}} Sync</h4>
+				You are going to sync database from {{currentSource.applications[0].nodes[0].name}}
+				onto {{currentTarget.applications[0].nodes[0].name}}.
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-success" data-ng-click="sync('SyncDb')"
 						data-dismiss="modal">Continue
 				</button>
 				<button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>

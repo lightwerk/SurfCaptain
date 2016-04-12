@@ -22,6 +22,15 @@
         $scope.finished = false;
         $scope.currentSource = {};
         $scope.currentTarget = {};
+        $scope.currentStep = 1;
+        $scope.overrideSettings = {
+            targetSharedPath: '',
+            targetDeploymentPath: '',
+            sourceSharedPath: '',
+            sourceDeploymentPath: '',
+            useSourceTaskOptions: false,
+            showTaskOptions: false
+        };
 
         // methods published to the view
         $scope.sync = sync;
@@ -159,6 +168,17 @@
          * @return {void}
          */
         function setCurrentSource(preset) {
+            if (angular.isDefined(preset.applications[0].nodes[0].sharedPath) === true) {
+                $scope.overrideSettings.sourceSharedPath = preset.applications[0].nodes[0].sharedPath;
+            } else {
+                $scope.overrideSettings.sourceSharedPath = '';
+            }
+            if (angular.isDefined(preset.applications[0].options.deploymentPath) === true) {
+                $scope.overrideSettings.sourceDeploymentPath = preset.applications[0].options.deploymentPath;
+            } else {
+                $scope.overrideSettings.sourceDeploymentPath = '';
+            }
+            $scope.currentStep = 2;
             $scope.currentSource = preset;
         }
 
@@ -167,28 +187,45 @@
          * @return {void}
          */
          function setCurrentTarget(preset) {
+            if (angular.isDefined(preset.applications[0].nodes[0].sharedPath) === true) {
+                $scope.overrideSettings.targetSharedPath = preset.applications[0].nodes[0].sharedPath;
+            } else {
+                $scope.overrideSettings.targetSharedPath = '';
+            }
+            if (angular.isDefined(preset.applications[0].options.deploymentPath) === true) {
+                $scope.overrideSettings.targetDeploymentPath = preset.applications[0].options.deploymentPath;
+            } else {
+                $scope.overrideSettings.targetDeploymentPath = '';
+            }
+            $scope.currentStep = 3;
             $scope.currentTarget = preset;
         }
 
         /**
-         * @param {object} source - source node
-         * @param {object} target - target node
          * @return {void}
          */
-        function sync(source, target) {
+        function sync(applicationType) {
             var requestData = {
                 syncDeployment: {
                     deploymentType: CONFIG.applicationTypes.syncTYPO3,
-                    sourcePresetKey: source.applications[0].nodes[0].name,
-                    presetKey: target.applications[0].nodes[0].name
+                    sourcePresetKey: $scope.currentSource.applications[0].nodes[0].name,
+                    presetKey: $scope.currentTarget.applications[0].nodes[0].name,
+                    overrideTargetSharedPath: $scope.overrideSettings.targetSharedPath,
+                    overrideTargetDeploymentPath: $scope.overrideSettings.targetDeploymentPath,
+                    overrideSourceSharedPath: $scope.overrideSettings.sourceSharedPath,
+                    overrideSourceDeploymentPath: $scope.overrideSettings.sourceDeploymentPath,
+                    useSourceTaskOptions: $scope.overrideSettings.useSourceTaskOptions
                 }
             };
+            if(angular.isDefined(applicationType)) {
+                requestData.syncDeployment.deploymentType = applicationType;
+            }
             SyncDeploymentRepository.create(requestData).then(
                 function (response) {
                     FlashMessageService.addSuccessFlashMessage(
                         'OK!',
-                        target.applications[0].nodes[0].name + ' will be synchronized with ' +
-                        source.applications[0].nodes[0].name + '.'
+                        $scope.currentTarget.applications[0].nodes[0].name + ' will be synchronized with ' +
+                        $scope.currentSource.applications[0].nodes[0].name + '.'
                     );
                     ProjectRepository.updateFullProjectInCache($scope.project.repositoryUrl);
                     $location.path('project/' + $scope.name + '/deployment/' + response.deployment.__identity);

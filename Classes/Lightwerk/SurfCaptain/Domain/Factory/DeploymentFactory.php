@@ -91,6 +91,23 @@ class DeploymentFactory {
 		if (empty($configuration['applications'][0]['options']['repositoryUrl']) === TRUE) {
 			$configuration['applications'][0]['options']['repositoryUrl'] = $sourcePreset['applications'][0]['options']['repositoryUrl'];
 		}
+
+		if ($syncDeployment->getOverrideTargetDeploymentPath() !== '') {
+			$configuration['applications'][0]['options']['deploymentPath'] = $syncDeployment->getOverrideTargetDeploymentPath();
+		}
+		if ($syncDeployment->getOverrideTargetSharedPath() !== '') {
+			$configuration['applications'][0]['nodes'][0]['sharedPath'] = $syncDeployment->getOverrideTargetSharedPath();
+		}
+		if ($syncDeployment->getOverrideSourceDeploymentPath() !== '') {
+			$configuration['applications'][0]['options']['sourceNodeOptions']['deploymentPath'] = $syncDeployment->getOverrideSourceDeploymentPath();
+		}
+		if ($syncDeployment->getOverrideSourceSharedPath() !== '') {
+			$configuration['applications'][0]['options']['sourceNode']['sharedPath'] = $syncDeployment->getOverrideSourceSharedPath();
+		}
+		if ($syncDeployment->getUseSourceTaskOptions() === TRUE && empty($sourcePreset['applications'][0]['taskOptions']) === FALSE) {
+			$configuration['applications'][0]['taskOptions'] = $sourcePreset['applications'][0]['taskOptions'];
+		}
+
 		return $this->createFromConfiguration($configuration);
 	}
 

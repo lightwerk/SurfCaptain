@@ -2,6 +2,9 @@
 
 (function () {
     'use strict';
+    routeConfiguration.$inject = ['$routeProvider'];
+    toasterConfiguration.$inject = ['toasterConfig'];
+    xeditableConfig.$inject = ['editableOptions'];
     angular
         .module('surfCaptain', ['ngRoute', 'xeditable', 'ngAnimate', 'ngMessages', 'ngBiscuit', 'toaster'])
         .config(routeConfiguration)
@@ -68,7 +71,6 @@
                 redirectTo: '/'
             });
     }
-    routeConfiguration.$inject = ['$routeProvider'];
 
     /* @ngInject */
     function toasterConfiguration(toasterConfig) {
@@ -80,18 +82,17 @@
         };
         angular.extend(toasterConfig, customConfig);
     }
-    toasterConfiguration.$inject = ['toasterConfig'];
 
     /* @ngInject */
     function xeditableConfig(editableOptions) {
         editableOptions.theme = 'bs3';
     }
-    xeditableConfig.$inject = ['editableOptions'];
 
 }());
 /* global angular */
 (function () {
     'use strict';
+    AboutController.$inject = ['$scope'];
     angular
         .module('surfCaptain')
         .controller('AboutController', AboutController);
@@ -215,12 +216,12 @@
             ];
         }
     }
-    AboutController.$inject = ['$scope'];
 }());
 /* global angular */
 
 (function () {
     'use strict';
+    AbstractApplicationController.$inject = ['$scope', 'PresetService'];
     angular
         .module('surfCaptain')
         .controller('AbstractApplicationController', AbstractApplicationController);
@@ -239,12 +240,12 @@
             return PresetService.getRootContext(context, $scope.contexts);
         }
     }
-    AbstractApplicationController.$inject = ['$scope', 'PresetService'];
 }());
 /* global angular */
 
 (function () {
     'use strict';
+    AbstractSingleProjectController.$inject = ['$scope', '$routeParams', 'ProjectRepository', 'FavorService', 'FlashMessageService'];
     angular
         .module('surfCaptain')
         .controller('AbstractSingleProjectController', AbstractSingleProjectController);
@@ -275,12 +276,12 @@
         };
         this.init();
     }
-    AbstractSingleProjectController.$inject = ['$scope', '$routeParams', 'ProjectRepository', 'FavorService', 'FlashMessageService'];
 }());
 /* global angular,jQuery */
 
 (function () {
     'use strict';
+    DeployController.$inject = ['$scope', '$controller', 'ProjectRepository', 'CONFIG', 'DeploymentRepository', '$location', 'PresetRepository', 'SettingsRepository', 'UtilityService', 'MarkerService', 'PresetService', 'ValidationService', 'FlashMessageService'];
     angular
         .module('surfCaptain')
         .controller('DeployController', DeployController);
@@ -742,12 +743,12 @@
             );
         });
     }
-    DeployController.$inject = ['$scope', '$controller', 'ProjectRepository', 'CONFIG', 'DeploymentRepository', '$location', 'PresetRepository', 'SettingsRepository', 'UtilityService', 'MarkerService', 'PresetService', 'ValidationService', 'FlashMessageService'];
 }());
 /* global angular */
 
 (function () {
     'use strict';
+    DeploymentsController.$inject = ['$scope', 'DeploymentRepository', 'FlashMessageService'];
     angular
         .module('surfCaptain')
         .controller('DeploymentsController', DeploymentsController);
@@ -793,7 +794,6 @@
         }
 
     }
-    DeploymentsController.$inject = ['$scope', 'DeploymentRepository', 'FlashMessageService'];
 }());
 /* global angular */
 
@@ -810,6 +810,7 @@
 
 (function () {
     'use strict';
+    GlobalServerController.$inject = ['$scope', 'PresetRepository', 'PresetService', 'FlashMessageService', 'SettingsRepository'];
     angular
         .module('surfCaptain')
         .controller('GlobalServerController', GlobalServerController);
@@ -926,12 +927,12 @@
             $scope.getAllServers();
         }
     }
-    GlobalServerController.$inject = ['$scope', 'PresetRepository', 'PresetService', 'FlashMessageService', 'SettingsRepository'];
 }());
 /* global angular */
 
 (function () {
     'use strict';
+    ProjectController.$inject = ['$scope', '$controller', 'ProjectRepository', 'PresetService', 'SettingsRepository', 'UtilityService', '$location'];
     angular
         .module('surfCaptain')
         .controller('ProjectController', ProjectController);
@@ -1020,12 +1021,12 @@
             );
         });
     }
-    ProjectController.$inject = ['$scope', '$controller', 'ProjectRepository', 'PresetService', 'SettingsRepository', 'UtilityService', '$location'];
 }());
 /* global angular */
 
 (function () {
     'use strict';
+    ProjectsController.$inject = ['$scope', 'ProjectRepository', 'SettingsRepository', 'FlashMessageService'];
     angular
         .module('surfCaptain')
         .controller('ProjectsController', ProjectsController);
@@ -1066,12 +1067,12 @@
             );
         }
     }
-    ProjectsController.$inject = ['$scope', 'ProjectRepository', 'SettingsRepository', 'FlashMessageService'];
 }());
 /* global angular */
 
 (function () {
     'use strict';
+    ServerController.$inject = ['$scope', '$controller', 'PresetRepository', 'ValidationService', 'SettingsRepository', 'MarkerService', 'PresetService', 'FlashMessageService', 'ProjectRepository'];
     angular
         .module('surfCaptain')
         .controller('ServerController', ServerController);
@@ -1359,11 +1360,11 @@
             }
         });
     }
-    ServerController.$inject = ['$scope', '$controller', 'PresetRepository', 'ValidationService', 'SettingsRepository', 'MarkerService', 'PresetService', 'FlashMessageService', 'ProjectRepository'];
 }());
 /* global angular */
 (function () {
     'use strict';
+    SettingsController.$inject = ['$scope', 'SettingsRepository', 'FlashMessageService'];
     angular
         .module('surfCaptain')
         .controller('SettingsController', SettingsController);
@@ -1388,12 +1389,12 @@
             );
         }
     }
-    SettingsController.$inject = ['$scope', 'SettingsRepository', 'FlashMessageService'];
 }());
 /* global angular */
 
 (function () {
     'use strict';
+    SingleDeploymentController.$inject = ['$scope', 'DeploymentRepository', '$routeParams', '$cacheFactory', '$location', 'FlashMessageService', 'ProjectRepository', '$controller', 'ValidationService'];
     angular
         .module('surfCaptain')
         .controller('SingleDeploymentController', SingleDeploymentController);
@@ -1552,12 +1553,12 @@
             );
         }
     }
-    SingleDeploymentController.$inject = ['$scope', 'DeploymentRepository', '$routeParams', '$cacheFactory', '$location', 'FlashMessageService', 'ProjectRepository', '$controller', 'ValidationService'];
 }());
 /* global angular */
 
 (function () {
     'use strict';
+    SyncController.$inject = ['$scope', '$controller', 'PresetRepository', 'CONFIG', 'ProjectRepository', 'SettingsRepository', 'SyncDeploymentRepository', '$location', 'FlashMessageService'];
     angular
         .module('surfCaptain')
         .controller('SyncController', SyncController);
@@ -1578,6 +1579,15 @@
         $scope.finished = false;
         $scope.currentSource = {};
         $scope.currentTarget = {};
+        $scope.currentStep = 1;
+        $scope.overrideSettings = {
+            targetSharedPath: '',
+            targetDeploymentPath: '',
+            sourceSharedPath: '',
+            sourceDeploymentPath: '',
+            useSourceTaskOptions: false,
+            showTaskOptions: false
+        };
 
         // methods published to the view
         $scope.sync = sync;
@@ -1715,6 +1725,17 @@
          * @return {void}
          */
         function setCurrentSource(preset) {
+            if (angular.isDefined(preset.applications[0].nodes[0].sharedPath) === true) {
+                $scope.overrideSettings.sourceSharedPath = preset.applications[0].nodes[0].sharedPath;
+            } else {
+                $scope.overrideSettings.sourceSharedPath = '';
+            }
+            if (angular.isDefined(preset.applications[0].options.deploymentPath) === true) {
+                $scope.overrideSettings.sourceDeploymentPath = preset.applications[0].options.deploymentPath;
+            } else {
+                $scope.overrideSettings.sourceDeploymentPath = '';
+            }
+            $scope.currentStep = 2;
             $scope.currentSource = preset;
         }
 
@@ -1723,28 +1744,45 @@
          * @return {void}
          */
          function setCurrentTarget(preset) {
+            if (angular.isDefined(preset.applications[0].nodes[0].sharedPath) === true) {
+                $scope.overrideSettings.targetSharedPath = preset.applications[0].nodes[0].sharedPath;
+            } else {
+                $scope.overrideSettings.targetSharedPath = '';
+            }
+            if (angular.isDefined(preset.applications[0].options.deploymentPath) === true) {
+                $scope.overrideSettings.targetDeploymentPath = preset.applications[0].options.deploymentPath;
+            } else {
+                $scope.overrideSettings.targetDeploymentPath = '';
+            }
+            $scope.currentStep = 3;
             $scope.currentTarget = preset;
         }
 
         /**
-         * @param {object} source - source node
-         * @param {object} target - target node
          * @return {void}
          */
-        function sync(source, target) {
+        function sync(applicationType) {
             var requestData = {
                 syncDeployment: {
                     deploymentType: CONFIG.applicationTypes.syncTYPO3,
-                    sourcePresetKey: source.applications[0].nodes[0].name,
-                    presetKey: target.applications[0].nodes[0].name
+                    sourcePresetKey: $scope.currentSource.applications[0].nodes[0].name,
+                    presetKey: $scope.currentTarget.applications[0].nodes[0].name,
+                    overrideTargetSharedPath: $scope.overrideSettings.targetSharedPath,
+                    overrideTargetDeploymentPath: $scope.overrideSettings.targetDeploymentPath,
+                    overrideSourceSharedPath: $scope.overrideSettings.sourceSharedPath,
+                    overrideSourceDeploymentPath: $scope.overrideSettings.sourceDeploymentPath,
+                    useSourceTaskOptions: $scope.overrideSettings.useSourceTaskOptions
                 }
             };
+            if(angular.isDefined(applicationType)) {
+                requestData.syncDeployment.deploymentType = applicationType;
+            }
             SyncDeploymentRepository.create(requestData).then(
                 function (response) {
                     FlashMessageService.addSuccessFlashMessage(
                         'OK!',
-                        target.applications[0].nodes[0].name + ' will be synchronized with ' +
-                        source.applications[0].nodes[0].name + '.'
+                        $scope.currentTarget.applications[0].nodes[0].name + ' will be synchronized with ' +
+                        $scope.currentSource.applications[0].nodes[0].name + '.'
                     );
                     ProjectRepository.updateFullProjectInCache($scope.project.repositoryUrl);
                     $location.path('project/' + $scope.name + '/deployment/' + response.deployment.__identity);
@@ -1781,12 +1819,12 @@
             );
         });
     }
-    SyncController.$inject = ['$scope', '$controller', 'PresetRepository', 'CONFIG', 'ProjectRepository', 'SettingsRepository', 'SyncDeploymentRepository', '$location', 'FlashMessageService'];
 }());
 /* global angular */
 
 (function () {
     'use strict';
+    chosen.$inject = ['$timeout'];
     angular
         .module('surfCaptain')
         .directive('chosen', chosen);
@@ -1819,11 +1857,11 @@
             });
         }
     }
-    chosen.$inject = ['$timeout'];
 }());
 /* global angular */
 (function () {
     'use strict';
+    lastCharacterValidate.$inject = ['ValidationService'];
     angular
         .module('surfCaptain')
         .directive('lastCharacterValidate', lastCharacterValidate);
@@ -1859,7 +1897,6 @@
             }
         };
     }
-    lastCharacterValidate.$inject = ['ValidationService'];
 }());
 /* global angular */
 
@@ -1908,6 +1945,7 @@
 
 (function () {
     'use strict';
+    serverList.$inject = ['PresetRepository', 'ValidationService', 'FlashMessageService', 'SettingsRepository', 'ProjectRepository'];
     angular
         .module('surfCaptain')
         .directive('serverList', serverList);
@@ -2078,7 +2116,6 @@
             link: linker
         };
     }
-    serverList.$inject = ['PresetRepository', 'ValidationService', 'FlashMessageService', 'SettingsRepository', 'ProjectRepository'];
 }());
 /* global angular */
 
@@ -2140,6 +2177,7 @@
 
 (function () {
     'use strict';
+    startWithValidate.$inject = ['ValidationService'];
     angular
         .module('surfCaptain')
         .directive('startWithValidate', startWithValidate);
@@ -2200,12 +2238,12 @@
             }
         };
     }
-    startWithValidate.$inject = ['ValidationService'];
 }());
 /* global angular */
 
 (function () {
     'use strict';
+    surfcaptainHeader.$inject = ['$routeParams', '$location', 'FavorService'];
     angular
         .module('surfCaptain')
         .directive('surfcaptainHeader', surfcaptainHeader);
@@ -2230,12 +2268,12 @@
             scope.favorites = FavorService.getFavoriteProjects();
         }
     }
-    surfcaptainHeader.$inject = ['$routeParams', '$location', 'FavorService'];
 }());
 /* global angular */
 
 (function () {
     'use strict';
+    surfcaptainMenu.$inject = ['$routeParams', '$location'];
     angular
         .module('surfCaptain')
         .directive('surfcaptainMenu', surfcaptainMenu);
@@ -2257,7 +2295,6 @@
             scope.context = lastUrlPart === scope.project ? 'history' : lastUrlPart;
         }
     }
-    surfcaptainMenu.$inject = ['$routeParams', '$location'];
 }());
 /* global angular */
 
@@ -2296,6 +2333,7 @@
 
 (function () {
     'use strict';
+    appVersion.$inject = ['version'];
     angular
         .module('surfCaptain')
         .directive('appVersion', appVersion);
@@ -2306,7 +2344,6 @@
             element.text(version);
         };
     }
-    appVersion.$inject = ['version'];
 }());
 /* global angular */
 /* jshint -W044:true */
@@ -2378,6 +2415,7 @@
 
 (function () {
     'use strict';
+    DeploymentRepository.$inject = ['$http', '$q', '$cacheFactory', 'RequestService'];
     angular
         .module('surfCaptain')
         .factory('DeploymentRepository', DeploymentRepository);
@@ -2455,12 +2493,12 @@
             }
         };
     }
-    DeploymentRepository.$inject = ['$http', '$q', '$cacheFactory', 'RequestService'];
 }());
 /* global angular */
 
 (function () {
     'use strict';
+    PresetRepository.$inject = ['$http', '$q', 'RequestService'];
     angular
         .module('surfCaptain')
         .factory('PresetRepository', PresetRepository);
@@ -2594,12 +2632,12 @@
             }
         };
     }
-    PresetRepository.$inject = ['$http', '$q', 'RequestService'];
 }());
 /* global angular */
 
 (function () {
     'use strict';
+    ProjectRepository.$inject = ['$http', '$q', '$cacheFactory'];
     angular
         .module('surfCaptain')
         .factory('ProjectRepository', ProjectRepository);
@@ -2752,12 +2790,12 @@
             }
         };
     }
-    ProjectRepository.$inject = ['$http', '$q', '$cacheFactory'];
 }());
 /* global angular */
 
 (function () {
     'use strict';
+    SettingsRepository.$inject = ['$http', '$q', '$cacheFactory'];
     angular
         .module('surfCaptain')
         .factory('SettingsRepository', SettingsRepository);
@@ -2796,12 +2834,12 @@
             }
         };
     }
-    SettingsRepository.$inject = ['$http', '$q', '$cacheFactory'];
 }());
 /* global angular */
 
 (function () {
     'use strict';
+    SyncDeploymentRepository.$inject = ['RequestService'];
     angular
         .module('surfCaptain')
         .factory('SyncDeploymentRepository', SyncDeploymentRepository);
@@ -2829,12 +2867,12 @@
             }
         };
     }
-    SyncDeploymentRepository.$inject = ['RequestService'];
 }());
 /* global angular */
 
 (function () {
     'use strict';
+    FavorService.$inject = ['cookieStore', 'ProjectRepository'];
     angular
         .module('surfCaptain')
         .service('FavorService', FavorService);
@@ -2896,12 +2934,12 @@
         init();
 
     }
-    FavorService.$inject = ['cookieStore', 'ProjectRepository'];
 }());
 /* global angular */
 
 (function () {
     'use strict';
+    FlashMessageService.$inject = ['toaster'];
     angular
         .module('surfCaptain')
         .service('FlashMessageService', FlashMessageService);
@@ -2967,7 +3005,6 @@
             toaster.pop(severity, title, message);
         };
     }
-    FlashMessageService.$inject = ['toaster'];
 }());
 
 /* global angular */
@@ -3104,6 +3141,7 @@
 
 (function () {
     'use strict';
+    PresetService.$inject = ['SettingsRepository', 'ValidationService'];
     angular
         .module('surfCaptain')
         .service('PresetService', PresetService);
@@ -3205,12 +3243,12 @@
             return angular.isUndefined(preset.applications[0].options.repositoryUrl) || preset.applications[0].options.repositoryUrl === '';
         };
     }
-    PresetService.$inject = ['SettingsRepository', 'ValidationService'];
 }());
 /* global angular */
 
 (function () {
     'use strict';
+    RequestService.$inject = ['$http', '$q'];
     angular
         .module('surfCaptain')
         .service('RequestService', RequestService);
@@ -3271,12 +3309,12 @@
             };
         }
     }
-    RequestService.$inject = ['$http', '$q'];
 }());
 /* global angular */
 
 (function () {
     'use strict';
+    UtilityService.$inject = ['$filter'];
     angular
         .module('surfCaptain')
         .service('UtilityService', UtilityService);
@@ -3344,7 +3382,6 @@
             return -1;
         };
     }
-    UtilityService.$inject = ['$filter'];
 }());
 
 /* global angular */
