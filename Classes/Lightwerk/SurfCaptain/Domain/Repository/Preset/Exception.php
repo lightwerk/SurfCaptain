@@ -11,5 +11,6 @@ namespace Lightwerk\SurfCaptain\Domain\Repository\Preset;
  *
  * @package Lightwerk\SurfCaptain
  */
-class Exception extends \Lightwerk\SurfCaptain\Domain\Repository\Exception {
+class Exception extends \Lightwerk\SurfCaptain\Domain\Repository\Exception
+{
 }

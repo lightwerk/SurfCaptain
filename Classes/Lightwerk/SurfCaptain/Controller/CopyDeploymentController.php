@@ -14,39 +14,40 @@ use TYPO3\Flow\Error\Message;
  * @package Lightwerk\SurfCaptain
  * @author Achim Fritz <af@achimfritz.de>
  */
-class CopyDeploymentController extends AbstractRestController {
+class CopyDeploymentController extends AbstractRestController
+{
+    /**
+     * @FLow\Inject
+     * @var \Lightwerk\SurfCaptain\Domain\Repository\DeploymentRepository
+     */
+    protected $deploymentRepository;
 
-	/**
-	 * @FLow\Inject
-	 * @var \Lightwerk\SurfCaptain\Domain\Repository\DeploymentRepository
-	 */
-	protected $deploymentRepository;
+    /**
+     * @Flow\Inject
+     * @var \Lightwerk\SurfCaptain\Domain\Factory\DeploymentFactory
+     */
+    protected $deploymentFactory;
 
-	/**
-	 * @Flow\Inject
-	 * @var \Lightwerk\SurfCaptain\Domain\Factory\DeploymentFactory
-	 */
-	protected $deploymentFactory;
+    /**
+     * @var string
+     */
+    protected $resourceArgumentName = 'copyDeployment';
 
-	/**
-	 * @var string
-	 */
-	protected $resourceArgumentName = 'copyDeployment';
-
-	/**
-	 * @param \Lightwerk\SurfCaptain\Domain\Facet\Deployment\CopyDeployment $copyDeployment
-	 * @return void
-	 */
-	public function createAction(CopyDeployment $copyDeployment) {
-		try {
-			$deployment = $this->deploymentFactory->createFromCopyDeployment($copyDeployment);
-			$this->deploymentRepository->add($deployment);
-			$this->addFlashMessage('Created a new copy deployment.', 'OK', Message::SEVERITY_OK);
-		} catch (\Lightwerk\SurfCaptain\Exception $e) {
-			$this->handleException($e);
-		} catch (\TYPO3\Flow\Http\Exception $e) {
-			$this->handleException($e);
-		}
-		$this->redirect('index', 'Deployment');
-	}
+    /**
+     * @param \Lightwerk\SurfCaptain\Domain\Facet\Deployment\CopyDeployment $copyDeployment
+     * @return void
+     */
+    public function createAction(CopyDeployment $copyDeployment)
+    {
+        try {
+            $deployment = $this->deploymentFactory->createFromCopyDeployment($copyDeployment);
+            $this->deploymentRepository->add($deployment);
+            $this->addFlashMessage('Created a new copy deployment.', 'OK', Message::SEVERITY_OK);
+        } catch (\Lightwerk\SurfCaptain\Exception $e) {
+            $this->handleException($e);
+        } catch (\TYPO3\Flow\Http\Exception $e) {
+            $this->handleException($e);
+        }
+        $this->redirect('index', 'Deployment');
+    }
 }

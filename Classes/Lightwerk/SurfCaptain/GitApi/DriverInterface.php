@@ -13,46 +13,46 @@ use Lightwerk\SurfCaptain\Domain\Model\Repository;
  *
  * @package Lightwerk\SurfCaptain
  */
-interface DriverInterface {
+interface DriverInterface
+{
+    /**
+     * @param array $settings
+     * @return void
+     */
+    public function setSettings(array $settings);
 
-	/**
-	 * @param array $settings
-	 * @return void
-	 */
-	public function setSettings(array $settings);
+    /**
+     * @return Repository[]
+     */
+    public function getRepositories();
 
-	/**
-	 * @return Repository[]
-	 */
-	public function getRepositories();
+    /**
+     * @param string $repositoryUrl
+     * @return Repository
+     */
+    public function getRepository($repositoryUrl);
 
-	/**
-	 * @param string $repositoryUrl
-	 * @return Repository
-	 */
-	public function getRepository($repositoryUrl);
+    /**
+     * @param string $repositoryUrl
+     * @return boolean
+     */
+    public function hasRepository($repositoryUrl);
 
-	/**
-	 * @param string $repositoryUrl
-	 * @return boolean
-	 */
-	public function hasRepository($repositoryUrl);
+    /**
+     * @param string $repositoryUrl
+     * @param string $filePath
+     * @param string $reference branch name, tag name or hash
+     * @return string
+     */
+    public function getFileContent($repositoryUrl, $filePath, $reference = 'master');
 
-	/**
-	 * @param string $repositoryUrl
-	 * @param string $filePath
-	 * @param string $reference branch name, tag name or hash
-	 * @return string
-	 */
-	public function getFileContent($repositoryUrl, $filePath, $reference = 'master');
-
-	/**
-	 * @param string $repositoryUrl
-	 * @param string $filePath
-	 * @param string $content
-	 * @param string $commitMessage
-	 * @param string $branchName
-	 * @return void
-	 */
-	public function setFileContent($repositoryUrl, $filePath, $content, $commitMessage, $branchName = 'master');
+    /**
+     * @param string $repositoryUrl
+     * @param string $filePath
+     * @param string $content
+     * @param string $commitMessage
+     * @param string $branchName
+     * @return void
+     */
+    public function setFileContent($repositoryUrl, $filePath, $content, $commitMessage, $branchName = 'master');
 }

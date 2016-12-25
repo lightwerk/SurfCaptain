@@ -14,40 +14,41 @@ use TYPO3\Flow\Error\Message;
  * @package Lightwerk\SurfCaptain
  * @author Achim Fritz <af@achimfritz.de>
  */
-class SyncDeploymentController extends AbstractRestController {
+class SyncDeploymentController extends AbstractRestController
+{
+    /**
+     * @FLow\Inject
+     * @var \Lightwerk\SurfCaptain\Domain\Repository\DeploymentRepository
+     */
+    protected $deploymentRepository;
 
-	/**
-	 * @FLow\Inject
-	 * @var \Lightwerk\SurfCaptain\Domain\Repository\DeploymentRepository
-	 */
-	protected $deploymentRepository;
+    /**
+     * @Flow\Inject
+     * @var \Lightwerk\SurfCaptain\Domain\Factory\DeploymentFactory
+     */
+    protected $deploymentFactory;
 
-	/**
-	 * @Flow\Inject
-	 * @var \Lightwerk\SurfCaptain\Domain\Factory\DeploymentFactory
-	 */
-	protected $deploymentFactory;
+    /**
+     * @var string
+     */
+    protected $resourceArgumentName = 'syncDeployment';
 
-	/**
-	 * @var string
-	 */
-	protected $resourceArgumentName = 'syncDeployment';
-
-	/**
-	 * @param \Lightwerk\SurfCaptain\Domain\Facet\Deployment\SyncDeployment $syncDeployment
-	 * @return void
-	 */
-	public function createAction(SyncDeployment $syncDeployment) {
-		try {
-			$deployment = $this->deploymentFactory->createFromSyncDeployment($syncDeployment);
-			$this->deploymentRepository->add($deployment);
-			$this->addFlashMessage('Created a new sync deployment.', 'OK', Message::SEVERITY_OK);
-			$this->redirect('index', 'Deployment', NULL, array('deployment' => $deployment));
-		} catch (\Lightwerk\SurfCaptain\Exception $e) {
-			$this->handleException($e);
-		} catch (\TYPO3\Flow\Http\Exception $e) {
-			$this->handleException($e);
-		}
-		$this->redirect('index', 'Deployment');
-	}
+    /**
+     * @param \Lightwerk\SurfCaptain\Domain\Facet\Deployment\SyncDeployment $syncDeployment
+     * @return void
+     */
+    public function createAction(SyncDeployment $syncDeployment)
+    {
+        try {
+            $deployment = $this->deploymentFactory->createFromSyncDeployment($syncDeployment);
+            $this->deploymentRepository->add($deployment);
+            $this->addFlashMessage('Created a new sync deployment.', 'OK', Message::SEVERITY_OK);
+            $this->redirect('index', 'Deployment', null, ['deployment' => $deployment]);
+        } catch (\Lightwerk\SurfCaptain\Exception $e) {
+            $this->handleException($e);
+        } catch (\TYPO3\Flow\Http\Exception $e) {
+            $this->handleException($e);
+        }
+        $this->redirect('index', 'Deployment');
+    }
 }

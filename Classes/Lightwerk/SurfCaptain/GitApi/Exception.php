@@ -6,6 +6,7 @@ namespace Lightwerk\SurfCaptain\GitApi;
  *                                                                        *
  *                                                                        */
 
-class Exception extends \Lightwerk\SurfCaptain\Exception {
+class Exception extends \Lightwerk\SurfCaptain\Exception
+{
 
 }

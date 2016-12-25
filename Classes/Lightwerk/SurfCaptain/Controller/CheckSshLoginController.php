@@ -15,33 +15,34 @@ use TYPO3\Flow\Annotations as Flow;
  *
  * @package Lightwerk\SurfCaptain
  */
-class CheckSshLoginController extends AbstractRestController {
+class CheckSshLoginController extends AbstractRestController
+{
+    /**
+     * @var string
+     * @see \TYPO3\Flow\Mvc\Controller\RestController
+     */
+    protected $resourceArgumentName = 'hostname';
 
-	/**
-	 * @var string
-	 * @see \TYPO3\Flow\Mvc\Controller\RestController
-	 */
-	protected $resourceArgumentName = 'hostname';
+    /**
+     * @Flow\Inject
+     * @var ShellService
+     */
+    protected $shellService;
 
-	/**
-	 * @Flow\Inject
-	 * @var ShellService
-	 */
-	protected $shellService;
-
-	/**
-	 * @param string $hostname
-	 * @param string $username
-	 * @param integer $port
-	 * @return void
-	 */
-	public function showAction($hostname, $username = NULL, $port = NULL) {
-		try {
-			$this->shellService->checkLogin($hostname, $username, $port);
-			$this->view->assign('login', TRUE);
-		} catch (Exception $e) {
-			$this->view->assign('login', FALSE);
-			$this->handleException($e);
-		}
-	}
+    /**
+     * @param string $hostname
+     * @param string $username
+     * @param integer $port
+     * @return void
+     */
+    public function showAction($hostname, $username = null, $port = null)
+    {
+        try {
+            $this->shellService->checkLogin($hostname, $username, $port);
+            $this->view->assign('login', true);
+        } catch (Exception $e) {
+            $this->view->assign('login', false);
+            $this->handleException($e);
+        }
+    }
 }

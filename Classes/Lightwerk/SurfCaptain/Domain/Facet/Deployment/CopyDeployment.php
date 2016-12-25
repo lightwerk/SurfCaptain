@@ -11,51 +11,54 @@ use TYPO3\Flow\Annotations as Flow;
 /**
  * @Flow\Scope("prototype")
  */
-class CopyDeployment extends AbstractDeployment {
+class CopyDeployment extends AbstractDeployment
+{
+    /**
+     * @var string
+     */
+    protected $deploymentType = 'TYPO3\\CMS\\Copy';
 
-	/**
-	 * @var string
-	 */
-	protected $deploymentType = 'TYPO3\\CMS\\Copy';
+    /**
+     * @var \Lightwerk\SurfCaptain\Domain\Facet\InitSyncDeployment
+     */
+    protected $initSyncDeployment;
 
-	/**
-	 * @var \Lightwerk\SurfCaptain\Domain\Facet\InitSyncDeployment
-	 */
-	protected $initSyncDeployment;
+    /**
+     * @var \Lightwerk\SurfCaptain\Domain\Facet\GitRepositoryDeployment
+     */
+    protected $gitRepositoryDeployment;
 
-	/**
-	 * @var \Lightwerk\SurfCaptain\Domain\Facet\GitRepositoryDeployment
-	 */
-	protected $gitRepositoryDeployment;
+    /**
+     * @return \Lightwerk\SurfCaptain\Domain\Facet\InitSyncDeployment
+     */
+    public function getInitSyncDeployment()
+    {
+        return $this->initSyncDeployment;
+    }
 
-	/**
-	 * @param \Lightwerk\SurfCaptain\Domain\Facet\InitSyncDeployment
-	 * @return void
-	 */
-	public function setInitSyncDeployment(InitSyncDeployment $initSyncDeployment) {
-		$this->initSyncDeployment = $initSyncDeployment;
-	}
+    /**
+     * @param \Lightwerk\SurfCaptain\Domain\Facet\InitSyncDeployment
+     * @return void
+     */
+    public function setInitSyncDeployment(InitSyncDeployment $initSyncDeployment)
+    {
+        $this->initSyncDeployment = $initSyncDeployment;
+    }
 
-	/**
-	 * @return \Lightwerk\SurfCaptain\Domain\Facet\InitSyncDeployment
-	 */
-	public function getInitSyncDeployment() {
-		return $this->initSyncDeployment;
-	}
+    /**
+     * @return \Lightwerk\SurfCaptain\Domain\Facet\GitRepositoryDeployment
+     */
+    public function getGitRepositoryDeployment()
+    {
+        return $this->gitRepositoryDeployment;
+    }
 
-	/**
-	 * @param \Lightwerk\SurfCaptain\Domain\Facet\GitRepositoryDeployment
-	 * @return void
-	 */
-	public function setGitRepositoryDeployment(GitRepositoryDeployment $gitRepositoryDeployment) {
-		$this->gitRepositoryDeployment = $gitRepositoryDeployment;
-	}
-
-	/**
-	 * @return \Lightwerk\SurfCaptain\Domain\Facet\GitRepositoryDeployment
-	 */
-	public function getGitRepositoryDeployment() {
-		return $this->gitRepositoryDeployment;
-	}
-
+    /**
+     * @param \Lightwerk\SurfCaptain\Domain\Facet\GitRepositoryDeployment
+     * @return void
+     */
+    public function setGitRepositoryDeployment(GitRepositoryDeployment $gitRepositoryDeployment)
+    {
+        $this->gitRepositoryDeployment = $gitRepositoryDeployment;
+    }
 }

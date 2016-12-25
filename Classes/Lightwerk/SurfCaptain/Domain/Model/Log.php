@@ -15,118 +15,126 @@ use Doctrine\ORM\Mapping as ORM;
  * @package Lightwerk\SurfCaptain
  * @Flow\Entity
  */
-class Log {
+class Log
+{
+    /**
+     * @var \Lightwerk\SurfCaptain\Domain\Model\Deployment
+     * @ORM\ManyToOne(inversedBy="logs")
+     */
+    protected $deployment;
 
-	/**
-	 * @var \Lightwerk\SurfCaptain\Domain\Model\Deployment
-	 * @ORM\ManyToOne(inversedBy="logs")
-	 */
-	protected $deployment;
+    /**
+     * @var \DateTime
+     */
+    protected $date;
 
-	/**
-	 * @var \DateTime
-	 */
-	protected $date;
+    /**
+     * @var integer
+     */
+    protected $number;
 
-	/**
-	 * @var integer
-	 */
-	protected $number;
+    /**
+     * @var string
+     * @ORM\Column(type="text")
+     */
+    protected $message;
 
-	/**
-	 * @var string
-	 * @ORM\Column(type="text")
-	 */
-	protected $message;
+    /**
+     * @var string
+     */
+    protected $severity;
 
-	/**
-	 * @var string
-	 */
-	protected $severity;
+    /**
+     * @return \Lightwerk\SurfCaptain\Domain\Model\Deployment
+     */
+    public function getDeployment()
+    {
+        return $this->deployment;
+    }
 
+    /**
+     * @param \Lightwerk\SurfCaptain\Domain\Model\Deployment $deployment
+     * @return Log
+     */
+    public function setDeployment($deployment)
+    {
+        $this->deployment = $deployment;
+        return $this;
+    }
 
-	/**
-	 * @return \Lightwerk\SurfCaptain\Domain\Model\Deployment
-	 */
-	public function getDeployment() {
-		return $this->deployment;
-	}
+    /**
+     * @return \DateTime
+     */
+    public function getDate()
+    {
+        return $this->date;
+    }
 
-	/**
-	 * @param \Lightwerk\SurfCaptain\Domain\Model\Deployment $deployment
-	 * @return Log
-	 */
-	public function setDeployment($deployment) {
-		$this->deployment = $deployment;
-		return $this;
-	}
+    /**
+     * @param \DateTime $date
+     * @return Log
+     */
+    public function setDate($date)
+    {
+        $this->date = $date;
+        return $this;
+    }
 
-	/**
-	 * @return \DateTime
-	 */
-	public function getDate() {
-		return $this->date;
-	}
+    /**
+     * Returns Number
+     *
+     * @return int
+     */
+    public function getNumber()
+    {
+        return $this->number;
+    }
 
-	/**
-	 * @param \DateTime $date
-	 * @return Log
-	 */
-	public function setDate($date) {
-		$this->date = $date;
-		return $this;
-	}
+    /**
+     * Sets Number
+     *
+     * @param int $number
+     * @return Log
+     */
+    public function setNumber($number)
+    {
+        $this->number = $number;
+        return $this;
+    }
 
-	/**
-	 * Returns Number
-	 *
-	 * @return int
-	 */
-	public function getNumber() {
-		return $this->number;
-	}
+    /**
+     * @return string
+     */
+    public function getMessage()
+    {
+        return $this->message;
+    }
 
-	/**
-	 * Sets Number
-	 *
-	 * @param int $number
-	 * @return Log
-	 */
-	public function setNumber($number) {
-		$this->number = $number;
-		return $this;
-	}
+    /**
+     * @param string $message
+     * @return Log
+     */
+    public function setMessage($message)
+    {
+        $this->message = $message;
+        return $this;
+    }
 
-	/**
-	 * @return string
-	 */
-	public function getMessage() {
-		return $this->message;
-	}
+    /**
+     * @return string
+     */
+    public function getSeverity()
+    {
+        return $this->severity;
+    }
 
-	/**
-	 * @param string $message
-	 * @return Log
-	 */
-	public function setMessage($message) {
-		$this->message = $message;
-		return $this;
-	}
-
-	/**
-	 * @return string
-	 */
-	public function getSeverity() {
-		return $this->severity;
-	}
-
-	/**
-	 * @param string $severity
-	 * @return Log
-	 */
-	public function setSeverity($severity) {
-		$this->severity = $severity;
-		return $this;
-	}
-
+    /**
+     * @param string $severity
+     * @return Log
+     */
+    public function setSeverity($severity)
+    {
+        $this->severity = $severity;
+        return $this;
+    }
 }
