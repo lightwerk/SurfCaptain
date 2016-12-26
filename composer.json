@@ -8,9 +8,6 @@
         "TYPO3 Surf",
         "Deployment"
     ],
-    "require": {
-      "lightwerk/surfrunner": "*"
-    },
     "authors": [
         {
             "name": "Daniel Goerz",
@@ -30,13 +27,14 @@
         "source": "https://github.com/lightwerk/SurfCaptain"
     },
     "require": {
+        "lightwerk/surfrunner": "*",
         "typo3/flow": "2.3.*",
         "typo3/setup": "1.1.0",
         "typo3/surf": "*"
     },
     "autoload": {
-        "psr-0": {
-            "Lightwerk\\SurfCaptain": "Classes"
+        "psr-4": {
+            "Lightwerk\\SurfCaptain\\": "Classes/Lightwerk/SurfCaptain"
         }
     },
     "extra": {
