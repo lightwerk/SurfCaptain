@@ -33,6 +33,11 @@
             "Lightwerk\\SurfCaptain\\": "Classes/Lightwerk/SurfCaptain"
         }
     },
+    "require": {
+        "typo3/flow": "^3.0",
+        "typo3/setup": "^3.0",
+        "typo3/surf": "*"
+    },
     "extra": {
         "typo3/flow": {
             "manage-resources": true
