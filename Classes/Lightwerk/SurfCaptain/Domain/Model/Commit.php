@@ -11,91 +11,97 @@ namespace Lightwerk\SurfCaptain\Domain\Model;
  *
  * @package Lightwerk\SurfCaptain
  */
-class Commit {
+class Commit
+{
+    /**
+     * @var string
+     */
+    protected $id;
 
-	/**
-	 * @var string
-	 */
-	protected $id;
+    /**
+     * @var string
+     */
+    protected $message;
 
-	/**
-	 * @var string
-	 */
-	protected $message;
+    /**
+     * @var string
+     */
+    protected $date;
 
-	/**
-	 * @var string
-	 */
-	protected $date;
+    /**
+     * @var string
+     */
+    protected $committerName;
 
-	/**
-	 * @var string
-	 */
-	protected $committerName;
+    /**
+     * @return string
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
 
+    /**
+     * @param string $id
+     * @return Commit
+     */
+    public function setId($id)
+    {
+        $this->id = $id;
+        return $this;
+    }
 
-	/**
-	 * @return string
-	 */
-	public function getId() {
-		return $this->id;
-	}
+    /**
+     * @return string
+     */
+    public function getMessage()
+    {
+        return $this->message;
+    }
 
-	/**
-	 * @param string $id
-	 * @return Commit
-	 */
-	public function setId($id) {
-		$this->id = $id;
-		return $this;
-	}
+    /**
+     * @param string $message
+     * @return Commit
+     */
+    public function setMessage($message)
+    {
+        $this->message = $message;
+        return $this;
+    }
 
-	/**
-	 * @return string
-	 */
-	public function getMessage() {
-		return $this->message;
-	}
+    /**
+     * @return string
+     */
+    public function getDate()
+    {
+        return $this->date;
+    }
 
-	/**
-	 * @param string $message
-	 * @return Commit
-	 */
-	public function setMessage($message) {
-		$this->message = $message;
-		return $this;
-	}
+    /**
+     * @param string $date
+     * @return Commit
+     */
+    public function setDate($date)
+    {
+        $this->date = $date;
+        return $this;
+    }
 
-	/**
-	 * @return string
-	 */
-	public function getDate() {
-		return $this->date;
-	}
+    /**
+     * @return string
+     */
+    public function getCommitterName()
+    {
+        return $this->committerName;
+    }
 
-	/**
-	 * @param string $date
-	 * @return Commit
-	 */
-	public function setDate($date) {
-		$this->date = $date;
-		return $this;
-	}
-
-	/**
-	 * @return string
-	 */
-	public function getCommitterName() {
-		return $this->committerName;
-	}
-
-	/**
-	 * @param string $committerName
-	 * @return Commit
-	 */
-	public function setCommitterName($committerName) {
-		$this->committerName = $committerName;
-		return $this;
-	}
-
+    /**
+     * @param string $committerName
+     * @return Commit
+     */
+    public function setCommitterName($committerName)
+    {
+        $this->committerName = $committerName;
+        return $this;
+    }
 }

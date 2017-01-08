@@ -9,11 +9,12 @@ namespace Lightwerk\SurfCaptain\GitApi\Request;
 use TYPO3\Flow\Annotations as Flow;
 use Lightwerk\SurfCaptain\GitApi\ApiRequestInterface;
 
-interface HttpAuthRequestInterface extends ApiRequestInterface {
+interface HttpAuthRequestInterface extends ApiRequestInterface
+{
 
-	/**
-	 * @param array $headers 
-	 * @return void
-	 */
-	public function setAuthorizationHeader(array $headers);
+    /**
+     * @param array $headers
+     * @return void
+     */
+    public function setAuthorizationHeader(array $headers);
 }

@@ -6,6 +6,7 @@ namespace Lightwerk\SurfCaptain\GitApi\Driver;
  *                                                                        *
  *                                                                        */
 
-class Exception extends \Lightwerk\SurfCaptain\GitApi\Exception {
+class Exception extends \Lightwerk\SurfCaptain\GitApi\Exception
+{
 
 }

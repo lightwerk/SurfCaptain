@@ -11,46 +11,49 @@ use TYPO3\Flow\Annotations as Flow;
 /**
  * @Flow\Scope("prototype")
  */
-abstract class AbstractDeployment {
+abstract class AbstractDeployment
+{
+    /**
+     * @var string
+     */
+    protected $presetKey;
 
-	/**
-	 * @var string
-	 */
-	protected $presetKey;
+    /**
+     * @var string
+     */
+    protected $deploymentType;
 
-	/**
-	 * @var string
-	 */
-	protected $deploymentType;
+    /**
+     * @return string
+     */
+    public function getDeploymentType()
+    {
+        return $this->deploymentType;
+    }
 
-	/**
-	 * @return string
-	 */
-	public function getDeploymentType() {
-		return $this->deploymentType;
-	}
+    /**
+     * @param string $deploymentType
+     * @return void
+     */
+    public function setDeploymentType($deploymentType)
+    {
+        $this->deploymentType = $deploymentType;
+    }
 
-	/**
-	 * @param string $deploymentType
-	 * @return void
-	 */
-	public function setDeploymentType($deploymentType) {
-		$this->deploymentType = $deploymentType;
-	}
+    /**
+     * @return string
+     */
+    public function getPresetKey()
+    {
+        return $this->presetKey;
+    }
 
-	/**
-	 * @return string
-	 */
-	public function getPresetKey() {
-		return $this->presetKey;
-	}
-
-	/**
-	 * @param string $presetKey
-	 * @return void
-	 */
-	public function setPresetKey($presetKey) {
-		$this->presetKey = $presetKey;
-	}
-
+    /**
+     * @param string $presetKey
+     * @return void
+     */
+    public function setPresetKey($presetKey)
+    {
+        $this->presetKey = $presetKey;
+    }
 }

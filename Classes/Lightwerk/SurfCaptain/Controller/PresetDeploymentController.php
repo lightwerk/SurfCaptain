@@ -16,38 +16,39 @@ use TYPO3\Flow\Annotations as Flow;
  *
  * @package Lightwerk\SurfCaptain
  */
-class PresetDeploymentController extends AbstractRestController {
+class PresetDeploymentController extends AbstractRestController
+{
+    /**
+     * @FLow\Inject
+     * @var DeploymentRepository
+     */
+    protected $deploymentRepository;
 
-	/**
-	 * @FLow\Inject
-	 * @var DeploymentRepository
-	 */
-	protected $deploymentRepository;
+    /**
+     * @Flow\Inject
+     * @var PresetRepositoryInterface
+     */
+    protected $presetRepository;
 
-	/**
-	 * @Flow\Inject
-	 * @var PresetRepositoryInterface
-	 */
-	protected $presetRepository;
+    /**
+     * @var string
+     * @see \TYPO3\Flow\Mvc\Controller\RestController
+     */
+    protected $resourceArgumentName = 'key';
 
-	/**
-	 * @var string
-	 * @see \TYPO3\Flow\Mvc\Controller\RestController
-	 */
-	protected $resourceArgumentName = 'key';
-
-	/**
-	 * @param string $key
-	 * @throws \TYPO3\Flow\Persistence\Exception\IllegalObjectTypeException
-	 * @return void
-	 */
-	public function createAction($key) {
-		$configuration = $this->presetRepository->findByIdentifier($key);
-		$deployment = new Deployment();
-		$deployment->setConfiguration($configuration);
-		$deployment->setClientIp($this->request->getHttpRequest()->getClientIpAddress());
-		$this->deploymentRepository->add($deployment);
-		$this->addFlashMessage('Created a new deployment.');
-		$this->redirect('index', NULL, NULL, array('deployment' => $deployment));
-	}
+    /**
+     * @param string $key
+     * @throws \TYPO3\Flow\Persistence\Exception\IllegalObjectTypeException
+     * @return void
+     */
+    public function createAction($key)
+    {
+        $configuration = $this->presetRepository->findByIdentifier($key);
+        $deployment = new Deployment();
+        $deployment->setConfiguration($configuration);
+        $deployment->setClientIp($this->request->getHttpRequest()->getClientIpAddress());
+        $this->deploymentRepository->add($deployment);
+        $this->addFlashMessage('Created a new deployment.');
+        $this->redirect('index', null, null, ['deployment' => $deployment]);
+    }
 }

@@ -14,12 +14,12 @@ use TYPO3\Flow\Mvc\Controller\ActionController;
  *
  * @package Lightwerk\SurfCaptain
  */
-class FrontendController extends ActionController {
-
-	/**
-	 * @return void
-	 */
-	public function indexAction() {
-	}
-
+class FrontendController extends ActionController
+{
+    /**
+     * @return void
+     */
+    public function indexAction()
+    {
+    }
 }

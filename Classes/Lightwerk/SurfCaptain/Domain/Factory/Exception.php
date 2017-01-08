@@ -11,5 +11,6 @@ namespace Lightwerk\SurfCaptain\Domain\Factory;
  *
  * @package Lightwerk\SurfCaptain
  */
-class Exception extends \Lightwerk\SurfCaptain\Exception {
+class Exception extends \Lightwerk\SurfCaptain\Exception
+{
 }

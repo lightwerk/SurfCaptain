@@ -13,12 +13,13 @@ use TYPO3\Flow\Annotations as Flow;
  *
  * @package Lightwerk\SurfCaptain
  */
-class FrontendSettingController extends AbstractRestController {
-
-	/**
-	 * @return void
-	 */
-	public function listAction() {
-		$this->view->assign('frontendSettings', $this->settings['frontendSettings']);
-	}
+class FrontendSettingController extends AbstractRestController
+{
+    /**
+     * @return void
+     */
+    public function listAction()
+    {
+        $this->view->assign('frontendSettings', $this->settings['frontendSettings']);
+    }
 }

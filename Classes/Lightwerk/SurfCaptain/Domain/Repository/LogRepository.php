@@ -17,27 +17,27 @@ use TYPO3\Flow\Persistence\Repository;
  * @Flow\Scope("singleton")
  * @package Lightwerk\SurfCaptain
  */
-class LogRepository extends Repository {
+class LogRepository extends Repository
+{
+    /**
+     * @var array
+     * @see \TYPO3\Flow\Persistence\Repository
+     */
+    protected $defaultOrderings = [
+        'date' => QueryInterface::ORDER_DESCENDING,
+        'number' => QueryInterface::ORDER_DESCENDING,
+    ];
 
-	/**
-	 * @var array
-	 * @see \TYPO3\Flow\Persistence\Repository
-	 */
-	protected $defaultOrderings = array(
-		'date' => QueryInterface::ORDER_DESCENDING,
-		'number' => QueryInterface::ORDER_DESCENDING,
-	);
-
-	/**
-	 * @param Deployment $deployment
-	 * @param integer $offset
-	 * @return \TYPO3\Flow\Persistence\QueryResultInterface
-	 */
-	public function findByDeploymentWithOffset(Deployment $deployment, $offset) {
-		$query = $this->createQuery();
-		return $query->matching($query->equals('deployment', $deployment))
-			->setOffset($offset)
-			->execute();
-	}
-
+    /**
+     * @param Deployment $deployment
+     * @param integer $offset
+     * @return \TYPO3\Flow\Persistence\QueryResultInterface
+     */
+    public function findByDeploymentWithOffset(Deployment $deployment, $offset)
+    {
+        $query = $this->createQuery();
+        return $query->matching($query->equals('deployment', $deployment))
+            ->setOffset($offset)
+            ->execute();
+    }
 }
