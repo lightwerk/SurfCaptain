@@ -34,7 +34,7 @@
         }
     },
     "require": {
-        "typo3/flow": "^3.0",
+        "typo3/flow": "^3.3",
         "typo3/setup": "^3.0",
         "typo3/surf": "*"
     },
