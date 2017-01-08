@@ -26,12 +26,6 @@
         "issues": "https://github.com/lightwerk/SurfCaptain/issues",
         "source": "https://github.com/lightwerk/SurfCaptain"
     },
-    "require": {
-        "lightwerk/surfrunner": "*",
-        "typo3/flow": "2.3.*",
-        "typo3/setup": "1.1.0",
-        "typo3/surf": "*"
-    },
     "autoload": {
         "psr-4": {
             "Lightwerk\\SurfCaptain\\": "Classes/Lightwerk/SurfCaptain"
