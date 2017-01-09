@@ -6358,9 +6358,10 @@ div.surfcaptain-header .favorites-container {
   -webkit-transition: top 0.5s ease 0s, opacity 0.5s ease 0s;
   text-align: center;
   opacity: 0.8;
+  z-index: 100;
 }
 div.surfcaptain-header .favorites-container:hover {
-  top: 0px;
+  top: 0;
   opacity: 1;
 }
 div.surfcaptain-header .favorites-container:hover .favorites-label {
@@ -6379,7 +6380,7 @@ div.surfcaptain-header .favorites-container p span.favorite a {
   position: relative;
   top: 15px;
   color: #222222;
-  font-size: 18px;
+  font-size: 14px;
   font-weight: 600;
   transition: color 0.5s ease 0s;
   -webkit-transition: color 0.5s;

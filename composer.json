@@ -2,15 +2,14 @@
     "name": "lightwerk/surfcaptain",
     "type": "typo3-flow-package",
     "description": "SurfCaptain is a web front-end for TYPO3 Surf.",
-    "license": ["GPL-3.0+"],
+    "license": [
+        "GPL-3.0+"
+    ],
     "homepage": "https://github.com/lightwerk/SurfCaptain",
     "keywords": [
         "TYPO3 Surf",
         "Deployment"
     ],
-    "require": {
-      "lightwerk/surfrunner": "*"
-    },
     "authors": [
         {
             "name": "Daniel Goerz",
@@ -29,19 +28,19 @@
         "issues": "https://github.com/lightwerk/SurfCaptain/issues",
         "source": "https://github.com/lightwerk/SurfCaptain"
     },
-    "require": {
-        "typo3/flow": "2.3.*",
-        "typo3/setup": "1.1.0",
-        "typo3/surf": "*"
-    },
     "autoload": {
-        "psr-0": {
-            "Lightwerk\\SurfCaptain": "Classes"
+        "psr-4": {
+            "Lightwerk\\SurfCaptain\\": "Classes/Lightwerk/SurfCaptain"
         }
+    },
+    "require": {
+        "typo3/flow": "^3.3",
+        "typo3/setup": "^3.0",
+        "typo3/surf": "*"
     },
     "extra": {
         "typo3/flow": {
-            "manage-resources" : true
+            "manage-resources": true
         }
     }
 }
