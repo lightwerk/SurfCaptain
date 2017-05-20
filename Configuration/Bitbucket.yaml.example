@@ -19,7 +19,7 @@ Lightwerk:
             repositoryUrl: '{{links.clone.1.href}}'
             webUrl: '{{links.html.href}}'
           Branch:
-            name: '{{branch}}'
+            name: '{{_KEY_}}'
             commit:
               id: '{{raw_node}}'
               committerName: '{{author}}'
