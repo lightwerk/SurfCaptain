@@ -799,12 +799,31 @@
 
 (function () {
     'use strict';
+    ExtensionsController.$inject = ['$scope', 'ExtensionRepository', 'FlashMessageService'];
     angular
         .module('surfCaptain')
         .controller('ExtensionsController', ExtensionsController);
 
     /* @ngInject */
-    function ExtensionsController() {}
+    function ExtensionsController($scope, ExtensionRepository, FlashMessageService) {
+
+        activate();
+
+        function activate() {
+            ExtensionRepository.getExtensions().then(
+                function (response) {
+                    $scope.extensions = response.extensions;
+                },
+                function (response) {
+                    FlashMessageService.addErrorFlashMessageFromResponse(
+                        response,
+                        'Error!',
+                        'Something went wrong.'
+                    );
+                }
+            );
+        }
+    }
 }());
 /* global angular */
 
@@ -2490,6 +2509,43 @@
             },
             getSingleDeployment: function (identifier) {
                 return deploymentRepository.getSingleDeployment(identifier);
+            }
+        };
+    }
+}());
+/* global angular */
+
+(function () {
+    'use strict';
+    ExtensionRepository.$inject = ['$http', '$q'];
+    angular
+        .module('surfCaptain')
+        .factory('ExtensionRepository', ExtensionRepository);
+
+    /* @ngInject */
+    function ExtensionRepository($http, $q) {
+        var extensionRepository = {},
+            url = '/api/extension';
+
+        /**
+         *
+         * @returns {Q.promise|promise} – promise object
+         */
+        extensionRepository.getExtensions = function () {
+            var deferred = $q.defer();
+
+            $http.get(url, {cache: true}).success(
+                function (data) {
+                    deferred.resolve(data);
+                }
+            ).error(deferred.reject);
+            return deferred.promise;
+        };
+
+        // Public API
+        return {
+            getExtensions: function () {
+                return extensionRepository.getExtensions();
             }
         };
     }
