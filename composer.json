@@ -34,9 +34,9 @@
         }
     },
     "require": {
-        "typo3/flow": "^3.3",
-        "typo3/setup": "^3.0",
-        "typo3/surf": "*"
+        "neos/flow": "^3.3",
+        "neos/setup": "^3.0",
+        "typo3/surf": "^0.9"
     },
     "extra": {
         "typo3/flow": {
