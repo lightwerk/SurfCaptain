@@ -15,13 +15,20 @@ use TYPO3\Flow\Annotations as Flow;
  */
 class ExtensionController extends AbstractRestController
 {
+
+    /**
+     * @var \Lightwerk\SurfCaptain\Crawler\Crawler
+     * @FLow\Inject
+     */
+    protected $crawler;
+
     /**
      * @return void
      */
     public function listAction()
     {
-        $extensions = [];
-        $projectsDirectory = new \DirectoryIterator($path = FLOW_PATH_ROOT . '');
-        $this->view->assign('extensions', $extensions);
+        $crawlingResult = $this->crawler->crawl();
+        $this->view->assign('packageList', $crawlingResult->getPackageList());
+        $this->view->assign('projectList', $crawlingResult->getProjectList());
     }
 }

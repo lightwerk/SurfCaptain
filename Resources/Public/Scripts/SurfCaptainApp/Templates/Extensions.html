@@ -3,10 +3,57 @@
 <div class="container dark">
 	<div class="row">
 		<div class="col-xs-12 text-center inner-container">
-			<h2>Extensions and Modules</h2>
-			<br /><br />
-			<i><b>This Feature will be available in a later version of SurfCaptain. We promise!</b></i>
-			<h1>{{extensions}}</h1>
+			<h2>Projects and Packages</h2>
+			<br/>
+			<ul class="nav nav-tabs" role="tablist">
+				<li class="active"><a tab href="#projects" role="tab" data-toggle="tab">Projects</a></li>
+				<li><a tab href="#packages" role="tab" data-toggle="tab">Packages</a></li>
+			</ul>
+
+			<div class="tab-content">
+				<div class="tab-pane active" id="projects">
+					<div class="project-breakdown" data-ng-repeat="(project, projectInfo) in projectList">
+						<h3>{{project}} ({{projectInfo.category}} {{projectInfo.version}})</h3>
+						<table data-ng-repeat="(packageCategory, packages) in projectInfo.packages" class="table table-striped">
+							<tr>
+								<th>{{packageCategory}} ({{packages.count}})</th><th>Version</th><th>Type</th>
+							</tr>
+							<tr data-ng-repeat="(packageIndex, package) in packages.packages">
+								<td>{{package.name}}</td>
+								<td>{{package.version}}</td>
+								<td>{{translateType(package.type)}}</td>
+							</tr>
+						</table>
+					</div>
+				</div>
+
+				<div class="tab-pane" id="packages">
+					<div class="packages-breakdown" data-ng-repeat="(packageCategory, categoryPackages) in packageList">
+						<h2>{{packageCategory}}</h2>
+						<table class="table table-striped">
+							<tr>
+								<th>Name</th>
+								<th>Usage</th>
+								<th>#</th>
+							</tr>
+
+							<tr data-ng-repeat="packageInformation in categoryPackages">
+								<td>{{packageInformation.name}}</td>
+								<td><ul>
+									<li data-ng-repeat="(version, versionInformation) in packageInformation.versions">
+										{{version}}: <ul>
+										<li data-ng-repeat="(project, type) in versionInformation.projects">
+											{{project}} ({{translateType(type)}})
+										</li>
+									</ul>
+									</li>
+								</ul></td>
+								<td>{{packageInformation.count}}</td>
+							</tr>
+						</table>
+					</div>
+				</div>
+			</div>
 		</div>
 	</div>
 </div>

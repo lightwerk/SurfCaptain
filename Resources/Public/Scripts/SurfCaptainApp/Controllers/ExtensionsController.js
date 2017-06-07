@@ -9,12 +9,15 @@
     /* @ngInject */
     function ExtensionsController($scope, ExtensionRepository, FlashMessageService) {
 
+        $scope.translateType = translateType;
+
         activate();
 
         function activate() {
             ExtensionRepository.getExtensions().then(
                 function (response) {
-                    $scope.extensions = response.extensions;
+                    $scope.packageList = response.packageList;
+                    $scope.projectList = response.projectList;
                 },
                 function (response) {
                     FlashMessageService.addErrorFlashMessageFromResponse(
@@ -24,6 +27,15 @@
                     );
                 }
             );
+        }
+
+        function translateType(type) {
+            switch (parseInt(type)) {
+                case 1:
+                    return 'in Repo';
+                case 2:
+                    return 'composer';
+            }
         }
     }
 }());
