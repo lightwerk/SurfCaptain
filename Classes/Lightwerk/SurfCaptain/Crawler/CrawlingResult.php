@@ -16,68 +16,21 @@ use Lightwerk\SurfCaptain\Crawler\Project\ProjectInterface;
 class CrawlingResult
 {
     /**
-     * @var array
+     * @var ProjectInterface[]
      */
-    protected $packageList = [];
+    protected $projects = [];
 
     /**
-     * @var array
+     * @var PackageInterface[]
      */
-    protected $projectList = [];
+    protected $packages = [];
 
     /**
-     * @return array
+     * @return ProjectInterface[]
      */
-    public function getPackageList(): array
+    public function getProjects(): array
     {
-         return $this->packageList;
-    }
-
-    /**
-     * @return array
-     */
-    public function getProjectList(): array
-    {
-        return $this->projectList;
-    }
-
-    /**
-     * @param PackageInterface $package
-     */
-    private function addPackage(PackageInterface $package)
-    {
-        if (empty($this->packageList[$package->getCategory()])) {
-            $this->packageList[$package->getCategory()] = [];
-        }
-
-        if (empty($this->packageList[$package->getCategory()][$package->getName()])) {
-            $this->packageList[$package->getCategory()][$package->getName()] = [];
-            $this->packageList[$package->getCategory()][$package->getName()]['count'] = 0;
-            $this->packageList[$package->getCategory()][$package->getName()]['name'] = $package->getName();
-            $this->packageList[$package->getCategory()][$package->getName()]['versions'] = [];
-        }
-        $this->packageList[$package->getCategory()][$package->getName()]['count']++;
-
-        if (empty($this->packageList[$package->getCategory()][$package->getName()]['versions'][$package->getVersion()])) {
-            $this->packageList[$package->getCategory()][$package->getName()]['versions'][$package->getVersion()] = [];
-            $this->packageList[$package->getCategory()][$package->getName()]['versions'][$package->getVersion()]['count'] = 0;
-            $this->packageList[$package->getCategory()][$package->getName()]['versions'][$package->getVersion()]['projects'] = [];
-        }
-        $this->packageList[$package->getCategory()][$package->getName()]['versions'][$package->getVersion()]['count']++;
-        $this->packageList[$package->getCategory()][$package->getName()]['versions'][$package->getVersion()]['projects'][$package->getProject()->getName()] = $package->getType();
-
-
-        if (empty($this->projectList[$package->getProject()->getName()]['packages'][$package->getCategory()])) {
-            $this->projectList[$package->getProject()->getName()]['packages'][$package->getCategory()] = [];
-            $this->projectList[$package->getProject()->getName()]['packages'][$package->getCategory()]['count'] = 0;
-            $this->projectList[$package->getProject()->getName()]['packages'][$package->getCategory()]['packages'] = [];
-        }
-        $this->projectList[$package->getProject()->getName()]['packages'][$package->getCategory()]['count']++;
-        $this->projectList[$package->getProject()->getName()]['packages'][$package->getCategory()]['packages'][] = [
-            'name' => $package->getName(),
-            'version' => $package->getVersion(),
-            'type' => $package->getType()
-        ];
+        return $this->projects;
     }
 
     /**
@@ -85,13 +38,25 @@ class CrawlingResult
      */
     public function addProject(ProjectInterface $project)
     {
-        if (empty($this->projectList[$project->getName()])) {
-            $this->projectList[$project->getName()] = [];
+        $this->projects[] = $project;
+    }
+
+    /**
+     * @return PackageInterface[]
+     */
+    public function getPackages(): array
+    {
+        foreach ($this->projects as $project) {
+            foreach ($project->getPackages() as $newPackage) {
+                foreach ($this->packages as $package) {
+                    if ($package->getName() === $newPackage->getName() && $package->getCategory() === $package->getCategory()) {
+                        $package->addVersion($newPackage);
+                        continue 2;
+                    }
+                }
+                $this->packages[] = $newPackage;
+            }
         }
-        $this->projectList[$project->getName()]['version'] = $project->getVersion();
-        $this->projectList[$project->getName()]['category'] = $project->getCategory();
-        foreach ($project->getPackages() as $package) {
-            $this->addPackage($package);
-        }
+        return $this->packages;
     }
 }

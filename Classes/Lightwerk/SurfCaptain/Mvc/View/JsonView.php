@@ -86,6 +86,26 @@ class JsonView extends \TYPO3\Flow\Mvc\View\JsonView
                 'presets' => [],
             ],
         ],
+        'crawlingResult' => [
+            '_descend' => [
+                'projects' => [
+                    '_descendAll' => [
+                        '_descend' => [
+                            'packages' => [],
+                            'packageCategories' => []
+                        ]
+                    ],
+                ],
+                'packages' => [
+                    '_descendAll' => [
+                        '_descend' => [
+                            'versions' => []
+                        ]
+                    ]
+                ]
+            ],
+        ],
+
     ];
 
     /**

@@ -27,8 +27,6 @@ class ExtensionController extends AbstractRestController
      */
     public function listAction()
     {
-        $crawlingResult = $this->crawler->crawl();
-        $this->view->assign('packageList', $crawlingResult->getPackageList());
-        $this->view->assign('projectList', $crawlingResult->getProjectList());
+        $this->view->assign('crawlingResult', $this->crawler->crawl());
     }
 }

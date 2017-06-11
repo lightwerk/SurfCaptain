@@ -17,7 +17,7 @@ class TYPO3Project implements ProjectInterface
     /**
      * @var string
      */
-    protected $version = '';
+    protected $version = '0.0.0';
 
     /**
      * @var string
@@ -87,5 +87,26 @@ class TYPO3Project implements ProjectInterface
     public function getPackages()
     {
         return $this->packages;
+    }
+
+    /**
+     * @return array
+     */
+    public function getPackageCategories(): array
+    {
+        $categories = [];
+        foreach ($this->packages as $package) {
+            foreach ($categories as &$category) {
+                if (!empty($category['name'] && $category['name'] === $package->getCategory())) {
+                    $category['count']++;
+                    continue 2;
+                }
+            }
+            $categories[] = [
+                'name' => $package->getCategory(),
+                'count' => 1
+            ];
+        }
+        return $categories;
     }
 }

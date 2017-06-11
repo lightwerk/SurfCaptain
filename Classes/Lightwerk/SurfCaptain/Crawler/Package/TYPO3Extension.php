@@ -32,7 +32,7 @@ class TYPO3Extension implements PackageInterface
     /**
      * @var int
      */
-    protected $type = 0;
+    protected $type = PackageInterface::TYPE_UNKNOWN;
 
     /**
      * @var string
@@ -40,9 +40,14 @@ class TYPO3Extension implements PackageInterface
     protected $category = 'TYPO3 Extension';
 
     /**
+     * @var PackageInterface[]
+     */
+    protected $versions = [];
+
+    /**
      * @var bool
      */
-    protected $inUse = true;
+    protected $active = true;
 
     /**
      * TYPO3Extension constructor.
@@ -84,9 +89,9 @@ class TYPO3Extension implements PackageInterface
     }
 
     /**
-     * @return string
+     * @return int
      */
-    public function getType(): string
+    public function getType(): int
     {
         return $this->type;
     }
@@ -94,9 +99,9 @@ class TYPO3Extension implements PackageInterface
     /**
      * @return bool
      */
-    public function isInUse(): bool
+    public function isActive(): bool
     {
-        return $this->inUse;
+        return $this->active;
     }
 
     /**
@@ -105,5 +110,30 @@ class TYPO3Extension implements PackageInterface
     public function getCategory(): string
     {
         return $this->category;
+    }
+
+    /**
+     * @param PackageInterface $package
+     */
+    public function addVersion($package)
+    {
+        $this->versions[$package->getVersion()][] = $package;
+    }
+
+    /**
+     * @return PackageInterface[]
+     */
+    public function getVersions(): array
+    {
+        $this->addVersion($this);
+        return $this->versions;
+    }
+
+    /**
+     * @return string
+     */
+    public function getProjectName(): string
+    {
+        return $this->project->getName();
     }
 }

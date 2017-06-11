@@ -12,13 +12,13 @@
 
 			<div class="tab-content">
 				<div class="tab-pane active" id="projects">
-					<div class="project-breakdown" data-ng-repeat="(project, projectInfo) in projectList">
-						<h3>{{project}} ({{projectInfo.category}} {{projectInfo.version}})</h3>
-						<table data-ng-repeat="(packageCategory, packages) in projectInfo.packages" class="table table-striped">
+					<div class="project-breakdown" data-ng-repeat="project in projects">
+						<h3>{{project.name}} ({{project.category}} {{project.version}})</h3>
+						<table data-ng-repeat="packageCategory in project.packageCategories" class="table table-striped">
 							<tr>
-								<th>{{packageCategory}} ({{packages.count}})</th><th>Version</th><th>Type</th>
+								<th>{{packageCategory.name}} ({{packageCategory.count}})</th><th>Version</th><th>Type</th>
 							</tr>
-							<tr data-ng-repeat="(packageIndex, package) in packages.packages">
+							<tr data-ng-repeat="package in project.packages | orderBy : 'name'" data-ng-if="package.category === packageCategory.name">
 								<td>{{package.name}}</td>
 								<td>{{package.version}}</td>
 								<td>{{translateType(package.type)}}</td>
@@ -28,27 +28,32 @@
 				</div>
 
 				<div class="tab-pane" id="packages">
-					<div class="packages-breakdown" data-ng-repeat="(packageCategory, categoryPackages) in packageList">
-						<h2>{{packageCategory}}</h2>
+					<div class="filter">
+						<br />
+						<input data-ng-model="filter.name" type="text" class="form-control col-xs-offset-3" style="width: 50%!important;" placeholder="Filter the name"/>
+						<hr />
+						<br />
+					</div>
+					<div class="packages-breakdown">
 						<table class="table table-striped">
 							<tr>
-								<th>Name</th>
+								<th data-ng-click="setSorting('name')">Name</th>
 								<th>Usage</th>
-								<th>#</th>
+								<th data-ng-click="setSorting('amount')">#</th>
 							</tr>
 
-							<tr data-ng-repeat="packageInformation in categoryPackages">
-								<td>{{packageInformation.name}}</td>
+							<tr data-ng-repeat="package in packages | filter : filter | orderBy : sort : sortInverse">
+								<td>{{package.name}}</td>
 								<td><ul>
-									<li data-ng-repeat="(version, versionInformation) in packageInformation.versions">
+									<li data-ng-repeat="(version, versionPackages) in package.versions">
 										{{version}}: <ul>
-										<li data-ng-repeat="(project, type) in versionInformation.projects">
-											{{project}} ({{translateType(type)}})
+										<li data-ng-repeat="pack in versionPackages">
+											{{pack.projectName}} ({{translateType(pack.type)}})
 										</li>
 									</ul>
 									</li>
 								</ul></td>
-								<td>{{packageInformation.count}}</td>
+								<td>{{addUpVersions(package)}}</td>
 							</tr>
 						</table>
 					</div>

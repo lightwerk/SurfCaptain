@@ -31,12 +31,12 @@ class TYPO3Crawler implements CrawlerInterface
     /**
      * @var ProjectInterface
      */
-    protected $project = '';
+    protected $project = null;
 
     /**
      * @var string
      */
-    protected $pathToExtensions = 'typo3conf/ext/';
+    protected $pathToExtensions = 'typo3conf' . DIRECTORY_SEPARATOR .'ext' . DIRECTORY_SEPARATOR;
 
     /**
      * @var array
@@ -50,7 +50,7 @@ class TYPO3Crawler implements CrawlerInterface
     {
         $this->directory = $directory;
         $this->webDir = $this->getWebDir();
-        $this->project = new TYPO3Project($this->getProjectName(), '');
+        $this->project = new TYPO3Project($this->getProjectName(), '0.0.0');
     }
 
     /**
@@ -65,35 +65,34 @@ class TYPO3Crawler implements CrawlerInterface
 
     private function addPackagesLoadedByComposer()
     {
-        foreach ($this->directory as $file) {
-            if ($file->getBasename() !== 'composer.lock') {
+        $composerLockPath = $this->directory->getPath() . DIRECTORY_SEPARATOR . 'composer.lock';
+        if (!is_file($composerLockPath)) {
+            return;
+        }
+
+        $json = json_decode(file_get_contents($composerLockPath), true);
+        if (empty($json['packages'])) {
+            return;
+        }
+
+        foreach ($json['packages'] as $composerPackage) {
+            if (empty($composerPackage['type'])) {
                 continue;
             }
-            $json = json_decode(file_get_contents($file->getPathname()), true);
 
-            if (empty($json['packages'])) {
-                return;
-            }
-
-            foreach ($json['packages'] as $composerPackage) {
-                if (empty($composerPackage['type'])) {
-                    continue;
-                }
-
-                switch ($composerPackage['type']) {
-                    case 'typo3-cms-extension':
-                        // extension
-                        $this->addExtension(
-                            $this->getExtensionNameFromComposerPackage($composerPackage),
-                            $composerPackage['version'],
-                            true
-                        );
-                        break;
-                    case 'typo3-cms-core':
-                        // core
-                        $this->project->setVersion($composerPackage['version']);
-                        break;
-                }
+            switch ($composerPackage['type']) {
+                case 'typo3-cms-extension':
+                    // extension
+                    $this->addExtension(
+                        $this->getExtensionNameFromComposerPackage($composerPackage),
+                        $composerPackage['version'],
+                        true
+                    );
+                    break;
+                case 'typo3-cms-core':
+                    // core
+                    $this->project->setVersion($composerPackage['version']);
+                    break;
             }
         }
     }
@@ -126,11 +125,12 @@ class TYPO3Crawler implements CrawlerInterface
         if (in_array($extensionName, $this->extensionCache)) {
             return;
         }
-        $pathToExtension = $this->directory->getPath() . '/' . $this->webDir . $this->pathToExtensions . $extensionName;
+        $pathToExtension = $this->directory->getPath() . DIRECTORY_SEPARATOR . $this->webDir . $this->pathToExtensions . $extensionName;
         if (file_exists($pathToExtension)) {
-            if ($version === '0.0.0' && file_exists($pathToExtension . '/ext_emconf.php')) {
+            if ($version === '0.0.0' && file_exists($pathToExtension . DIRECTORY_SEPARATOR . 'ext_emconf.php')) {
                 $_EXTKEY = $extensionName;
-                require($pathToExtension . '/ext_emconf.php');
+                /** @noinspection PhpIncludeInspection */
+                require($pathToExtension . DIRECTORY_SEPARATOR . 'ext_emconf.php');
                 if (!empty($EM_CONF[$_EXTKEY]['version'])) {
                     $version = $EM_CONF[$_EXTKEY]['version'];
                 }
@@ -150,15 +150,13 @@ class TYPO3Crawler implements CrawlerInterface
      */
     private function getWebDir(): string
     {
-        foreach ($this->directory as $file) {
-            if ($file->getBasename() !== 'composer.json') {
-                continue;
-            }
-            $json = json_decode(file_get_contents($file->getPathname()), true);
-            if (!empty($json['extra']['typo3/cms']['web-dir'])) {
-                return rtrim($json['extra']['typo3/cms']['web-dir'], '/') . '/';
-            }
+        $composerJsonPath = $this->directory->getPath() . DIRECTORY_SEPARATOR . 'composer.json';
+        if (!is_file($composerJsonPath)) {
             return '';
+        }
+        $json = json_decode(file_get_contents($composerJsonPath), true);
+        if (!empty($json['extra']['typo3/cms']['web-dir'])) {
+            return rtrim($json['extra']['typo3/cms']['web-dir'], '/') . DIRECTORY_SEPARATOR;
         }
         return '';
     }
@@ -168,39 +166,35 @@ class TYPO3Crawler implements CrawlerInterface
      */
     private function getProjectName(): string
     {
-        $localConfiguration = $this->directory->getPath() . '/' . $this->webDir . 'typo3conf/LocalConfiguration.php';
+        $localConfiguration = $this->directory->getPath() . DIRECTORY_SEPARATOR . $this->webDir . 'typo3conf' . DIRECTORY_SEPARATOR . 'LocalConfiguration.php';
         if (file_exists($localConfiguration)) {
+            /** @noinspection PhpIncludeInspection */
             $config = require($localConfiguration);
             if (!empty($config['SYS']['sitename'])) {
                 return $config['SYS']['sitename'];
             }
         }
-        foreach ($this->directory as $file) {
-            if ($file->getBasename() !== 'composer.json') {
-                continue;
-            }
-            $json = json_decode(file_get_contents($file->getPathname()), true);
-            if (!empty($json['name'])) {
-                return $json['name'];
-            }
+        $composerJsonPath = $this->directory->getPath() . DIRECTORY_SEPARATOR . 'composer.json';
+        if (!is_file($composerJsonPath)) {
             return '';
+        }
+        $json = json_decode(file_get_contents($composerJsonPath), true);
+        if (!empty($json['name'])) {
+            return $json['name'];
         }
         return '';
     }
 
     private function addExtensionsFromProject()
     {
-        $extensionDirPath = $this->directory->getPath() . '/' . $this->webDir . $this->pathToExtensions;
+        $extensionDirPath = $this->directory->getPath() . DIRECTORY_SEPARATOR . $this->webDir . $this->pathToExtensions;
         $extensionDir = new \DirectoryIterator($extensionDirPath);
 
         foreach ($extensionDir as $extension) {
-            if ($extension->isDot()) {
+            if ($extension->isDot() || !$extension->isDir()) {
                 continue;
             }
-            if (!$extension->isDir()) {
-                continue;
-            }
-            if (file_exists($extension->getPathname() . '/ext_emconf.php')) {
+            if (file_exists($extension->getPathname() . DIRECTORY_SEPARATOR . 'ext_emconf.php')) {
                 $this->addExtension($extension->getBasename());
             }
         }
