@@ -44,6 +44,16 @@ abstract class AbstractDriver implements DriverInterface
     }
 
     /**
+     * @param string $repositoryUrl
+     * @return string
+     * @deprecated Will be removed in next version, use getGitVendorFromRepositoryUrl() instead
+     */
+    protected function getRepositoryAccount($repositoryUrl)
+    {
+        return $this->getGitVendorFromRepositoryUrl($repositoryUrl);
+    }
+
+    /**
      * Extracts git@github.com from git@github.com:account/repository.git
      *
      * @param string $repositoryUrl
