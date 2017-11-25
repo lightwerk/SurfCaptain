@@ -44,10 +44,12 @@ abstract class AbstractDriver implements DriverInterface
     }
 
     /**
+     * Extracts git@github.com from git@github.com:account/repository.git
+     *
      * @param string $repositoryUrl
      * @return string
      */
-    protected function getRepositoryAccount($repositoryUrl)
+    protected function getGitVendorFromRepositoryUrl($repositoryUrl)
     {
         $parts = explode(':', $repositoryUrl);
         return $parts[0];

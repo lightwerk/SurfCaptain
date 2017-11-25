@@ -34,7 +34,7 @@ class GitLabDriver extends AbstractDriver
      */
     public function hasRepository($repositoryUrl)
     {
-        return $this->getRepositoryAccount($repositoryUrl) === $this->settings['accountName'];
+        return $this->getGitVendorFromRepositoryUrl($repositoryUrl) === $this->settings['accountName'];
     }
 
     /**
