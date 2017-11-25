@@ -142,6 +142,7 @@ class DeploymentFactory
      * @return \Lightwerk\SurfCaptain\Domain\Model\Deployment
      * @throws \Lightwerk\SurfCaptain\Domain\Repository\Preset\Exception
      * @throws \Lightwerk\SurfCaptain\GitApi\Exception
+     * @throws Exception
      */
     public function createFromSyncDeployment(SyncDeployment $syncDeployment)
     {

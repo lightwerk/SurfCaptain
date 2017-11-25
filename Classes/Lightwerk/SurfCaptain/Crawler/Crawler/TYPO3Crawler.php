@@ -29,7 +29,7 @@ class TYPO3Crawler implements CrawlerInterface
     protected $webDir = '';
 
     /**
-     * @var ProjectInterface
+     * @var TYPO3Project
      */
     protected $project = null;
 
