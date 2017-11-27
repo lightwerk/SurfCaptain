@@ -38,17 +38,7 @@ class BitBucketDriver extends AbstractDriver
      */
     public function hasRepository($repositoryUrl)
     {
-        return $this->getRepositoryAccount($repositoryUrl) === $this->settings['accountName'];
-    }
-
-    /**
-     * @param string $repositoryUrl
-     * @return string
-     */
-    protected function getRepositoryAccount($repositoryUrl)
-    {
-        $parts = explode('/', $repositoryUrl);
-        return $parts[3];
+        return $this->getGitVendorFromRepositoryUrl($repositoryUrl) === 'git@bitbucket.org';
     }
 
     /**
@@ -96,11 +86,8 @@ class BitBucketDriver extends AbstractDriver
      */
     protected function getRepositoryName($repositoryUrl)
     {
-        if (strpos($repositoryUrl, 'ssh') !== false) {
-            $parts = explode('/', $repositoryUrl);
-            return str_replace('.git', '', array_pop($parts));
-        }
-        return parent::getRepositoryName($repositoryUrl);
+        $parts = explode('/', $repositoryUrl);
+        return str_replace('.git', '', array_pop($parts));
     }
 
     /**

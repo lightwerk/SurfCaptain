@@ -29,10 +29,7 @@ class GitHubDriver extends AbstractDriver
      */
     public function hasRepository($repositoryUrl)
     {
-        if ($this->getRepositoryAccount($repositoryUrl) === $this->settings['accountName']) {
-            return true;
-        }
-        return false;
+        return $this->getGitVendorFromRepositoryUrl($repositoryUrl) === 'git@github.com';
     }
 
     /**
