@@ -55,6 +55,7 @@ abstract class AbstractDriver implements DriverInterface
 
     /**
      * Extracts git@github.com from git@github.com:account/repository.git
+     *   as well as from ssh://git@bitbucket.org
      *
      * @param string $repositoryUrl
      * @return string

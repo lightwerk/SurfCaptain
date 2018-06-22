@@ -17,15 +17,28 @@ use TYPO3\Flow\Annotations as Flow;
 class GitLabDriver extends AbstractDriver
 {
     /**
+     * @var int
+     */
+    protected $apiVersion = 3;
+
+    /**
      * @param array $settings
      * @return void
      */
     public function setSettings(array $settings)
     {
         $this->settings = $settings;
+
         $this->apiRequest = $this->objectManager->get('Lightwerk\SurfCaptain\GitApi\Request\HttpAuthRequestInterface');
         $this->apiRequest->setApiUrl($settings['apiUrl']);
         $this->apiRequest->setAuthorizationHeader(['PRIVATE-TOKEN: ' . $this->settings['privateToken']]);
+
+        if (strpos($settings['apiUrl'], 'v3') !== false) {
+            $this->apiVersion = 3;
+        }
+        if (strpos($settings['apiUrl'], 'v4') !== false) {
+            $this->apiVersion = 4;
+        }
     }
 
     /**
@@ -34,7 +47,8 @@ class GitLabDriver extends AbstractDriver
      */
     public function hasRepository($repositoryUrl)
     {
-        return $this->getGitVendorFromRepositoryUrl($repositoryUrl) === $this->settings['accountName'];
+        $vendorName = $this->getGitVendorFromRepositoryUrl($repositoryUrl);
+        return  $vendorName === $this->settings['accountName'] || strpos($vendorName, 'gitlab') !== false;
     }
 
     /**
@@ -43,12 +57,20 @@ class GitLabDriver extends AbstractDriver
     public function getRepositories()
     {
         $repositories = [];
-        foreach ($this->settings['repositories'] as $command) {
+        foreach ($this->settings['repositories'] as $path) {
+            if ($this->apiVersion === 3) {
+                $command = $path;
+            }
+            if ($this->apiVersion === 4) {
+                $command = 'users/' . $this->settings['accountName'] . '/' . $path;
+            }
             $response = $this->apiRequest->call($command);
-            if (isset($response['projects']) === false) {
-                $projects = [$response];
-            } else {
+            if (isset($response['projects'])) {
                 $projects = $response['projects'];
+            } elseif (is_array($response)) {
+                $projects = $response;
+            } else {
+                $projects = [$response];
             }
             $repositories = array_merge(
                 $repositories,
@@ -59,6 +81,7 @@ class GitLabDriver extends AbstractDriver
                 )
             );
         }
+
         return $repositories;
     }
 
